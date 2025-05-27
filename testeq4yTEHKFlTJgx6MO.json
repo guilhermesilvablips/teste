@@ -1,0 +1,2871 @@
+{
+  "data": {
+    "createdAt": "2024-08-12T22:40:48.349Z",
+    "updatedAt": "2025-01-07T11:47:20.804Z",
+    "id": "q4yTEHKFlTJgx6MO",
+    "name": "Nascimento - Web Scraping",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "a368e321-6700-4d71-9e5d-011f7a2a725d",
+        "name": "When clicking ‘Test workflow’",
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -4860,
+          760
+        ]
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "gpt-4o-mini-2024-07-18",
+            "mode": "list",
+            "cachedResultName": "gpt-4o-mini-2024-07-18"
+          },
+          "options": {
+            "baseURL": "https://api.openai.com/v1",
+            "temperature": 0.7,
+            "topP": 1
+          }
+        },
+        "id": "7061d64c-ab68-4e58-bd74-5beea31a3971",
+        "name": "OpenAI Model",
+        "type": "@n8n/n8n-nodes-langchain.lmOpenAi",
+        "typeVersion": 1,
+        "position": [
+          -680,
+          180
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "trONZBLzM3mWPjKv",
+            "name": "OpenAi - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "gpt-4o-mini-2024-07-18",
+            "mode": "list",
+            "cachedResultName": "gpt-4o-mini-2024-07-18"
+          },
+          "options": {}
+        },
+        "id": "0939931d-d968-48e4-912f-7663c0fc2994",
+        "name": "OpenAI Model1",
+        "type": "@n8n/n8n-nodes-langchain.lmOpenAi",
+        "typeVersion": 1,
+        "position": [
+          -3540,
+          740
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "yLVo36ZcKp1mrjQl",
+            "name": "Nascimento Blips - OpenAi"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://new-api.zapsterapi.com/v1/wa/messages",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTc2MTE5MjQsImlzcyI6InphcHN0ZXJhcGkiLCJzdWIiOiJiZDg4ZWI0YS02ZjdkLTRlYzUtYTk5MS1hYWUzMWMxOGMzMDQiLCJqdGkiOiJhNTBiNzdiNC0yNDdmLTQ2ZDEtYTIyOS1jMDZiOWQ1NGI3YjMifQ.Ql1H5JTcgbV48Mgj18IJCfreD8bdxgybNtmW6BOuWS0"
+              },
+              {
+                "name": "accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "recipient",
+                "value": "553492053452"
+              },
+              {
+                "name": "text",
+                "value": "=Autenticação do Hyperflow expirou: {{ $json.hyperflow_key }}"
+              },
+              {
+                "name": "instance_id",
+                "value": "w4aimfkcaltxlavvvyqu6"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "neverError": true
+              }
+            }
+          }
+        },
+        "id": "e35eca96-ae22-4b88-880b-287199308a0c",
+        "name": "Avisar autenticação expirou1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          -920,
+          1320
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "d62ad62a-7d5b-47c8-abde-efcd6da6bc14",
+                "leftValue": "={{ $json.errors[0].message }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notExists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "890af23d-e720-4216-9843-502795a32bd6",
+        "name": "hyperflow_key valida?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -2480,
+          820
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "fa9ac850-15dd-4c14-ae3a-507cfb9d02f6",
+        "name": "Wait1",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          -600,
+          1320
+        ],
+        "webhookId": "0aa60eb7-a7ad-4e85-a5ab-b6a85f1e5620"
+      },
+      {
+        "parameters": {
+          "workflowId": "no3Sifwl4U7IqLDU",
+          "options": {}
+        },
+        "id": "cec3b5d7-fcf8-4a30-b78b-e105ce7d81e9",
+        "name": "Renovar token",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -760,
+          1320
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "e98b8b57-be80-4dde-8919-3c1355dff8f6",
+                "name": "historico",
+                "value": "={{ $json.historico }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d458f581-1fa3-4644-a6dd-072740f73316",
+        "name": "Definir historico1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -960,
+          60
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "d62ad62a-7d5b-47c8-abde-efcd6da6bc14",
+                "leftValue": "={{ $json.errors[0].message }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "6ff4ad10-ce5a-4721-be9c-9864407fb9de",
+        "name": "hyperflow_key valida?1",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -340,
+          620
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://new-api.zapsterapi.com/v1/wa/messages",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTc2MTE5MjQsImlzcyI6InphcHN0ZXJhcGkiLCJzdWIiOiJiZDg4ZWI0YS02ZjdkLTRlYzUtYTk5MS1hYWUzMWMxOGMzMDQiLCJqdGkiOiJhNTBiNzdiNC0yNDdmLTQ2ZDEtYTIyOS1jMDZiOWQ1NGI3YjMifQ.Ql1H5JTcgbV48Mgj18IJCfreD8bdxgybNtmW6BOuWS0"
+              },
+              {
+                "name": "accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "recipient",
+                "value": "553492053452"
+              },
+              {
+                "name": "text",
+                "value": "=Autenticação do Hyperflow expirou: {{ $('Salvar token').item.json.hyperflow_key }}"
+              },
+              {
+                "name": "instance_id",
+                "value": "w4aimfkcaltxlavvvyqu6"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "neverError": true
+              }
+            }
+          }
+        },
+        "id": "fd256ac3-af1e-401e-b3e4-58b09d19a0c0",
+        "name": "Avisar autenticação expirou",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          -40,
+          1340
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "25ec8b5a-1489-45d7-9edb-94ad7fb6ced6",
+                "name": "hyperflow_key",
+                "value": "={{ $json.refreshToken }}",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "id": "7032f8c1-95ca-406d-b454-1c6f4930ac50",
+        "name": "Salvar token",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -4160,
+          560
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://desk-ext.hyperflowapis.global/graphql",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "={\n  \"accept\": \"application/json, text/plain, */*\",\n  \"accept-language\": \"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7\",\n  \"authorization\": \"{{ $('Salvar token').item.json.hyperflow_key }}\",\n  \"content-type\": \"application/json\",\n  \"origin\": \"https://desk.hyperflow.global\",\n  \"priority\": \"u=1, i\",\n  \"referer\": \"https://desk.hyperflow.global/\",\n  \"sec-ch-ua\": \"\\\"Not)A;Brand\\\";v=\\\"99\\\", \\\"Google Chrome\\\";v=\\\"127\\\", \\\"Chromium\\\";v=\\\"127\\\"\",\n  \"sec-ch-ua-mobile\": \"?0\",\n  \"sec-ch-ua-platform\": \"\\\"Windows\\\"\",\n  \"sec-fetch-dest\": \"empty\",\n  \"sec-fetch-mode\": \"cors\",\n  \"sec-fetch-site\": \"cross-site\",\n  \"tenant\": \"642eb86c0cd915bc8137a05d\",\n  \"user-agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36\"\n}",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"operationName\": \"LIST_ALL_CHATS\",\n  \"variables\": {\n    \"sort\": \"-createdAt\",\n    \"search\": \"{{ $('Definir tipo analise').item.json.text.numero }}\",\n    \"channelAlias\": [],\n    \"status\": [],\n    \"channel\": \"\",\n    \"department\": [],\n    \"label\": [],\n    \"classification\": [],\n    \"agent\": [],\n    \"startDate\": null,\n    \"endDate\": null,\n    \"page\": 1,\n    \"limit\": 4\n  },\n  \"query\": \"query LIST_ALL_CHATS($page: Int, $limit: Int, $offset: Int, $sort: String, $search: String, $channel: String, $startDate: String, $endDate: String, $status: [String], $department: [String], $agent: [String], $label: [String], $classification: [String], $channelAlias: [String], $searchBy: String) {\\n  listAllChats(\\n    query: {search: $search, status: $status, channel: $channel, department: $department, agent: $agent, startDate: $startDate, endDate: $endDate, label: $label, classification: $classification, channelAlias: $channelAlias, searchBy: $searchBy}\\n    page: $page\\n    limit: $limit\\n    offset: $offset\\n    sort: $sort\\n  ) {\\n    docs {\\n      _id\\n      receiver\\n      agent {\\n        _id\\n        picture\\n        email\\n        name\\n        __typename\\n      }\\n      department {\\n        _id\\n        name\\n        __typename\\n      }\\n      channel\\n      channelAlias\\n      contact {\\n        id\\n        phone\\n        name\\n        picture\\n        __typename\\n      }\\n      lastMessage {\\n        type\\n        direction\\n        createdAt\\n        __typename\\n      }\\n      protocol\\n      status\\n      classifications {\\n        _id\\n        name\\n        __typename\\n      }\\n      labels {\\n        _id\\n        color\\n        name\\n        __typename\\n      }\\n      isActive\\n      createdAt\\n      finishedAt\\n      __typename\\n    }\\n    totalPages\\n    totalDocs\\n    nextPage\\n    __typename\\n  }\\n}\"\n}",
+          "options": {}
+        },
+        "id": "2101e11e-3ca3-443c-8b44-a08270f577f9",
+        "name": "Pesquisar protocolos",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -2700,
+          860
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "d62ad62a-7d5b-47c8-abde-efcd6da6bc14",
+                "leftValue": "={{ $json.errors[0].message }}",
+                "rightValue": "Unauthorized",
+                "operator": {
+                  "type": "string",
+                  "operation": "notContains"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "8ed15307-3cef-427b-9be8-d51f67fb9a5e",
+        "name": "hyperflow_key valida?3",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -280,
+          1340
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://new-api.zapsterapi.com/v1/wa/messages",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTc2MTE5MjQsImlzcyI6InphcHN0ZXJhcGkiLCJzdWIiOiJiZDg4ZWI0YS02ZjdkLTRlYzUtYTk5MS1hYWUzMWMxOGMzMDQiLCJqdGkiOiJhNTBiNzdiNC0yNDdmLTQ2ZDEtYTIyOS1jMDZiOWQ1NGI3YjMifQ.Ql1H5JTcgbV48Mgj18IJCfreD8bdxgybNtmW6BOuWS0"
+              },
+              {
+                "name": "accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "recipient",
+                "value": "553492053452"
+              },
+              {
+                "name": "text",
+                "value": "=ERRO na requisição de mensagens Hyperflow"
+              },
+              {
+                "name": "instance_id",
+                "value": "w4aimfkcaltxlavvvyqu6"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "neverError": true
+              }
+            }
+          }
+        },
+        "id": "05ed5626-421c-455d-8d4b-b615e350f1f9",
+        "name": "Avisar erro requisição",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          -40,
+          1540
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Recebe a resposta da requisição\nconst items = $node[\"Pesquisar protocolos\"].json.data.listAllChats.docs;\n\nconst result = items\n    .map(item => {\n        let status = item.status;\n        let protocolo = item.protocol;\n        return {\n          protocolos: protocolo\n        };\n    })\n\n// Retorna o resultado processado\nreturn result.map(res => ({ json: res }));\n"
+        },
+        "id": "5010ea72-cb14-479c-8bbd-a7abd744fb72",
+        "name": "Extrair lista de protocolos",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -2240,
+          800
+        ],
+        "alwaysOutputData": false,
+        "notesInFlow": false,
+        "retryOnFail": false
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "6d7a7fb3-eff5-4553-8553-e931cc974577",
+                "leftValue": "={{ $json.text.tipo }}",
+                "rightValue": "protocolo",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "4ae9ea7b-fde6-4fe3-8b0f-5bfaa78b9590",
+        "name": "É protocolo?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -2980,
+          560
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "9b02ead0-a286-49a9-a440-4d7131817ac2",
+                "name": "text",
+                "value": "={{ $json.response.text.parseJson() }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "e31bb951-1fb9-406f-81b8-e82d5d8a3b9f",
+        "name": "Definir tipo analise",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -3180,
+          560
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "7d6bfd10-9dd4-4101-8ca9-91127080a617",
+                "leftValue": "={{ $('Buscar protocolo conversa').item.json.protocolo }}",
+                "rightValue": "=",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "c64f9ae7-1aee-4283-89bc-a5af8f9b985b",
+        "name": "Já tem registro de conversa?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          460,
+          700
+        ],
+        "alwaysOutputData": false
+      },
+      {
+        "parameters": {
+          "collection": "analises_conversas",
+          "options": {
+            "limit": 1
+          },
+          "query": "={\n  \"protocolo\":\"{{ $('Definir protocolo').item.json.protocolo }}\"\n} "
+        },
+        "id": "8463d20d-d8f9-46ce-aa71-d2909e3e5471",
+        "name": "Buscar protocolo conversa",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1.1,
+        "position": [
+          -760,
+          640
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "mongoDb": {
+            "id": "jgLY33sWojEA1rzs",
+            "name": "NascimentoDB"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "gpt-4o-mini-2024-07-18",
+            "mode": "list",
+            "cachedResultName": "gpt-4o-mini-2024-07-18"
+          },
+          "options": {
+            "baseURL": "https://api.openai.com/v1",
+            "temperature": 0.7,
+            "topP": 1
+          }
+        },
+        "id": "303eee3b-5cdc-4ec7-ac15-81a3f5dc3c1a",
+        "name": "OpenAI Model2",
+        "type": "@n8n/n8n-nodes-langchain.lmOpenAi",
+        "typeVersion": 1,
+        "position": [
+          1480,
+          1060
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "trONZBLzM3mWPjKv",
+            "name": "OpenAi - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "e98b8b57-be80-4dde-8919-3c1355dff8f6",
+                "name": "historico",
+                "value": "={{ $('Buscar protocolo conversa').last().json.mensagens }}",
+                "type": "string"
+              },
+              {
+                "id": "f11c79ef-24df-41cf-bae4-304ffb760038",
+                "name": "protocolo",
+                "value": "={{ $('Buscar protocolo conversa').last().json.protocolo }}",
+                "type": "string"
+              },
+              {
+                "id": "115c1f71-c91d-493f-852f-398ba0353eaa",
+                "name": "data_analise",
+                "value": "={{ $('Buscar protocolo conversa').last().json.data_analise }}",
+                "type": "string"
+              },
+              {
+                "id": "2a794538-46bb-42e8-bdc3-84cd87188bf9",
+                "name": "classificacao_cliente",
+                "value": "={{ $('Buscar protocolo conversa').last().json.classificacao_cliente }}",
+                "type": "string"
+              },
+              {
+                "id": "78131fe6-e36a-4991-9632-f9dcf4c7e268",
+                "name": "resumo_simples",
+                "value": "={{ $('Buscar protocolo conversa').last().json.resumo_simples }}",
+                "type": "string"
+              },
+              {
+                "id": "3cf341bb-ff28-4c11-bbbb-874372b72aa2",
+                "name": "resumo_qualitativo",
+                "value": "={{ $('Buscar protocolo conversa').last().json.resumo_qualitativo }}",
+                "type": "string"
+              },
+              {
+                "id": "8eb33a23-d22e-4fef-8ff0-e2fb70e94bfd",
+                "name": "cliente_nome",
+                "value": "={{ $('Limpar dados contato').last().json.nome }}",
+                "type": "string"
+              },
+              {
+                "id": "4cfcc1d8-d7f9-4603-b2b8-bf167f653e45",
+                "name": "cliente_phone",
+                "value": "={{ $('Limpar dados contato').last().json.phone }}",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "id": "7a36fdbd-0ea8-4fb5-83c5-106171678945",
+        "name": "Ajustar historico",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2640,
+          600
+        ]
+      },
+      {
+        "parameters": {
+          "options": {
+            "numberOfItems": -1,
+            "separator": "|"
+          }
+        },
+        "id": "bfd6b29f-791d-464b-9c13-a37fd5d9e5de",
+        "name": "Item List Output Parser",
+        "type": "@n8n/n8n-nodes-langchain.outputParserItemList",
+        "typeVersion": 1,
+        "position": [
+          -3380,
+          740
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "1881eb17-9501-4b3a-83a9-7b401369dbc5",
+                "name": "resposta",
+                "value": "={{ $json.text.includes('**Classificação:**') ? $json.text.split('**Classificação:**') : $json.text.split('Classificação:')}}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "3b280a61-ecdb-4432-8b3a-bb7db80196ad",
+        "name": "Tratar resposta1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1840,
+          920
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "insert",
+          "collection": "analises_conversas",
+          "fields": "protocolo,cliente_nome,cliente_phone,data_analise,classificacao_cliente,ultima_mensagem,resumo_simples,resumo_qualitativo,mensagens",
+          "options": {}
+        },
+        "id": "ad2ad7ca-de32-4d95-9d6a-d5277b947a86",
+        "name": "Adicionar analise MongoDB",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1.1,
+        "position": [
+          2640,
+          800
+        ],
+        "credentials": {
+          "mongoDb": {
+            "id": "jgLY33sWojEA1rzs",
+            "name": "NascimentoDB"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "collection": "analises_conversas",
+          "updateKey": "_id",
+          "fields": "protocolo,cliente_nome,cliente_phone,data_analise,classificacao_cliente,ultima_mensagem,resumo_simples,resumo_qualitativo,mensagens",
+          "options": {}
+        },
+        "id": "d2000321-92ea-4af3-896e-950f3531b8aa",
+        "name": "Atualizar analise MongoDB",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1.1,
+        "position": [
+          2640,
+          1040
+        ],
+        "credentials": {
+          "mongoDb": {
+            "id": "jgLY33sWojEA1rzs",
+            "name": "NascimentoDB"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "content": "## Consolidar analises, gerar resumo e enviar dados",
+          "height": 784.6451534472469,
+          "width": 2248.24335172886,
+          "color": 4
+        },
+        "id": "66230232-7a5d-4cde-9bb1-f96c7428b3ab",
+        "name": "Sticky Note2",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -1740,
+          -308.0494077485447
+        ]
+      },
+      {
+        "parameters": {
+          "content": "## Web Scraping Hyperflow",
+          "height": 924.2520177848271,
+          "width": 3670.043184422483,
+          "color": 6
+        },
+        "id": "288680b5-8f3b-42d6-9cf9-312b31cb402f",
+        "name": "Sticky Note",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -2760,
+          480
+        ]
+      },
+      {
+        "parameters": {
+          "content": "## Processar dados da conversa",
+          "height": 918.6086762216139,
+          "width": 2459.8719758133757,
+          "color": 5
+        },
+        "id": "77855071-7843-4c0b-a526-4a94e7e37f9b",
+        "name": "Sticky Note1",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          920,
+          480
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "8917cd2a-284e-4edb-a844-3e021ca22c8f",
+                "name": "_id",
+                "value": "={{ $json.id.replaceAll('\"','') }}",
+                "type": "string"
+              },
+              {
+                "id": "ea7d2b48-10c3-4392-995c-51001730cd25",
+                "name": "protocolo",
+                "value": "={{ $('Definir protocolo').item.json.protocolo }}",
+                "type": "string"
+              },
+              {
+                "id": "ad216bc5-bb81-4b3a-942a-37c668d342d3",
+                "name": "data_analise",
+                "value": "={{ $now }}",
+                "type": "string"
+              },
+              {
+                "id": "b144654c-5b9b-4b1d-8b79-f14aef2ed745",
+                "name": "classificacao_cliente",
+                "value": "={{ $('Tratar resposta1').item.json.resposta[1].replaceAll('\"','').trim() }}",
+                "type": "string"
+              },
+              {
+                "id": "235b06e9-61c3-467a-ad3a-8eff14cdf088",
+                "name": "resumo_simples",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "a97c1fca-888c-4e6c-897c-f9b37424fc72",
+                "name": "resumo_qualitativo",
+                "value": "={{ $('Tratar resposta1').item.json.resposta[0].trim() }}",
+                "type": "string"
+              },
+              {
+                "id": "36857547-8d17-4d6a-bc47-4704fe701734",
+                "name": "mensagens",
+                "value": "={{ $('Definir historico').item.json.historico }}",
+                "type": "string"
+              },
+              {
+                "id": "0b8255ac-7d01-468c-a88c-befa260b603d",
+                "name": "ultima_mensagem",
+                "value": "={{ $('Agregar mensagens1').item.json.messages[0].toJsonString() }}",
+                "type": "string"
+              },
+              {
+                "id": "33b14e7a-230f-483f-892d-134fd6ad952f",
+                "name": "cliente_nome",
+                "value": "={{ $('Limpar dados contato').item.json.nome }}",
+                "type": "string"
+              },
+              {
+                "id": "4ef8e57f-b8a3-490a-86de-47e6046b9110",
+                "name": "cliente_phone",
+                "value": "={{ $('Limpar dados contato').item.json.phone }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "dbe266f1-dd5c-4739-8350-77e06ef4c146",
+        "name": "Definir dados DB",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2220,
+          920
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "760dd34c-cf55-4d2b-9f97-b3c67309fca1",
+                "name": "protocolo",
+                "value": "={{ $('É protocolo?').item.json.text.tipo === 'telefone' ? $json.protocolos :  $('É protocolo?').item.json.text.numero }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "b6cf6dc3-64d6-41f1-8d9e-a379678bc3fd",
+        "name": "Definir protocolo",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1600,
+          820
+        ]
+      },
+      {
+        "parameters": {
+          "amount": 0.2
+        },
+        "id": "96c5715d-d570-4737-a5a9-5149c87293c7",
+        "name": "Wait2",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          2880,
+          1040
+        ],
+        "webhookId": "754f99df-5597-41d9-a128-5c6da9d29ef9"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "d62ad62a-7d5b-47c8-abde-efcd6da6bc14",
+                "leftValue": "={{ $json.errors[0].message }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "5164af57-07b8-4fde-842c-88da1a1b250d",
+        "name": "hyperflow_key valida?4",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -1160,
+          800
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://desk-ext.hyperflowapis.global/graphql",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "={\n  \"accept\": \"application/json, text/plain, */*\",\n  \"accept-language\": \"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7\",\n  \"authorization\": \"{{ $('Salvar token').item.json.hyperflow_key }}\",\n  \"content-type\": \"application/json\",\n  \"origin\": \"https://desk.hyperflow.global\",\n  \"priority\": \"u=1, i\",\n  \"referer\": \"https://desk.hyperflow.global/\",\n  \"sec-ch-ua\": \"\\\"Not)A;Brand\\\";v=\\\"99\\\", \\\"Google Chrome\\\";v=\\\"127\\\", \\\"Chromium\\\";v=\\\"127\\\"\",\n  \"sec-ch-ua-mobile\": \"?0\",\n  \"sec-ch-ua-platform\": \"\\\"Windows\\\"\",\n  \"sec-fetch-dest\": \"empty\",\n  \"sec-fetch-mode\": \"cors\",\n  \"sec-fetch-site\": \"cross-site\",\n  \"tenant\": \"642eb86c0cd915bc8137a05d\",\n  \"user-agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36\"\n}\n",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"operationName\": \"GET_CHAT\",\n  \"variables\": {\n    \"protocol\": \"{{ $('Definir protocolo').item.json.protocolo }}\"\n  },\n  \"query\": \"query GET_CHAT($_id: String, $protocol: String) {\\n  getChat(query: {_id: $_id, protocol: $protocol}) {\\n    ...FRAGMENT_CHAT_LAST_MESSAGE\\n    _id\\n    protocol\\n    receiver\\n    sender\\n    identifier\\n    description\\n    messageTopic\\n    sessionCreatedAt\\n    finishedAt\\n    createdAt\\n    isSenderPhoneInternational\\n    department {\\n      _id\\n      __typename\\n    }\\n    contact {\\n      id\\n      name\\n      phone\\n      additionalInfo\\n      picture\\n      __typename\\n    }\\n    agent {\\n      _id\\n      name\\n      email\\n      picture\\n      __typename\\n    }\\n    classifications {\\n      _id\\n      name\\n      __typename\\n    }\\n    labels {\\n      _id\\n      color\\n      name\\n      __typename\\n    }\\n    windowActive\\n    channel\\n    channelAlias\\n    status\\n    isActive\\n    __typename\\n  }\\n}\\n\\nfragment FRAGMENT_CHAT_LAST_MESSAGE on Chat {\\n  lastMessage {\\n    createdAt\\n    direction\\n    type\\n    preview\\n    direction\\n    __typename\\n  }\\n  __typename\\n}\\n\"\n}",
+          "options": {}
+        },
+        "id": "6ceebd9d-ea3a-4ab1-b185-98bb34144dec",
+        "name": "Pegar dados contato Hyperflow",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -1380,
+          820
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Assume que os dados do JSON estão em $json.data.getChat\nconst chatData = $json.data.getChat;\n\n// Extrai o contact.name e contact.phone\nconst contactInfo = {\n    nome: chatData.contact.name,\n    phone: chatData.contact.phone\n};\n\n// Retorna o resultado com apenas os dados necessários\nreturn [{ json: contactInfo }];"
+        },
+        "id": "cb798fca-b417-434d-8dca-c556343cd672",
+        "name": "Limpar dados contato",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -960,
+          640
+        ],
+        "alwaysOutputData": false,
+        "notesInFlow": false,
+        "retryOnFail": false
+      },
+      {
+        "parameters": {
+          "jsCode": "// Acessa o array de mensagens que foi agregado pelo node anterior\nconst messages = items[0].json.messages;\n\n// Ordena as mensagens por 'createdAt' em ordem crescente\nmessages.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));\n\n// Converte o array de mensagens ordenadas em uma JSON string\nconst historico = JSON.stringify(messages);\n\n// Retorna o resultado como uma JSON string em um único objeto JSON\nreturn [{ json: { historico } }];"
+        },
+        "id": "6000c585-2018-455d-a958-ed940001d202",
+        "name": "Ordenar mensagens por data/hora1",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1199,
+          60
+        ]
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "messages",
+          "options": {}
+        },
+        "id": "6b4e72f8-5386-43aa-bff5-97c90a6f322e",
+        "name": "Agregar mensagens2",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          -1399,
+          60
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Acessa o array de mensagens que foi agregado pelo node anterior\nconst messages = $node[\"Agregar mensagens2\"].json.messages.map(message => {\n    // Cria uma cópia do objeto excluindo os campos 'mensagens' e 'ultima_mensagem'\n    const { mensagens, ultima_mensagem, ...rest } = message;\n    return rest;\n});\n\n// Ordena as mensagens por 'createdAt' em ordem crescente\nmessages.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));\n\n// Converte o array de mensagens ordenadas (sem os campos 'mensagens' e 'ultima_mensagem') em uma JSON string\nconst historico = JSON.stringify(messages);\n\n// Retorna o resultado como uma JSON string em um único objeto JSON\nreturn [{ json: { historico } }];"
+        },
+        "id": "6866a839-249b-424f-91c3-26c874ba94be",
+        "name": "Usar apenas resumos",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -340,
+          200
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "4cc948f5-4ef5-4259-ac93-be19a0dce7fc",
+        "name": "Merge",
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3,
+        "position": [
+          -1659,
+          60
+        ]
+      },
+      {
+        "parameters": {
+          "options": {
+            "reset": false
+          }
+        },
+        "id": "cdbbc0fc-0a95-45a7-9aeb-8005600875b1",
+        "name": "Loop de protocolos enviados",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          -2000,
+          540
+        ]
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "b9ee3bd3-52f0-41d6-803e-8d13f7651439",
+        "name": "Loop de protocolos do telefone",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          -1880,
+          800
+        ],
+        "notesInFlow": false
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "00562a98-ef8c-4d01-b42a-777d20eaf608",
+                "leftValue": "={{ $('É protocolo?').item.json.text.tipo }}",
+                "rightValue": "telefone",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "c65d14a7-031c-4545-8fa8-e52af0e45f66",
+        "name": "É loop de protocolos telefone?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          3100,
+          1040
+        ]
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "gpt-4o-mini-2024-07-18",
+            "mode": "list",
+            "cachedResultName": "gpt-4o-mini-2024-07-18"
+          },
+          "options": {}
+        },
+        "id": "da75a924-1997-40a7-b16b-62358c8ef65f",
+        "name": "OpenAI Model3",
+        "type": "@n8n/n8n-nodes-langchain.lmOpenAi",
+        "typeVersion": 1,
+        "position": [
+          -3940,
+          740
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "yLVo36ZcKp1mrjQl",
+            "name": "Nascimento Blips - OpenAi"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "gpt-4o-mini-2024-07-18",
+            "mode": "list",
+            "cachedResultName": "gpt-4o-mini-2024-07-18"
+          },
+          "options": {}
+        },
+        "id": "7ef4c800-aa56-4760-ac91-7baf89c97cd1",
+        "name": "OpenAI Model4",
+        "type": "@n8n/n8n-nodes-langchain.lmOpenAi",
+        "typeVersion": 1,
+        "position": [
+          -3540,
+          380
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "yLVo36ZcKp1mrjQl",
+            "name": "Nascimento Blips - OpenAi"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://desk-ext.hyperflowapis.global/graphql",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "={\n  \"accept\": \"application/json, text/plain, */*\",\n  \"accept-language\": \"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7\",\n  \"authorization\": \"{{ $('Salvar token').item.json.hyperflow_key }}\",\n  \"content-type\": \"application/json\",\n  \"origin\": \"https://desk.hyperflow.global\",\n  \"priority\": \"u=1, i\",\n  \"referer\": \"https://desk.hyperflow.global/\",\n  \"sec-ch-ua\": \"\\\"Not)A;Brand\\\";v=\\\"99\\\", \\\"Google Chrome\\\";v=\\\"127\\\", \\\"Chromium\\\";v=\\\"127\\\"\",\n  \"sec-ch-ua-mobile\": \"?0\",\n  \"sec-ch-ua-platform\": \"\\\"Windows\\\"\",\n  \"sec-fetch-dest\": \"empty\",\n  \"sec-fetch-mode\": \"cors\",\n  \"sec-fetch-site\": \"cross-site\",\n  \"tenant\": \"642eb86c0cd915bc8137a05d\",\n  \"user-agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36\"\n}\n",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"query\": \"\\n  query SYNC_CHAT_MESSAGES(\\n    $isLive: Boolean = false\\n    $protocol: String!\\n    $limit: Int = 20\\n    $before: Date\\n    $after: Date\\n  ) {\\n    getChatMessages(\\n      isLive: $isLive\\n      limit: $limit\\n      before: $before\\n      after: $after\\n      protocol: $protocol\\n    ) {\\n      docs {\\n        id\\n        ref\\n        type\\n        direction\\n        payload\\n        reply {\\n          id\\n          ref\\n          type\\n          payload\\n          direction\\n          meta\\n        }\\n        meta\\n        success\\n        createdAt\\n        readedAt\\n        sendedAt\\n        sentAt\\n        deliveredAt\\n        deletedAt\\n        failedAt\\n        failedReason\\n        updatedAt\\n      }\\n      totalDocs\\n    }\\n  }\\n\",\n  \"variables\": {\n    \"limit\": 20,\n    \"protocol\": \"{{ $('Definir protocolo').item.json.protocolo }}\"\n  }\n}",
+          "options": {}
+        },
+        "id": "2960b739-314f-4aa9-8c2d-811d6d99b379",
+        "name": "Pegar dados conversa Hyperflow",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -560,
+          640
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Recebe a resposta da requisição\nconst items = $node[\"Pegar dados conversa Hyperflow\"].json.data.getChatMessages.docs;\n\n// Filtra os dados onde 'payload' não está vazio, seleciona apenas 'textMessage', 'fileMessage' e 'sender',\n// e descarta os itens onde 'textMessage', 'fileMessage' e 'template.components.text' estão todos vazios\nconst result = items\n    .filter(item => Object.keys(item.payload).length > 0) // Verifica se 'payload' não está vazio\n    .map(item => {\n        let senderName;\n        let textMessage = item.payload.text || null;\n        let type = item.payload.type || item.type || null; // Verifica 'payload.type' ou 'type'\n\n        // Verifica se o tipo é CHAT_TRANSFERED\n        if (type === 'CHAT_TRANSFERED') {\n          senderName = 'system';\n          type = 'text';\n            if (item.payload.agent) {\n              textMessage = \"A conversa foi transferida para o atendente \"+item.payload.agent;\n                \n            } else if (item.payload.department) {\n                textMessage = \"A conversa foi transferida para o departamento de \"+item.payload.department+\" e o atendente responsavel será \"+item.meta?.agent?.name;\n                senderName = \"system\";\n            }\n        } else {\n            // Se 'sender' for null, verifica 'direction' e define o senderName\n            if (!item.payload.sender) {\n                senderName = item.direction === 'in' ? 'cliente' : 'bot';\n            } else {\n                senderName = item.payload.sender.name;\n            }\n\n            // Verifica se 'payload.text' é null e, se for, usa 'payload.template.components.text'\n            if (!textMessage && item.payload.template && item.payload.template.components) {\n                textMessage = item.payload.template.components.text || null;\n            }\n        }\n\n        return {\n          type: type,\n          textMessage: textMessage,\n          fileMessage: item.payload.url || null,\n          sender: senderName,\n          createdAt: item.createdAt\n        };\n    })\n    .filter(item => item.textMessage || item.fileMessage || item.textMessage) // Filtra os itens onde 'textMessage', 'fileMessage' ou 'template.components.text' não estão todos vazios\n    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Ordena por 'createdAt' de forma decrescente\n\n// Retorna o resultado processado\nreturn result.map(res => ({ json: res })) || '';\n"
+        },
+        "id": "57d6c97f-3c08-453a-924b-ac77b2be731c",
+        "name": "Limpar dados coletados",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -120,
+          620
+        ],
+        "alwaysOutputData": true,
+        "notesInFlow": false,
+        "retryOnFail": false
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "00562a98-ef8c-4d01-b42a-777d20eaf608",
+                "leftValue": "={{ $('É protocolo?').item.json.text.tipo }}",
+                "rightValue": "telefone",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "09737295-2df3-434a-b3a8-274093425567",
+        "name": "É loop de protocolos telefone?1",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          240,
+          1040
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "dd09e331-e4e8-4a00-bd4d-b640739ea077",
+                "leftValue": "={{ $('Limpar dados coletados').item.json.type }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "156b44d8-b2ce-488a-b843-6a869e00ce1d",
+        "name": "Mensagens relevantes?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          60,
+          880
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "f1e66867-0f98-460e-bc9a-2b4cc5738c4b",
+                "leftValue": "={{ $json.messages[0].toJsonString() }}",
+                "rightValue": "={{ $('Buscar protocolo conversa').item.json['ultima_mensagem'].length() === 0 ? '' : $('Buscar protocolo conversa').item.json['ultima_mensagem'] }}",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "eb6af2f3-b092-4481-bb53-ee4448efb422",
+        "name": "A conversa é igual?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          720,
+          620
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "e98b8b57-be80-4dde-8919-3c1355dff8f6",
+                "name": "historico",
+                "value": "=Protocolo: {{ $('Definir protocolo').last().json.protocolo }}\n{{ $json.historico }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "36b500e7-ac89-4763-8624-64556d426b23",
+        "name": "Definir historico",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1240,
+          920
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "a5b11362-5dc2-45d3-81b3-4a96d727c796",
+                "leftValue": "={{ $('Buscar protocolo conversa').last().json._id || '' }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "empty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "4a0afc24-fb6e-44a7-9ba3-643d395afb28",
+        "name": "É protocolo novo?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          2420,
+          920
+        ],
+        "alwaysOutputData": false,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "8917cd2a-284e-4edb-a844-3e021ca22c8f",
+                "name": "id",
+                "value": "={{ $('Buscar protocolo conversa').item.json._id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "8efcb0af-d83e-425b-8354-cf8f5fbe44a9",
+        "name": "Definir id",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2040,
+          920
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "gQxOS8BNj4T9fM32",
+          "options": {}
+        },
+        "id": "e023cdad-303f-4f3a-b960-8ef5e70f3c2b",
+        "name": "Execute Workflow",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          1020,
+          920
+        ]
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "messages",
+          "options": {}
+        },
+        "id": "71f3e37a-4eb8-46fc-9b65-a198a76a2b70",
+        "name": "Agregar mensagens1",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          240,
+          700
+        ]
+      },
+      {
+        "parameters": {
+          "content": "## Renovar tokem Hyperflow",
+          "height": 516.150686573706,
+          "width": 1215.4036821478076
+        },
+        "id": "3f0d4249-e211-4f3b-b7d9-c2b76d14ee72",
+        "name": "Sticky Note3",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -1060,
+          1240
+        ]
+      },
+      {
+        "parameters": {
+          "content": "## Receber, qualificar e tratar mensagem recebida",
+          "height": 840.354619668781,
+          "width": 1887.7355035776518,
+          "color": 5
+        },
+        "id": "24b10891-b478-40ab-8ed4-34aeca88807e",
+        "name": "Sticky Note4",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -4660,
+          80
+        ]
+      },
+      {
+        "parameters": {
+          "collection": "tokens",
+          "options": {
+            "limit": 1
+          },
+          "query": "={} "
+        },
+        "id": "74cbc7a9-b609-4a18-a0b6-494fff5266f5",
+        "name": "Buscar token Hyperflow",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1.1,
+        "position": [
+          -4380,
+          560
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "mongoDb": {
+            "id": "jgLY33sWojEA1rzs",
+            "name": "NascimentoDB"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=**Atue como Nascimento, um auditor de atendimentos da Blips. Sua principal função é auditar e avaliar as conversas entre os clientes da Blips e os atendentes dos diversos setores da empresa. Você é sincero, sério, e suas opiniões são sempre baseadas em fatos e dados. Suas respostas são sucintas e diretas ao ponto.**\n\n**Sua função inclui:**\n- Analisar os históricos de conversa de WhatsApp dos clientes da Blips com os atendentes da empresa.\n- Criar resumos concisos das conversas, destacando os pontos negativos e positivos do atendimento realizado.\n- Listar os atendentes que participaram de cada conversa, avaliando a atuação de cada um e qualificando o atendimento prestado.\n- Sempre que possível, você organiza suas respostas em blocos para facilitar a leitura, separando-os com quebras de linha (`\\n`).\n\n**Regras para a análise de conversas:**\n- **Entrada mínima necessária:** Para realizar suas análises, você precisa de pelo menos um número de telefone do cliente ou de um protocolo de atendimento no Hyperflow.\n- **Múltiplos protocolos:** Se houver mais de um protocolo ou o número de telefone estiver associado a vários protocolos, você pode escolher entre analisar cada atendimento individualmente ou fazer uma análise única baseada em todos os atendimentos combinados.\n- **Classificação final do cliente:** Após a análise da conversa, você deve classificar o cliente de acordo com o sentimento dele após o atendimento. As opções de classificação são:\n  - **\"Cliente promotor\"**: Cliente satisfeito e feliz, com o problema resolvido e grandes chances de recomendar a empresa, serviço ou produto.\n  - **\"Cliente detrator\"**: Cliente insatisfeito com a empresa, serviço ou produto. O problema não foi resolvido ou o cliente terminou a conversa infeliz, com possibilidade de falar mal da empresa.\n  - **\"Cliente neutro\"**: Cliente teve seus problemas resolvidos, mas enfrentou algumas dificuldades ao longo da conversa. Ele continuará usando os serviços, mas a experiência foi mista, com altos e baixos.\n\n**Quando alguém perguntar sobre você, siga o seguinte roteiro:**\n- Se apresente educadamente como Nascimento.\n- Explique que sua função é auditar as interações entre clientes e atendentes da Blips.\n- Informe que você avalia a qualidade dos atendimentos, baseando-se em fatos e dados, e que suas respostas são sempre diretas e baseadas na análise do histórico de conversas.\n\n**Exemplo de resposta estruturada em blocos:**\n```plaintext\nOlá, meu nome é Nascimento. Eu sou um auditor de atendimentos da Blips.\n\nMinha principal função é revisar e avaliar as conversas entre os clientes e os atendentes da Blips. Eu analiso o atendimento, destacando os pontos positivos e negativos, e ofereço uma classificação final do sentimento do cliente.\n\nEu utilizo fatos e dados para embasar minhas análises, garantindo que cada resposta seja direta e objetiva.\n\nEm que posso ajudá-lo hoje?\n```\n\n**Tome um tempo para analisar cada situação cuidadosamente e responda sempre de forma clara e precisa.**\n\n---\n\nAbaixo, segue a mensagem enviada pelo usuario:\n{{ $('Variáveis Globais').item.json[\"message\"] }}"
+        },
+        "id": "8c9effd1-4f9f-4252-aaa5-9c7ce9aeff94",
+        "name": "Conversar Nascimento",
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.4,
+        "position": [
+          -3560,
+          200
+        ],
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "0451dd9a-eab7-4970-b6df-ead5e6807750",
+                "leftValue": "={{ $runIndex }}",
+                "rightValue": 2,
+                "operator": {
+                  "type": "number",
+                  "operation": "gt"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "486edc37-8cb7-41f4-9862-a7ebd19795a1",
+        "name": "Rodou mais de 2 vezes?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -160,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=**Tarefa:** Verifique se a mensagem enviada contém informações sobre número de telefone ou protocolo, e retorne um JSON estruturado com base na análise. Nunca escreva nada na sua resposta antes ou depois da chaves {}.\n\n**Instruções:**\n1. **Identificação do Tipo:** Classifique a mensagem como relacionada a \"telefone\" ou \"protocolo\".\n   - Se a mensagem contiver um número de telefone, defina `\"tipo\": \"telefone\"`.\n   - Se a mensagem contiver um número de protocolo, defina `\"tipo\": \"protocolo\"`.\n\n2. **Limpeza dos Dados:**\n   - Remova todos os caracteres especiais dos números de telefone ou protocolo, deixando apenas os dígitos.\n\n3. **Definição da Análise:**\n   - Defina a variável `\"analise\"` como `\"individual\"` se a mensagem indicar que as conversas devem ser analisadas individualmente.\n   - Defina a variável `\"analise\"` como `\"compilada\"` se a mensagem indicar que as informações de todos os protocolos ou números de telefone devem ser somadas.\n   - Caso não seja possível identificar o tipo de análise a partir da mensagem, e se houver mais de um protocolo, use `\"analise\": \"compilada\"` como padrão.\n\n4. **Resposta com Múltiplos Itens:**\n   - Se a mensagem contiver mais de um número de telefone ou protocolo, responda com um array. Separe os itens com `|` (pipe). \n   - Exemplo: Resposta com dois protocolos: `{\"tipo\":\"protocolo\",\"numero\":\"1608243426739\",\"analise\":\"individual\"}|{\"tipo\":\"protocolo\",\"numero\":\"1608248466407\",\"analise\":\"individual\"}`.\n   - Exemplo: Resposta com um telefone e um protocolo: `{\"tipo\":\"telefone\",\"numero\":\"19996919034\",\"analise\":\"compilada\"}|{\"tipo\":\"protocolo\",\"numero\":\"1608248466407\",\"analise\":\"individual\"}`.\n\n5. **Formato da Resposta:**\n   - A resposta deve ser um código JSON em uma única linha, começando e terminando com chaves `{}`.\n   - Não inclua nenhum texto antes ou depois das chaves na resposta.\n\n**Exemplo de Mensagem:**\n```json\n{\"tipo\":\"telefone\",\"numero\":\"19996919034\",\"analise\":\"compilada\"}\n```\n\n**Importante:** Sempre retorne o JSON em uma única linha, seguindo as instruções acima para garantir que o Nascimento possa interpretar as variáveis corretamente. Nunca escreva nada na sua resposta antes ou depois da chaves.\n\n---\n\nAbaixo segue a Mensagem para analise:\n{{ $('Variáveis Globais').item.json.message }}",
+          "hasOutputParser": true
+        },
+        "id": "9be0d221-928e-4de7-9aa6-81827744bd4d",
+        "name": "Interpretar variáveis mensagem e tipo analise",
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.4,
+        "position": [
+          -3560,
+          560
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "fce99503-6486-4644-8db1-71659fd7b640",
+                "name": "canal",
+                "value": "={{ $('Variáveis Globais').first().json.canal }}",
+                "type": "string"
+              },
+              {
+                "id": "c687251b-ef19-4889-9779-6e0aaacdde71",
+                "name": "instance_id",
+                "value": "={{ $('Variáveis Globais').first().json.instance_id }}",
+                "type": "string"
+              },
+              {
+                "id": "4e8283e1-dfc2-417a-96b9-dedd29792ae9",
+                "name": "user_id",
+                "value": "={{ $('Variáveis Globais').first().json.group_id }}",
+                "type": "string"
+              },
+              {
+                "id": "dfa412d3-248b-46fa-b7e0-52f760bd48da",
+                "name": "text",
+                "value": "={{ $('Variáveis Globais').first().json.type === 'group' ? '@'+$('Variáveis Globais').first().json.user_id : '' }} Por conta de um erro, não consegui realizar a analise solicitada. Poderia solicitar novamente?",
+                "type": "string"
+              },
+              {
+                "id": "d8b304dc-cbca-47e7-bbeb-47fccc0c396a",
+                "name": "type",
+                "value": "={{ $('Variáveis Globais').first().json.type }}",
+                "type": "string"
+              },
+              {
+                "id": "b706cf24-cbfc-4326-9396-8ae12dcd6373",
+                "name": "id_card",
+                "value": "={{ $('Variáveis Globais').first().json.id_card }}",
+                "type": "string"
+              },
+              {
+                "id": "3844406f-86f0-4815-8f42-8d179bf8adf4",
+                "name": "group_id",
+                "value": "={{ $('Variáveis Globais').first().json.group_id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "33d00362-6aaa-4cad-8b64-b740c86f60f8",
+        "name": "Definir envio da resposta1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          40,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "fce99503-6486-4644-8db1-71659fd7b640",
+                "name": "canal",
+                "value": "={{ $('Variáveis Globais').first().json.canal }}",
+                "type": "string"
+              },
+              {
+                "id": "c687251b-ef19-4889-9779-6e0aaacdde71",
+                "name": "instance_id",
+                "value": "={{ $('Variáveis Globais').first().json.instance_id }}",
+                "type": "string"
+              },
+              {
+                "id": "4e8283e1-dfc2-417a-96b9-dedd29792ae9",
+                "name": "user_id",
+                "value": "={{ $('Variáveis Globais').first().json.group_id }}",
+                "type": "string"
+              },
+              {
+                "id": "dfa412d3-248b-46fa-b7e0-52f760bd48da",
+                "name": "text",
+                "value": "={{ $json.text }}",
+                "type": "string"
+              },
+              {
+                "id": "d8b304dc-cbca-47e7-bbeb-47fccc0c396a",
+                "name": "type",
+                "value": "={{ $('Variáveis Globais').first().json.type }}",
+                "type": "string"
+              },
+              {
+                "id": "82335950-ef7e-4644-9d78-eed85667d7d3",
+                "name": "id_card",
+                "value": "={{ $('Variáveis Globais').first().json.id_card }}",
+                "type": "string"
+              },
+              {
+                "id": "27b3317b-5098-4546-94d1-beda782259be",
+                "name": "group_id",
+                "value": "={{ $('Variáveis Globais').first().json.group_id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "fe7c85fd-2326-4b4f-b55e-c5df93df0396",
+        "name": "Definir envio da resposta2",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -3180,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "34cb3bc8-079f-43b5-8f32-78fefbc897dc",
+                "name": "assistant_id",
+                "value": "asst_FQWeijgX9B2jgBC3bfINCZBa",
+                "type": "string"
+              },
+              {
+                "id": "b6ff9a48-6fe6-4808-8a40-d6edbb9c2346",
+                "name": "user_id",
+                "value": "={{ $json.body.data.sender.id }}",
+                "type": "string"
+              },
+              {
+                "id": "d7564de9-2206-490b-bef3-3001e57ac8e0",
+                "name": "user_name",
+                "value": "={{ $json.body.data.sender.name }}",
+                "type": "string"
+              },
+              {
+                "id": "7a61cd22-7f0c-4c04-a3ed-6acf9f979424",
+                "name": "message_type",
+                "value": "={{ $json.body.data.type }}",
+                "type": "string"
+              },
+              {
+                "id": "8b78c832-8cf3-430f-83b0-7bbca38e4140",
+                "name": "=message",
+                "value": "={{ $json.headers['user-agent'] === 'Bitrix24 Webhook Engine' ? $json.query.message.replaceAll('_',' ') : $json.body.data.content.text.replace(/@\\d+/g, '').trim() }}",
+                "type": "string"
+              },
+              {
+                "id": "adf11de6-a3ee-4e3e-aed5-5a6a3025202d",
+                "name": "chat",
+                "value": "={{ $json.headers['user-agent'] == 'chat'}}",
+                "type": "boolean"
+              },
+              {
+                "id": "74b31986-b940-4961-94ac-188108032c9c",
+                "name": "media_url",
+                "value": "={{ $json.body.data.content.media.url }}",
+                "type": "string"
+              },
+              {
+                "id": "1b7de11f-c4c8-414e-ab04-a8ac5206bb5b",
+                "name": "type",
+                "value": "={{ $json.body.data.recipient.type }}",
+                "type": "string"
+              },
+              {
+                "id": "1a724457-704f-4873-9f5e-b23b595e16e3",
+                "name": "group_id",
+                "value": "={{ $json.body.data.recipient.id }}",
+                "type": "string"
+              },
+              {
+                "id": "b4f6cfd6-11dc-476b-b717-97a69af57b51",
+                "name": "instance_id",
+                "value": "={{ $json.headers['x-instance-id'] }}",
+                "type": "string"
+              },
+              {
+                "id": "dad28517-e36b-4673-bd96-23b8fd78b190",
+                "name": "foi_marcado",
+                "value": "={{ $json.body.data.content.text.indexOf(\"@551231973176\") >= 0 || $json.body.data.content.quoted.sender.id == \"551231973176\" }}",
+                "type": "boolean"
+              },
+              {
+                "id": "59b01587-dc59-4cb3-9bce-e7daa0f0c6de",
+                "name": "em_manutencao",
+                "value": "={{ false }}",
+                "type": "boolean"
+              },
+              {
+                "id": "4d7aa9a1-40e8-4cd5-8e3b-520281cc2cbe",
+                "name": "nome_agente",
+                "value": "Nascimento",
+                "type": "string"
+              },
+              {
+                "id": "8ae6359f-37b7-448f-84fc-e8873f269549",
+                "name": "id_card",
+                "value": "={{ $json.query.id_card }}",
+                "type": "string"
+              },
+              {
+                "id": "f5f74b21-57b0-4e90-882b-7b6e96cc62af",
+                "name": "canal",
+                "value": "={{ $json.query.canal || 'whatsapp' }}",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": "={{ false }}",
+          "options": {}
+        },
+        "id": "a1f1a1f5-d6ec-44dd-8d19-c8c214978fd2",
+        "name": "Variáveis Globais",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          -4620,
+          560
+        ]
+      },
+      {
+        "parameters": {
+          "inputText": "={{ $('Variáveis Globais').item.json.message }}",
+          "categories": {
+            "categories": [
+              {
+                "category": "conversa geral",
+                "description": "quando a mensagem é algo genérico, porem direcionado ao Nascimento, e não precisa ser feito nenhuma analise externa para responder o usuário"
+              },
+              {
+                "category": "analise",
+                "description": "quando a mensagem possui algum dado para ser analisado, por exemplo, telefone, protocolo, documento, entre outros"
+              },
+              {
+                "category": "ignorar",
+                "description": "=quando a mensagem não está direciona para o nascimento e não possui nenhum telefone, protocolo, ou dado para analise e o valor de type:{{ $('Variáveis Globais').item.json[\"type\"] }} ser igual a group."
+              }
+            ]
+          },
+          "options": {
+            "systemPromptTemplate": "Você é o Nascimento, um auditor de atendimentos da Blips. Sua função é autidar as conversas entre os clientes da Blips e os atendentes dos diversos setores. Você é sincero, serio e suas opniões são sempre baseadas em fatos e dados. Suas resposta são sucintas e direto ao ponto.\n\nCom base nos protocolos do Hyperflow ou telefone do cliente da Blips, você busca o historicos de conversa de whatsapp dos clientes com os atendente da empresa e você cria resumos consisos do que foi falado, sempre que possivel, resaltando os pontos negativos e possitivos do atendimento realizado, além de listar os atentendes que participaram da conversa e qualificar o atendimento de cada um.\n\nPara realizar suas analises, você precisa de pelo menos um telefone do cliente ou de um protocolo de conversa do cliente no Hyperflow. E caso você receba mais de um protocolo, ou o telefone tenha varios protocolos de atendimento, você pode analisar cada atendimento individualmente, ou fazer a analise unica baseada em todos os atendimentos.\n\nClassifique o texto fornecido pelo usuário em uma das seguintes categorias: {categories} e use as instruções de formatação fornecidas abaixo. Não explique e apenas produza o json."
+          }
+        },
+        "id": "c6eeef90-e14f-4a94-bed4-9c1d64b6165c",
+        "name": "Text Classifier",
+        "type": "@n8n/n8n-nodes-langchain.textClassifier",
+        "typeVersion": 1,
+        "position": [
+          -3960,
+          560
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "ee7SP9GVYtQ7Iy6v",
+          "options": {}
+        },
+        "id": "36d9566a-d3d2-4fee-b7fa-fb9bc3bc406e",
+        "name": "Enviar resposta1",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -2960,
+          200
+        ],
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "workflowId": "ee7SP9GVYtQ7Iy6v",
+          "options": {}
+        },
+        "id": "1b5c5f31-ce09-4069-9ed3-0a615055a8e1",
+        "name": "Enviar resposta",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          260,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "1881eb17-9501-4b3a-83a9-7b401369dbc5",
+                "name": "resposta",
+                "value": "={{$json.resposta[0].replaceAll(/【[^】]*】/g, \"\").replaceAll(\"**\", \"*\")}}",
+                "type": "string"
+              },
+              {
+                "id": "c1a1fc73-4a0b-4878-8b81-b876768b9456",
+                "name": "classificacao",
+                "value": "={{ $json.resposta[1].replaceAll('\"','').trim().split('\\n') }}",
+                "type": "array"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "id": "31f1f35f-0095-4dda-85cd-b3677b5ef6c8",
+        "name": "Definir classificação e temperatura",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -160,
+          -180
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "1881eb17-9501-4b3a-83a9-7b401369dbc5",
+                "name": "resposta",
+                "value": "={{ $json.text.includes('**Classificação:**') ? $json.text.split('**Classificação:**') : $json.text.split('Classificação:')}}",
+                "type": "array"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "id": "f1c601bf-25dc-4cbc-a963-44aea930325e",
+        "name": "Tratar resposta",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -340,
+          -180
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "fce99503-6486-4644-8db1-71659fd7b640",
+                "name": "canal",
+                "value": "={{ $('Variáveis Globais').first().json.canal }}",
+                "type": "string"
+              },
+              {
+                "id": "c687251b-ef19-4889-9779-6e0aaacdde71",
+                "name": "instance_id",
+                "value": "={{ $('Variáveis Globais').first().json.instance_id }}",
+                "type": "string"
+              },
+              {
+                "id": "4e8283e1-dfc2-417a-96b9-dedd29792ae9",
+                "name": "user_id",
+                "value": "={{ $('Variáveis Globais').first().json.group_id }}",
+                "type": "string"
+              },
+              {
+                "id": "dfa412d3-248b-46fa-b7e0-52f760bd48da",
+                "name": "text",
+                "value": "={{ $('Variáveis Globais').first().json.type === 'group' ? '@'+$('Variáveis Globais').first().json.user_id : '' }}\n{{$json.classificacao[0].trim() === 'Cliente detrator' ? '🤬' : ($json.classificacao[0].trim() === 'Cliente promotor' ? '🤩' : '😐')}} *{{$json.classificacao[0].trim()}}* - {{ $json.classificacao[1].trim() }}\n{{ $('Agregar mensagens2').item.json.messages[0].cliente_nome }} ({{ $('Agregar mensagens2').item.json.messages[0].cliente_phone }})\n{{$json.resposta}}",
+                "type": "string"
+              },
+              {
+                "id": "d8b304dc-cbca-47e7-bbeb-47fccc0c396a",
+                "name": "type",
+                "value": "={{ $('Variáveis Globais').first().json.type }}",
+                "type": "string"
+              },
+              {
+                "id": "a84d204c-b9a2-4166-89a6-7cc54356362a",
+                "name": "id_card ",
+                "value": "={{ $('Variáveis Globais').first().json.id_card }}",
+                "type": "string"
+              },
+              {
+                "id": "ad2ec9b8-48bd-47b1-9f69-39f53b302a73",
+                "name": "group_id",
+                "value": "={{ $('Variáveis Globais').first().json.group_id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "300af161-75c2-4fd8-a1a1-4f22e2a5b3e5",
+        "name": "Definir envio da resposta",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          40,
+          -180
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "fce99503-6486-4644-8db1-71659fd7b640",
+                "name": "canal",
+                "value": "={{ $('Variáveis Globais').first().json.canal }}",
+                "type": "string"
+              },
+              {
+                "id": "c687251b-ef19-4889-9779-6e0aaacdde71",
+                "name": "instance_id",
+                "value": "={{ $('Variáveis Globais').first().json.instance_id }}",
+                "type": "string"
+              },
+              {
+                "id": "4e8283e1-dfc2-417a-96b9-dedd29792ae9",
+                "name": "user_id",
+                "value": "={{ $('Variáveis Globais').first().json.group_id }}",
+                "type": "string"
+              },
+              {
+                "id": "dfa412d3-248b-46fa-b7e0-52f760bd48da",
+                "name": "text",
+                "value": "={{ $('Variáveis Globais').first().json.type === 'group' ? '@'+$('Variáveis Globais').first().json.user_id : '' }} Vou iniciar a analise 🔎\nA analises dos protocolos pode levar alguns minutos, mas assim que finalizar envio aqui.",
+                "type": "string"
+              },
+              {
+                "id": "d8b304dc-cbca-47e7-bbeb-47fccc0c396a",
+                "name": "type",
+                "value": "={{ $('Variáveis Globais').first().json.type }}",
+                "type": "string"
+              },
+              {
+                "id": "82335950-ef7e-4644-9d78-eed85667d7d3",
+                "name": "id_card",
+                "value": "={{ $('Variáveis Globais').first().json.id_card }}",
+                "type": "string"
+              },
+              {
+                "id": "26c4bb93-c46d-4e0e-9ee8-e3f7756173b6",
+                "name": "group_id",
+                "value": "={{ $('Variáveis Globais').first().json.group_id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "5903d483-6eae-4faf-8d44-fc4d7592ba59",
+        "name": "Definir envio resposta - analise inicio de analise",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -3180,
+          400
+        ]
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=**Atue como Nascimento, um auditor de atendimentos da Blips. Você tem vasta de expeciencia em analise de atendimentos e sua função é auditar as conversas entre os clientes da Blips e os atendentes dos diversos setores. Você é sincero, sério, e suas opiniões são sempre baseadas em fatos e dados. Suas respostas são detalhadas e sempre voltadas a percepção do cliente.**\n\n**Objetivo:** Analisar um histórico de conversas entre um cliente e os atendentes da Blips, encontrar problemas e falhas no atendimento, identificar e descrever as principais queixas e problemas enfrentados pelo cliente, avaliar os pontos positivos e negativos do atendimento dos atendentes que passaram pela conversa e fornecer uma classificação final da experiência do cliente.\n\n**Instruções passo a passo:**\n\n0. **Entenda como atendente todos os 'sender' cujo o valor não é: bot, system ou cliente.\n\n1. **Identificação do Protocolo:** Comece sua análise informando o número do protocolo analisado.\n\n2. **Verificação de Erros:** Se as mensagens do historico analisado não parecerem uma conversa completa ou apresentarem erro, informe que houve um erro ao analisar as mensagens.\n\n3. **Cálculo de duração do Atendimento:** Calcule o tempo total do atendimento subtraindo o 'createdAt' com a data mais recente pelo 'createdAt' com a data mais antiga. Utilize exatamente as mesmas datas e horários fornecidos, sem alterar o fuso horário.\n\n4. **Descrição dos Participantes:** Identifique todos os atendentes que participaram da conversa. Informe o tempo entre a mensagens do cliente e a primera mensagem de um atendente (o 'SLA') de cada um, quando tempo a conversa durou, se o atendente conversou ou não com o cliente, se o atendente tentou resolver o problema ou transferiu para outra atendente sem apresentar uma solução do ponto levantado. Exemplo:\n   - \"Atendente: Mateus | SLA: 10m | Início: 11/08/24 08:20 | Duração: 1m 5s | Falou com cliente: Sim\"\n   - \"Atendente: Maria | SLA: 1h 35m | Início: 11/08/24 16:36 | Duração: 2h 23m 35s | Falou com cliente: Sim\"\n   - \"Atendente: João | SLA: 2m 25s | Início: 12/08/24 13:56 | Duração: 35s | Falou com cliente: Não\"\n\n**Calculo do SLA:** Para calcular o SLA usa a diferença entre as datas de uma mensagem do cliente e a primeira mensagem que um atendente enviou.\n\n5. **Transferências entre Atendentes:** Liste todas as transferências entre atendentes, considerando que mais de quatro transferências sem interação direta com o cliente indicam um atendimento deficiente. Se algum atendente entrar na conversa e transferir sem falar nada com o cliente, marque isso como um ponto negativo.\n\n6. **Resumo da Conversa:** Crie um resumo detalhado do que foi tratado durante a conversa, destacando as principais queixas do cliente e informando se o problema foi resolvido.\n\n7. **Análise dos Pontos Negativos e Positivos:**\n   - **Negativos:** Identifique e descreva claramente os problemas enfrentados pelo cliente durante o atendimento, como múltiplas transferências, longos tempos de espera, falta de resolução de problemas.\n   - **Positivos:** Ressalte os aspectos positivos do atendimento, como respostas rápidas, clareza nas informações fornecidas ou resolução eficiente de problemas.\n\n8. **Considerações Finais:** Se o histórico de conversa incluir mensagens trocadas há mais de 2 meses da última mensagem, priorize as mais recentes para sua análise, mas informe a data de inicio desse atendimento. Caso isso aconteça, deixe claro em sua resposta.\n\n9. **Classificação Final:** Com base na análise, forneça uma classificação do cliente como \"Cliente promotor\", \"Cliente detrator\" ou \"Cliente neutro\", seguindo os critérios abaixo:\n   - \"Cliente promotor\": Cliente satisfeito e feliz, com problema resolvido e grandes chances de recomendar a empresa.\n   - \"Cliente detrator\": Cliente insatisfeito, problema não resolvido ou finalização da conversa de forma infeliz, com possibilidade de falar mal da empresa.\n   - \"Cliente neutro\": Problemas resolvidos, mas enfrentou dificuldades; continuará usando os serviços, mas com altos e baixos na experiência.\n\n**Passo Final:** Após a análise, encerre seu relatório com a seção \"Classificação:\", seguida da classificação apropriada do cliente.\n\n**Exemplo de Resposta:**\n{\n  Protocolo Analisado: 2108249110318\n  \n  [Resumo do atendimento, com detalhes das queixas e problemas enfrentados (caso existam), pontos positivos e negativos.]\n  \n  Atendentes:\n  - Atendente: Mateus | Início: 11/08/24 08:20 | Duração: 1m 5s | Falou com cliente: Sim\n  - Atendente: Maria | Início: 11/08/24 16:36 | Duração: 2h 23m 35s | Falou com cliente: Sim\n  - Atendente: João | Início: 12/08/24 13:56 | Duração: 35s | Falou com cliente: Não\n  \n  Classificação: \"Cliente neutro\"\n}\n\n**Nota:** **Use sempre as práticas recomendadas de análise, e se precisar realizar qualquer conta, utilize 'Code interpreter', mas nunca responda com códigos.** \n\n**Take a deep breath and work on this problem step-by-step.**\n\n---\n\nHistorico de conversa entre cliente e atendentes Blips para ser analisado:\n{{ $json.historico }}"
+        },
+        "id": "b45fc797-1594-434b-a554-fe2754e97eb0",
+        "name": "Resumir e classificar LLM1",
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.4,
+        "position": [
+          1460,
+          920
+        ]
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=**Atue como Nascimento, um auditor de atendimentos da Blips. Você tem vasta de expeciencia em Sucesso do Cliente e sua função é auditar as conversas entre os clientes da Blips e os atendentes dos diversos setores. Você é sincero, sério, e suas opiniões são sempre baseadas em fatos e dados. Suas respostas são sucintas e sempre voltadas a percepção do cliente.**\n\n**Objetivo:** Analisar detalhadamente os históricos de conversa de WhatsApp entre os clientes da Blips e os atendentes da empresa, identificando e descrevendo as principais interações, problemas e resoluções. Avaliar os pontos positivos e negativos do atendimento realizado e fornecer uma classificação final da experiência do cliente, incluindo uma avaliação da satisfação do cliente em uma escala de 0 a 10.\n\n**Instruções passo a passo:**\n\n1. **Identificação dos Protocolos:**\n   - Inicie sua análise mostrando os números dos protocolos analisados.\n   - Se a primeira mensagem de um protocolo ocorrer no mesmo dia da última mensagem de outro protocolo, agrupe esses protocolos em uma única análise.\n   - Caso você receba um historico com varios protocolos, use os 'resumo_qualitativo' de cada protocolo para consolidar uma resposta.\n\n2. **Verificação de Clientes Diferentes:**\n   - Caso as conversas dos protocolos analisados sejam de clientes diferentes (identificado pelos campos `cliente_phone` ou `cliente_nome`), destaque que as conversas parecem ser de clientes diferentes.\n\n3. **Cálculo do Tempo de Atendimento:**\n   - Calcule o tempo total de atendimento subtraindo o `createdAt` da mensagem mais recente pelo `createdAt` da mensagem mais antiga do protocolo em analise.\n   - Utilize exatamente as mesmas datas e horários fornecidos nos campos `createdAt` sem alterar o fuso horário.\n\n4. **Descrição dos Participantes e Atendimento:**\n   - Cite no parecer o nome de todos os atendentes que entraram na conversa e o horário de cada entrada.\n   - Liste todos os atendentes que participaram dos atendimentos, indicando o tempo de atendimento de cada um e especificando se o atendente interagiu com o cliente. Exemplo:\n     - \"Atendente: Mateus | Início: 11/08/24 08:20 | Duração: 1m 5s | Falou com cliente: Sim\"\n     - \"Atendente: Maria | Início: 11/08/24 16:36 | Duração: 2h 23m 35s | Falou com cliente: Sim\"\n     - \"Atendente: João | Início: 12/08/24 13:56 | Duração: 35s | Falou com cliente: Não\"\n\n5. **Transferências e Qualidade do Atendimento:**\n   - Considere que mais de 4 transferências para resolver o mesmo problema sem interação direta com o cliente indicam um atendimento deficiente.\n   - Identifique e marque como negativo se algum atendente humano (quando o 'sender' não é bot, cliente nem system) entrar na conversa e apenas transferir sem falar com o cliente.\n   - Verifique e mencione se o cliente preciso entrar em contato varias vezes para resolver o mesmo problema e cite qual é esse problema.\n   - Destaque em sua resposta, colocando entre '*', se os problemas foram resolvidos ou continuam sem resolução. \n\n6. **Análise dos Problemas Apresentados:**\n   - **Se houver mais de um protocolo na análise:** Avalie se os problemas apresentados são os mesmos em todos os protocolos. Determine se o problema foi resolvido e quantas vezes o cliente precisou chamar para ter o problema resolvido.\n   - Crie um resumo conciso do que foi discutido durante a conversa, destacando as principais queixas, problemas e resoluções do cliente.\n   - Sempre que possível, mencione os pontos negativos e positivos do atendimento realizado. Inclua o contexto de qualquer imagem enviada, utilizando o link do `fileMessage`.\n\n7. **Priorização de Conversas Recentes:**\n   - Se o histórico de conversas incluir mensagens trocadas há mais de 2 meses da última mensagem recebida, priorize as conversas mais recentes para fazer a análise. Caso isso aconteça, aponte isso em sua resposta.\n   - Tente sempre analisar toda a conversa e se não for possivel, analise os 'resumo_qualitativo' de todos os atendimento.\n\n8. **Classificação dos Protocolos:**\n   - Protocolos com classificação de \"Cliente detrator\" têm peso maior na análise. Essa classificação só deve mudar se houver evidências claras em protocolos mais recentes que indiquem uma melhora significativa na experiência do cliente.\n   - Em suas resposta, classifique o cliente apenas uma vez e usando as diretrizes do item 9.\n\n9. **Classificação Final e Temperatura do Cliente:**\n   - Com base na análise completa, finalise sua resposta fornecendo uma classificação do cliente utilizando uma das seguintes opções:\n     - **\"Cliente promotor\"**: Cliente satisfeito e feliz, seu problema foi resolvido, falou bem da empresa e tem com grandes chances de recomendar a empresa, serviço ou produto.\n     - **\"Cliente detrator\"**: Cliente insatisfeito, problema não resolvido ou finalização da conversa de forma infeliz, com possibilidade de falar mal da empresa.\n     - **\"Cliente neutro\"**: Problemas resolvidos, mas o cliente enfrentou dificuldades durante a conversa. O cliente continuará usando os serviços, mas teve uma experiência mista.\n   - Avalie a satisfação do cliente em uma escala de 0 a 10, onde 0 representa muita insatisfação e 10 representa muita satisfação. Inclua essa \"temperatura\" no final da resposta.\n\n10. **Exemplo de Resposta:**\n{\n    Protocolos Analisados: 12345, 12346\n\n    [Resumo e analise dos atendimentos, destacando os pontos negativos e positivos.]\n\n    Atendentes:\n    - Atendente: Mateus | Início: 11/08/24 08:20 | Duração: 1m 5s | Falou com cliente: Sim\n    - Atendente: Maria | Início: 11/08/24 16:36 | Duração: 2h 23m 35s | Falou com cliente: Sim\n    - Atendente: João | Início: 12/08/24 13:56 | Duração: 35s | Falou com cliente: Não\n\n    Classificação: \"Cliente neutro\"\n    Temperatura: 5\n}\n\n**Nota:** Utilize o 'Code interpreter' para cálculos, mas nunca responda com códigos.\n\n**Sempre, em todas as suas resposta, termine da exatamente da seguinte forma:\n'Classificação:' classificação do cliente\n'Temperatura:' temperatura do cliente\n\n---\n\nRegistos de conversa entre cliente e atendentes Blips para serem analisados:\n{{ $json.historico }}"
+        },
+        "id": "012d59ce-14e4-478f-8500-311a10a4349d",
+        "name": "Resumir e classificar LLM",
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.4,
+        "position": [
+          -700,
+          0
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "capitao-nascimento",
+          "options": {}
+        },
+        "id": "cc9120be-5ff5-4472-8bed-ce64f7290f36",
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -4860,
+          560
+        ],
+        "webhookId": "62744a1a-49e3-4abc-982d-e4761a607948"
+      }
+    ],
+    "connections": {
+      "OpenAI Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Resumir e classificar LLM",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Model1": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Interpretar variáveis mensagem e tipo analise",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "hyperflow_key valida?": {
+        "main": [
+          [
+            {
+              "node": "Extrair lista de protocolos",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Avisar autenticação expirou1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Avisar autenticação expirou1": {
+        "main": [
+          [
+            {
+              "node": "Renovar token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Renovar token": {
+        "main": [
+          [
+            {
+              "node": "Wait1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Definir historico1": {
+        "main": [
+          [
+            {
+              "node": "Resumir e classificar LLM",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "hyperflow_key valida?1": {
+        "main": [
+          [
+            {
+              "node": "Avisar autenticação expirou",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Limpar dados coletados",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Avisar autenticação expirou": {
+        "main": [
+          [
+            {
+              "node": "Renovar token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Salvar token": {
+        "main": [
+          [
+            {
+              "node": "Text Classifier",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Pesquisar protocolos": {
+        "main": [
+          [
+            {
+              "node": "hyperflow_key valida?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Avisar autenticação expirou1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "hyperflow_key valida?3": {
+        "main": [
+          [
+            {
+              "node": "Avisar erro requisição",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Avisar autenticação expirou",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "É protocolo?": {
+        "main": [
+          [
+            {
+              "node": "Loop de protocolos enviados",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Pesquisar protocolos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Definir tipo analise": {
+        "main": [
+          [
+            {
+              "node": "É protocolo?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extrair lista de protocolos": {
+        "main": [
+          [
+            {
+              "node": "Loop de protocolos do telefone",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Avisar erro requisição": {
+        "main": [
+          [
+            {
+              "node": "Agregar mensagens2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Já tem registro de conversa?": {
+        "main": [
+          [
+            {
+              "node": "A conversa é igual?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Execute Workflow",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Buscar protocolo conversa": {
+        "main": [
+          [
+            {
+              "node": "Pegar dados conversa Hyperflow",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Model2": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Resumir e classificar LLM1",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ajustar historico": {
+        "main": [
+          [
+            {
+              "node": "Wait2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Item List Output Parser": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Interpretar variáveis mensagem e tipo analise",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tratar resposta1": {
+        "main": [
+          [
+            {
+              "node": "Definir id",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Adicionar analise MongoDB": {
+        "main": [
+          [
+            {
+              "node": "Wait2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Atualizar analise MongoDB": {
+        "main": [
+          [
+            {
+              "node": "Wait2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Definir dados DB": {
+        "main": [
+          [
+            {
+              "node": "É protocolo novo?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Definir protocolo": {
+        "main": [
+          [
+            {
+              "node": "Pegar dados contato Hyperflow",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait2": {
+        "main": [
+          [
+            {
+              "node": "É loop de protocolos telefone?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "hyperflow_key valida?4": {
+        "main": [
+          [
+            {
+              "node": "Avisar autenticação expirou",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Limpar dados contato",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Pegar dados contato Hyperflow": {
+        "main": [
+          [
+            {
+              "node": "hyperflow_key valida?4",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Avisar autenticação expirou",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Limpar dados contato": {
+        "main": [
+          [
+            {
+              "node": "Buscar protocolo conversa",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ordenar mensagens por data/hora1": {
+        "main": [
+          [
+            {
+              "node": "Definir historico1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Agregar mensagens2": {
+        "main": [
+          [
+            {
+              "node": "Ordenar mensagens por data/hora1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Usar apenas resumos": {
+        "main": [
+          [
+            {
+              "node": "Rodou mais de 2 vezes?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          [
+            {
+              "node": "Agregar mensagens2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop de protocolos enviados": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Definir protocolo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop de protocolos do telefone": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            }
+          ],
+          [
+            {
+              "node": "Definir protocolo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "É loop de protocolos telefone?": {
+        "main": [
+          [
+            {
+              "node": "Loop de protocolos do telefone",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Loop de protocolos enviados",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Model3": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Text Classifier",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Model4": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Conversar Nascimento",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Pegar dados conversa Hyperflow": {
+        "main": [
+          [
+            {
+              "node": "hyperflow_key valida?1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "hyperflow_key valida?3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Limpar dados coletados": {
+        "main": [
+          [
+            {
+              "node": "Mensagens relevantes?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "É loop de protocolos telefone?1": {
+        "main": [
+          [
+            {
+              "node": "Loop de protocolos do telefone",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Loop de protocolos enviados",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Mensagens relevantes?": {
+        "main": [
+          [
+            {
+              "node": "Agregar mensagens1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "É loop de protocolos telefone?1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "A conversa é igual?": {
+        "main": [
+          [
+            {
+              "node": "Ajustar historico",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Execute Workflow",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Definir historico": {
+        "main": [
+          [
+            {
+              "node": "Resumir e classificar LLM1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "É protocolo novo?": {
+        "main": [
+          [
+            {
+              "node": "Adicionar analise MongoDB",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Atualizar analise MongoDB",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Definir id": {
+        "main": [
+          [
+            {
+              "node": "Definir dados DB",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute Workflow": {
+        "main": [
+          [
+            {
+              "node": "Definir historico",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Agregar mensagens1": {
+        "main": [
+          [
+            {
+              "node": "Já tem registro de conversa?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Buscar token Hyperflow": {
+        "main": [
+          [
+            {
+              "node": "Salvar token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait1": {
+        "main": [
+          [
+            {
+              "node": "Buscar token Hyperflow",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Conversar Nascimento": {
+        "main": [
+          [
+            {
+              "node": "Definir envio da resposta2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Rodou mais de 2 vezes?": {
+        "main": [
+          [
+            {
+              "node": "Definir envio da resposta1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Definir historico1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Interpretar variáveis mensagem e tipo analise": {
+        "main": [
+          [
+            {
+              "node": "Definir tipo analise",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Definir envio resposta - analise inicio de analise",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Definir envio da resposta1": {
+        "main": [
+          [
+            {
+              "node": "Enviar resposta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Definir envio da resposta2": {
+        "main": [
+          [
+            {
+              "node": "Enviar resposta1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Variáveis Globais": {
+        "main": [
+          [
+            {
+              "node": "Buscar token Hyperflow",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "Variáveis Globais",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Text Classifier": {
+        "main": [
+          [
+            {
+              "node": "Conversar Nascimento",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Interpretar variáveis mensagem e tipo analise",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Definir classificação e temperatura": {
+        "main": [
+          [
+            {
+              "node": "Definir envio da resposta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tratar resposta": {
+        "main": [
+          [
+            {
+              "node": "Definir classificação e temperatura",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Definir envio da resposta": {
+        "main": [
+          [
+            {
+              "node": "Enviar resposta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Definir envio resposta - analise inicio de analise": {
+        "main": [
+          [
+            {
+              "node": "Enviar resposta1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Resumir e classificar LLM1": {
+        "main": [
+          [
+            {
+              "node": "Tratar resposta1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Resumir e classificar LLM": {
+        "main": [
+          [
+            {
+              "node": "Tratar resposta",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Usar apenas resumos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Variáveis Globais",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "saveManualExecutions": true,
+      "callerPolicy": "workflowsFromSameOwner",
+      "timezone": "America/Sao_Paulo"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "1d8da4e2-0e0a-4c83-8ec0-b06ff9b0c550",
+    "triggerCount": 1,
+    "tags": [
+      {
+        "createdAt": "2024-08-16T17:26:36.981Z",
+        "updatedAt": "2024-08-16T17:26:36.981Z",
+        "id": "eMX5cAtUIRtHSiCV",
+        "name": "Nascimento"
+      }
+    ]
+  }
+}
