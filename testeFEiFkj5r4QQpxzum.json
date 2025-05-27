@@ -1,0 +1,409 @@
+{
+  "data": {
+    "createdAt": "2025-02-13T02:35:46.690Z",
+    "updatedAt": "2025-02-13T16:41:16.782Z",
+    "id": "FEiFkj5r4QQpxzum",
+    "name": "Teste agente n8n",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -480,
+          0
+        ],
+        "id": "1c526601-6c99-4e72-bce3-2108ad0d12e4",
+        "name": "When chat message received",
+        "webhookId": "86d5b760-061d-49c7-ab75-08eb9799ab53"
+      },
+      {
+        "parameters": {
+          "options": {
+            "systemMessage": "=Você é o João, o caixa do Sacolão ZuperX. Além de registrar compras, seu papel é atender os clientes de forma simpática, carismática e eficiente, ajudando-os a escolher os melhores produtos e sugerindo ofertas e combinações vantajosas. Sua comunicação é simples, um pouco informal e pode incluir gírias, abreviações e emojis para criar um atendimento próximo e natural.  \n\n### **Suas Responsabilidades:**  \n✅ **Atendimento ao Cliente**: Auxiliar clientes com informações sobre produtos, preços e promoções, sempre oferecendo sugestões inteligentes para aumentar as vendas.  \n✅ **Venda Ativa**: Sugerir produtos complementares ou em oferta, destacando benefícios de qualidade, frescor e economia.  \n✅ **Gestão de Estoque e Caixa**: Registrar compras corretamente, manter o caixa organizado e monitorar o estoque para sinalizar reposições.  \n✅ **Eficiência Operacional**: Consultar e atualizar informações de produtos, valores e quantidades para garantir precisão nos registros.  \n✅ **Registro de Movimentações de Estoque**: Sempre que produtos forem vendidos ou adicionados ao estoque, registre a movimentação, garantindo controle preciso sobre os valores e quantidades.  \n✅ **Acesso à Base de Conhecimento**: Consultar documentos internos para obter informações detalhadas e melhorar o atendimento.  \n\n### **Suas Funções Especiais:**  \n🔹 **Consultar Base de Conhecimento**: Acesse documentos com informações sobre produtos, promoções e regras do sacolão.  \n🔹 **Consultar Produtos**: Verifique quais itens estão disponíveis, seus valores e quantidades em estoque.  \n🔹 **Atualizar Informações**: Adicione novos produtos, ajuste valores e quantidades conforme necessário.  \n🔹 **Registrar Movimentações de Estoque**:  \n   - Ao vender um produto: registre o valor da venda como positivo e a quantidade vendida como negativa.  \n   - Ao adicionar produtos ao estoque: registre o valor da compra (metade do valor do produto) como negativo e a quantidade adicionada como positiva.  \n\n### **Estilo de Comunicação:**  \n🗣️ Seja envolvente e persuasivo, incentivando o cliente a aproveitar boas oportunidades de compra.  \n💡 Sempre que possível, sugira produtos que complementem a compra do cliente.  \n⚡ Respostas curtas e diretas, sem encerrar a conversa com frases genéricas como \"se precisar de algo mais, é só falar\".  \n\n### **Exemplo de Interação:**  \n🛒 Cliente: \"João, essa banana tá boa?\"  \n👨‍💼 João: \"Ótima, docinha e no ponto! Aliás, leva umas maçãs também, estão na promoção e ficam uma delícia juntas num suco ou salada de frutas. Quer que eu separe pra você?\"  \n\n📌 **Importante:** Seu objetivo é garantir que o cliente compre bem e saia satisfeito, aproveitando boas ofertas e levando produtos de qualidade. O caixa não é só um lugar de registro, mas um ponto estratégico para impulsionar as vendas do sacolão. Além disso, você deve garantir que todas as movimentações do estoque sejam devidamente registradas, mantendo um controle preciso dos produtos e valores. 🚀"
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 1.7,
+        "position": [
+          220,
+          0
+        ],
+        "id": "56ec003a-ff62-4042-bd69-ddc53f306007",
+        "name": "AI Agent"
+      },
+      {
+        "parameters": {},
+        "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+        "typeVersion": 1.3,
+        "position": [
+          220,
+          260
+        ],
+        "id": "f9c4fbbd-10c3-4d1b-bffc-0ba68667718b",
+        "name": "Window Buffer Memory"
+      },
+      {
+        "parameters": {},
+        "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+        "typeVersion": 1,
+        "position": [
+          320,
+          460
+        ],
+        "id": "06fbbade-4d5c-4ff1-8a75-1fc4c81eb17c",
+        "name": "Calculator"
+      },
+      {
+        "parameters": {
+          "descriptionType": "manual",
+          "toolDescription": "Atualizar a quantidade disponível de um certo produtos sempre que for vendido para um cliente ou adicionado ao estoque",
+          "operation": "appendOrUpdate",
+          "documentId": {
+            "__rl": true,
+            "value": "1FY1Sz9VqRSJF5OPoBFmamK9B1UUaK75R-EnkupAGabI",
+            "mode": "list",
+            "cachedResultName": "Planilha Conhecimentos - ZuperX",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FY1Sz9VqRSJF5OPoBFmamK9B1UUaK75R-EnkupAGabI/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Base consulta",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FY1Sz9VqRSJF5OPoBFmamK9B1UUaK75R-EnkupAGabI/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "Produto": "={{ $fromAI('produto') }}",
+              "Quantidade": "={{ $fromAI('nova_quantidade') }}",
+              "Preço": "={{ $fromAI('preco') }}"
+            },
+            "matchingColumns": [
+              "Produto"
+            ],
+            "schema": [
+              {
+                "id": "Produto",
+                "displayName": "Produto",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Preço",
+                "displayName": "Preço",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Quantidade",
+                "displayName": "Quantidade",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheetsTool",
+        "typeVersion": 4.5,
+        "position": [
+          880,
+          460
+        ],
+        "id": "f056c4ba-332a-44a5-bcd8-02237a9d94c3",
+        "name": "atualizar_quantidade",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "f53eDeTWUXii9mLz",
+            "name": "Google Sheets Mateus"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "descriptionType": "manual",
+          "toolDescription": "Buscar produtos nossos disponíveis, preços e quantidade disponível",
+          "documentId": {
+            "__rl": true,
+            "value": "1FY1Sz9VqRSJF5OPoBFmamK9B1UUaK75R-EnkupAGabI",
+            "mode": "list",
+            "cachedResultName": "Planilha Conhecimentos - ZuperX",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FY1Sz9VqRSJF5OPoBFmamK9B1UUaK75R-EnkupAGabI/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Base consulta",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FY1Sz9VqRSJF5OPoBFmamK9B1UUaK75R-EnkupAGabI/edit#gid=0"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheetsTool",
+        "typeVersion": 4.5,
+        "position": [
+          700,
+          460
+        ],
+        "id": "61e3abb7-cdd4-40b6-9a4a-7444cf1e29e0",
+        "name": "consultar_produtos",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "f53eDeTWUXii9mLz",
+            "name": "Google Sheets Mateus"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "descriptionType": "manual",
+          "toolDescription": "Acessar o documento com sua base de conhecimentos",
+          "authentication": "serviceAccount",
+          "operation": "get",
+          "documentURL": "1zoRfyn630LadA4Zcw8SKBOCJmJh_aVxPfIyQCxeq8QQ"
+        },
+        "type": "n8n-nodes-base.googleDocsTool",
+        "typeVersion": 2,
+        "position": [
+          520,
+          460
+        ],
+        "id": "56c60ee5-1833-4ee4-a9dc-493c26c38530",
+        "name": "base_conhecimentos",
+        "credentials": {
+          "googleApi": {
+            "id": "2b5fy3dagItEtiXX",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.1,
+        "position": [
+          60,
+          260
+        ],
+        "id": "f428c2a4-05fb-4e4f-b804-62b28f54ac0c",
+        "name": "OpenAI Chat Model",
+        "credentials": {
+          "openAiApi": {
+            "id": "trONZBLzM3mWPjKv",
+            "name": "OpenAi - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "descriptionType": "manual",
+          "toolDescription": "=Registar as movimentações feitas no estoque sempre que produtos forem vendidos (valor da venda do produto positivo e quantidade vendida com valor negativa) para um cliente ou adicionado ao estoque (valor da compra do produto, que é medade do valor do produto na tabela de consulta, negativo e quantidade comprada com valor positivo)",
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1FY1Sz9VqRSJF5OPoBFmamK9B1UUaK75R-EnkupAGabI",
+            "mode": "list",
+            "cachedResultName": "Planilha Conhecimentos - ZuperX",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FY1Sz9VqRSJF5OPoBFmamK9B1UUaK75R-EnkupAGabI/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 1634469478,
+            "mode": "list",
+            "cachedResultName": "Registros",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FY1Sz9VqRSJF5OPoBFmamK9B1UUaK75R-EnkupAGabI/edit#gid=1634469478"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "Produto": "={{ $fromAI('produto') }}",
+              "Valor": "={{ $fromAI('valor_movimentado') }}",
+              "Quantidade": "={{ $fromAI('quantidade_movimentada') }}",
+              "Data": "={{ $fromAI('data_hora_movimentacao') }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "Produto",
+                "displayName": "Produto",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Valor",
+                "displayName": "Valor",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Quantidade",
+                "displayName": "Quantidade",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Data",
+                "displayName": "Data",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {
+            "useAppend": true
+          }
+        },
+        "type": "n8n-nodes-base.googleSheetsTool",
+        "typeVersion": 4.5,
+        "position": [
+          1060,
+          460
+        ],
+        "id": "321bcf82-1fe8-4249-86ea-eac145133df8",
+        "name": "registrar_movimentacoes",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "f53eDeTWUXii9mLz",
+            "name": "Google Sheets Mateus"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "When chat message received": {
+        "main": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Window Buffer Memory": {
+        "ai_memory": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_memory",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Calculator": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "atualizar_quantidade": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "consultar_produtos": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "base_conhecimentos": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "registrar_movimentacoes": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "c8044c8d-1eb4-4ed4-b214-b11b4c3e6205",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
