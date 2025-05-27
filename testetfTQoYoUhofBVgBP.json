@@ -1,0 +1,4519 @@
+{
+  "data": {
+    "createdAt": "2025-04-24T17:23:53.390Z",
+    "updatedAt": "2025-05-22T16:03:38.259Z",
+    "id": "tfTQoYoUhofBVgBP",
+    "name": "Assistente de Cobrança - Esperanza",
+    "active": true,
+    "nodes": [
+      {
+        "parameters": {
+          "mode": "raw",
+          "jsonOutput": "={\n  \"body\": {\n    \"id\": \"{{ $json.id + $json.name}}\",\n    \"name\": \"{{ $json.name }}\",\n    \"cnpj\": {{ $json.cnpj ? '\"' + $json.cnpj + '\"' : null }},\n    \"contrato\": {{ $json.contrato ? '\"' + $json.cnpj + '\"' : null }}\n    \"text\": {{ $json.arguments.mensagem }},\n    \"audio\": \"\",\n    \"image\": \"\",\n    \"file\": \"\"\n  }\n}",
+          "options": {}
+        },
+        "id": "057d539a-84c8-4d95-b654-2cdbd14e3ee2",
+        "name": "Convert to Webhook",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          320,
+          540
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "7fad812c-4f7b-41bb-a426-5aca9dc08bc3",
+                "leftValue": "={{ $('Variáveis Globais').item.json.em_manutencao }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "b88a0e32-31a6-4571-999e-0667fe203540",
+        "name": "Está em manutenção?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          1560,
+          380
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7ad31b6c-7354-457f-a0c6-dbfa49a21888",
+                "name": "assistant_id",
+                "value": "asst_0gBiqdK4i79uIvjcx2Bpq1mF",
+                "type": "string"
+              },
+              {
+                "id": "fceb30c6-4cfa-4b5c-9332-a16d4274f9ae",
+                "name": "user_id",
+                "value": "={{ \n  $('Chamada Assistente').isExecuted \n    ? $json.body.id \n    : (\n        $json.body.id.replace(/\\D/g, '').startsWith('55') \n          ? $json.body.id.replace(/\\D/g, '').slice(2) \n          : $json.body.id.replace(/\\D/g, '')\n      )\n}}",
+                "type": "string"
+              },
+              {
+                "id": "29ee7639-66d8-4dff-a58f-16ae2cce8b66",
+                "name": "name",
+                "value": "={{ $json.body.name }}",
+                "type": "string"
+              },
+              {
+                "id": "308c63ca-37cb-4bb4-9808-de899c779065",
+                "name": "contrato",
+                "value": "={{ $json.body.contrato || null }}",
+                "type": "string"
+              },
+              {
+                "id": "07f81212-dadd-4bed-a1f6-518cceb87b99",
+                "name": "cnpj",
+                "value": "={{ $json.body.cnpj }}",
+                "type": "string"
+              },
+              {
+                "id": "83ebd2f5-8de9-4df5-8441-a815b8e7376b",
+                "name": "mensagem",
+                "value": "={{ $json.body.text || null }}",
+                "type": "string"
+              },
+              {
+                "id": "271d07a0-b9db-4844-8222-e2e0a9e07b94",
+                "name": "audio",
+                "value": "={{ $json.body.audio || null }}",
+                "type": "string"
+              },
+              {
+                "id": "a21a7505-b077-4483-9443-3403727bb9c8",
+                "name": "file",
+                "value": "={{ $json.body.file || null }}",
+                "type": "string"
+              },
+              {
+                "id": "88600670-5791-4785-a578-c9b092ab92ca",
+                "name": "image",
+                "value": "={{ $json.body.image || null }}",
+                "type": "string"
+              },
+              {
+                "id": "c939dafe-6b12-41ae-a162-2011342112f4",
+                "name": "nome_agente",
+                "value": "Esperanza",
+                "type": "string"
+              },
+              {
+                "id": "6e418ed5-765b-44b6-887c-4c6f2097e2f6",
+                "name": "em_manutencao",
+                "value": false,
+                "type": "boolean"
+              },
+              {
+                "id": "ba114fa3-ac38-4459-96dc-265507f095e2",
+                "name": "tempo_thread",
+                "value": 720,
+                "type": "number"
+              },
+              {
+                "id": "965802fe-7b63-4c5a-9b4d-9cfafee585f3",
+                "name": "tempo_espera_mensagens",
+                "value": 1,
+                "type": "number"
+              },
+              {
+                "id": "1d4646d1-5cac-4703-a5df-c98721984bbe",
+                "name": "link_resposta_bitrix",
+                "value": "https://blips.bitrix24.com.br/rest/2491/1jvy8dnx9pz50q71//imbot.message.add",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "6b8c29ac-0d32-4c32-aa66-dcef33aea9a9",
+        "name": "Variáveis Globais",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          1340,
+          380
+        ]
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "esperanza-dev",
+          "options": {}
+        },
+        "id": "154a706b-b314-48c4-9858-c7d78f8f0fe5",
+        "name": "Webhook - hyper",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 1.1,
+        "position": [
+          -120,
+          380
+        ],
+        "webhookId": "96844c2c-3d7f-4441-87d4-3804ca3aad11"
+      },
+      {
+        "parameters": {},
+        "id": "6cf265f0-1c7b-4e5a-b5b1-936aa4bc27de",
+        "name": "Chamada Assistente",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          -120,
+          540
+        ]
+      },
+      {
+        "parameters": {
+          "collection": "users",
+          "options": {},
+          "query": "={\n  \"phone\": \"{{ $('Variáveis Globais').item.json.user_id }}\"\n}"
+        },
+        "id": "49fde5a2-8a80-4372-964a-4a83228766e0",
+        "name": "MongoDB - Get User",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1,
+        "position": [
+          2200,
+          400
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "mongoDb": {
+            "id": "iRLHzNSsYJ662KTH",
+            "name": "MongoDB - Chat - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "1bbb3958-988e-479e-add8-6584965f9d3f",
+                "leftValue": "={{ !!Object.keys($node[\"MongoDB - Get User\"].data).length }}",
+                "rightValue": 1,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "0fd5a73a-6287-48c5-90bc-519b6385922a",
+        "name": "If - User Exists",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          2420,
+          400
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b9c8dcb8-7a7d-4a06-8ad2-6fc05f1694bf",
+                "name": "name",
+                "value": "={{ $('Variáveis Globais').item.json.user_name }}",
+                "type": "string"
+              },
+              {
+                "id": "322f9814-b3ff-45f8-9210-47e5ee4aaf11",
+                "name": "phone",
+                "value": "={{ $('Variáveis Globais').item.json.user_id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "0a5c96ce-6a83-433c-ac9b-836bbb04e820",
+        "name": "Prepara User",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          2620,
+          540
+        ],
+        "alwaysOutputData": false
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "collection": "users",
+          "updateKey": "phone",
+          "fields": "=name,phone",
+          "upsert": true,
+          "options": {}
+        },
+        "id": "ed9dbb5c-f8a7-4541-bf53-45d17012ba0b",
+        "name": "MongoDB - Create User",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1,
+        "position": [
+          2840,
+          540
+        ],
+        "credentials": {
+          "mongoDb": {
+            "id": "iRLHzNSsYJ662KTH",
+            "name": "MongoDB - Chat - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "id": "07d72711-b988-4dd1-b9d4-aa248aedf280",
+        "name": "Merge - User",
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 2.1,
+        "position": [
+          3080,
+          400
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "a481b5b5-85f3-495c-9301-fb5433b0dccc",
+                "leftValue": "={{ !! $json[$('Variáveis Globais').item.json.assistant_id] }}",
+                "rightValue": "'sadasdasdas'",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "3c2bbfbd-a7e5-4a00-8873-7190dd10eea3",
+        "name": "Possui Thread salva no banco?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          3300,
+          400
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "8c73c213-25d5-4b66-95fa-f8c9b4460480",
+                "leftValue": "={{ $('MongoDB - Get User').item.json[$('Variáveis Globais').item.json.assistant_id] }}",
+                "rightValue": "={{ $('Possui Thread salva no banco?').item.json[$('Variáveis Globais').item.json.assistant_id] }}",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEquals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "760571b6-95a2-4fce-9682-17926f45873b",
+        "name": "Mudou a thread_id?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          3500,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "collection": "messages",
+          "options": {},
+          "query": "={\n  \"thread_id\": \"{{ $json[$('Variáveis Globais').first().json.assistant_id] }}\",\n  \"message_date\": {\"$gte\": \"{{$now.minus($('Variáveis Globais').first().json.tempo_thread, 'min').toISO()}}\"}\n}"
+        },
+        "id": "00ea9cb2-f8dd-443e-b336-007ed8b53089",
+        "name": "Conta as mensagens recentes",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1,
+        "position": [
+          3760,
+          260
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "mongoDb": {
+            "id": "iRLHzNSsYJ662KTH",
+            "name": "MongoDB - Chat - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "2f9b9d5a-e6c8-4052-961e-89a2e11d59f5",
+                "leftValue": "={{ $('Variáveis Globais').item.json.mensagem.includes('limpar_thread') || $('Variáveis Globais').item.json.mensagem.includes('novo_atendimento') }}",
+                "rightValue": "=novo_atendimento",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "false",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "6afa8f21-47c3-4ebf-9b3f-85c5694c94d4",
+                "leftValue": "={{!! $json._id }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "e4ede781-a0d8-4428-9a5f-682da01942a9",
+        "name": "É para continuar a thread_id?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          3980,
+          260
+        ],
+        "executeOnce": true
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "e67f5454-b878-4de4-a5e0-9136f74539ad",
+                "name": "thread_id",
+                "value": "={{ $json.thread_id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "ea602478-4f3b-479c-9e87-2356673d366f",
+        "name": "Add thread_id",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          4420,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b9c8dcb8-7a7d-4a06-8ad2-6fc05f1694bf",
+                "name": "phone",
+                "value": "={{ $('Possui Thread salva no banco?').item.json.phone }}",
+                "type": "string"
+              },
+              {
+                "id": "322f9814-b3ff-45f8-9210-47e5ee4aaf11",
+                "name": "={{ $('Variáveis Globais').item.json.assistant_id }}",
+                "value": "={{ $json.id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "b634d9f9-979a-45fa-b489-57e50e440751",
+        "name": "Prepara atualização",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          4420,
+          420
+        ],
+        "alwaysOutputData": false
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "collection": "users",
+          "updateKey": "phone",
+          "fields": "={{ $('Variáveis Globais').item.json.assistant_id }}",
+          "options": {}
+        },
+        "id": "3103dc55-d961-4dd7-b542-74bd7ee3aa94",
+        "name": "Atualizar thread_id",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1,
+        "position": [
+          4640,
+          420
+        ],
+        "credentials": {
+          "mongoDb": {
+            "id": "iRLHzNSsYJ662KTH",
+            "name": "MongoDB - Chat - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "2f9b9d5a-e6c8-4052-961e-89a2e11d59f5",
+                "leftValue": "={{ $('Variáveis Globais').item.json.mensagem.includes('limpar_thread') || $('Variáveis Globais').item.json.mensagem.includes('novo_atendimento') }}",
+                "rightValue": "limpar_thread",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "9a448f06-3087-471f-bc11-642cd26558e6",
+        "name": "Foi uma solicitação p/ limpar?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          4820,
+          660
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b9c8dcb8-7a7d-4a06-8ad2-6fc05f1694bf",
+                "name": "user_id",
+                "value": "={{ new String($('MongoDB - Get User').first().json._id).toString() }}",
+                "type": "string"
+              },
+              {
+                "id": "322f9814-b3ff-45f8-9210-47e5ee4aaf11",
+                "name": "thread_id",
+                "value": "={{ $('Add thread_id').item.json.thread_id }}",
+                "type": "string"
+              },
+              {
+                "id": "c124c295-55c0-4e1e-b489-393b63ca22f7",
+                "name": "message",
+                "value": "={{ !!$('Variáveis Globais').first().json.mensagem ? 'Mensagem de texto: ' + $('Variáveis Globais').first().json.mensagem : '' }}\n{{ !$json.Audio.isEmpty() ? 'Mensagem de Audio: ' + $json.Audio : '' }}\n{{ !$json.Imagem.isEmpty() ? 'Descrição Imagem em Anexo: ' + $json.Imagem : '' }}\n{{ !$json.File.isEmpty() ? 'Texto Arquivo em Anexo: ' + $json.File : '' }}",
+                "type": "string"
+              },
+              {
+                "id": "2c10a020-ae36-4d88-a9b1-4c125058d68f",
+                "name": "message_date",
+                "value": "={{ $now.toISO() }}",
+                "type": "string"
+              },
+              {
+                "id": "a572d77e-c0aa-4b6f-b44b-2baa0c02a9cb",
+                "name": "assistant_id",
+                "value": "={{ $('Variáveis Globais').item.json.assistant_id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "0c6d8b26-8ade-44a0-b304-8337df4ff69e",
+        "name": "Prepara mensagem",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          6800,
+          240
+        ],
+        "alwaysOutputData": false
+      },
+      {
+        "parameters": {
+          "operation": "insert",
+          "collection": "messages",
+          "fields": "user_id,thread_id,message,message_date,assistant_id",
+          "options": {}
+        },
+        "id": "95ee4060-2793-4cda-bb27-5b417e41857a",
+        "name": "Insere a mensagem",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1,
+        "position": [
+          8620,
+          280
+        ],
+        "credentials": {
+          "mongoDb": {
+            "id": "iRLHzNSsYJ662KTH",
+            "name": "MongoDB - Chat - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "collection": "messages",
+          "options": {
+            "sort": "{\"message_date\": 1}"
+          },
+          "query": "={\n  \"thread_id\": \"{{ $('Add thread_id').item.json.thread_id }}\",\n  \"process_date\": null\n}"
+        },
+        "id": "9c00fc77-c7a7-4585-b2ef-25720166d7b1",
+        "name": "Busca as mensagens",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1,
+        "position": [
+          8620,
+          500
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "mongoDb": {
+            "id": "iRLHzNSsYJ662KTH",
+            "name": "MongoDB - Chat - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "collection": "messages",
+          "options": {},
+          "query": "={\n  \"thread_id\": \"{{ $('Add thread_id').first().json.thread_id }}\",\n  \"message_date\": {\"$gte\": \"{{$now.minus($('Variáveis Globais').first().json.tempo_espera_mensagens, 'seconds').toISO()}}\"},\n  \"process_date\": null\n}"
+        },
+        "id": "233c495f-0fe0-4bca-938c-252a7ce8818e",
+        "name": "Conta as mensagens",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1,
+        "position": [
+          8840,
+          280
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "mongoDb": {
+            "id": "iRLHzNSsYJ662KTH",
+            "name": "MongoDB - Chat - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "a481b5b5-85f3-495c-9301-fb5433b0dccc",
+                "leftValue": "={{ $input.all().length }}",
+                "rightValue": 1,
+                "operator": {
+                  "type": "number",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "8f10d2ad-32e3-4f63-a1f0-86a96e48f4c5",
+        "name": "Primeira mensagem?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          9060,
+          280
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const messagesArray = $('Busca as mensagens').all();\nlet allMessages = \"\";\n\nmessagesArray.forEach(item => {\n  allMessages += item.json.message + \"  \";\n});\n\nallMessages = allMessages.trim();\nreturn [{\"message\": allMessages}]"
+        },
+        "id": "560b1c0a-d179-463c-8542-f03fd025e248",
+        "name": "Concatena todas mensagens",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          9300,
+          500
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "beed4a68-7ca4-480d-b203-3f43ca5c2ce5",
+                "name": "process_date",
+                "value": "={{ $now.toISO() }}",
+                "type": "string"
+              },
+              {
+                "id": "ed79557d-a9f1-4938-8639-2b3c86df2ce0",
+                "name": "thread_id",
+                "value": "={{ $('Prepara mensagem').item.json.thread_id }}",
+                "type": "string"
+              },
+              {
+                "id": "d5795955-d791-42b4-ad4e-a4c6b08bb79a",
+                "name": "_id",
+                "value": "={{ new String($json._id).toString() }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "c3743429-074c-48c0-a2e1-d3e79eb365a5",
+        "name": "Define process_date",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          8840,
+          500
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "collection": "messages",
+          "updateKey": "_id",
+          "fields": "process_date",
+          "options": {}
+        },
+        "id": "f075723e-afb1-4e88-a1c6-b152c417b639",
+        "name": "Marca para processar",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1,
+        "position": [
+          9060,
+          500
+        ],
+        "credentials": {
+          "mongoDb": {
+            "id": "iRLHzNSsYJ662KTH",
+            "name": "MongoDB - Chat - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "amount": "={{ \n  $('Variáveis Globais').first().json.tempo_espera_mensagens \n  * \n  (\n    $('Webhook - hyper').isExecuted ? 1 : 0\n  ) \n}}"
+        },
+        "id": "3ae9f591-e25e-42d6-8eb7-5e99307dbdc2",
+        "name": "Espera chegar mais mensagens",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          9300,
+          280
+        ],
+        "webhookId": "1fabb519-4b01-4638-8489-badfb7519cc5"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/threads",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "234f8369-d345-49d4-9c7d-9d7eae85bce1",
+        "name": "Criar Thread",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          4200,
+          420
+        ],
+        "retryOnFail": true,
+        "maxTries": 5,
+        "credentials": {
+          "openAiApi": {
+            "id": "erBLFgb3zHf0C8ux",
+            "name": "Open Ai - Cobrança"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "{\n  \"text\": \"Vou te encaminhar para um atendente. Motivo: Fora do Ar\"\n}",
+          "options": {}
+        },
+        "id": "0d926543-a5fc-4c1b-8447-ae207b721a6a",
+        "name": "Fora do Ar",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          1780,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "0946679f-72ec-4479-b8b6-831d4274caad",
+                "name": "output",
+                "value": "Nova thread criada",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "0cfab852-8009-4cbc-9579-be261624bc52",
+        "name": "Resposta Nova Thread",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          5060,
+          640
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "6174ef56-939f-48d8-97c5-2e458eb06267",
+                "name": "thread_id",
+                "value": "={{ $json[$('Variáveis Globais').item.json.assistant_id] }}",
+                "type": "string"
+              },
+              {
+                "id": "37da7440-91ec-4311-80e1-4a801a1f6b65",
+                "name": "phone",
+                "value": "={{ $json.phone }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "8400ca3e-ca29-4672-9e72-963e1c22bafe",
+        "name": "Prepara thread_id",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          3760,
+          80
+        ]
+      },
+      {
+        "parameters": {
+          "content": "# Threads",
+          "height": 80,
+          "width": 3100,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          2160,
+          0
+        ],
+        "id": "fa5e4915-5df8-41c6-8b56-8a2123075db3",
+        "name": "Sticky Note"
+      },
+      {
+        "parameters": {
+          "content": "# Entrada",
+          "height": 80,
+          "width": 2340,
+          "color": 7
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -180,
+          0
+        ],
+        "id": "92ac5709-cdb3-4a9e-9af9-f64f13308dd8",
+        "name": "Sticky Note1"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7559921d-c049-4a9b-ac44-6ed138a90997",
+                "name": "Text",
+                "value": "={{ $('Variáveis Globais').first().json.mensagem }}",
+                "type": "string"
+              },
+              {
+                "id": "f1d9a98e-25d7-4521-8856-a5f3756c2fbb",
+                "name": "Image",
+                "value": "={{ $('Variáveis Globais').first().json.image }}",
+                "type": "string"
+              },
+              {
+                "id": "2172ec76-01ae-4322-9ac4-fe3d05f02ae2",
+                "name": "Audio",
+                "value": "={{ $('Variáveis Globais').first().json.audio }}",
+                "type": "string"
+              },
+              {
+                "id": "790dac21-485b-413b-b536-8cae02b44499",
+                "name": "File",
+                "value": "={{ $('Variáveis Globais').first().json.file }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          5300,
+          240
+        ],
+        "id": "7cc1e057-2ac7-4fe8-9f92-34a96421597d",
+        "name": "Mensagem de Entrada"
+      },
+      {
+        "parameters": {
+          "content": "# Mensagem",
+          "height": 80,
+          "width": 4760,
+          "color": 5
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          5260,
+          0
+        ],
+        "id": "9d52767d-3f36-42f4-aa6d-367fdf395d26",
+        "name": "Sticky Note2"
+      },
+      {
+        "parameters": {
+          "content": "# Assistente",
+          "height": 80,
+          "width": 1740,
+          "color": 3
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          9920,
+          0
+        ],
+        "id": "41e07c95-3c2e-463b-a8a9-7aed078af01c",
+        "name": "Sticky Note3"
+      },
+      {
+        "parameters": {
+          "resource": "audio",
+          "operation": "transcribe",
+          "options": {
+            "language": "pt"
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.8,
+        "position": [
+          5960,
+          340
+        ],
+        "id": "bd940178-463a-4f64-ad97-0f745f352f59",
+        "name": "Transcreve Áudio",
+        "credentials": {
+          "openAiApi": {
+            "id": "erBLFgb3zHf0C8ux",
+            "name": "Open Ai - Cobrança"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "image",
+          "operation": "analyze",
+          "modelId": {
+            "__rl": true,
+            "value": "gpt-4o",
+            "mode": "list",
+            "cachedResultName": "GPT-4O"
+          },
+          "text": "=Descreva com o máximo de detalhes possível a imagem que o usuário mandou. \n\nA sua respoosta deve ser um texto em formato markdom somente, mas sem a marcação: ```markdown",
+          "imageUrls": "={{ $json.Image }}",
+          "options": {
+            "detail": "high"
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.8,
+        "position": [
+          5960,
+          160
+        ],
+        "id": "a7c3771e-4224-47fe-a503-ce6fada84880",
+        "name": "Analisa Imagem",
+        "credentials": {
+          "openAiApi": {
+            "id": "erBLFgb3zHf0C8ux",
+            "name": "Open Ai - Cobrança"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "url": "={{ $json.Audio }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          5740,
+          340
+        ],
+        "id": "2e872562-0d3a-4af7-b3f0-bc69766ffe96",
+        "name": "Baixa Áudio"
+      },
+      {
+        "parameters": {
+          "url": "={{ $json.File }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          5740,
+          520
+        ],
+        "id": "af073591-83e2-43be-ba11-670e0a438b13",
+        "name": "Baixa Arquvo"
+      },
+      {
+        "parameters": {
+          "operation": "pdf",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          5960,
+          520
+        ],
+        "id": "5310ffea-ca45-4cb4-a911-d8c65fee95a4",
+        "name": "Extract from File"
+      },
+      {
+        "parameters": {
+          "numberInputs": 3
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3,
+        "position": [
+          6400,
+          440
+        ],
+        "id": "bcaea3d9-f675-4336-a552-d817b2e4c660",
+        "name": "Merge"
+      },
+      {
+        "parameters": {
+          "fieldsToAggregate": {
+            "fieldToAggregate": [
+              {
+                "fieldToAggregate": "Imagem"
+              },
+              {
+                "fieldToAggregate": "Audio"
+              },
+              {
+                "fieldToAggregate": "File"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          6560,
+          240
+        ],
+        "id": "0fe306a6-e1b1-4737-a90d-49ca0365d616",
+        "name": "Aggregate"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d26eff7f-8e3a-4e57-87e8-b6a37acd614b",
+                "name": "Imagem",
+                "value": "={{ $json.content || null}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          6160,
+          260
+        ],
+        "id": "a67a1093-c73b-4fc8-a38c-4f4f4e3fef09",
+        "name": "Imagem"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d26eff7f-8e3a-4e57-87e8-b6a37acd614b",
+                "name": "Audio",
+                "value": "={{ $json.text || null}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          6160,
+          440
+        ],
+        "id": "ac4edc29-d65a-44ff-ab1d-0c4509aa8728",
+        "name": "Audio"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d26eff7f-8e3a-4e57-87e8-b6a37acd614b",
+                "name": "File",
+                "value": "={{ $json.text || null}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          6160,
+          620
+        ],
+        "id": "bff90918-b0bc-4631-8960-2da6cc9ce9fa",
+        "name": "File"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "738378d6-6859-4a79-815e-480e434d91b4",
+                "leftValue": "={{ !!$json.Image }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          5540,
+          240
+        ],
+        "id": "3327b9f5-7ff3-4c5a-bb71-510a06915ab7",
+        "name": "Imagem?"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "e0d66719-5d03-45e8-8949-69fbb06fa7a5",
+                "leftValue": "={{ !!$json.Audio }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          5540,
+          420
+        ],
+        "id": "59b70998-ac1e-4d1c-b7cf-0164cb9c7648",
+        "name": "Áudio?"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "bc7409ca-bd64-4c6c-b4e0-70c64dc79e39",
+                "leftValue": "={{ !!$json.File }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          5540,
+          600
+        ],
+        "id": "1cd91e22-f75d-4974-b2b5-b0bc0265df9d",
+        "name": "Arquivo?"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "26d2a0d2-2a36-479d-89c4-f97424eadc01",
+                "name": "arguments.mensagem",
+                "value": "={{ \n  ( \n    $json.arguments.pergunta \n    + \n    (\n      $json.arguments.contrato ? \n      ' Contrato: ' + $json.arguments.contrato \n      : ''\n    )\n    + \n    (\n      $json.arguments.cnpj ? \n      ' CNPJ: ' + $json.arguments.cnpj \n      : ''\n    )\n  ).replace(/\\n/g, '') \n}}",
+                "type": "string"
+              },
+              {
+                "id": "9a6ac739-b3c8-4011-8d1b-403e9f655893",
+                "name": "id",
+                "value": "={{ $json.id_agente }}",
+                "type": "string"
+              },
+              {
+                "id": "21237808-e3f5-4d82-ad6f-28ad18e62cc5",
+                "name": "name",
+                "value": "={{ $json.nome_agente }}",
+                "type": "string"
+              },
+              {
+                "id": "f9eadd85-d1ce-4dbc-963b-44a04447b70b",
+                "name": "cnpj",
+                "value": "={{ $json.arguments.cnpj }}",
+                "type": "string"
+              },
+              {
+                "id": "93d3cb32-5d66-4cf8-8a99-cf793e17e199",
+                "name": "contrato",
+                "value": "={{ $json.arguments.contrato }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "c357820a-944b-487e-b090-fa377318c7da",
+        "name": "Dados Assistente",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          100,
+          540
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "26d2a0d2-2a36-479d-89c4-f97424eadc01",
+                "name": "arguments.mensagem",
+                "value": "={{ $json.chatInput }}",
+                "type": "string"
+              },
+              {
+                "id": "9a6ac739-b3c8-4011-8d1b-403e9f655893",
+                "name": "id",
+                "value": "1111111111111111111111111111111111",
+                "type": "string"
+              },
+              {
+                "id": "21237808-e3f5-4d82-ad6f-28ad18e62cc5",
+                "name": "name",
+                "value": "chatClara",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "057dd9f2-2843-4391-ad3c-8d704a90c6cb",
+        "name": "Dados Chat",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          100,
+          700
+        ]
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -120,
+          700
+        ],
+        "id": "583cf530-d817-449f-ac96-66799371a6c2",
+        "name": "Chat",
+        "webhookId": "3916f8fd-578c-4846-be18-6570f24b4ffb"
+      },
+      {
+        "parameters": {
+          "mode": "raw",
+          "jsonOutput": "={\n  \"body\": {\n    \"text\": \"{{ $json.arguments.mensagem }}\",\n    \"audio\": \"\",\n    \"file\": \"\",\n    \"image\": \"\",\n    \"id\": \"{{ $json.id + $json.name}}\",\n    \"name\": \"{{ $json.name }}\",\n    \"cnpj\": {{ $json.cnpj ? '\"' + $json.cnpj + '\"' : null }},\n    \"contrato\": {{ $json.contrato ? '\"' + $json.cnpj + '\"' : null }}\n  }\n}",
+          "options": {}
+        },
+        "id": "74819af5-8656-45aa-8e46-a140ee78f4ce",
+        "name": "Chat Convert",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          320,
+          700
+        ]
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "bitrix-esperanza",
+          "options": {}
+        },
+        "id": "57e2b877-07e9-41cd-b11f-ec439bc3dc91",
+        "name": "Webhook - Bitrix",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 1.1,
+        "position": [
+          -120,
+          180
+        ],
+        "webhookId": "96844c2c-3d7f-4441-87d4-3804ca3aad11"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "3ef0b51a-e140-40a4-83fe-06c77c1d8ecf",
+                "leftValue": "={{ $json.fileId }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "a8f739f3-a431-4234-9c0b-50c366b092ce",
+        "name": "possui arquivo?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          520,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://blips.bitrix24.com.br/rest/2491/odgp2tzocbi1o76k/disk.file.get",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "id",
+                "value": "={{ $json.fileId }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "583a36d5-f925-493a-8517-07e8fc325687",
+        "name": "buscar arquivo bitrix",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          720,
+          100
+        ],
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Obtém o primeiro item de input e transforma o campo \"body\" em uma string JSON\nconst inputString = JSON.stringify($input.first().json.body);\n\n// Função auxiliar para setar um valor em um objeto de forma aninhada a partir de um caminho\nfunction setNestedValue(obj, path, value) {\n  // Expressão regular para capturar todos os segmentos da chave, por exemplo:\n// \"data[BOT][2587][BOT_ID]\" => [\"data\", \"BOT\", \"2587\", \"BOT_ID\"]\n  const keys = path.match(/([^[\\]]+)/g);\n  \n  // Percorre os segmentos e cria os objetos aninhados conforme necessário\n  let current = obj;\n  keys.forEach((key, index) => {\n    // Se for o último segmento, atribui o valor\n    if (index === keys.length - 1) {\n      current[key] = value;\n    } else {\n      // Se a chave ainda não existir ou não for um objeto, cria um objeto vazio\n      if (!current[key] || typeof current[key] !== 'object') {\n        current[key] = {};\n      }\n      current = current[key];\n    }\n  });\n}\n\n// Faz o parse da string para obter um objeto \"flat\"\nconst parsedData = JSON.parse(inputString);\n\n// Objeto que receberá a estrutura aninhada final\nconst result = {};\n\n// Itera sobre cada chave do objeto parseado\nfor (const key in parsedData) {\n  if (key.includes('[')) {\n    // Se a chave contém colchetes, usa a função para setar o valor de forma aninhada\n    setNestedValue(result, key, parsedData[key]);\n  } else {\n    // Caso contrário, atribui o valor diretamente\n    result[key] = parsedData[key];\n  }\n}\n\n// Retorna o objeto final (no n8n, o resultado do nó será o output)\nreturn {\n  json: result\n};\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          100,
+          180
+        ],
+        "id": "690b97a2-d2db-4fd5-a24b-1ff740a23498",
+        "name": "Formata Entrada"
+      },
+      {
+        "parameters": {
+          "jsCode": "// 1) Pega a entrada do webhook (geralmente items[0].json)\nconst entrada = $input.first().json || {};\n\n// 2) Coletamos o domínio do Bitrix\nconst domain = entrada.auth?.domain || '';\n\n// 3) Variáveis para armazenar os dados do primeiro arquivo encontrado\nlet fileType = '';\nlet fileDownloadUrl = '';\nlet fileId = '';\n\n// 4) Acessamos a estrutura de FILES dentro de data.PARAMS\nconst files = entrada.data?.PARAMS?.FILES || {};\n\n// 5) Iteramos pelos arquivos (sendo FILES um objeto, percorremos suas chaves)\nfor (const key in files) {\n  if (Object.prototype.hasOwnProperty.call(files, key)) {\n    const file = files[key];\n    \n    // Capturamos os valores desejados do arquivo\n    fileType = file.type;\n    fileDownloadUrl = `https://${domain}${file.urlDownload}`;\n    fileId = file.id;\n    \n    // Se desejar processar somente o primeiro arquivo encontrado, interrompa o loop\n    break;\n  }\n}\n\n\n\n// 6) Retorna os dados extraídos\nreturn [\n  {\n    json: {\n      ...entrada,\n      fileId,\n      fileType,\n      fileDownloadUrl\n    }\n  }\n];\n"
+        },
+        "id": "b89a2689-721d-4cec-8af8-1e1d5ce64d2d",
+        "name": "Files Bitrix",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          320,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "raw",
+          "jsonOutput": "={\n  \"body\": {\n    \"text\": \"{{ $json.data.PARAMS.MESSAGE.replaceAll('\\n', '\\\\n') }}\",\n    \"audio\": \"\",\n    \"file\": \"\",\n    \"image\": \"\",\n    \"id\": \"{{ $json.data.USER.ID }}\",\n    \"name\": \"{{ $json.data.USER.FIRST_NAME }}\",\n    \"cnpj\": \"\"\n  }\n}",
+          "options": {}
+        },
+        "id": "3542d384-c089-4094-8a52-1b98430d948b",
+        "name": "Convert Bitrix",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          720,
+          260
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "raw",
+          "jsonOutput": "={\n  \"body\": {\n    \"text\": \"{{ $json.data.PARAMS.MESSAGE.replaceAll('\\n', '\\\\n') || '' }}\",\n    \"audio\": {{ ($json.result.NAME.includes('mp3') || $json.result.NAME.includes('ogg')) ? JSON.stringify($json.result.DOWNLOAD_URL) : null }},\n    \"file\": {{ $json.result.NAME.includes('pdf') ? JSON.stringify($json.result.DOWNLOAD_URL) : null }},\n    \"image\": {{ ($json.result.NAME.includes('jpg') || $json.result.NAME.includes('png') || $json.result.NAME.includes('jpeg')) ? JSON.stringify($json.result.DOWNLOAD_URL) : null }},\n    \"id\": \"{{ $json.data.USER.ID }}\",\n    \"name\": \"{{ $json.data.USER.FIRST_NAME }}\",\n    \"cnpj\": null,\n    \"contrato\": null\n  }\n}\n",
+          "options": {}
+        },
+        "id": "2be79b8e-3599-49e2-88e2-9ffbb2e96d2d",
+        "name": "Convert Bitrix1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          1160,
+          100
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "34619abf-8ef7-4879-afeb-3350651ea8c9",
+                "name": "data",
+                "value": "={{ $('possui arquivo?').item.json.data }}",
+                "type": "object"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          940,
+          100
+        ],
+        "id": "5e40b79f-a5c7-4327-af6e-6091dcb70600",
+        "name": "Pega o resto"
+      },
+      {
+        "parameters": {
+          "content": "# Resposta",
+          "height": 80,
+          "width": 3480,
+          "color": 6
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          11660,
+          0
+        ],
+        "id": "adc4c492-7c88-4fe9-acbe-c9b4f2e00fd9",
+        "name": "Sticky Note4"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "3bfce6dd-5462-4dba-9d98-206ce3976981",
+                "name": "resposta",
+                "value": "={{ $json.output }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          11720,
+          200
+        ],
+        "id": "57601037-8fe3-43d9-8f59-05bf714b57dc",
+        "name": "Resposta"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "f1fde6f4-7935-41d7-a6b6-5d597a234b3f",
+                "leftValue": "={{ $('Webhook - Bitrix').isExecuted }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          5320,
+          820
+        ],
+        "id": "18b64bed-419f-47bf-bf1e-405f254f335b",
+        "name": "Bitrix?1"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ed3cb56b-bd80-4b34-baf8-0df7a6dee1d6",
+                "name": "BOT_ID",
+                "value": "={{ $('Formata Entrada').item.json.data.BOT['2587'].BOT_ID }}",
+                "type": "string"
+              },
+              {
+                "id": "f5a78dea-ff72-4e62-8b5c-516c720a1dab",
+                "name": "CLIENT_ID",
+                "value": "={{ $('Webhook - Bitrix').item.json.query.CLIENT_ID }}",
+                "type": "string"
+              },
+              {
+                "id": "a5dfb187-69c1-4915-bddc-72ca18e7e249",
+                "name": "DIALOG_ID",
+                "value": "={{ $('Formata Entrada').first().json.data.PARAMS.DIALOG_ID }}",
+                "type": "string"
+              },
+              {
+                "id": "26cb7dd2-8541-488e-8c1e-6a7fa062589f",
+                "name": "MESSAGE",
+                "value": "=[USER={{ $('Formata Entrada').item.json.data.USER.ID }}]{{ $('Formata Entrada').item.json.data.USER.NAME }}[/USER]\n{{ $json.data }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          5760,
+          800
+        ],
+        "id": "1700baef-8ad6-4d54-a847-121e4d25f25c",
+        "name": "setBitrix24Message1"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $('Variáveis Globais').first().json.link_resposta_bitrix }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ $json }}",
+          "options": {}
+        },
+        "id": "028cd025-6c4a-4821-98b6-1122d1cd7cf5",
+        "name": "Resposta - Bitrix1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          5960,
+          800
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b14a9643-2a2c-4a8b-ac19-3dcb674d25f3",
+                "name": "output",
+                "value": "={{ $json.output }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          5540,
+          960
+        ],
+        "id": "5283c2f6-96b9-4af5-a267-5a29a25aece1",
+        "name": "Output"
+      },
+      {
+        "parameters": {
+          "url": "=https://api.openai.com/v1/threads/thread_JcJbXL6Vt1Er6vJNnMJeeI4Z/messages",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          9300,
+          700
+        ],
+        "id": "2598526e-1416-44d1-989e-72f33e7449fa",
+        "name": "Mensagens",
+        "credentials": {
+          "openAiApi": {
+            "id": "erBLFgb3zHf0C8ux",
+            "name": "Open Ai - Cobrança"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "raw",
+          "jsonOutput": "={\n  \"body\": {\n    \"id\": \"{{ $json.body.id }}\",\n    \"name\": \"{{ $json.body.name || '' }}\",\n    \"cnpj\": \"{{ $json.body.cnpj || ''}}\",\n    \"text\": \"{{ $json.body.text || '' }}\",\n    \"audio\": \"{{ $json.body.audio || '' }}\",\n    \"image\": \"{{ $json.body.image || '' }}\",\n    \"file\": \"{{ $json.body.file || '' }}\",\n    \"dias\": \"{{ $json.body.dias || ''}}\",\n    \"titulosVencidos\": \"{{ $json.body.titulosVencidos || '' }}\",\n    \"linha\": \"{{ $json.body.linha || ''}}\"\n  }\n}",
+          "options": {}
+        },
+        "id": "9d916a49-2318-4317-b111-d19eae30613a",
+        "name": "Dados hyper",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          100,
+          380
+        ]
+      },
+      {
+        "parameters": {
+          "url": "=https://api.openai.com/v1/threads/{{ $('Prepara mensagem').first().json.thread_id }}/runs",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "3bd47f78-5acd-4461-a6c9-50d26089b368",
+        "name": "Lista Runs",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          11100,
+          460
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "erBLFgb3zHf0C8ux",
+            "name": "Open Ai - Cobrança"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "amount": 2,
+          "unit": "seconds"
+        },
+        "id": "c85c3ac4-0a54-4230-b352-8895a68a1fc6",
+        "name": "Espera rodar um pouco",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1,
+        "position": [
+          11520,
+          480
+        ],
+        "webhookId": "cd9abf53-057d-487c-9bf9-2477ff777316"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "f51d259a-6bef-49b8-8f2a-e966e8d96248",
+                "leftValue": "={{ $json.data[0].status }}",
+                "rightValue": "completed",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "88fc4f30-3ae0-47e9-a11c-2c843e603496",
+                "leftValue": "={{ $json.data[0].status }}",
+                "rightValue": "failed",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "bec38f44-f57a-45ff-acfa-da798707d0b9",
+                "leftValue": "={{ $json.data[0].status }}",
+                "rightValue": "expired",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "de544920-fd7a-4a48-acb5-e3dc242f53de",
+                "leftValue": "={{ $json.data[0].status }}",
+                "rightValue": "canceled",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "6c66d279-66f6-4ce8-a694-d4811a49ebc8",
+                "leftValue": "={{ $json.data[0].status }}",
+                "rightValue": "incomplete",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          11300,
+          460
+        ],
+        "id": "6477ecbb-083a-4369-8e06-28851bedbb8f",
+        "name": "Já terminou a outra?"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "da9bbff4-6461-4a97-bbfc-4adbceb5a269",
+                "leftValue": "={{ $('Formata Entrada').isExecuted && $('Formata Entrada').first().json.data.PARAMS.DIALOG_ID === '2491' }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          2340,
+          140
+        ],
+        "id": "5cdf7055-4318-450f-8acb-2773e971d0df",
+        "name": "Meu?"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "YQ4CogIipV6ceBoI",
+            "mode": "list",
+            "cachedResultName": "Mock Unit Test - Clara"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          2640,
+          120
+        ],
+        "id": "3969ed5c-c4b4-4759-93e5-2c704892e92d",
+        "name": "Unit Tests"
+      },
+      {
+        "parameters": {
+          "collection": "ativacoes",
+          "options": {
+            "limit": 1,
+            "sort": "{\n  \"data_hora_envio\": -1\n}"
+          },
+          "query": "={\n  \"telefone\": \"{{ $('Variáveis Globais').first().json.user_id }}\"\n}"
+        },
+        "id": "20d5b3c9-99a6-47e1-a07d-cffcb505235b",
+        "name": "Busca mensagem de ativação",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1.1,
+        "position": [
+          9540,
+          500
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "mongoDb": {
+            "id": "iRLHzNSsYJ662KTH",
+            "name": "MongoDB - Chat - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "assistant",
+          "assistantId": {
+            "__rl": true,
+            "value": "asst_0gBiqdK4i79uIvjcx2Bpq1mF",
+            "mode": "list",
+            "cachedResultName": "Assistente Cobrança - Dev"
+          },
+          "prompt": "define",
+          "text": "=<Pergunta>\n{{ $('Concatena todas mensagens').first().json.message.trim() }}\n</Pergunta>\n<MetaDados>\n- O telefone associado é: {{ $('Variáveis Globais').first().json.user_id }}\n- Hoje é {{ $now.toLocaleString({weekday: 'long'})}} dia {{ $now.format('dd/MM/yyyy - HH:mm:ss') }} no horário de brasília\n- A mensagem de ativação foi: {{ $json.mensagem }}\n- Nome do cliente é {{ $('Variáveis Globais').first().json.name }}\n</MetaDados>",
+          "memory": "threadId",
+          "threadId": "={{ $('Prepara mensagem').first().json.thread_id }}",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.8,
+        "position": [
+          10360,
+          220
+        ],
+        "id": "49887782-d0a8-447b-b602-f6835c9e8c70",
+        "name": "Esperanza",
+        "credentials": {
+          "openAiApi": {
+            "id": "erBLFgb3zHf0C8ux",
+            "name": "Open Ai - Cobrança"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.resposta }}",
+          "hasOutputParser": true,
+          "messages": {
+            "messageValues": [
+              {
+                "message": "=## 🎯 Prompt para Classificação de Mensagem de Transferência\n\nVocê é um assistente inteligente que analisa mensagens de texto e decide se a mensagem indica ou não uma **transferência para outro atendente**.\n\n### Tarefa:\n- Leia a mensagem completa.\n- Avalie se há **indícios claros** de que o atendente está **encaminhando ou transferindo** o atendimento para outra pessoa ou setor.\n- Retorne apenas:\n  - `true` → Se a mensagem indicar transferência.\n  - `false` → Se a mensagem não indicar transferência.\n\n### Exemplos de sinais de transferência:\n- \"Vou te transferir para...\"\n- \"Vou passar seu atendimento para...\"\n- \"Outro setor vai te ajudar com isso...\"\n- \"Encaminhando seu caso para...\"\n- \"Quem vai continuar com você é...\"\n\n---\n\n### 📥 Exemplo de entrada:\n\"Oi João, tudo bem? Vou te transferir agora para o setor responsável que pode te ajudar melhor com essa questão, tá bom?\"\n\n### 📤 Exemplo de saída:\ntrue\n\n---\n\n### 📥 Exemplo de entrada:\n\"Oi João, tudo bem? Verifiquei aqui sua situação e estou à disposição pra ajudar com o que precisar, me chama se tiver dúvida!\"\n\n### 📤 Exemplo de saída:\nfalse"
+              }
+            ]
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.6,
+        "position": [
+          12140,
+          460
+        ],
+        "id": "2ecc23b7-c227-451d-b675-e771dfaf1514",
+        "name": "Transferência"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $('Resposta').item.json.resposta }}",
+          "hasOutputParser": true,
+          "messages": {
+            "messageValues": [
+              {
+                "message": "=## 🎯 Prompt para Geração de Resumo Informal de Atendimento\n\nVocê é um atendente de WhatsApp que está repassando um atendimento para outro colega. Sua tarefa é ler toda a mensagem do atendimento e gerar um **resumo claro, direto e informal**, em **primeira pessoa**, explicando o que foi tratado e **por que você não resolveu** o problema.\n\n### Regras:\n1. O resumo deve ser curto e direto, parecendo uma conversa entre colegas.\n2. Escreva em **primeira pessoa**, como se fosse você falando.\n3. Use linguagem **informal**, como se estivesse explicando rápido pra alguém entender.\n4. Foque no ponto principal do atendimento e o motivo de não ter finalizado.\n5. Ignore qualquer outra parte da mensagem e **retorne apenas o resumo**.\n\n---\n\n### 📥 Exemplo de entrada:\n\"Oi João, tudo bem? Vi que você está com um título em aberto no valor de R$ 450,00 que venceu dia 10/04. Infelizmente não consigo te ajudar com essa negociação, mas vou te transferir pro setor responsável que consegue te dar as opções certinhas, tudo bem?\"\n\n### 📤 Exemplo de saída:\nFalei com o cliente sobre o título em aberto, mas não consegui ajudar porque negociação é só com o setor responsável. Por isso transferi.\n\n---\n\n### 📥 Exemplo de entrada:\n\"Conversei com o cliente sobre o débito e ele pediu pra falar com alguém do jurídico, porque quer discutir os juros aplicados.\"\n\n### 📤 Exemplo de saída:\nCliente quer falar com o jurídico porque não concorda com os juros. Preferi transferir o atendimento."
+              }
+            ]
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.6,
+        "position": [
+          12740,
+          660
+        ],
+        "id": "62f9e38e-8132-46e0-809b-8b02df77a553",
+        "name": "Resumo"
+      },
+      {
+        "parameters": {
+          "schemaType": "manual",
+          "inputSchema": "{\n  \"type\": \"boolean\"\n}\n"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.2,
+        "position": [
+          12300,
+          620
+        ],
+        "id": "0767f3b6-fb67-4db0-9afa-a8800094c9ae",
+        "name": "bool"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "a82e67b9-1dac-44bd-a0b7-e0a9a0d950dc",
+                "leftValue": "={{ $json.output }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "false",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          12520,
+          460
+        ],
+        "id": "860fe162-c768-4afe-ad60-8fbb96d3cd68",
+        "name": "Pode mandar?"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "5276e4ff-d603-47da-bb8c-f02a2a39b271",
+                "name": "resposta",
+                "value": "={{ $('Resposta').item.json.resposta }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          12740,
+          440
+        ],
+        "id": "f28089ff-1f3b-42f1-9ef9-2c231fa761c2",
+        "name": "Resposta Final"
+      },
+      {
+        "parameters": {
+          "modelName": "models/gemini-2.5-flash-preview-04-17",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+        "typeVersion": 1,
+        "position": [
+          12320,
+          340
+        ],
+        "id": "ea42a525-b5c0-4226-a590-b69077a54fcf",
+        "name": "Gemini",
+        "credentials": {
+          "googlePalmApi": {
+            "id": "nJiJWVZaDecaeKDp",
+            "name": "Google Gemini(PaLM) Api account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.resposta }}",
+          "hasOutputParser": true,
+          "messages": {
+            "messageValues": [
+              {
+                "message": "=## 📲 Prompt para Simular Quebra de Mensagens no Estilo WhatsApp\n\nVocê é um assistente de IA que simula uma pessoa digitando e enviando mensagens no WhatsApp. Sua tarefa é **quebrar mensagens longas em partes menores e naturais**, como se fossem enviadas por um humano real, em tempo real.\n\n---\n\n### 🎯 Objetivo:\nDividir mensagens completas em **blocos curtos**, com **1 ou 2 frases no máximo** por bloco, respeitando o estilo e o ritmo de conversa casual no WhatsApp.\n\n---\n\n### ✅ Regras de Formatação e Estilo:\n\n1. **Preserve o conteúdo original** — não altere palavras, sentido ou ordem.\n2. **Cada trecho deve ser enviado separadamente**, como mensagens individuais.\n3. Use **ponto final como separador principal**. Evite quebras com vírgulas ou conectores soltos.\n4. Nunca inicie um novo bloco com:\n   - vírgulas  \n   - \"e\", \"mas\", \"ou\", \"então\", \"...\"  \n   *(a não ser que a nova parte tenha sentido completo sozinha)*  \n5. Evite dividir frases que dependem semanticamente uma da outra.\n6. Respeite marcadores como `<QUEBRA>`, que indicam uma separação obrigatória.\n7. Quando houver **listas ou mais de um título**, agrupe as informações logicamente, um bloco por item.\n8. A quebra deve soar **fluida e humana**, como alguém que está digitando de forma casual.\n\n---\n\n### 📥 Exemplos de Entrada e 📤 Saída Esperada\n\n#### 📥 Exemplo 1:\n\"Oi João, tudo bem? Estou passando pra lembrar sobre o título 12345 que venceu dia 10/04 no valor de R$ 450,00. Se puder dar uma olhada, fico à disposição pra ajudar. Qualquer dúvida, me chama aqui, tá bom?\"\n\n📤 Saída:\n1. Oi João, tudo bem?  \n2. Estou passando pra lembrar sobre o título 12345 que venceu dia 10/04 no valor de R$ 450,00.  \n3. Se puder dar uma olhada, fico à disposição pra ajudar.  \n4. Qualquer dúvida, me chama aqui, tá bom?\n\n---\n\n#### 📥 Exemplo 2:\n\"Seguem os detalhes dos dois contratos.  \nContrato 1:  \nNúmero: 1111  \nVencimento: 10/04/2024  \nValor: R$ 800,00  \nStatus: Pago  \n\nContrato 2:  \nNúmero: 2222  \nVencimento: 15/04/2024  \nValor: R$ 1.000,00  \nStatus: Em aberto\"\n\n📤 Saída:\n1. Seguem os detalhes dos dois contratos.  \n2. 1. Número do Contrato: 12400295  \n   Tipo: Parcela de Equipamento  \n   Valor atualizado: R$ 943,49  \n   Data de Vencimento: 25/04/2025  \n   Status: Vencido  \n3. 2. Número do Contrato: 12400295  \n   Tipo: Parcela de Equipamento  \n   Valor atualizado: R$ 943,49  \n   Data de Vencimento: 30/04/2025  \n   Status: Vencido\n---\n\n#### 📥 Exemplo 3:\n\"Número do Contrato: 12400295  \nTipo: Parcela de Equipamento  \nValor atualizado: R$ 943,49  \nData de Vencimento: 25/04/2025  \nStatus: Vencido  \nPix para pagamento:  \n<QUEBRA>https://pagamento.blips.com.br/v1/payment/3e8ee180-d594-4467-8b6d-e87d335d8c4c<QUEBRA>\"\n\n📤 Saída:\n1. Número do Contrato: 12400295  \n   Tipo: Parcela de Equipamento  \n   Valor atualizado: R$ 943,49  \n   Data de Vencimento: 25/04/2025  \n   Status: Vencido  \n   Pix para pagamento:  \n2. https://pagamento.blips.com.br/v1/payment/3e8ee180-d594-4467-8b6d-e87d335d8c4c\n\n---\n\n#### 📥 Exemplo 4:\n\"Oi, tudo bem? Verifiquei aqui e vi que o seu boleto venceu dia 10. Se precisar de ajuda, me chama.\"\n\n📤 Saída:\n1. Oi, tudo bem?  \n2. Verifiquei aqui e vi que o seu boleto venceu dia 10.  \n3. Se precisar de ajuda, me chama.\n\n---\n\n#### 📥 Exemplo 5:\n\"Bom dia! Só passando pra avisar que o sistema estará fora do ar hoje das 14h às 16h para manutenção. Aproveitamos pra pedir que, se tiver alguma pendência urgente, nos envie até o meio-dia, ok?\"\n\n📤 Saída:\n1. Bom dia!  \n2. Só passando pra avisar que o sistema estará fora do ar hoje das 14h às 16h para manutenção.  \n3. Aproveitamos pra pedir que, se tiver alguma pendência urgente, nos envie até o meio-dia, ok?\n\n---\n\n#### 📥 Exemplo 6:\n\"Olá! Identificamos que ainda consta um valor em aberto no seu contrato. Se o pagamento já foi feito, por favor, envie o comprovante por aqui. Caso contrário, posso gerar um novo código pix pra você.\"\n\n📤 Saída:\n1. Olá!  \n2. Identificamos que ainda consta um valor em aberto no seu contrato.  \n3. Se o pagamento já foi feito, por favor, envie o comprovante por aqui.  \n4. Caso contrário, posso gerar um novo código pix pra você.\n\n---\n\n#### 📥 Exemplo 7:\n\"Boa tarde! Estamos atualizando os cadastros dos clientes e precisamos confirmar algumas informações. Pode me responder com seu e-mail e telefone atualizados, por gentileza?\"\n\n📤 Saída:\n1. Boa tarde!  \n2. Estamos atualizando os cadastros dos clientes e precisamos confirmar algumas informações.  \n3. Pode me responder com seu e-mail e telefone atualizados, por gentileza?\n\n---\n\n#### 📥 Exemplo 8:\n\"1. Número do Contrato: 99887766  \nTipo: Mensalidade  \nValor: R$ 350,00  \nVencimento: 10/04/2025  \nStatus: Em aberto  \nPix para pagamento:  \n<QUEBRA>https://pagto.exemplo.com/pix/abc123<QUEBRA>  \n  \n2. Número do Contrato: 99887767  \nTipo: Mensalidade  \nValor: R$ 400,00  \nVencimento: 10/05/2025  \nStatus: Em aberto  \nPix para pagamento:  \n<QUEBRA>https://pagto.exemplo.com/pix/def456<QUEBRA>\"\n\n📤 Saída:\n1. 1. Número do Contrato: 99887766  \n   Tipo: Mensalidade  \n   Valor: R$ 350,00  \n   Vencimento: 10/04/2025  \n   Status: Em aberto  \n   Pix para pagamento:  \n2. https://pagto.exemplo.com/pix/abc123  \n3. 2. Número do Contrato: 99887767  \n   Tipo: Mensalidade  \n   Valor: R$ 400,00  \n   Vencimento: 10/05/2025  \n   Status: Em aberto  \n   Pix para pagamento:  \n4. https://pagto.exemplo.com/pix/def456\n\n"
+              }
+            ]
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.6,
+        "position": [
+          13100,
+          440
+        ],
+        "id": "5a995035-5912-4fb3-a598-c05e262b5824",
+        "name": "Quebrar Msgs"
+      },
+      {
+        "parameters": {
+          "schemaType": "manual",
+          "inputSchema": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"string\"\n  }\n}\n\n"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.2,
+        "position": [
+          13240,
+          300
+        ],
+        "id": "c3d46442-b045-43da-936d-05baa50a3d90",
+        "name": "array string"
+      },
+      {
+        "parameters": {
+          "schemaType": "manual",
+          "inputSchema": "{\n  \"type\": \"string\"\n}\n"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.2,
+        "position": [
+          12900,
+          800
+        ],
+        "id": "ceb9638c-9017-4538-9be0-41c9283d2675",
+        "name": "string"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://runtime.hyperflowapis.global/webhook/89jRlBXMy-gIflYTD6E",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "telefone",
+                "value": "={{ $('Variáveis Globais').item.json.user_id }}"
+              },
+              {
+                "name": "cnpj",
+                "value": "={{ $('Variáveis Globais').item.json.cnpj }}"
+              },
+              {
+                "name": "dias",
+                "value": "={{ $('Variáveis Globais').item.json.dias }}"
+              },
+              {
+                "name": "titulosVencidos",
+                "value": "={{ $('Variáveis Globais').item.json.titulosVencidos }}"
+              },
+              {
+                "name": "linha",
+                "value": "={{ $('Variáveis Globais').item.json.linha }}"
+              },
+              {
+                "name": "resumo",
+                "value": "={{ $json.output }}"
+              },
+              {
+                "name": "transferir",
+                "value": "={{ 1==1 }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          13360,
+          820
+        ],
+        "id": "fb9effa9-3978-461d-ad14-f3b54bf809a0",
+        "name": "Transferir"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.message.trim() }}",
+          "hasOutputParser": true,
+          "messages": {
+            "messageValues": [
+              {
+                "message": "=## 🎯 Prompt Melhorado para Identificação de Mensagens Automáticas (Bot/Vot)\n\nVocê é um assistente que analisa respostas de WhatsApp e identifica se a mensagem foi enviada por um sistema automático (bot/vot) ou por uma pessoa real.\n\n### Tarefa:\n- Analise a mensagem.\n- Decida se ela é uma **resposta automática**, gerada por um sistema.\n- Retorne:\n  - `true` → Se for claramente automática.\n  - `false` → Se parecer enviada por uma pessoa, mesmo que estranha.\n\n---\n\n### Regras detalhadas:\n1. Considere como automáticas mensagens que:\n   - Agradecem pelo contato de forma genérica.\n   - Dizem que a empresa está **fechada** ou **fora do horário**.\n   - Falam que o atendimento será iniciado em breve.\n   - Usam expressões como \"Aguarde um momento\", \"Já vamos te atender\", \"Entraremos em contato\".\n   - Mencionam nomes de empresas ou setores de forma impessoal.\n   - São escritas com tom padronizado e impessoal, mesmo que informal.\n\n2. Exemplos de frases típicas de bots:\n   - \"Aguarde um momento, já vamos te atender.\"\n   - \"Agora estamos fechados, retornaremos em breve.\"\n   - \"Seu atendimento será iniciado assim que possível.\"\n   - \"Obrigado por sua mensagem, em breve entraremos em contato.\"\n\n3. **Em caso de dúvida, considere que a mensagem NÃO é automática.**\n   - Mensagens curtas, com pedidos de PIX, envio de comprovantes, ou frases fora do padrão de bots são consideradas **não automáticas**.\n\n---\n\n### Exemplos de mensagens automáticas (`true`):\n- \"Astroprint agradece sua mensagem. Não estamos disponíveis no momento, mas responderemos assim que possível.\"\n- \"Click Comunicação agradece seu contato. Como podemos ajudar?\"\n- \"Aguarde um momento, agora estamos fechados e já iremos te atender.\"\n- \"Olá! Seu atendimento será iniciado em breve.\"\n- \"Obrigado por falar com a Loja XYZ. Em breve responderemos.\"\n\n---\n\n### Exemplos de mensagens humanas (`false`):\n- \"Pode me mandar o boleto?\"\n- \"Acabei de fazer o PIX, olha aí.\"\n- \"Tô esperando resposta, tá demorando.\"\n- \"Preciso resolver isso hoje ainda.\"\n- \"Me ajuda com isso por favor.\""
+              }
+            ]
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.6,
+        "position": [
+          7040,
+          240
+        ],
+        "id": "bdc08b41-ea3a-44ac-b553-bd963b2cfd8f",
+        "name": "Bot?"
+      },
+      {
+        "parameters": {
+          "modelName": "models/gemini-2.5-flash-preview-04-17",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+        "typeVersion": 1,
+        "position": [
+          7040,
+          380
+        ],
+        "id": "3a36f177-b582-490d-b9f8-870020386722",
+        "name": "Gemini1",
+        "credentials": {
+          "googlePalmApi": {
+            "id": "nJiJWVZaDecaeKDp",
+            "name": "Google Gemini(PaLM) Api account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "schemaType": "manual",
+          "inputSchema": "{\n  \"type\": \"boolean\"\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.2,
+        "position": [
+          7200,
+          380
+        ],
+        "id": "40dc0fd9-1824-4499-8cf2-9ad5207c822e",
+        "name": "Bool"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://runtime.hyperflowapis.global/webhook/89jRlBXMy-gIflYTD6E",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "telefone",
+                "value": "={{ $('Variáveis Globais').item.json.user_id }}"
+              },
+              {
+                "name": "cnpj",
+                "value": "={{ $('Variáveis Globais').item.json.cnpj }}"
+              },
+              {
+                "name": "dias",
+                "value": "={{ $('Variáveis Globais').item.json.dias }}"
+              },
+              {
+                "name": "titulosVencidos",
+                "value": "={{ $('Variáveis Globais').item.json.titulosVencidos }}"
+              },
+              {
+                "name": "linha",
+                "value": "={{ $('Variáveis Globais').item.json.linha }}"
+              },
+              {
+                "name": "transferir",
+                "value": "={{ 1==2 }}"
+              },
+              {
+                "name": "encerrar",
+                "value": "={{ 1==2 }}"
+              },
+              {
+                "name": "mensagens",
+                "value": "={{ $json.output.map(mensagem => mensagem.trim()) }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          13800,
+          460
+        ],
+        "id": "2f830562-5f6d-4363-a119-1a5d0996b64a",
+        "name": "Mandar Hyper"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "fc632a7f-cc75-4cc3-b8c7-f754eef5bf62",
+                "leftValue": "={{ $json.output }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          8080,
+          260
+        ],
+        "id": "c4411aff-7b1f-4b59-9464-1a7061ebd834",
+        "name": "Encerrar?"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "fc632a7f-cc75-4cc3-b8c7-f754eef5bf62",
+                "leftValue": "={{ $json.output }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          7440,
+          240
+        ],
+        "id": "7e0ec888-f407-4ef1-bdd0-03ceb03e86a2",
+        "name": "Mensagem bot?"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $('Variáveis Globais').item.json.mensagem }}",
+          "hasOutputParser": true,
+          "messages": {
+            "messageValues": [
+              {
+                "message": "=## 🎯 Prompt para Identificação de Encerramento de Atendimento no WhatsApp  Você é um assistente que analisa mensagens de WhatsApp e identifica se o conteúdo representa um **encerramento de atendimento**, ou seja, se a conversa foi **finalizada de forma clara** por alguma das partes (empresa ou cliente).  ### 🧠 Tarefa: - Analise a mensagem recebida. - Decida se ela indica que o atendimento foi **encerrado**. - Retorne:   - `true` → Se a mensagem indicar claramente o fim do atendimento.   - `false` → Se o atendimento ainda estiver em andamento ou não for possível afirmar que terminou.  ---  ### 📌 Regras detalhadas:  1. Considere como **encerramento de atendimento** mensagens que:    - Agradecem e deixam claro que não há mais dúvidas.    - Dizem que está tudo certo, resolvido ou finalizado.    - Usam expressões como:        `\"pode encerrar\"`, `\"tudo certo\"`, `\"obrigado pelo atendimento\"`, `\"não preciso de mais nada\"`.    - Indicam que o cliente está satisfeito e se despede formalmente.    - Indicam que a empresa concluiu o atendimento e se despede.  2. **Mensagens que NÃO indicam encerramento**:    - Pedidos de ajuda, dúvidas, reclamações, questionamentos ou interações em aberto.    - Frases que indicam continuidade, como:        `\"vou pensar e te aviso\"`, `\"vou ver com meu sócio\"`, `\"me chama depois\"`.    - Encerramentos vagos ou ambíguos — nestes casos, **considere como não encerrado**.  3. **Em caso de dúvida, considere que o atendimento NÃO foi encerrado.**  ---  ### ✅ Exemplos de mensagens de encerramento (`true`): - \"Tudo certo, pode encerrar pra mim.\" - \"Obrigado pelo atendimento, era só isso mesmo.\" - \"Perfeito, não tenho mais dúvidas.\" - \"Já resolvi, obrigado!\" - \"Pode fechar o chamado.\"  ---  ### ❌ Exemplos de mensagens em andamento (`false`): - \"Vou pensar e te aviso.\" - \"Ainda estou analisando aqui.\" - \"Me chama mais tarde.\" - \"Pode me explicar melhor esse último ponto?\" - \"E se eu quiser mudar depois?\""
+              }
+            ]
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.6,
+        "position": [
+          7680,
+          260
+        ],
+        "id": "3869f8cb-b5bd-428a-a26d-aa1bed63062c",
+        "name": "Msg Encerrar?"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://runtime.hyperflowapis.global/webhook/89jRlBXMy-gIflYTD6E",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "telefone",
+                "value": "={{ $('Variáveis Globais').item.json.user_id }}"
+              },
+              {
+                "name": "encerrar",
+                "value": "={{ 1==1 }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          8360,
+          120
+        ],
+        "id": "4d69bd05-a97a-4f08-85ea-a1cee1d41da6",
+        "name": "Encerrar Hyper"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "d76ae79a-abd3-4a19-8855-9d7c49dccaa5",
+                "leftValue": "={{ $('Chamada Assistente').isExecuted || $('Chat').isExecuted }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          11940,
+          200
+        ],
+        "id": "e0f140aa-b735-4418-8c7c-e65ea9f30aaf",
+        "name": "Chamada Assistente?"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "f1fde6f4-7935-41d7-a6b6-5d597a234b3f",
+                "leftValue": "={{ $('Webhook - Bitrix').isExecuted }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          13100,
+          660
+        ],
+        "id": "ac794359-fff8-499e-b173-67e356011246",
+        "name": "Bitrix?"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "f1fde6f4-7935-41d7-a6b6-5d597a234b3f",
+                "leftValue": "={{ $('Webhook - Bitrix').isExecuted }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          13580,
+          440
+        ],
+        "id": "892152d3-c4d6-4b6d-9c19-c9a4a6a53b8f",
+        "name": "Bitrix?2"
+      },
+      {
+        "parameters": {
+          "jsCode": "let alternar = true;\nconst texto = $input.first().json.output;\n\n// Substituir ocorrências de ** por [B] e [/B]\nconst resultado = texto.replace(/\\*\\*/g, () => {\n    if (alternar) {\n        alternar = false;\n        return \"[B]\";\n    } else {\n        alternar = true;\n        return \"[/B]\";\n    }\n});\n\n// Expressão regular que captura inclusive quebras de linha\nconst regex = /<MENSAGEM>([\\s\\S]*?)<\\/MENSAGEM>/g;\nlet match;\nconst messages = [];\n\nwhile ((match = regex.exec(resultado)) !== null) {\n  messages.push(match[1].trim());\n}\n\n// Se não houver nenhum match, retorna todo o texto formatado\nif (messages.length === 0) {\n  return [{ json: { data: resultado } }];\n}\n\n// Caso contrário, mapeia cada mensagem para a estrutura esperada\nreturn messages.map(msg => ({\n    json: { data: msg }\n}));"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          14320,
+          320
+        ],
+        "id": "7488e79b-22f8-41de-88fc-a3246f83e1ba",
+        "name": "Formata Bitrix"
+      },
+      {
+        "parameters": {
+          "jsCode": "let alternar = true\n\nconst texto = $input.first().json.output\nconst resultado = texto.replace(/\\*\\*/g, () => {\n    if (alternar) {\n        alternar = false;\n        return \"[B]\";\n    } else {\n        alternar = true;\n        return \"[/B]\";\n    }\n})\n\nreturn {json: {data:resultado}}"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          5540,
+          800
+        ],
+        "id": "e36bc8b0-06da-4647-9c9f-d68d4fcb05cd",
+        "name": "Formata Bitrix1"
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          14060,
+          300
+        ],
+        "id": "f42886d2-bbef-46a3-b7ef-03988759c749",
+        "name": "Loop Over Items"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ed3cb56b-bd80-4b34-baf8-0df7a6dee1d6",
+                "name": "BOT_ID",
+                "value": "={{ $('Formata Entrada').first().json.data.BOT['2587'].BOT_ID }}",
+                "type": "string"
+              },
+              {
+                "id": "f5a78dea-ff72-4e62-8b5c-516c720a1dab",
+                "name": "CLIENT_ID",
+                "value": "={{ $('Webhook - Bitrix').item.json.query.CLIENT_ID }}",
+                "type": "string"
+              },
+              {
+                "id": "a5dfb187-69c1-4915-bddc-72ca18e7e249",
+                "name": "DIALOG_ID",
+                "value": "={{ $('Formata Entrada').first().json.data.PARAMS.DIALOG_ID }}",
+                "type": "string"
+              },
+              {
+                "id": "26cb7dd2-8541-488e-8c1e-6a7fa062589f",
+                "name": "MESSAGE",
+                "value": "=[USER={{ $('Formata Entrada').item.json.data.USER.ID }}]{{ $('Formata Entrada').item.json.data.USER.NAME }}[/USER] \n{{ $json.data }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          14520,
+          320
+        ],
+        "id": "1f264e30-12fa-4323-b3ec-6e5306f690d9",
+        "name": "setBitrix24Message"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $('Variáveis Globais').first().json.link_resposta_bitrix }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ $json }}",
+          "options": {}
+        },
+        "id": "98da584b-5045-48ac-bf06-9578ecba6eea",
+        "name": "Resposta - Bitrix",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          14720,
+          320
+        ]
+      },
+      {
+        "parameters": {
+          "amount": 2
+        },
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          14920,
+          320
+        ],
+        "id": "820e4791-1812-4b91-bcd6-973812ee6cfb",
+        "name": "Wait",
+        "webhookId": "bf17de80-d67b-4bd8-83c7-753be04ab00e"
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "output",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          13800,
+          300
+        ],
+        "id": "0fe8037a-8cf7-4a9d-ad36-edbb3ca8f08d",
+        "name": "Split Out"
+      },
+      {
+        "parameters": {
+          "jsCode": "let alternar = true;\nconst texto = '**Resumo Transferência Esperanza**\\n' + $input.first().json.output;\n\n// Substituir ocorrências de ** por [B] e [/B]\nconst resultado = texto.replace(/\\*\\*/g, () => {\n    if (alternar) {\n        alternar = false;\n        return \"[B]\";\n    } else {\n        alternar = true;\n        return \"[/B]\";\n    }\n});\n\n// Expressão regular que captura inclusive quebras de linha\nconst regex = /<MENSAGEM>([\\s\\S]*?)<\\/MENSAGEM>/g;\nlet match;\nconst messages = [];\n\nwhile ((match = regex.exec(resultado)) !== null) {\n  messages.push(match[1].trim());\n}\n\n// Se não houver nenhum match, retorna todo o texto formatado\nif (messages.length === 0) {\n  return [{ json: { data: resultado } }];\n}\n\n// Caso contrário, mapeia cada mensagem para a estrutura esperada\nreturn messages.map(msg => ({\n    json: { data: msg }\n}));"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          13360,
+          640
+        ],
+        "id": "ce65a28d-e004-401d-96eb-310d17ab5bef",
+        "name": "Formata Bitrix2"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ed3cb56b-bd80-4b34-baf8-0df7a6dee1d6",
+                "name": "BOT_ID",
+                "value": "={{ $('Formata Entrada').first().json.data.BOT['2587'].BOT_ID }}",
+                "type": "string"
+              },
+              {
+                "id": "f5a78dea-ff72-4e62-8b5c-516c720a1dab",
+                "name": "CLIENT_ID",
+                "value": "={{ $('Webhook - Bitrix').item.json.query.CLIENT_ID }}",
+                "type": "string"
+              },
+              {
+                "id": "a5dfb187-69c1-4915-bddc-72ca18e7e249",
+                "name": "DIALOG_ID",
+                "value": "={{ $('Formata Entrada').first().json.data.PARAMS.DIALOG_ID }}",
+                "type": "string"
+              },
+              {
+                "id": "26cb7dd2-8541-488e-8c1e-6a7fa062589f",
+                "name": "MESSAGE",
+                "value": "=[USER={{ $('Formata Entrada').item.json.data.USER.ID }}]{{ $('Formata Entrada').item.json.data.USER.NAME }}[/USER]\n{{ $json.data }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          13580,
+          640
+        ],
+        "id": "728b2794-3323-4905-9f18-41a27e3e4547",
+        "name": "setBitrix24Message2"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $('Variáveis Globais').first().json.link_resposta_bitrix }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ $json }}",
+          "options": {}
+        },
+        "id": "eee1cd15-4f10-4444-a2e7-186a9198a272",
+        "name": "Resposta - Bitrix2",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          13800,
+          640
+        ]
+      },
+      {
+        "parameters": {
+          "name": "consulta_titulos_suprimentos",
+          "description": "Buscar informações dos títulos de suprimentos do cliente, a partir do CNPJ do cliente",
+          "workflowId": {
+            "__rl": true,
+            "value": "bj81rtjKqwh3VpjV",
+            "mode": "list",
+            "cachedResultName": "Assistente Cobrança - func - consulta_titulos_suprimentos"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "cnpj": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('cnpj', `Número de CNPJ do cliente associado aos títulos de suprimentos`, 'string') }}"
+            },
+            "matchingColumns": [
+              "cnpj"
+            ],
+            "schema": [
+              {
+                "id": "cnpj",
+                "displayName": "cnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+        "typeVersion": 2.1,
+        "position": [
+          10380,
+          720
+        ],
+        "id": "77a4ffa7-490e-43c6-ae66-574b9376db48",
+        "name": "consulta_titulos_suprimentos"
+      },
+      {
+        "parameters": {
+          "name": "liberacao_confianca",
+          "description": "=Tenta fazer a liberação/desbloqueio em confiança da maquina do cliente, a partir do CNPJ do cliente e do número de série da maquina",
+          "workflowId": {
+            "__rl": true,
+            "value": "D2ZUDuaoJ15jA52v",
+            "mode": "list",
+            "cachedResultName": "Assistente Cobrança - func - liberacao_confianca"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "cnpj": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('cnpj', `Numero de CNPJ do cliente`, 'string') }}",
+              "numero_serie": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('numero_serie', `Número de série completo da maquina do cliente`, 'string') }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "cnpj",
+                "displayName": "cnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "numero_serie",
+                "displayName": "numero_serie",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+        "typeVersion": 2.1,
+        "position": [
+          10560,
+          720
+        ],
+        "id": "74465721-8082-478b-822f-0dc64a19b500",
+        "name": "liberacao_confianca"
+      },
+      {
+        "parameters": {
+          "name": "consulta_titulos_equipamentos",
+          "description": "Buscar informações dos títulos de equipamentos do cliente, a partir do CNPJ do cliente",
+          "workflowId": {
+            "__rl": true,
+            "value": "WUoxL9OYLTKWXGED",
+            "mode": "list",
+            "cachedResultName": "Assistente Cobrança - func - consulta_titulos_equipamentos"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "cnpj": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('cnpj', `Número de CNPJ do cliente associado aos títulos de equipamentos`, 'string') }}"
+            },
+            "matchingColumns": [
+              "cnpj"
+            ],
+            "schema": [
+              {
+                "id": "cnpj",
+                "displayName": "cnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+        "typeVersion": 2.1,
+        "position": [
+          10200,
+          720
+        ],
+        "id": "b3c27fae-4ad7-49e0-a918-54741277bf94",
+        "name": "consulta_titulos_equipamentos"
+      },
+      {
+        "parameters": {
+          "name": "gerar_pagamento",
+          "description": "Gera a forma de pagamento do título com valor atualizado para o cliente, a partir do CNPJ e financial_number",
+          "workflowId": {
+            "__rl": true,
+            "value": "QDJmYsOTGPYo1Jlk",
+            "mode": "list",
+            "cachedResultName": "Assistente Cobrança - func - gerar_pagamento"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "cnpj": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('cnpj', `CNPJ do cliente`, 'string') }}",
+              "financial_number": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('financial_number', `Nufin do boleto a ser pago`, 'string') }}",
+              "method": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('method', `Método de pagamento (pix ou boleto)`, 'string') }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "cnpj",
+                "displayName": "cnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "financial_number",
+                "displayName": "financial_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "method",
+                "displayName": "method",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+        "typeVersion": 2.1,
+        "position": [
+          10760,
+          720
+        ],
+        "id": "94f43293-eeb9-41cf-978e-bc0b18b46169",
+        "name": "gerar_pagamento"
+      },
+      {
+        "parameters": {
+          "name": "validar_cnpj",
+          "description": "Buscar o CNPJ do cliente com base no telefone do cliente que mandou a mensagem",
+          "workflowId": {
+            "__rl": true,
+            "value": "R2QUnFmezhh9iINk",
+            "mode": "list",
+            "cachedResultName": "Assistente Cobrança - func - validar_cnpj"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "telefone": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('telefone', `Número de telefone do cliente associado ao CNPJ`, 'string') }}"
+            },
+            "matchingColumns": [
+              "telefone"
+            ],
+            "schema": [
+              {
+                "id": "telefone",
+                "displayName": "telefone",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+        "typeVersion": 2.1,
+        "position": [
+          10900,
+          720
+        ],
+        "id": "bb436c82-7ad9-452f-9c62-dfe9e0af6058",
+        "name": "validar_cnpj"
+      },
+      {
+        "parameters": {
+          "name": "consulta_titulos_bloqueio",
+          "description": "=Buscar informações com base no CNPJ do cliente de todos os títulos que bloqueiam o equipamento e que precisam ser pagos para haver desbloqueio",
+          "workflowId": {
+            "__rl": true,
+            "value": "xK3ALnRlTx1hZeOY",
+            "mode": "list",
+            "cachedResultName": "Assistente Cobrança - consulta_titulos_bloqueio"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "cnpj": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('cnpj', `Número de CNPJ do cliente`, 'string') }}"
+            },
+            "matchingColumns": [
+              "cnpj"
+            ],
+            "schema": [
+              {
+                "id": "cnpj",
+                "displayName": "cnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+        "typeVersion": 2.1,
+        "position": [
+          10020,
+          720
+        ],
+        "id": "9918f7f2-c2a0-47e1-b0ba-1c3de7fdfd35",
+        "name": "consulta_titulos_bloqueio"
+      },
+      {
+        "parameters": {
+          "name": "perguntar_salvador",
+          "description": "Buscar informações de contratos ou das máquinas dos clientes a partir do CNPJ do cliente e número de contrato.",
+          "workflowId": {
+            "__rl": true,
+            "value": "ve026aJL5FvMXdPU",
+            "mode": "list",
+            "cachedResultName": "Assistente Suporte Neurônio - Salvador"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "mensagem": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('mensagem', ``, 'string') }}",
+              "cnpj": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('cnpj', ``, 'string') }}",
+              "contrato": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('contrato', ``, 'string') }}",
+              "numero_serie": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('numero_serie', ``, 'string') }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "mensagem",
+                "displayName": "mensagem",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              },
+              {
+                "id": "cnpj",
+                "displayName": "cnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              },
+              {
+                "id": "contrato",
+                "displayName": "contrato",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              },
+              {
+                "id": "numero_serie",
+                "displayName": "numero_serie",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+        "typeVersion": 2.1,
+        "position": [
+          11040,
+          720
+        ],
+        "id": "3d642b63-e731-4112-8948-74b2e9d504df",
+        "name": "perguntar_salvador"
+      },
+      {
+        "parameters": {
+          "content": "# trocar tempo de espera msg em prod",
+          "width": 300,
+          "color": 3
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          1240,
+          540
+        ],
+        "id": "bd1a1b1d-b2e5-422a-88a6-a6ef732a68e4",
+        "name": "Sticky Note5"
+      },
+      {
+        "parameters": {
+          "jsCode": "return $('Prepara mensagem').all()"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          8360,
+          280
+        ],
+        "id": "58d6ccb7-91aa-4006-971d-e639ff494b2a",
+        "name": "Code"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://automacao.blips-labs.com/webhook/atualiza-dados",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {}
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1880,
+          400
+        ],
+        "id": "3cd56d22-3334-453e-90b6-c42ac0549a84",
+        "name": "Atualiza Dados BQ"
+      }
+    ],
+    "connections": {
+      "Convert to Webhook": {
+        "main": [
+          [
+            {
+              "node": "Variáveis Globais",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Está em manutenção?": {
+        "main": [
+          [
+            {
+              "node": "Fora do Ar",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "MongoDB - Get User",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Variáveis Globais": {
+        "main": [
+          [
+            {
+              "node": "Está em manutenção?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook - hyper": {
+        "main": [
+          [
+            {
+              "node": "Dados hyper",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Chamada Assistente": {
+        "main": [
+          [
+            {
+              "node": "Dados Assistente",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "MongoDB - Get User": {
+        "main": [
+          [
+            {
+              "node": "If - User Exists",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If - User Exists": {
+        "main": [
+          [
+            {
+              "node": "Merge - User",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Prepara User",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepara User": {
+        "main": [
+          [
+            {
+              "node": "MongoDB - Create User",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "MongoDB - Create User": {
+        "main": [
+          [
+            {
+              "node": "Merge - User",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Merge - User": {
+        "main": [
+          [
+            {
+              "node": "Possui Thread salva no banco?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Possui Thread salva no banco?": {
+        "main": [
+          [
+            {
+              "node": "Mudou a thread_id?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Criar Thread",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Mudou a thread_id?": {
+        "main": [
+          [
+            {
+              "node": "Prepara thread_id",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Conta as mensagens recentes",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Conta as mensagens recentes": {
+        "main": [
+          [
+            {
+              "node": "É para continuar a thread_id?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "É para continuar a thread_id?": {
+        "main": [
+          [
+            {
+              "node": "Add thread_id",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Criar Thread",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Add thread_id": {
+        "main": [
+          [
+            {
+              "node": "Mensagem de Entrada",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepara atualização": {
+        "main": [
+          [
+            {
+              "node": "Atualizar thread_id",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Atualizar thread_id": {
+        "main": [
+          [
+            {
+              "node": "Foi uma solicitação p/ limpar?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Foi uma solicitação p/ limpar?": {
+        "main": [
+          [
+            {
+              "node": "Resposta Nova Thread",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Merge - User",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Prepara mensagem": {
+        "main": [
+          [
+            {
+              "node": "Bot?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Insere a mensagem": {
+        "main": [
+          [
+            {
+              "node": "Conta as mensagens",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Busca as mensagens": {
+        "main": [
+          [
+            {
+              "node": "Define process_date",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Conta as mensagens": {
+        "main": [
+          [
+            {
+              "node": "Primeira mensagem?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Primeira mensagem?": {
+        "main": [
+          [
+            {
+              "node": "Espera chegar mais mensagens",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Concatena todas mensagens": {
+        "main": [
+          [
+            {
+              "node": "Busca mensagem de ativação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Define process_date": {
+        "main": [
+          [
+            {
+              "node": "Marca para processar",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Marca para processar": {
+        "main": [
+          [
+            {
+              "node": "Concatena todas mensagens",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Espera chegar mais mensagens": {
+        "main": [
+          [
+            {
+              "node": "Busca as mensagens",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Criar Thread": {
+        "main": [
+          [
+            {
+              "node": "Prepara atualização",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Resposta Nova Thread": {
+        "main": [
+          [
+            {
+              "node": "Bitrix?1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepara thread_id": {
+        "main": [
+          [
+            {
+              "node": "Add thread_id",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Mensagem de Entrada": {
+        "main": [
+          [
+            {
+              "node": "Áudio?",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Arquivo?",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Imagem?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Transcreve Áudio": {
+        "main": [
+          [
+            {
+              "node": "Audio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Analisa Imagem": {
+        "main": [
+          [
+            {
+              "node": "Imagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Baixa Áudio": {
+        "main": [
+          [
+            {
+              "node": "Transcreve Áudio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Baixa Arquvo": {
+        "main": [
+          [
+            {
+              "node": "Extract from File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract from File": {
+        "main": [
+          [
+            {
+              "node": "File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          [
+            {
+              "node": "Aggregate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aggregate": {
+        "main": [
+          [
+            {
+              "node": "Prepara mensagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Imagem": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Audio": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "File": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 2
+            }
+          ]
+        ]
+      },
+      "Imagem?": {
+        "main": [
+          [
+            {
+              "node": "Analisa Imagem",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Imagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Áudio?": {
+        "main": [
+          [
+            {
+              "node": "Baixa Áudio",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Audio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Arquivo?": {
+        "main": [
+          [
+            {
+              "node": "Baixa Arquvo",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados Assistente": {
+        "main": [
+          [
+            {
+              "node": "Convert to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados Chat": {
+        "main": [
+          [
+            {
+              "node": "Chat Convert",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Chat": {
+        "main": [
+          [
+            {
+              "node": "Dados Chat",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Chat Convert": {
+        "main": [
+          [
+            {
+              "node": "Variáveis Globais",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook - Bitrix": {
+        "main": [
+          [
+            {
+              "node": "Formata Entrada",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "possui arquivo?": {
+        "main": [
+          [
+            {
+              "node": "buscar arquivo bitrix",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Convert Bitrix",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "buscar arquivo bitrix": {
+        "main": [
+          [
+            {
+              "node": "Pega o resto",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Formata Entrada": {
+        "main": [
+          [
+            {
+              "node": "Files Bitrix",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Files Bitrix": {
+        "main": [
+          [
+            {
+              "node": "possui arquivo?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Convert Bitrix": {
+        "main": [
+          [
+            {
+              "node": "Variáveis Globais",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Convert Bitrix1": {
+        "main": [
+          [
+            {
+              "node": "Variáveis Globais",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Pega o resto": {
+        "main": [
+          [
+            {
+              "node": "Convert Bitrix1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Resposta": {
+        "main": [
+          [
+            {
+              "node": "Chamada Assistente?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Bitrix?1": {
+        "main": [
+          [
+            {
+              "node": "Formata Bitrix1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Output",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "setBitrix24Message1": {
+        "main": [
+          [
+            {
+              "node": "Resposta - Bitrix1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados hyper": {
+        "main": [
+          [
+            {
+              "node": "Variáveis Globais",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Lista Runs": {
+        "main": [
+          [
+            {
+              "node": "Já terminou a outra?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Espera rodar um pouco": {
+        "main": [
+          [
+            {
+              "node": "Lista Runs",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Já terminou a outra?": {
+        "main": [
+          [
+            {
+              "node": "Esperanza",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Espera rodar um pouco",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Meu?": {
+        "main": [
+          [
+            {
+              "node": "Unit Tests",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          []
+        ]
+      },
+      "Busca mensagem de ativação": {
+        "main": [
+          [
+            {
+              "node": "Esperanza",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Esperanza": {
+        "main": [
+          [
+            {
+              "node": "Resposta",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Lista Runs",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Transferência": {
+        "main": [
+          [
+            {
+              "node": "Pode mandar?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "bool": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Transferência",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Pode mandar?": {
+        "main": [
+          [
+            {
+              "node": "Resposta Final",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Resumo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gemini": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Transferência",
+              "type": "ai_languageModel",
+              "index": 0
+            },
+            {
+              "node": "Resumo",
+              "type": "ai_languageModel",
+              "index": 0
+            },
+            {
+              "node": "Quebrar Msgs",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Resposta Final": {
+        "main": [
+          [
+            {
+              "node": "Quebrar Msgs",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "array string": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Quebrar Msgs",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "string": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Resumo",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Resumo": {
+        "main": [
+          [
+            {
+              "node": "Bitrix?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Bot?": {
+        "main": [
+          [
+            {
+              "node": "Mensagem bot?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gemini1": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Bot?",
+              "type": "ai_languageModel",
+              "index": 0
+            },
+            {
+              "node": "Msg Encerrar?",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Bool": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Bot?",
+              "type": "ai_outputParser",
+              "index": 0
+            },
+            {
+              "node": "Msg Encerrar?",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Quebrar Msgs": {
+        "main": [
+          [
+            {
+              "node": "Bitrix?2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Encerrar?": {
+        "main": [
+          [
+            {
+              "node": "Encerrar Hyper",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Mensagem bot?": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Msg Encerrar?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Msg Encerrar?": {
+        "main": [
+          [
+            {
+              "node": "Encerrar?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Chamada Assistente?": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Transferência",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Bitrix?2": {
+        "main": [
+          [
+            {
+              "node": "Split Out",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Mandar Hyper",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Bitrix?": {
+        "main": [
+          [
+            {
+              "node": "Formata Bitrix2",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Transferir",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Formata Bitrix": {
+        "main": [
+          [
+            {
+              "node": "setBitrix24Message",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Formata Bitrix1": {
+        "main": [
+          [
+            {
+              "node": "setBitrix24Message1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Formata Bitrix",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "setBitrix24Message": {
+        "main": [
+          [
+            {
+              "node": "Resposta - Bitrix",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Resposta - Bitrix": {
+        "main": [
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Formata Bitrix2": {
+        "main": [
+          [
+            {
+              "node": "setBitrix24Message2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "setBitrix24Message2": {
+        "main": [
+          [
+            {
+              "node": "Resposta - Bitrix2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "consulta_titulos_bloqueio": {
+        "ai_tool": [
+          [
+            {
+              "node": "Esperanza",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "consulta_titulos_equipamentos": {
+        "ai_tool": [
+          [
+            {
+              "node": "Esperanza",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "consulta_titulos_suprimentos": {
+        "ai_tool": [
+          [
+            {
+              "node": "Esperanza",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "liberacao_confianca": {
+        "ai_tool": [
+          [
+            {
+              "node": "Esperanza",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "gerar_pagamento": {
+        "ai_tool": [
+          [
+            {
+              "node": "Esperanza",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "validar_cnpj": {
+        "ai_tool": [
+          [
+            {
+              "node": "Esperanza",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "perguntar_salvador": {
+        "ai_tool": [
+          [
+            {
+              "node": "Esperanza",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "Insere a mensagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Atualiza Dados BQ": {
+        "main": [
+          []
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "America/Sao_Paulo",
+      "callerPolicy": "workflowsFromSameOwner",
+      "executionTimeout": 360
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Webhook - hyper": [
+        {
+          "json": {
+            "headers": {
+              "host": "n8n-dev.blips-labs.com",
+              "content-length": "78",
+              "accept": "application/json",
+              "content-type": "application/json",
+              "x-forwarded-for": "177.71.180.7",
+              "x-forwarded-host": "n8n-dev.blips-labs.com",
+              "x-forwarded-proto": "https",
+              "x-railway-edge": "railway/us-east4",
+              "x-railway-request-id": "jL9lVf7lS9mpT1SyueLfZA",
+              "x-real-ip": "177.71.180.7",
+              "x-request-start": "1747764226429",
+              "accept-encoding": "gzip"
+            },
+            "params": {},
+            "query": {},
+            "body": {
+              "name": "João Lucas",
+              "id": "5534984448484",
+              "text": "Bom dia",
+              "audio": ""
+            },
+            "webhookUrl": "https://n8n-dev.blips-labs.com/webhook/esperanza-dev",
+            "executionMode": "production"
+          }
+        }
+      ]
+    },
+    "versionId": "f38aff0b-dbbb-4dbd-a944-a81514e7fefb",
+    "triggerCount": 3,
+    "tags": [
+      {
+        "createdAt": "2024-07-09T15:07:56.880Z",
+        "updatedAt": "2024-07-09T15:07:56.880Z",
+        "id": "10AfOz2oKmpgqhM9",
+        "name": "Cobranca"
+      }
+    ]
+  }
+}
