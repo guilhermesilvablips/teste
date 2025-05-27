@@ -1,0 +1,89 @@
+{
+  "data": {
+    "createdAt": "2024-07-31T13:42:37.091Z",
+    "updatedAt": "2025-01-13T13:59:39.456Z",
+    "id": "CPe8m95zjnd0NlyH",
+    "name": "Teste - Fluxo de Erro",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "options": {}
+        },
+        "id": "ae5d0e24-c505-4393-aaad-1a8a43efc027",
+        "name": "Aggregate",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          320,
+          -20
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "message",
+          "guildId": {
+            "__rl": true,
+            "value": "1258059672171319316",
+            "mode": "list",
+            "cachedResultName": "Bot Teste",
+            "cachedResultUrl": "https://discord.com/channels/1258059672171319316"
+          },
+          "sendTo": "user",
+          "userId": {
+            "__rl": true,
+            "value": "611633188267229224",
+            "mode": "id"
+          },
+          "content": "Erro nos nodes OpenAI",
+          "options": {}
+        },
+        "id": "7938f2e7-6f1f-49fb-8be5-c8871f5b43c3",
+        "name": "Discord",
+        "type": "n8n-nodes-base.discord",
+        "typeVersion": 2,
+        "position": [
+          540,
+          -20
+        ],
+        "credentials": {
+          "discordOAuth2Api": {
+            "id": "2e0894liy8HiObFy",
+            "name": "Discord Bot"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.errorTrigger",
+        "typeVersion": 1,
+        "position": [
+          60,
+          -20
+        ],
+        "id": "0a9f4c3e-a996-415d-9392-c404ab9f6d16",
+        "name": "Error Trigger"
+      }
+    ],
+    "connections": {
+      "Aggregate": {
+        "main": [
+          []
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "265a298f-4819-4a4b-8585-71a5b21f54b4",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
