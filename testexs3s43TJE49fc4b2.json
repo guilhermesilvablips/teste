@@ -1,0 +1,639 @@
+{
+  "data": {
+    "createdAt": "2025-04-23T18:24:31.691Z",
+    "updatedAt": "2025-05-21T18:03:06.541Z",
+    "id": "xs3s43TJE49fc4b2",
+    "name": "Atualiza Dados - BQ",
+    "active": true,
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "atualiza-dados",
+          "options": {}
+        },
+        "id": "228d3751-7129-4279-8322-e10358b9ce4d",
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -1160,
+          460
+        ],
+        "webhookId": "7f4c7119-234d-4a69-89d8-0ac503a34fcf"
+      },
+      {
+        "parameters": {},
+        "id": "34ccc5b2-82ed-4432-a7bf-8a8065a0730c",
+        "name": "Execute Workflow Trigger",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          -1160,
+          260
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "3bf26978-a3d4-4ec2-b8fc-367422c07286",
+                "leftValue": "={{ $json.INDEX_LINHA }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "number",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "ffe3a524-1489-4408-acbf-b10d0042d3a9",
+                "leftValue": "={{ $json.INDEX_LINHA }}",
+                "rightValue": -1,
+                "operator": {
+                  "type": "number",
+                  "operation": "notEquals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "3110eee5-f6ff-4b38-946e-783a55f2b7aa",
+        "name": "Tem linha?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -520,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "ab59da20-dd38-4e25-ad0b-0e3096922b53",
+                "leftValue": "={{ $json.MSG_ENVIADA }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "0ced305b-06a6-4749-b331-a20fb8ff81a3",
+                "leftValue": "={{ $json.EMAIL_ENVIADO }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "c045a38c-a29e-4126-8554-35497926baeb",
+                "leftValue": "={{ $json.LOG_ENVIO }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "024f1d5b-1f45-4d3f-a60c-ac2f76ab1b45",
+                "leftValue": "={{ $json.ARQUIVO }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "8d6a70eb-ee71-486e-a8e0-60ddd19192d7",
+                "leftValue": "={{ $json.IMAGEM }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "ccf15b62-ec6b-4c88-b517-ac12c624c8e8",
+                "leftValue": "={{ $json.LIGACAO }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "id": "e5d54acd-ca86-4bc0-9baf-579e7bebb67c",
+        "name": "Tem mudança?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -280,
+          120
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "faf14c15-9e8e-4fcb-93fd-199591dab023",
+                "name": "resposta",
+                "value": "SUCESSO",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "0a5899da-8b55-4eef-95d4-7ae31692e224",
+        "name": "Resposta sucesso",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          200,
+          100
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "e7851fb5-ef55-476b-b49b-ec5b98eacc27",
+                "name": "reposta",
+                "value": "#ERRO#",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d47300fa-58ae-44ed-8b7f-09a86dbe2521",
+        "name": "Resposta de erro",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          200,
+          260
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "89011a26-e7d3-4463-8bdd-18ee98ebad7f",
+                "name": "INDEX_LINHA",
+                "value": "={{ $json.INDEX_LINHA }}",
+                "type": "number"
+              },
+              {
+                "id": "272b1e4f-6d8e-4e39-a805-e8f2b3dbda6e",
+                "name": "MSG_ENVIADA",
+                "value": "={{ $json['MSG ENVIADA'] }}",
+                "type": "string"
+              },
+              {
+                "id": "10e41c02-11fd-4665-bffc-a81d83e6b2d5",
+                "name": "EMAIL_ENVIADO",
+                "value": "={{ $json['EMAIL ENVIADO'] }}",
+                "type": "boolean"
+              },
+              {
+                "id": "5a4e7a2c-da4c-40ee-aa16-1ca091d1daac",
+                "name": "LOG_ENVIO",
+                "value": "={{ $json['LOG ENVIO'] }}",
+                "type": "string"
+              },
+              {
+                "id": "05eadae2-e68d-40d3-a742-34c649998a0d",
+                "name": "ARQUIVO",
+                "value": "={{ $json.ARQUIVO }}",
+                "type": "boolean"
+              },
+              {
+                "id": "c53b6c2a-c2bc-476b-98a0-49278fcf6998",
+                "name": "IMAGEM",
+                "value": "={{ $json.IMAGEM }}",
+                "type": "boolean"
+              },
+              {
+                "id": "0eac222c-d728-4c32-a6a2-175e0d2671b8",
+                "name": "LIGACAO",
+                "value": "={{ $json.LIGACAO }}",
+                "type": "boolean"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d15b547c-6d12-4909-891a-8d43aa898eef",
+        "name": "Campos",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -740,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b2232ebb-f439-43bf-bc19-1104229fa4dd",
+                "name": "INDEX_LINHA",
+                "value": "={{ $('Webhook').first().json.body.linha || $('Webhook').first().json.body.INDEX_LINHA || -1 }}  ",
+                "type": "number"
+              },
+              {
+                "id": "c537e628-5695-4ca5-bb03-fa70da934ebd",
+                "name": "LOG ENVIO",
+                "value": "={{ $('Webhook').first().json.body.log }}",
+                "type": "string"
+              },
+              {
+                "id": "cc93fbd5-4461-47cd-8538-c903109452b4",
+                "name": "EMAIL ENVIADO",
+                "value": "={{ $('Webhook').first().json.body.EMAIL_ENVIADO }}",
+                "type": "boolean"
+              },
+              {
+                "id": "f0b9d027-fb64-488d-b139-7d2b6583e4ec",
+                "name": "MSG ENVIADA",
+                "value": "={{ \n  $json.body.msg_enviada\n    || \n  (\n    ( \n      $json.body.log.includes('Erro') \n        || \n      $json.body.log.includes('Em atendimento') \n    ) ? \n      'ERRO' \n        :  \n      null\n  ) \n}}",
+                "type": "string"
+              },
+              {
+                "id": "21a368f4-efbb-49a0-bf60-60e2c60835bc",
+                "name": "ARQUIVO",
+                "value": "={{ $('Webhook').first().json.body.arquivo }}",
+                "type": "boolean"
+              },
+              {
+                "id": "ae90a644-29b7-4cdf-b11f-fd15ce275477",
+                "name": "IMAGEM",
+                "value": "={{ $('Webhook').first().json.body.imagem }}",
+                "type": "boolean"
+              },
+              {
+                "id": "1841bd68-067e-491e-b40f-c0bf32d1c20b",
+                "name": "DATA ENVIO",
+                "value": "={{    \n  (\n    $json.body.msg_enviada   \n      ||       \n    $json.body.log.includes('Erro')        \n      ||      \n    $json.body.log.includes('Em atendimento')    \n  ) ?      \n    $now.format('dd/MM/yyyy HH:mm')        \n      :       \n    null  \n}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "70ad0d2d-78ce-4eb0-bc93-61d15ae4f126",
+        "name": "ARGS",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -940,
+          360
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// items aqui já é o array de saída do HTTP Request\n// e items[0].json é este objeto que você mostrou no exemplo\nconst sheet = items[0].json;\nconst ranges = sheet.valueRanges;\n\n// pega o array de cabeçalho e o array de dados\nconst headers = ranges[0].values[0];\nconst row     = ranges[1].values[0];\n\n// monta o objeto final\nlet result = {};\nheaders.forEach((colName, idx) => {\n  result[colName] = row[idx] ?? null;  // usa null se não existir valor\n});\n\n// devolve um item só, com o JSON mapeado\nreturn [\n  {\n    json: result\n  }\n];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -280,
+          480
+        ],
+        "id": "eff7d59d-e3cc-4e39-93c4-9b573ad6953a",
+        "name": "Dados Anteriores"
+      },
+      {
+        "parameters": {
+          "url": "=https://sheets.googleapis.com/v4/spreadsheets/{{ $('Sheet Id').item.json.id }}/values:batchGet?ranges=%27Base%20Blips%27!1:1&ranges=%27Base%20Blips%27!{{ $('ARGS').last().json.INDEX_LINHA }}:{{ $('ARGS').last().json.INDEX_LINHA }}&majorDimension=ROWS",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "googleSheetsOAuth2Api",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -520,
+          480
+        ],
+        "id": "2e9f14b4-14db-48b3-90a3-de1a2490bb2f",
+        "name": "Pega linha",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "4HoAG3ZVDyUYbTpj",
+            "name": "Joao Lucas - Sheets"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://sheets.googleapis.com/v4/spreadsheets/{{ $('Sheet Id').item.json.id }}/values:batchUpdate",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "googleSheetsOAuth2Api",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"valueInputOption\": \"USER_ENTERED\",\n  \"data\": {{ JSON.stringify($json.data, null, 2) }}\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          200,
+          480
+        ],
+        "id": "d60b70fe-706d-4280-b498-0b3df0d6f9d5",
+        "name": "Update",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "4HoAG3ZVDyUYbTpj",
+            "name": "Joao Lucas - Sheets"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "546b217b-6f9e-4961-bb41-3866c8b00d30",
+                "name": "id",
+                "value": "1buF3vypm2gKo8fo61JEbK8v1HtOAXeTc0PqjNjthXt8",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -740,
+          480
+        ],
+        "id": "8d15b591-b005-46ce-8f20-427039767d6f",
+        "name": "Sheet Id"
+      },
+      {
+        "parameters": {
+          "jsCode": "// 1) inputs\nconst anteriores = $(\"Dados Anteriores\").first().json;  // { NOME: \"...\", DOCUMENTO: \"...\", … }\nconst novos      = $(\"ARGS\").first().json;             // { INDEX_LINHA: 2, LOG_ENVIO: null, EMAIL_ENVIADO: null, … }\n\n// 2) pega o número da linha\nconst row = novos.INDEX_LINHA;\n\n// 3) monta dinamicamente a lista de cabeçalhos (na ordem de inserção)\nconst headers = Object.keys(anteriores);\n\n// 4) converte índice (0,1,2…) em letra de coluna (A, B, C … Z, AA, AB…)\nfunction colLetter(idx) {\n  let letter = '';\n  while (idx >= 0) {\n    letter = String.fromCharCode(65 + (idx % 26)) + letter;\n    idx = Math.floor(idx / 26) - 1;\n  }\n  return letter;\n}\n\n// 5) percorre cada campo que veio em `novos`, compara com o anterior\nconst sheetName = 'Base Blips';\nconst updates = [];\n\nfor (const key of Object.keys(novos)) {\n  if (key === 'INDEX_LINHA') continue;        // pula o índice da linha\n\n  const newVal = novos[key];\n  if (newVal == null) continue;              // pula se veio null ou undefined\n\n  const oldVal = anteriores[key];\n  if (oldVal !== newVal) {\n    const colIdx = headers.indexOf(key);\n    if (colIdx === -1) continue;             // coluna não mapeada\n\n    const letter = colLetter(colIdx);\n    updates.push({\n      range: `${sheetName}!${letter}${row}`,\n      values: [[ newVal ]]\n    });\n  }\n}\n\n// 6) retorna o array pronto para o próximo nó\nreturn [{\n  json: {\n    data: updates\n  }\n}];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -20,
+          480
+        ],
+        "id": "a1605372-9578-4859-a051-06c30d0e3161",
+        "name": "Campos Update"
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "UPDATE blips-bigdata.IA_E_AUTOMACAO.DADOS_COBRANCA_ESPERANZA\nSET\n  {{\n    (\n      ($json.MSG_ENVIADA !== null ? `MSG_ENVIADA = '${$json.MSG_ENVIADA}',\\n` : '') +\n      ($json.EMAIL_ENVIADO ? `EMAIL_ENVIADO = ${$json.EMAIL_ENVIADO},\\n` : '') +\n      ($json.LIGACAO ? `LIGACAO = ${$json.LIGACAO},\\n` : '') +\n      ($json.MSG_ENVIADA !== null ? `DATA_ENVIO = CURRENT_DATETIME(\"America/Sao_Paulo\"),\\n` : '') +\n      ($json.EMAIL_ENVIADO ? `DATA_EMAIL = CURRENT_DATETIME(\"America/Sao_Paulo\"),\\n` : '') +\n      ($json.LIGACAO ? `DATA_LIGACAO = CURRENT_DATETIME(\"America/Sao_Paulo\"),\\n` : '') +\n      ($json.LOG_ENVIO !== null ? `LOG_ENVIO = '${$json.LOG_ENVIO}',\\n` : '') +\n      (($json.LOG_ENVIO !== null || $json.ARQUIVO || $json.IMAGEM) ? `DATA_ATUALIZACAO = CURRENT_DATETIME(\"America/Sao_Paulo\"),\\n` : '') +\n      ($json.ARQUIVO ? `ARQUIVO = ${$json.ARQUIVO},\\n` : '') +\n      ($json.IMAGEM ? `IMAGEM = ${$json.IMAGEM},\\n` : '')\n    ).replace(/,\\s*\\n$/, '')\n  }}\nWHERE INDEX_LINHA = {{ $json.INDEX_LINHA }};",
+          "options": {}
+        },
+        "id": "481aff3a-0aae-4f77-9a95-5ba303e34c00",
+        "name": "Update BQ",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          -20,
+          100
+        ],
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Tem linha?": {
+        "main": [
+          [
+            {
+              "node": "Tem mudança?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Resposta de erro",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tem mudança?": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Resposta de erro",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Campos": {
+        "main": [
+          [
+            {
+              "node": "Tem linha?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "ARGS": {
+        "main": [
+          [
+            {
+              "node": "Campos",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Sheet Id",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "ARGS",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Pega linha": {
+        "main": [
+          [
+            {
+              "node": "Dados Anteriores",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          []
+        ]
+      },
+      "Dados Anteriores": {
+        "main": [
+          [
+            {
+              "node": "Campos Update",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sheet Id": {
+        "main": [
+          [
+            {
+              "node": "Pega linha",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Campos Update": {
+        "main": [
+          []
+        ]
+      },
+      "Execute Workflow Trigger": {
+        "main": [
+          [
+            {
+              "node": "ARGS",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Update BQ": {
+        "main": [
+          [
+            {
+              "node": "Resposta sucesso",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Webhook": [
+        {
+          "json": {
+            "headers": {
+              "x-forwarded-for": "54.232.37.49",
+              "x-forwarded-proto": "https",
+              "x-forwarded-port": "443",
+              "host": "automacao.blips-labs.com",
+              "x-amzn-trace-id": "Root=1-68275b37-099354295bf612ce70cc55c5",
+              "content-length": "73",
+              "accept": "application/json",
+              "content-type": "application/json"
+            },
+            "params": {},
+            "query": {},
+            "body": {
+              "linha": "7",
+              "log": "teste",
+              "msg_enviada": "SIM"
+            },
+            "webhookUrl": "https://automacao.blips-labs.com/webhook/atualiza-dados",
+            "executionMode": "production"
+          }
+        }
+      ]
+    },
+    "versionId": "09fc6cfd-2148-425e-a0ee-76222f8dafb6",
+    "triggerCount": 1,
+    "tags": [
+      {
+        "createdAt": "2024-07-09T15:07:56.880Z",
+        "updatedAt": "2024-07-09T15:07:56.880Z",
+        "id": "10AfOz2oKmpgqhM9",
+        "name": "Cobranca"
+      }
+    ]
+  }
+}
