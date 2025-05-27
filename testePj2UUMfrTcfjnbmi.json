@@ -1,0 +1,593 @@
+{
+  "data": {
+    "createdAt": "2025-02-18T19:46:06.848Z",
+    "updatedAt": "2025-03-11T18:30:46.930Z",
+    "id": "Pj2UUMfrTcfjnbmi",
+    "name": "Auditor agent",
+    "active": true,
+    "nodes": [
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -160,
+          -700
+        ],
+        "id": "30a15348-7568-40fa-b450-b7c0322df952",
+        "name": "When chat message received",
+        "webhookId": "00830a3e-9601-4492-9e08-4b28559ee605"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $('setWebhookTrigger').item.json.toJsonString().parseJson().chatInput }}",
+          "options": {
+            "systemMessage": "=Você é um auditor de contratos altamente analítico, especializado em identificar padrões, anomalias e problemas nos contratos.\nSua função é investigar contratos de forma abrangente, utilizando todas as ferramentas disponíveis para detectar atrasos, riscos e tendências.\nSeu lema é: “Missão dada é missão cumprida!”, e seu trabalho é garantir que contratos não atrasem, setores façam seu trabalho e ninguém fique de bobeira.\n\n📌 FERRAMENTAS DISPONÍVEIS:\n1️⃣ sql_querie - Consulta de Fases e SLA\nRetorna: fase do contrato, status e SLA (tempo esperado x tempo real gasto).\nObjetivo: Identificar contratos atrasados e setores que estão vacilando.\nInstrução: Sempre que mencionar fases, use os termos em português.\n2️⃣ buscar_contratos - Consulta de Detalhes do Contrato\nRetorna: detalhes importantes (cliente, equipamentos, destino, pagamento, etc.).\nObjetivo: Descobrir o que está atrapalhando o andamento dos contratos.\nInstrução: Pegue o número ou lista de contratos para buscar os detalhes.\nPROCESSO DE ANÁLISE\n1️⃣ Coleta de Detalhes dos Contratos \nUtilize a sql_querie para mostrar todos os contratos com SLA estourado.\n\n2️⃣ Pesquisa dos contratos e Correlação de Dados\nUtilize a buscar_contratos para obter informações detalhadas dos contratos.\n\n3️⃣  Identificação de Pontos em comum, Pendencias, Tendencias\n\n🚨 COMO RESPONDER AO USUÁRIO?\n🎯 Se o usuário pedir um relatório de contratos atrasados:\n\nBusque os detalhes de cada contrato para entender o motivo do atraso (buscar_contratos).\nSe identificar erros frequentes, bronca na equipe que tá falhando!\n💡 Se o usuário quiser tendências de melhora ou piora:\n\nCompare períodos passados para identificar quando a coisa degringolou.\nDiga o que está funcionando bem e o que está virando bagunça.\n⚠️ Se o usuário quiser alertar um setor específico:\n\nEncontre contratos em fases críticas e que precisam de ação imediata.\nIdentifique quem tem que resolver isso e manda o alerta.\n🔎 Se o usuário quiser correlação entre contratos:\n\nAche os padrões: mesmo cliente, mesmo destino, mesmo problema?\nSe tem um setor que sempre dá problema, aponta e recomenda ação!\n\nFORMATO DE OUTPUT ESPERADO\n📌 Relatório de Auditoria - Contratos com SLA Estourado\n(Em formato de texto puro e estruturado em Markdown)\n\n1️⃣ Fatores em comum\n🔹 Fases mais problemáticas: Fase X, Fase Y\n🔹 Localizações impactadas: Cidade A, Cidade B\n🔹 Clientes afetados: Cliente X, Cliente Y\n🔹 Outros padrões detectados: [Detalhes relevantes]\n3️⃣ ⚠️ Contratos em Fases Críticas\n🚨 Contrato X - [Fase] - [Tempo na fase]\n🚨 Contrato Y - [Fase] - [Tempo na fase]\n🔥 Setores responsáveis: [Lista] (Se mexam antes que piore!)\n4️⃣ 🔍 Padrões e Problemas Frequentes\nClientes que mais aparecem nos atrasos: [Lista]\nEquipamentos que sempre dão dor de cabeça: [Lista]\nCidades ou destinos problemáticos: [Lista]\nFases do contrato mais enroladas: [Lista]\n🔍 Outros fatores: Explicação\n4️⃣ Recomendações\n✅ Ação 1: Explicação\n✅ Ação 2: Explicação\n✅ Outras sugestões: Explicação\nAgora, execute sua análise seguindo esse fluxo e gere um relatório detalhado.",
+            "returnIntermediateSteps": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 1.7,
+        "position": [
+          480,
+          -840
+        ],
+        "id": "3eb77900-0439-4132-ad9e-03a5cdade99d",
+        "name": "AI Agent"
+      },
+      {
+        "parameters": {
+          "toolDescription": "Este recurso é para fazer buscar de informações detalhadas de um ou mais contratos como:\nqual é o cliente\nseus detalhes de pagamento\ndetalhes de definições de contratos",
+          "method": "POST",
+          "url": "https://n8n-dev.blips-labs.com/webhook/buscar_contrato",
+          "sendBody": true,
+          "parametersBody": {
+            "values": [
+              {
+                "name": "lista_contratos",
+                "valueProvider": "modelOptional"
+              },
+              {
+                "name": "contrato",
+                "valueProvider": "modelOptional"
+              }
+            ]
+          },
+          "placeholderDefinitions": {
+            "values": [
+              {
+                "name": "lista_contratos",
+                "description": "lista dos numeros dos contratos, irá retornar um resumos dos contratos solicitados",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+        "typeVersion": 1.1,
+        "position": [
+          800,
+          -580
+        ],
+        "id": "c0821e98-c714-41bb-ab6f-2652156e2fe4",
+        "name": "buscar_contrato"
+      },
+      {
+        "parameters": {
+          "toolDescription": "Este é um agent que ira te auxiliar com contratos de cliente como:\nFazes do contrato\nStatus do contrato\nDatas e seus respectivos SLAs.",
+          "method": "POST",
+          "url": "https://n8n-dev.blips-labs.com/webhook/83115bc1-a04b-442e-8baa-b6e99c562049",
+          "sendBody": true,
+          "parametersBody": {
+            "values": [
+              {
+                "name": "question"
+              }
+            ]
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+        "typeVersion": 1.1,
+        "position": [
+          620,
+          -580
+        ],
+        "id": "c9bd910e-868e-46b0-b110-5e80fda471a0",
+        "name": "Sql querie"
+      },
+      {
+        "parameters": {
+          "modelName": "models/gemini-2.0-flash-lite-preview-02-05",
+          "options": {
+            "temperature": 0.7,
+            "topP": 0.5
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+        "typeVersion": 1,
+        "position": [
+          420,
+          -580
+        ],
+        "id": "a246bfe1-e6d6-42a9-9edb-db2c319e089d",
+        "name": "Google Gemini Chat Model",
+        "credentials": {
+          "googlePalmApi": {
+            "id": "CuJxjolJuOtVRE1K",
+            "name": "Luan Gemini Key"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "auditor_agent",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -160,
+          -960
+        ],
+        "id": "6e0ea0d2-7a7e-4a00-9f13-cc0cdadfa0ab",
+        "name": "Webhook",
+        "webhookId": "00a4097f-2dfa-4a0d-b253-4370eb722bdc"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/2523/2ukd6fa1rmccbtq9/imbot.message.add",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ $json }}",
+          "options": {}
+        },
+        "id": "92003021-6fdc-4d5c-acb6-b7d68c7a0ae8",
+        "name": "Resposta Nascimento v2",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2000,
+          -740
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "let alternar = true;\nlet texto;\n\n// Verifica se json.output é uma string ou um objeto\nif (typeof $json.output === \"string\") {\n    texto = $json.output; // Se já for string, usa diretamente\n} else if (typeof $json.output === \"object\") {\n    texto = JSON.stringify($json.output); // Se for JSON, converte para string\n} else {\n    return { json: { error: \"Formato inválido de entrada\" } };\n}\n\n// Substitui ** por [B] e [/B] de forma alternada\nconst resultado = texto.replace(/\\*\\*/g, () => {\n    alternar = !alternar;\n    return alternar ? \"[B]\" : \"[/B]\";\n});\n\nreturn { json: { data: resultado } };\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1240,
+          -800
+        ],
+        "id": "60406581-51f6-417c-8876-1f6ef003e29d",
+        "name": "Trocar negrito md para bitrix"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ed3cb56b-bd80-4b34-baf8-0df7a6dee1d6",
+                "name": "BOT_ID",
+                "value": "={{ $('setWebhookTrigger').first().json.BOT_ID }}",
+                "type": "string"
+              },
+              {
+                "id": "f5a78dea-ff72-4e62-8b5c-516c720a1dab",
+                "name": "CLIENT_ID",
+                "value": "={{ $('setWebhookTrigger').first().json.CLIENT_ID }}",
+                "type": "string"
+              },
+              {
+                "id": "a5dfb187-69c1-4915-bddc-72ca18e7e249",
+                "name": "DIALOG_ID",
+                "value": "={{ $('setWebhookTrigger').first().json.DIALOG_ID }}",
+                "type": "string"
+              },
+              {
+                "id": "26cb7dd2-8541-488e-8c1e-6a7fa062589f",
+                "name": "MESSAGE",
+                "value": "=[USER={{ $('setWebhookTrigger').first().json.user_id }}] {{ $('setWebhookTrigger').first().json.username }}[/USER]\n{{ $json.data }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1720,
+          -740
+        ],
+        "id": "2ad76202-b815-4ab5-8aff-00adc27edc38",
+        "name": "setBitrixMessage"
+      },
+      {
+        "parameters": {
+          "content": "## Preparação e envio de mensagem Bitrix",
+          "height": 80,
+          "width": 620,
+          "color": 6
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          1480,
+          -860
+        ],
+        "id": "1b4e7b3f-9718-4434-aa10-223ed57c840a",
+        "name": "Sticky Note16"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "dad7035e-f741-4cd9-8a7b-52419dfc0f09",
+                "name": "BOT_ID",
+                "value": "={{ $json.body.BOT_ID || \"\"}}",
+                "type": "string"
+              },
+              {
+                "id": "86c27663-19ae-4589-8cec-ed9b98e9f251",
+                "name": "CLIENT_ID",
+                "value": "={{ $json.body.CLIENT_ID  || \"\"}}",
+                "type": "string"
+              },
+              {
+                "id": "c25e4cfe-839a-4695-ad83-2fc8c4a83991",
+                "name": "DIALOG_ID",
+                "value": "={{ $json.body.DIALOG_ID  || \"\"}}",
+                "type": "string"
+              },
+              {
+                "id": "2000e5e3-4aa1-4445-bebe-63a10baaa1af",
+                "name": "caller_agent",
+                "value": "={{ $json.body.caller_agent }}",
+                "type": "string"
+              },
+              {
+                "id": "7ca2f4ca-2f68-4397-bfbc-c2708c6ed5fc",
+                "name": "username",
+                "value": "={{ $json.body.username || \"\" }}",
+                "type": "string"
+              },
+              {
+                "id": "9237150d-8543-42f7-8031-88b6c6249af6",
+                "name": "user_id",
+                "value": "={{ $json.body.user_id || \"\" }}",
+                "type": "string"
+              },
+              {
+                "id": "9085b344-72ae-4e08-b89b-0d66e5da189e",
+                "name": "chatInput",
+                "value": "={{ $json.body.message }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          120,
+          -960
+        ],
+        "id": "a2eb9e2f-5a0a-4e31-82cd-08419372ac25",
+        "name": "setWebhookTrigger"
+      },
+      {
+        "parameters": {
+          "jsCode": "const texto = $json.text;\n\nlet formattedText = texto.replace(/\\*\\*(.*?)\\*\\*/g, '[B]$1[/B]');\n\nformattedText = formattedText.replace(/^#{1,}\\s*(.*?)$/gm, (match, title) => {\n  if (!title.includes('[B]')) {\n    return `[B]${title}[/B]`;\n  }\n  return title;\n});\n\nreturn [{formattedText}];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1220,
+          -560
+        ],
+        "id": "5eff9c76-66b6-4623-8fdb-8c909462bcb0",
+        "name": "Code"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $('setWebhookTrigger').item.json.toJsonString().parseJson().chatInput }}",
+          "options": {
+            "systemMessage": "=Você é um especialista em análise de desempenho, focado em identificar padrões, avaliar evolução ao longo do tempo e entender o impacto de mudanças.\nSeu trabalho é analisar dados históricos, comparar períodos e apontar o que melhorou, o que piorou e por quê.\nAqui não tem chute: você trabalha com números, fatos e tendências.\n\nSe um processo melhorou, elogie e mostre o motivo.\nSe piorou, aponta o problema e sugere ação.\nSempre seja claro, direto e baseado em dados.\n\n📌 FERRAMENTAS DISPONÍVEIS:\n1️⃣ sql_querie - Consulta de Fases e SLA\nRetorna: fase do contrato, status e SLA (tempo esperado x tempo real gasto).\nObjetivo: Comparar tempos de execução e entender onde houve ganho ou perda de eficiência.\nInstrução: Sempre que mencionar fases, use os termos em português.\n2️⃣ buscar_contratos - Consulta de Detalhes do Contrato\nRetorna: informações detalhadas sobre contratos (cliente, equipamentos, destino, pagamento, etc.).\nObjetivo: Identificar mudanças que impactaram no desempenho e variáveis que influenciam na melhora ou piora.\nInstrução: Use o número ou lista de contratos para obter detalhes.\n📊 COMO RESPONDER ÀS SOLICITAÇÕES DO USUÁRIO?\n📈 Se o usuário pedir comparação de meses ou semanas:\n\nAnalise os dados de dois ou mais períodos e identifique crescimento ou queda no desempenho.\nMostre onde houve melhora e onde a coisa desandou.\nExplique quais mudanças causaram impacto positivo ou negativo.\n🔄 Se o usuário quiser entender o impacto de mudanças:\n\nCompare períodos antes e depois da mudança.\nSe melhorou, mostre o que funcionou.\nSe piorou, aponta o erro e sugere correção.\n⚠️ Se o usuário quiser alertas sobre quedas no desempenho:\n\nIdentifique setores ou fases com queda de eficiência.\nListe as principais causas e recomende ações.\nSe necessário, indique áreas que precisam de atenção imediata.\n📌 Se o usuário quiser entender padrões de crescimento:\n\nIdentifique períodos de alta eficiência e os fatores que levaram a isso.\nSugira como manter ou replicar esse crescimento.\n📢 OUTPUT ESPERADO (EM MARKDOWN)\n📊 RELATÓRIO DE ANÁLISE DE DESEMPENHO\n(Em formato estruturado e Markdown puro)\n\n1️⃣ Comparação de Desempenho por Período\n🗓 Período A vs. Período B\n\n📈 Variação positiva: [X% de melhoria]\n📉 Variação negativa: [X% de piora]\n🏆 Melhor desempenho: [Mês ou Semana X]\n⚠️ Pior desempenho: [Mês ou Semana Y]\n2️⃣ 📌 Impacto de Mudanças Aplicadas\n🚀 Mudanças que melhoraram o desempenho:\n\n✅ [Mudança X] → Impacto: [Explicação]\n✅ [Mudança Y] → Impacto: [Explicação]\n❌ Mudanças que não refletiram em crescimento:\n\n⚠️ [Mudança Z] → Impacto: [Nenhuma melhoria identificada]\n🛑 Sugestão: [Revisar estratégia ou corrigir erro]\n3️⃣ 📢 Áreas Críticas e Alertas\n⚠️ Setores com piora no desempenho: [Lista de setores]\n⚠️ Fases do contrato mais lentas: [Lista de fases críticas]\n🚨 Atenção necessária para: [Departamentos responsáveis]\n\n4️⃣ 🔍 Padrões e Tendências Identificadas\n🔹 Períodos com maior eficiência: [Lista de períodos]\n🔹 Fatores que impactam positivamente: [Detalhes]\n🔹 Riscos de piora futura: [Pontos de atenção]\n\n5️⃣ ✅ Recomendações Diretas\n✅ Ação 1: [Sugestão para manter o crescimento]\n✅ Ação 2: [Sugestão para corrigir queda de desempenho]\n✅ Ação 3: [Sugestão para melhorar processos]\n\nAgora, execute a análise conforme a necessidade do usuário, sem achismos e sempre com base nos dados!\nSe algo melhorou, destaque. Se piorou, avise e sugira correção!",
+            "returnIntermediateSteps": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 1.7,
+        "position": [
+          1240,
+          -320
+        ],
+        "id": "c1e7dbeb-2869-47e3-b092-8d1fdecbcb38",
+        "name": "AI Agent1"
+      },
+      {
+        "parameters": {
+          "toolDescription": "Este recurso é para fazer buscar de informações detalhadas de um ou mais contratos como:\nqual é o cliente\nseus detalhes de pagamento\ndetalhes de definições de contratos",
+          "method": "POST",
+          "url": "https://n8n-dev.blips-labs.com/webhook/buscar_contrato",
+          "sendBody": true,
+          "parametersBody": {
+            "values": [
+              {
+                "name": "lista_contratos",
+                "valueProvider": "modelOptional"
+              },
+              {
+                "name": "contrato",
+                "valueProvider": "modelOptional"
+              }
+            ]
+          },
+          "placeholderDefinitions": {
+            "values": [
+              {
+                "name": "lista_contratos",
+                "description": "lista dos numeros dos contratos, irá retornar um resumos dos contratos solicitados",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+        "typeVersion": 1.1,
+        "position": [
+          1540,
+          -100
+        ],
+        "id": "76a82e38-5f45-472c-80cb-b27c4d135d29",
+        "name": "buscar_contrato1"
+      },
+      {
+        "parameters": {
+          "toolDescription": "Este é um agent que ira te auxiliar com contratos de cliente como:\nFazes do contrato\nStatus do contrato\nDatas e seus respectivos SLAs.",
+          "method": "POST",
+          "url": "https://n8n-dev.blips-labs.com/webhook/83115bc1-a04b-442e-8baa-b6e99c562049",
+          "sendBody": true,
+          "parametersBody": {
+            "values": [
+              {
+                "name": "question"
+              }
+            ]
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+        "typeVersion": 1.1,
+        "position": [
+          1340,
+          -100
+        ],
+        "id": "722db6bb-e3ea-4968-a6f2-8268cf28ade9",
+        "name": "Sql querie1"
+      },
+      {
+        "parameters": {
+          "modelName": "models/gemini-2.0-pro-exp-02-05",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+        "typeVersion": 1,
+        "position": [
+          1120,
+          -100
+        ],
+        "id": "77caac5d-f8f0-43e8-890f-c965881ac678",
+        "name": "Google Gemini Chat Model2",
+        "credentials": {
+          "googlePalmApi": {
+            "id": "CuJxjolJuOtVRE1K",
+            "name": "Luan Gemini Key"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "When chat message received": {
+        "main": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "buscar_contrato": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sql querie": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Gemini Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Trocar negrito md para bitrix": {
+        "main": [
+          [
+            {
+              "node": "setBitrixMessage",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "setBitrixMessage": {
+        "main": [
+          []
+        ]
+      },
+      "setWebhookTrigger": {
+        "main": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "setWebhookTrigger",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent": {
+        "main": [
+          [
+            {
+              "node": "Trocar negrito md para bitrix",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "buscar_contrato1": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent1",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sql querie1": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent1",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Gemini Chat Model2": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent1",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent1": {
+        "main": [
+          []
+        ]
+      },
+      "Code": {
+        "main": [
+          []
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Webhook": [
+        {
+          "json": {
+            "headers": {
+              "host": "n8n-dev.blips-labs.com",
+              "user-agent": "axios/1.7.4",
+              "content-length": "259",
+              "accept": "application/json, text/plain, */*",
+              "accept-encoding": "gzip, compress, deflate, br",
+              "content-type": "application/json",
+              "x-forwarded-for": "3.88.13.72",
+              "x-forwarded-host": "n8n-dev.blips-labs.com",
+              "x-forwarded-proto": "https",
+              "x-railway-edge": "railway/us-east4",
+              "x-railway-request-id": "1EBMxl3fQqatixxIHl2fDQ_2074704348",
+              "x-real-ip": "3.88.13.72",
+              "x-request-start": "1740775350543"
+            },
+            "params": {},
+            "query": {},
+            "body": {
+              "caller_agent": "bitrix",
+              "BOT_ID": "2637",
+              "CLIENT_ID": "orh59f1rkg6whsvtgt3zqw9mas7fb5g3",
+              "DIALOG_ID": "chat16803",
+              "username": "Estevão Cunha",
+              "user_id": "2627",
+              "message": "Poruqe temos tantos contratos no Onboarding com sla estourados?"
+            },
+            "webhookUrl": "https://n8n-dev.blips-labs.com/webhook/auditor_agent",
+            "executionMode": "production"
+          }
+        }
+      ]
+    },
+    "versionId": "b812bb87-1c73-4953-bb85-5d39bae7623e",
+    "triggerCount": 2,
+    "tags": []
+  }
+}
