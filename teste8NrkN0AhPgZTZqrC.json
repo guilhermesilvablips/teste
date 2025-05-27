@@ -1,0 +1,339 @@
+{
+  "data": {
+    "createdAt": "2025-05-23T13:12:32.586Z",
+    "updatedAt": "2025-05-23T13:26:56.584Z",
+    "id": "8NrkN0AhPgZTZqrC",
+    "name": "Pegar Agente pelo protocolo",
+    "active": true,
+    "nodes": [
+      {
+        "parameters": {
+          "errorMessage": "Não foi possivel buscar os dados - Erro de credencial "
+        },
+        "type": "n8n-nodes-base.stopAndError",
+        "typeVersion": 1,
+        "position": [
+          -140,
+          -80
+        ],
+        "id": "07039637-da2c-4ef5-aa94-39a32c598be6",
+        "name": "Stop and Error"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://desk-ext.hyperflowapis.global/graphql",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"operationName\": \"SIGN_IN\",\n  \"variables\": {\n    \"username\": \"mateus@blips.com.br\",\n    \"password\": \"Zxc,.;1234\"\n  },\n  \"query\": \"mutation SIGN_IN($username: String!, $password: String!) {\\n  login(data: {username: $username, password: $password}) {\\n    token\\n    refreshToken\\n    user {\\n      name\\n      tenants {\\n        name\\n        _id\\n        __typename\\n      }\\n      __typename\\n    }\\n    __typename\\n  }\\n}\\n\"\n}",
+          "options": {}
+        },
+        "id": "adea812a-343a-4cc8-a7d6-515a6e31ae9c",
+        "name": "Renovar token",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -560,
+          0
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 5000,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "55e415bd-1ac9-460a-ac5b-f53e4955a9c1",
+                "leftValue": "={{ $json.errors[0].extensions.exception.status }}",
+                "rightValue": 401,
+                "operator": {
+                  "type": "number",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -360,
+          0
+        ],
+        "id": "2fbba657-9434-4606-ba84-35d73f29a1dc",
+        "name": "401?"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "3f42598f-2ff5-440f-9f83-4c238de7dd47",
+                "name": "token",
+                "value": "={{ $json.data.login.refreshToken }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -140,
+          80
+        ],
+        "id": "011b0046-bd41-4054-9a62-75a03e4daf5d",
+        "name": "setToken"
+      },
+      {
+        "parameters": {
+          "jsCode": "const fetch = require('node-fetch')\nconst token = $input.first().json.token\nconst tenantId = \"642eb86c0cd915bc8137a05d\";\nconst apiUrl = \"https://desk-ext.hyperflowapis.global/graphql\";\nconst protocolo = $('Webhook').first().json.query.protocolo;\n\n// Define a query GraphQL com LIST_ALL_CHATS\nconst query = `\n  query LIST_ALL_CHATS(\n    $page: Int, \n    $limit: Int, \n    $offset: Int, \n    $sort: String, \n    $search: String, \n    $channel: String, \n    $startDate: String, \n    $endDate: String, \n    $status: [String], \n    $department: [String], \n    $agent: [String], \n    $label: [String], \n    $classification: [String], \n    $channelAlias: [String], \n    $searchBy: String\n  ) {\n    listAllChats(\n      query: {\n        search: $search, \n        status: $status, \n        channel: $channel, \n        department: $department, \n        agent: $agent, \n        startDate: $startDate, \n        endDate: $endDate, \n        label: $label, \n        classification: $classification, \n        channelAlias: $channelAlias, \n        searchBy: $searchBy\n      }\n      page: $page\n      limit: $limit\n      offset: $offset\n      sort: $sort\n    ) {\n      docs {\n        _id\n        receiver\n        agent {\n          _id\n          picture\n          email\n          name\n          __typename\n        }\n        department {\n          _id\n          name\n          __typename\n        }\n        channel\n        channelAlias\n        contact {\n          id\n          phone\n          name\n          picture\n          __typename\n        }\n        lastMessage {\n          type\n          direction\n          createdAt\n          __typename\n        }\n        protocol\n        status\n        classifications {\n          _id\n          name\n          __typename\n        }\n        labels {\n          _id\n          color\n          name\n          __typename\n        }\n        isActive\n        createdAt\n        finishedAt\n        __typename\n      }\n      totalPages\n      totalDocs\n      nextPage\n      __typename  \n    }\n  }\n`;\n\n// Faz a requisição POST para o GraphQL\nasync function fetchChats(page, limit) {\n    const response = await fetch(apiUrl, {\n        method: 'POST',\n        headers: {\n            'Content-Type': 'application/json',\n            'tenant': tenantId,\n            'Authorization': token,\n        },\n        body: JSON.stringify({\n            query,\n            variables: {\n                sort: \"-createdAt\",\n                search: protocolo,\n                channelAlias: [],\n                channel: \"\",\n                department: [],\n                label: [],\n                classification: [],\n                agent: [],\n                startDate: \"\",\n                endDate: \"\",\n                page: 1,\n                limit: 100\n            }\n        })\n    });\n\n    const jsonData = await response.json();\n    return jsonData\n}\n\nconst initialData = await fetchChats(1, 1)\nconst totalDocs = initialData.data.listAllChats.totalDocs;\nconst totalPages = Math.ceil(totalDocs / 100);\n\nlet allChats = [];\n\n// Busca todos os agentes, iterando pelas páginas\nfor (let page = 1; page <= totalPages; page++) {\n    const pageData = await fetchChats(page, 100);\n    allChats.push(...pageData.data.listAllChats.docs);\n}\n\n// Retorna os dados\nreturn [{ allChats }];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          60,
+          80
+        ],
+        "id": "41373b5d-6ef6-4b5d-9a20-72db2daeebf4",
+        "name": "Code"
+      },
+      {
+        "parameters": {
+          "path": "protocolo-atendente",
+          "responseMode": "lastNode",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -820,
+          0
+        ],
+        "id": "40a0a862-eed7-49f0-b827-748c665b4c45",
+        "name": "Webhook",
+        "webhookId": "f3753dcf-7c9a-44f1-82d7-5c62bea505ff"
+      },
+      {
+        "parameters": {
+          "url": "https://n8n-auditoria.blips-labs.com/webhook/blips_users",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "email",
+                "value": "={{ $json.allChats[0].agent.email }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          560,
+          160
+        ],
+        "id": "0fa8e744-db07-423b-ab22-fe445b839a16",
+        "name": "Email -> Dados User"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "faa13e80-bc1b-4007-9341-0d57799fd091",
+                "name": "id_bitrix",
+                "value": "={{ $json.data[0].id_bitrix || null }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          800,
+          60
+        ],
+        "id": "08c8e882-281c-435e-87ce-bed0c7bded72",
+        "name": "Id btrix"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "5c4fc7ef-7449-4d07-9215-3f9c080072f8",
+                "leftValue": "={{ $json.allChats }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "array",
+                  "operation": "empty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          280,
+          80
+        ],
+        "id": "4b0e6223-17f8-402f-8c53-08a5cd1e0437",
+        "name": "Erro?"
+      }
+    ],
+    "connections": {
+      "Renovar token": {
+        "main": [
+          [
+            {
+              "node": "401?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "401?": {
+        "main": [
+          [
+            {
+              "node": "Stop and Error",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "setToken",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "setToken": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Renovar token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "Erro?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Email -> Dados User": {
+        "main": [
+          [
+            {
+              "node": "Id btrix",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Erro?": {
+        "main": [
+          [
+            {
+              "node": "Id btrix",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Email -> Dados User",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {
+      "Webhook": [
+        {
+          "json": {
+            "headers": {
+              "host": "n8n-dev.blips-labs.com",
+              "user-agent": "axios/1.8.3",
+              "accept": "application/json,text/html,application/xhtml+xml,application/xml,text/*;q=0.9, image/*;q=0.8, */*;q=0.7",
+              "accept-encoding": "gzip, compress, deflate, br",
+              "x-forwarded-for": "3.209.52.59",
+              "x-forwarded-host": "n8n-dev.blips-labs.com",
+              "x-forwarded-proto": "https",
+              "x-railway-edge": "railway/us-east4",
+              "x-railway-request-id": "x7i9j1yWTymF3SEXNJjgjg",
+              "x-real-ip": "3.209.52.59",
+              "x-request-start": "1748006624085"
+            },
+            "params": {},
+            "query": {
+              "protocolo": "2105257582727"
+            },
+            "body": {},
+            "webhookUrl": "https://n8n-dev.blips-labs.com/webhook/protocolo-atendente",
+            "executionMode": "production"
+          }
+        }
+      ]
+    },
+    "versionId": "7c47b8bf-8540-4aa8-9bee-b5eb16eb5239",
+    "triggerCount": 1,
+    "tags": []
+  }
+}
