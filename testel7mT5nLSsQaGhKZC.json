@@ -1,0 +1,654 @@
+{
+  "data": {
+    "createdAt": "2025-04-17T19:15:45.684Z",
+    "updatedAt": "2025-04-29T18:15:53.494Z",
+    "id": "l7mT5nLSsQaGhKZC",
+    "name": "Google Meu Negocio API",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "url": "https://maps.googleapis.com/maps/api/place/textsearch/json",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "query",
+                "value": "={{ $json.nome }}"
+              },
+              {
+                "name": "key",
+                "value": "AIzaSyCxO2xR4Y1HCxOfSkLvnGz3oMwT8kgzmz8"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          280,
+          -20
+        ],
+        "id": "9bc05977-c9d4-48e3-8d42-b4f49889d298",
+        "name": "GET EMPRESA",
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "url": "https://maps.googleapis.com/maps/api/place/details/json",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "place_id",
+                "value": "={{ $json.results[0].place_id }}"
+              },
+              {
+                "name": "key",
+                "value": "AIzaSyCxO2xR4Y1HCxOfSkLvnGz3oMwT8kgzmz8"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          800,
+          0
+        ],
+        "id": "9afba5fb-e987-46f9-9334-b418b8b61db4",
+        "name": "GET Dados Emp",
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Dados do Google Meu Negócio:\n{{ $('Dados Google Meu Negocio').first().json.toJsonString() }}\n\nVocê está recebendo dados de um perfil do Google Meu Negócio para realizar uma análise detalhada. As respostas devem ser objetivas, claras e baseadas exclusivamente nas informações fornecidas. Caso haja dados insuficientes ou inconsistentes, responda diretamente que não foi possível concluir a análise e justifique.\n\nSegmento informado:\n{{ $('Dados Google Meu Negocio').first().json.segmento }}\n\nCrawler do Website da Empresa para mais informações:\n{{ $json.output.toJsonString() }}",
+          "hasOutputParser": true,
+          "messages": {
+            "messageValues": [
+              {
+                "message": "=Com base nos dados fornecidos, responda às perguntas abaixo:\n\nQual é a avaliação geral (rating) da empresa?\nInforme o valor exato da avaliação geral.\n\nQuantas avaliações (reviews) a empresa possui?\nInforme o número total de avaliações.\n\nA avaliação geral é considerada boa em relação à quantidade de avaliações?\nConsidere que:\n\nMais de 4.0 com mais de 50 avaliações: Sim\n\nEntre 3.0 e 4.0 com mais de 50 avaliações: Regular\n\nAbaixo de 3.0 ou menos de 50 avaliações: Não\nResponda com Sim, Regular ou Não.\n\nQual é o teor dos últimos comentários nas avaliações?\nAnalise os textos das avaliações mais recentes e resuma se são predominantemente positivos, negativos ou mistos.\n\nA empresa está bem localizada na cidade?\nCom base no campo \"vicinity\", avalie se a localização é central, de fácil acesso ou em uma área estratégica. Responda com Sim, Não ou Não é possível determinar.\n\nO site da empresa está disponível?\nVerifique se o campo \"website\" está preenchido. Responda com Sim ou Não.\n\nO site da empresa está alinhado com o segmento informado?\nAnalise se o conteúdo do crawler do site está relacionado ao segmento. Responda com Sim, Não ou Não é possível determinar.\n\nHá informações adicionais relevantes nas avaliações?\nIdentifique se há menções frequentes a aspectos como atendimento, qualidade dos produtos/serviços, suporte pós-venda, entre outros. Resuma brevemente.\n\nConsiderações finais sobre o perfil da empresa:\nForneça uma breve análise geral do perfil, destacando pontos fortes e áreas de melhoria, com base nas respostas anteriores."
+              }
+            ]
+          }
+        },
+        "id": "7f21c94c-6364-4169-8254-c64fdc544c2f",
+        "name": "Analisar Google Meu negocio",
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.4,
+        "position": [
+          2460,
+          20
+        ],
+        "retryOnFail": true
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4cb552cf-9d45-42c4-837a-92b6e82f3beb",
+                "name": "name",
+                "value": "={{ $json.result.name }}",
+                "type": "string"
+              },
+              {
+                "id": "503a463a-fa68-4381-9d2a-20ea5a5fe012",
+                "name": "international_phone_number",
+                "value": "={{ $json.result.international_phone_number }}",
+                "type": "string"
+              },
+              {
+                "id": "d58e668a-87e1-49d4-933d-c97f86035ae1",
+                "name": "rating",
+                "value": "={{ $json.result.rating }}",
+                "type": "string"
+              },
+              {
+                "id": "59e7dec0-f35d-4bba-8bb4-3e7ea7b3d0cc",
+                "name": "user_ratings_total",
+                "value": "={{ $json.result.user_ratings_total }}",
+                "type": "string"
+              },
+              {
+                "id": "85519732-f438-48da-b9ea-fe2394bf3953",
+                "name": "reviews",
+                "value": "={{ $json.result.reviews }}",
+                "type": "array"
+              },
+              {
+                "id": "fd3b1c06-f4f3-4711-ab4a-99b6d1ec2902",
+                "name": "url",
+                "value": "={{ $json.result.url }}",
+                "type": "string"
+              },
+              {
+                "id": "23d807d0-2b9a-41b9-90fe-d1fef62106dd",
+                "name": "segmento",
+                "value": "={{ $('lead').first().json.segmento }}",
+                "type": "string"
+              },
+              {
+                "id": "6d92f809-423d-43b0-8720-f56adac5e62a",
+                "name": "website",
+                "value": "={{ $json.result.website ? $json.result.website : '' }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1080,
+          0
+        ],
+        "id": "3353086e-e856-4cdc-9b50-0451a93d59d5",
+        "name": "Dados Google Meu Negocio"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "gpt-4.1-mini",
+            "mode": "list",
+            "cachedResultName": "gpt-4.1-mini"
+          },
+          "options": {
+            "temperature": 0.7,
+            "topP": 0.9
+          }
+        },
+        "id": "e2d24c6c-0409-4245-9500-97a24064418d",
+        "name": "OpenAI Model2",
+        "type": "@n8n/n8n-nodes-langchain.lmOpenAi",
+        "typeVersion": 1,
+        "position": [
+          2460,
+          200
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "8gIG4Uz2T3nfRlHR",
+            "name": "OpenAi - Credito"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n  \"segmento_alinhado\": {\n    \"nome\": \"Comunicação Visual\",\n    \"esta_relacionado\": true,\n    \"motivo\": \"As avaliações e informações disponíveis indicam que a empresa atua no segmento de comunicação visual, oferecendo produtos como máquinas CNC e equipamentos relacionados.\"\n  },\n  \"avaliacao_geral\": {\n    \"nota\": 3.6,\n    \"quantidade_avaliacoes\": 82,\n    \"avaliacao_qualitativa\": \"Regular\",\n    \"analise\": \"A nota de 3.6 com 82 avaliações sugere uma percepção mista dos clientes, com experiências positivas e negativas.\"\n  },\n  \"comentarios_recentes\": {\n    \"resumo\": \"Predominância de avaliações negativas recentes, destacando problemas com suporte técnico, entrega e funcionamento dos equipamentos.\",\n    \"exemplos\": [\n      {\n        \"autor\": \"Natália Tavares\",\n        \"avaliacao\": 1,\n        \"comentario\": \"Experiência frustrante com a máquina CNC adquirida, falta de suporte adequado e necessidade de contratar técnico terceirizado.\"\n      },\n      {\n        \"autor\": \"Chris Farias Lima\",\n        \"avaliacao\": 1,\n        \"comentario\": \"Máquina nunca funcionou corretamente, diversos chamados abertos sem solução e bloqueio do equipamento.\"\n      },\n      {\n        \"autor\": \"Camilla\",\n        \"avaliacao\": 5,\n        \"comentario\": \"Atendimento excelente e equipamentos tecnológicos.\"\n      }\n    ]\n  },\n  \"localizacao\": {\n    \"endereco\": \"Avenida Iraque, 70 - Jardim Botânico, Uberlândia\",\n    \"esta_bem_localizado\": true,\n    \"analise\": \"Localizado em uma área urbana de Uberlândia, o que pode facilitar o acesso para clientes locais.\"\n  },\n  \"website\": {\n    \"url\": \"http://www.blips.com.br/\",\n    \"esta_disponivel\": true,\n    \"analise\":\"A Blips é uma fintech especializada em crédito para financiamento e locação de equipamentos voltada para pequenos e microempreendedores. Atua nos segmentos de comunicação visual, estética, confecção, sorvetes, fitness e construção civil. Seus diferenciais incluem facilidade de crédito, suporte técnico contínuo, garantia estendida e planos de aluguel com possibilidade de compra. Com atuação nacional, a Blips já instalou milhares de equipamentos em mais de 100 cidades.\"\n  }\n}"
+        },
+        "id": "684dd4cc-1a5d-48ba-adf5-dece95c9665f",
+        "name": "Structured Output Parser1",
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.2,
+        "position": [
+          2640,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "modelName": "models/gemini-1.5-pro",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+        "typeVersion": 1,
+        "position": [
+          2020,
+          200
+        ],
+        "id": "4b85de62-9fb0-4721-9c16-10fada4f9bc6",
+        "name": "Google Gemini Chat Model",
+        "credentials": {
+          "googlePalmApi": {
+            "id": "dEFEg2kO4UqiadKK",
+            "name": "motor n8n"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n  \"nome_da_empresa\": \"[Nome completo da empresa]\",\n  \"descricao_resumida\": \"[Breve descrição da empresa e sua principal atividade/proposta de valor (máximo 3 frases)]\",\n  \"setores_de_atuacao\": \"[Lista dos principais setores em que a empresa atua]\",\n  \"produtos_ou_servicos_principais\": \"[Lista dos principais produtos ou serviços oferecidos]\",\n  \"publico_alvo\": \"[Descrição do principal público-alvo da empresa]\",\n  \"proposta_de_valor_unica\": \"[O que diferencia a empresa de seus concorrentes (máximo 2 frases)]\",\n  \"canais_de_contato\": {\n    \"website\": \"https://www.websitebutler.de/de/online-complete\",\n    \"email\": \"[Endereço de e-mail principal de contato (se encontrado)]\",\n    \"telefone\": \"[Número de telefone principal de contato (se encontrado)]\",\n    \"redes_sociais\": \"[Lista das URLs das principais redes sociais da empresa (se encontradas)]\"\n  },\n  \"localizacao_sede\": {\n    \"endereco\": \"[Endereço da sede da empresa (se encontrado)]\",\n    \"cidade\": \"[Cidade da sede (se encontrada)]\",\n    \"estado\": \"[Estado da sede (se encontrado)]\",\n    \"pais\": \"[País da sede (se encontrado)]\"\n  },\n  \"principais_palavras_chave\": \"[Lista de palavras-chave relevantes que descrevem a empresa e seu negócio]\",\n  \"informacoes_adicionais_relevantes\": \"[Outras informações importantes sobre a empresa, como missão, visão, valores, diferenciais tecnológicos, prêmios, etc. (máximo 5 frases)]\",\n  \"data_da_analise\": \"[Data da análise no formato AAAA-MM-DD]\"\n}"
+        },
+        "id": "bddf8542-25e9-4867-9e97-2edc5c34e6ca",
+        "name": "Structured Output Parser",
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.2,
+        "position": [
+          2200,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.data }}",
+          "hasOutputParser": true,
+          "messages": {
+            "messageValues": [
+              {
+                "message": "=Analise detalhadamente o conteúdo da seguinte página web enviada. Seu objetivo é identificar e extrair as informações essenciais sobre a empresa, sua atuação e seus principais aspectos. Formate a saída de maneira concisa e estruturada em formato JSON, otimizado para ser facilmente interpretado e processado por outra Inteligência Artificial."
+              }
+            ]
+          }
+        },
+        "id": "154baae0-0bf1-4155-b50b-61f831d4722f",
+        "name": "Analisar Website",
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.4,
+        "position": [
+          2020,
+          20
+        ],
+        "retryOnFail": true
+      },
+      {
+        "parameters": {
+          "url": "=https://r.jina.ai/{{ $json.website }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1700,
+          20
+        ],
+        "id": "88d473f6-f53b-4cdb-895e-dafac373fb53",
+        "name": "GET Crawler Website",
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "PUT",
+          "url": "=https://blips-credit-backend-dev-685867804490.us-central1.run.app/api/v1/peb_records/{{$('lead').first().json.lead_id}}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "={{ \"Bearer Bx8Y15D0WiEWfsSiTm2wf2TjU50QhBtCDiS4bSxC7aD35SAiRmuCxU38gIqRQwGbfHsTGB7ALhlkELWfXkUX3ppr1UKtEME850DChyL4q22QHazR6ZgKHU5gEpmKi1Vub0cgYCAWxbIl82fLSjOEF7tIoxQ6dQSu9QfOVS9JPWIYwewE8u8FMdpMspCLs0zEh7kI19qPGP0j8go6qBwPrcHLuwxBfM6Ch7S3PcI3wP0sOVwLkYCduhfDVraRX4J7U1wSeZwSuUvAMV7RoPLxgewiRDDEwjiOjlPwZXYAfxFo\"}}"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "nota_my_business",
+                "value": "={{ $json.nota_my_business }}"
+              },
+              {
+                "name": "business_comments",
+                "value": "={{ $json.business_comments }}"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "f1f5e700-6457-4a7e-9b3b-df8e334705e0",
+        "name": "Put PEB",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          3180,
+          20
+        ],
+        "retryOnFail": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {},
+        "id": "2da9d81b-0e22-4956-ad67-0a2d72df22be",
+        "name": "lead",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          40,
+          -20
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "93899ce8-1be5-4a46-8c5f-d7dd3b2a3eae",
+                "leftValue": "={{ $json.website }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "empty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1300,
+          0
+        ],
+        "id": "502e36a7-715e-4b07-8482-992af5574109",
+        "name": "Sem website ?"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "c698a911-4cdd-4b9b-9387-4f5226a8297b",
+                "name": "output",
+                "value": "={\n      \"nome_da_empresa\": \"Não possui website, analisar somente dados do google meu negocio\"\n}\n",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1900,
+          -220
+        ],
+        "id": "b1ddb7eb-117c-4d15-87df-eb03e9dda9b4",
+        "name": "set_sem_website"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "97ddd2e9-44a4-4831-a77e-2b86b6abb76e",
+                "leftValue": "={{ $json.results }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "array",
+                  "operation": "empty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          500,
+          -20
+        ],
+        "id": "553d77cf-6f2b-4ecf-bd07-20265aa37dd8",
+        "name": "Sem Google Meu Negocio ?"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "1cefe4d6-a8a6-4377-b199-b4cf237d104e",
+                "name": "nota_my_business",
+                "value": "={{ $json.output.avaliacao_geral.nota }}",
+                "type": "string"
+              },
+              {
+                "id": "d09d1161-3331-4ace-87a6-97e447906ec6",
+                "name": "business_comments",
+                "value": "={{ JSON.stringify($json.output) }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2920,
+          20
+        ],
+        "id": "e40adcbe-6839-4a53-bf70-e65cf1c7605d",
+        "name": "Edit Fields"
+      }
+    ],
+    "connections": {
+      "GET EMPRESA": {
+        "main": [
+          [
+            {
+              "node": "Sem Google Meu Negocio ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GET Dados Emp": {
+        "main": [
+          [
+            {
+              "node": "Dados Google Meu Negocio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados Google Meu Negocio": {
+        "main": [
+          [
+            {
+              "node": "Sem website ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Analisar Google Meu negocio": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Model2": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Analisar Google Meu negocio",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser1": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Analisar Google Meu negocio",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Gemini Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Analisar Website",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Analisar Website",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Analisar Website": {
+        "main": [
+          [
+            {
+              "node": "Analisar Google Meu negocio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GET Crawler Website": {
+        "main": [
+          [
+            {
+              "node": "Analisar Website",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "lead": {
+        "main": [
+          [
+            {
+              "node": "GET EMPRESA",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sem website ?": {
+        "main": [
+          [
+            {
+              "node": "set_sem_website",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "GET Crawler Website",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_sem_website": {
+        "main": [
+          [
+            {
+              "node": "Analisar Google Meu negocio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sem Google Meu Negocio ?": {
+        "main": [
+          [],
+          [
+            {
+              "node": "GET Dados Emp",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "Put PEB",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "lead": [
+        {
+          "json": {
+            "nome": "DJ AGROZOO COMERCIO E REPRESENTACAO DE PRODUTOS AGROPECUARIOS LTDA",
+            "cnpj": "20434227000152",
+            "segmento": "Fitness",
+            "lead_id": "6810f297e93e8e5f36e050bd",
+            "access_token": "ya29.c.c0ASRK0GaP12b4ZGrYur7_Dk8Vr_9cDsWup4RaunDcnBlLbBGwkacYFrLRMofFfpyEQsCCJEd6jqDMYchActUNrIumyVgEXC-5kxJD_li60CmBr_WMw9NS2s3DfACxBRVWNWyAq5Y8LBONpyVb4676ktjy70sISbBreMhmLXSSt2iJL73T2HuaUvNPrkxdJ2wTrSSe5MHN-iKJQTQQqCAxSWoOxJ9bEEiPVjk8_-s2rQ4sH5pfg0cWPYIXuxVdT44PBC1HCiFmGtakvw2V20X7KnT_5jpJVeDtbSnO7TMd1UOsaOzRepaHz2YdLy0qsWQ9u57Umy5wYMuEVoFpj5sj2YxgtzSn3NOEez8CTeTG9lLLLyqgskWYgBr1H385P-QaS4t1z3jwmBMu6mkpycOFio2Qhl9zxls3s78Vv1urk7882xse2Wcj3Zkiq5cXV_bY6sd0YnWx6hf68JS3XwWzB4JQh6xfsrWU0w5hwUvXyVUeV47rih9gvX6ildyzS_0X5uRzn98rjgMiuQeMohi62SmB_arvhabiM_Muv99JJwIc2MqYscOs5Ya4mZmYWWIS_sui5FqXkQjk8FmMmhOttMQOimsUtjxx-siFMq6_yzlnZFgYXsj9eMB5_07yrW7ahlS49W5-eYxIxI0rB_88IJmz_UYgghO0phcMgFnc0ep2IsJUnhvlXOymmQwokxapvYnqd3Sp1hO2OVvWcO973iM470Ota8g2wio4cSIbdtj-dj7p95s12ku0R33MOwu86srvFOopv0vMOv_UVSRpssR25hhVo9xa2s6S0mvcQnWaFcrydbzlXpBiFI_6Rzo1aaXd3u_bVQVnmwU3m-zcv_uvwfarjekIxw3oOSOibadm0lXbwrby8ps2uobu4XJta2F17Bk5OtQa78OS8rx63_J3ktJo7vZw4Rj9YsJZd2lZuXuoUxkjwj-5RUll3Rv0h20cufY2qZ7rvbm29fo-U4ot_Xzg-mBUnZIeq76eiR14Qtoetw07pbs"
+          }
+        }
+      ]
+    },
+    "versionId": "d0c807ed-c915-4ea1-8894-5309a9a4cd89",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-31T16:22:41.803Z",
+        "updatedAt": "2024-07-31T16:22:41.803Z",
+        "id": "mmaXbyiWhptUXaTd",
+        "name": "New Motor"
+      }
+    ]
+  }
+}
