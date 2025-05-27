@@ -1,0 +1,479 @@
+{
+  "data": {
+    "createdAt": "2025-04-09T18:00:12.072Z",
+    "updatedAt": "2025-05-05T18:10:21.368Z",
+    "id": "IPI5OpYpRh7itami",
+    "name": "Procurar Deal Bitrix (Contrato + CNPJ)",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "contrato"
+              },
+              {
+                "name": "cnpj"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -300,
+          0
+        ],
+        "id": "d700131d-d168-418c-9535-42d2c3011b59",
+        "name": "When Executed by Another Workflow"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "012b2eb4-96b1-44de-8a32-15a2279fbdd5",
+                "name": "contrato",
+                "value": "={{ $json.contrato.replaceAll(/\\D/g, '') }}",
+                "type": "string"
+              },
+              {
+                "id": "1d704d46-3c92-4925-ace0-7393970d4bfc",
+                "name": "cnpj",
+                "value": "={{ $json.cnpj.replaceAll(/\\D/g, '') }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -120,
+          0
+        ],
+        "id": "d0dd185c-527a-4589-8dbe-3a396409a790",
+        "name": "Contrato ou CNPJ"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.deal.list",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Accept",
+                "value": "application/json"
+              },
+              {
+                "name": "cookie",
+                "value": "qmb=0.;"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"SELECT\": [\n    \"ID\",\n    \"TITLE\",\n    \"ASSIGNED_BY_ID\",\n    \"DATE_CREATE\",\n    \"UF_CRM_B98C1610\",\n    \"UF_CRM_1699879903563\",\n    \"UF_CRM_9E185F0F\"\n  ],\n  \"FILTER\": {\n    \"UF_CRM_1699879903563\": \"{{ $('Contrato ou CNPJ').item.json.contrato }}\"\n  },\n  \"ORDER\": {\n    \"DATE_CREATE\": \"DESC\"\n  }\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          60,
+          0
+        ],
+        "id": "3e2e4058-e5f2-43be-95bd-8a1a4d9f154b",
+        "name": "Buscar por Contrato"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "b919e884-631c-4138-9911-edf04f2c2a02",
+                "leftValue": "={{ $json.result }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "array",
+                  "operation": "empty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          240,
+          0
+        ],
+        "id": "a1e44de2-713a-4418-8e2c-712c636d34e3",
+        "name": "Vazio?"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.deal.list",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"SELECT\": [\n    \"ID\",\n    \"TITLE\",\n    \"ASSIGNED_BY_ID\",\n    \"DATE_CREATE\",\n    \"UF_CRM_B98C1610\",\n    \"UF_CRM_1699879903563\",\n    \"UF_CRM_9E185F0F\"\n  ],\n  \"FILTER\": {\n    \"UF_CRM_B98C1610\": \"{{ $('Contrato ou CNPJ').item.json.cnpj }}\"\n  },\n  \"ORDER\": {\n    \"DATE_CREATE\": \"DESC\"\n  }\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          480,
+          -100
+        ],
+        "id": "0c933146-30fc-4516-87e5-018e5cb8f3de",
+        "name": "Buscar por CNPJ"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "b919e884-631c-4138-9911-edf04f2c2a02",
+                "leftValue": "={{ $json.result }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "array",
+                  "operation": "empty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          700,
+          -100
+        ],
+        "id": "91df8001-4d05-43f8-87c2-a98b932f87ce",
+        "name": "Vazio?1"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f8f1a88a-2325-4472-a920-2b8d7c10d4b5",
+                "name": "responsavel",
+                "value": "={{ $json.result[0].ASSIGNED_BY_ID }}",
+                "type": "string"
+              },
+              {
+                "id": "034d89d1-6b50-4568-a861-4c528b71e2e0",
+                "name": "id_deal",
+                "value": "={{ $json.result[0].ID }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          700,
+          140
+        ],
+        "id": "6745dffa-dc3c-48c8-b9e4-68d35e623912",
+        "name": "ID (resp + card)"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "66948ed2-c16e-4ba7-8e87-d169d2c762fc",
+                "name": "atendente.nome_responsavel",
+                "value": "=null",
+                "type": "string"
+              },
+              {
+                "id": "1ef0d7d6-98af-4e06-9992-12fd30ee83ef",
+                "name": "atendente.email_responsavel",
+                "value": "=null",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1200,
+          -120
+        ],
+        "id": "a147b6e0-94a2-450a-abf4-a879a825d6d1",
+        "name": "Vazio"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "66948ed2-c16e-4ba7-8e87-d169d2c762fc",
+                "name": "atendente.nome_responsavel",
+                "value": "={{ $json.data[0].name }}",
+                "type": "string"
+              },
+              {
+                "id": "1ef0d7d6-98af-4e06-9992-12fd30ee83ef",
+                "name": "atendente.email_responsavel",
+                "value": "={{ $json.data[0].email }}",
+                "type": "string"
+              },
+              {
+                "id": "aaf3fd9b-d13f-42fb-b589-28c07248ae63",
+                "name": "atendente.departamento",
+                "value": "={{ $json.data[0].department_hyper }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1440,
+          140
+        ],
+        "id": "cf94ba1c-8886-4ae0-a39b-fabc21ae0b9f",
+        "name": "Nome + Email + Dep"
+      },
+      {
+        "parameters": {
+          "url": "https://n8n-auditoria.blips-labs.com/webhook/blips_users",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "id_bitrix",
+                "value": "2107"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1200,
+          140
+        ],
+        "id": "7fcf5f4d-7f49-4a6d-bb2b-dd283197b058",
+        "name": "Get info user"
+      },
+      {
+        "parameters": {
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/user.get.json",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "ID",
+                "value": "={{ $json.responsavel }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          960,
+          140
+        ],
+        "id": "76b9bf59-8a06-4409-821c-764bfb0d1a19",
+        "name": "Get id resp"
+      }
+    ],
+    "connections": {
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Contrato ou CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Contrato ou CNPJ": {
+        "main": [
+          [
+            {
+              "node": "Buscar por Contrato",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Buscar por Contrato": {
+        "main": [
+          [
+            {
+              "node": "Vazio?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Vazio?": {
+        "main": [
+          [
+            {
+              "node": "Buscar por CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "ID (resp + card)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Buscar por CNPJ": {
+        "main": [
+          [
+            {
+              "node": "Vazio?1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Vazio?1": {
+        "main": [
+          [
+            {
+              "node": "Vazio",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "ID (resp + card)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "ID (resp + card)": {
+        "main": [
+          [
+            {
+              "node": "Get id resp",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Vazio": {
+        "main": [
+          []
+        ]
+      },
+      "Nome + Email + Dep": {
+        "main": [
+          []
+        ]
+      },
+      "Get id resp": {
+        "main": [
+          [
+            {
+              "node": "Get info user",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get info user": {
+        "main": [
+          [
+            {
+              "node": "Nome + Email + Dep",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "When Executed by Another Workflow": [
+        {
+          "json": {
+            "contrato": "12503615",
+            "cnpj": "58575223000167"
+          }
+        }
+      ]
+    },
+    "versionId": "606e91e3-3180-44da-be9b-0b9ef1b02d7c",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-11-22T13:13:26.514Z",
+        "updatedAt": "2024-11-22T13:13:26.514Z",
+        "id": "owb3cfmzFRbqjP06",
+        "name": "Clara"
+      }
+    ]
+  }
+}
