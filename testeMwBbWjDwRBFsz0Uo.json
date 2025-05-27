@@ -1,0 +1,246 @@
+{
+  "data": {
+    "createdAt": "2024-12-04T12:10:10.888Z",
+    "updatedAt": "2024-12-27T12:18:30.624Z",
+    "id": "MwBbWjDwRBFsz0Uo",
+    "name": "Formulário Respondido",
+    "active": true,
+    "nodes": [
+      {
+        "parameters": {
+          "url": "=https://blips-backend-staging-25jdzzxqga-uc.a.run.app/v2/negotiation/{{ $('Webhook').first().json.body.dados.contrato }}/contract-text",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{ $('Gera token').first().json.accessToken }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "bf7116c1-64b4-4ff0-abaa-a220206179f9",
+        "name": "Pega assinatura",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -460,
+          220
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips-backend-staging-25jdzzxqga-uc.a.run.app/v2/user/login/624b373210c6fc7fcb4b7e0b",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\n    \"email\": \"joao.freitas@blips.com.br\",\n    \"password\": \"BlipsAI7\"\n}",
+          "options": {}
+        },
+        "id": "64ab4b69-82ca-4239-9515-6616ccba701c",
+        "name": "Gera token",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -660,
+          220
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.item.update",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"entityTypeId\": \"1080\",\n  \"id\": \"{{ $('Webhook').first().json.body.dados.item_id }}\",\n  \"fields\": \n  {\n    \"stageId\": \"DT1080_89:NEW\"\n  }\n}",
+          "options": {}
+        },
+        "id": "dd12ed9f-5588-4a46-957c-821dbff64683",
+        "name": "Update Bitrix - Stage Coleta",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -260,
+          220
+        ]
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "={\n  \"assinatura\": \"{{ $('Pega assinatura').first().json.data.trim() }}\",\n  \"token\": \"{{ $('Gera token').first().json.accessToken }}\"\n}",
+          "options": {}
+        },
+        "id": "b1032684-aa03-47ef-b2fd-6ca380f3c697",
+        "name": "Devolve Assinatura + Token",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          -60,
+          220
+        ]
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "whatssapflows",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "id": "d30aff40-c68e-47d6-b53a-682bd14af837",
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -860,
+          220
+        ],
+        "webhookId": "3375b2fc-2bf1-473b-b3d2-64e32c8268c4"
+      }
+    ],
+    "connections": {
+      "Pega assinatura": {
+        "main": [
+          [
+            {
+              "node": "Update Bitrix - Stage Coleta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gera token": {
+        "main": [
+          [
+            {
+              "node": "Pega assinatura",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Update Bitrix - Stage Coleta": {
+        "main": [
+          [
+            {
+              "node": "Devolve Assinatura + Token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Gera token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Webhook": [
+        {
+          "json": {
+            "body": {
+              "dados": {
+                "nome": "João Lucas",
+                "assinatura": null,
+                "telefone": "5534984448484",
+                "log": null,
+                "assinatura_coletada": false,
+                "linha": 12,
+                "IdContrato": "67633aa3e3e97c9646814544",
+                "gerente": "Kléber",
+                "email": "joao.freitas@blips.com.br",
+                "token": null,
+                "id_resp": "user_2175",
+                "id_card": null,
+                "id_card_credito": null,
+                "item_id": 45,
+                "id_card_onboarding": "107367",
+                "contrato": "67633aa3e3e97c9646814544",
+                "form": {
+                  "endereco_empresa": [
+                    {
+                      "id": 1825755601571850,
+                      "mime_type": "application/pdf",
+                      "sha256": "qRVweO/YBv1i2CBqgTReOmWDI2Bu3A6Rl4zEwgGQglU=",
+                      "file_name": "1VIA-00020451188161.pdf",
+                      "url": "https://storage.hyperflow.global/whatsapp/1825755601571850"
+                    }
+                  ],
+                  "frente_documento": [
+                    {
+                      "id": 936326515111275,
+                      "mime_type": "image/jpeg",
+                      "sha256": "Tc6iBiposBr0WUBAATvFwQIQCeQFeIePG0r9fu19Dxw=",
+                      "file_name": "IMG_4670.PNG",
+                      "url": "https://storage.hyperflow.global/whatsapp/936326515111275"
+                    }
+                  ],
+                  "flow_token": "xXApvSNeo-YGrnAPjs0",
+                  "endereco_responsavel": [
+                    {
+                      "id": 1628637454696176,
+                      "mime_type": "image/jpeg",
+                      "sha256": "51v9Yd+5ZMuBknpGXVrpoUVf/saQlfCSWsV88xlXyvg=",
+                      "file_name": "b404f7f8-16bf-4211-99a0-f3370ded13b1.jpg",
+                      "url": "https://storage.hyperflow.global/whatsapp/1628637454696176"
+                    }
+                  ],
+                  "wa_flow_response_params": {
+                    "flow_id": "1276284816829865",
+                    "title": "Enviar Documentos",
+                    "flow_name": "Teste Variável Global"
+                  },
+                  "verso_documento": [
+                    {
+                      "id": 2108370666243121,
+                      "mime_type": "image/jpeg",
+                      "sha256": "Tc6iBiposBr0WUBAATvFwQIQCeQFeIePG0r9fu19Dxw=",
+                      "file_name": "IMG_4670.PNG",
+                      "url": "https://storage.hyperflow.global/whatsapp/2108370666243121"
+                    }
+                  ],
+                  "selfie": [
+                    {
+                      "id": 498589502671541,
+                      "mime_type": "image/jpeg",
+                      "sha256": "jSTlOBQC06jent1tU2iKnLYAO13jvsY5/XGnSoGaKbM=",
+                      "file_name": "B357D658-46AF-4824-BE11-5D61EFBE79E3.jpg",
+                      "url": "https://storage.hyperflow.global/whatsapp/498589502671541"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "versionId": "8a7dad2d-a57a-40ff-81a4-abdeec283ffc",
+    "triggerCount": 1,
+    "tags": [
+      {
+        "createdAt": "2024-11-22T13:13:26.514Z",
+        "updatedAt": "2024-11-22T13:13:26.514Z",
+        "id": "owb3cfmzFRbqjP06",
+        "name": "Clara"
+      }
+    ]
+  }
+}
