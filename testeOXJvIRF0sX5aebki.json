@@ -1,0 +1,216 @@
+{
+  "data": {
+    "createdAt": "2025-05-05T18:58:29.869Z",
+    "updatedAt": "2025-05-05T19:04:31.487Z",
+    "id": "OXJvIRF0sX5aebki",
+    "name": "Bot e instances Ids do Botconversa",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          20,
+          20
+        ],
+        "id": "127d9fbb-b59d-471e-82f9-95f8e73e31a0",
+        "name": "When clicking ‘Test workflow’"
+      },
+      {
+        "parameters": {
+          "url": "={{ $('CONSTS').item.json.API_COMPANIES }}",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "={\n                \"authorization\": \"Bearer {{ $('Token').item.json.access }}\",\n                \"content-type\": \"application/json\",\n                \"accept\": \"application/json, text/plain, */*\",\n                \"origin\": \"https://app.botconversa.com.br\",\n                \"referer\": \"https://app.botconversa.com.br/\",\n                \"user-agent\": \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36\"\n\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          820,
+          20
+        ],
+        "id": "4e03ec6c-e45f-4120-af84-fdb5d8a0dd35",
+        "name": "HTTP Request"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $('CONSTS').item.json.API_AUTH_URL }}",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "={\n  \"content-type\": \"application/json\",\n  \"accept\": \"application/json, text/plain, */*\",\n  \"origin\": \"https://app.botconversa.com.br\",\n  \"referer\": \"https://app.botconversa.com.br/\",\n  \"user-agent\": \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36\"\n}",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\"email\": \"{{ $('CONSTS').item.json.email}}\",\n\"password\": \"{{ $('CONSTS').item.json.psswd }}\"}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          400,
+          20
+        ],
+        "id": "26999f60-449f-4ba7-be15-87b77cfccc16",
+        "name": "jwt_token"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "010e7f22-a535-433b-a698-b04a562459a8",
+                "name": "API_COMPANIES",
+                "value": "https://backend.botconversa.com.br/api/v1/companies/",
+                "type": "string"
+              },
+              {
+                "id": "62f72a33-b470-41d4-8cb3-3deb37857fe1",
+                "name": "PIPELINE_URL",
+                "value": "https://backend.botconversa.com.br/api/v1/pipelines/user_card/0/",
+                "type": "string"
+              },
+              {
+                "id": "9aa11ae3-d8c3-4a41-b64f-d8715d2e3eda",
+                "name": "API_AUTH_URL",
+                "value": "https://backend.botconversa.com.br/api/v1/auth/jwt/create/",
+                "type": "string"
+              },
+              {
+                "id": "c4bee814-99ce-4177-b6ad-0d38438e88de",
+                "name": "email",
+                "value": "pedro.alves@blips.com.br",
+                "type": "string"
+              },
+              {
+                "id": "7a865867-5d9f-42b0-9197-dbb36b77c311",
+                "name": "psswd",
+                "value": "Acesso1pedro!",
+                "type": "string"
+              },
+              {
+                "id": "9fffee0e-250b-448f-906e-984b68082429",
+                "name": "gainSheetID",
+                "value": "17gx4-pXR-f02CxioRytPZzXyWhieUeZl0TZ720u3q48",
+                "type": "string"
+              },
+              {
+                "id": "37902170-4fc7-47b7-9ab1-aa43cf8d0914",
+                "name": "loseSheetID",
+                "value": "1uZMLN4pnQIZRwSO_XnZlLQHPbkT72VFtQ_UXcdoj_xs",
+                "type": "string"
+              },
+              {
+                "id": "edc731b0-5940-41be-811e-1e217f0bc1c6",
+                "name": "pipeFilter",
+                "value": "3632",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          220,
+          20
+        ],
+        "id": "57b71d22-7fd2-4817-8c75-44cfed4abad7",
+        "name": "CONSTS"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7a865867-5d9f-42b0-9197-dbb36b77c311",
+                "name": "access",
+                "value": "={{$json.access}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          600,
+          20
+        ],
+        "id": "45e79e29-9d73-4b0a-bcc1-8f675bd1de95",
+        "name": "Token"
+      }
+    ],
+    "connections": {
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "CONSTS",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "jwt_token": {
+        "main": [
+          [
+            {
+              "node": "Token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "CONSTS": {
+        "main": [
+          [
+            {
+              "node": "jwt_token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Token": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {},
+    "versionId": "e103bc6c-2ebd-458a-8584-8f71dcaaa12e",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-08-08T16:17:37.968Z",
+        "updatedAt": "2024-08-08T16:17:37.968Z",
+        "id": "tv6Ov4En3lT5oHhf",
+        "name": "pedro"
+      },
+      {
+        "createdAt": "2025-05-05T18:58:40.340Z",
+        "updatedAt": "2025-05-05T18:58:40.340Z",
+        "id": "NyBX4zzUxCFf9uSc",
+        "name": "botconversa"
+      }
+    ]
+  }
+}
