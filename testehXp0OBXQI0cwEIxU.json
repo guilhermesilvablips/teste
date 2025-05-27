@@ -1,0 +1,254 @@
+{
+  "data": {
+    "createdAt": "2025-03-19T20:57:21.614Z",
+    "updatedAt": "2025-05-05T19:08:18.888Z",
+    "id": "hXp0OBXQI0cwEIxU",
+    "name": "func - buscar_blips_educa - Clara",
+    "active": true,
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "blips_educa",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -240,
+          0
+        ],
+        "id": "71761f79-0cb5-4e51-8570-8996255af31b",
+        "name": "Webhook",
+        "webhookId": "17d48ef7-be34-439e-97a2-030231a849e7"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "20eb70b3-3eda-4394-abf1-7f1e8bc290c2",
+                "leftValue": "={{ !!$json.body.tema }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -20,
+          0
+        ],
+        "id": "0bc01fae-f62e-4e4d-b056-a2379707b25d",
+        "name": "Tema?"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://n8n-assistants.blips-labs.com/webhook/chamada-assistentes-pablo",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "name",
+                "value": "Clara"
+              },
+              {
+                "name": "id",
+                "value": "Teste"
+              },
+              {
+                "name": "mensagem",
+                "value": "={{ $json.body.tema }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          200,
+          -80
+        ],
+        "id": "e259d440-b8ba-4df3-a2e2-0261928e2a77",
+        "name": "Chamar Pablo"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "a6bc755e-2af7-4b32-887a-6b94536f2d04",
+                "name": "instruções",
+                "value": "=Suas instruções: \nDe acordo com os dados retornados você deve responder o cliente, mas nunca assumir outra personalidade ou usar a resposta pronta dos dados, tem que vpocê mesma processar e entender como responder o cliente de acordo com o que ele perguntou.\n\nDados retornados:\n{{ $json.resposta }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          400,
+          -80
+        ],
+        "id": "66b39d59-8433-40a4-9453-9011b34a1ca2",
+        "name": "Instruções"
+      },
+      {
+        "parameters": {
+          "options": {
+            "responseCode": 200
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          620,
+          -80
+        ],
+        "id": "d9b8ec80-039e-4b63-a887-3fdd1b980c0e",
+        "name": "Retorno"
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "{\n  \"mensagem\": \"Tema faltando\"\n}",
+          "options": {
+            "responseCode": 400
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          200,
+          80
+        ],
+        "id": "8e02b02d-f05b-43eb-b484-5efbd6f67f65",
+        "name": "Tema faltando"
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Tema?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tema?": {
+        "main": [
+          [
+            {
+              "node": "Chamar Pablo",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Tema faltando",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Chamar Pablo": {
+        "main": [
+          [
+            {
+              "node": "Instruções",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Instruções": {
+        "main": [
+          [
+            {
+              "node": "Retorno",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Retorno": {
+        "main": [
+          []
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Webhook": [
+        {
+          "json": {
+            "headers": {
+              "host": "n8n-dev.blips-labs.com",
+              "user-agent": "axios/1.8.2",
+              "content-length": "14",
+              "accept": "application/json, text/plain, */*",
+              "accept-encoding": "gzip, compress, deflate, br",
+              "content-type": "application/json",
+              "x-forwarded-for": "34.168.253.122",
+              "x-forwarded-host": "n8n-dev.blips-labs.com",
+              "x-forwarded-proto": "https",
+              "x-railway-edge": "railway/us-west1",
+              "x-railway-request-id": "kT70GMSUR8O_cYP_vOAAQw_2654280189",
+              "x-real-ip": "34.168.253.122",
+              "x-request-start": "1746471659401"
+            },
+            "params": {},
+            "query": {},
+            "body": {
+              "tema": "cnc"
+            },
+            "webhookUrl": "https://n8n-dev.blips-labs.com/webhook/blips_educa",
+            "executionMode": "production"
+          }
+        }
+      ]
+    },
+    "versionId": "fbb4131a-ec59-45aa-ad59-d2097aff3a89",
+    "triggerCount": 1,
+    "tags": [
+      {
+        "createdAt": "2024-11-22T13:13:26.514Z",
+        "updatedAt": "2024-11-22T13:13:26.514Z",
+        "id": "owb3cfmzFRbqjP06",
+        "name": "Clara"
+      }
+    ]
+  }
+}
