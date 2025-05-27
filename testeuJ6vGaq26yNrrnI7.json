@@ -1,0 +1,723 @@
+{
+  "data": {
+    "createdAt": "2025-05-21T18:38:13.149Z",
+    "updatedAt": "2025-05-26T18:01:42.460Z",
+    "id": "uJ6vGaq26yNrrnI7",
+    "name": "Enviar arquivos - Dani",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "inputSource": "jsonExample",
+          "jsonExample": "{\n  \"prompt\": \"valor\",\n  \"midia\": \"tipo\",\n  \"chat\": \"id\",\n  \"bot\": \"id\",\n  \"is_chat\": \"bool\"\n}"
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -940,
+          -420
+        ],
+        "id": "ff918967-98bd-4270-9684-42acabc04f48",
+        "name": "Execute"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.midia }}",
+                      "rightValue": "Audio",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "594210ee-87f6-4676-810e-194af7b1fcd0"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Audio"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "c64c6a02-d9ea-49e9-bcc9-f144b61bfa75",
+                      "leftValue": "={{ $json.midia }}",
+                      "rightValue": "Image",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Imagem"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "ee7ab8f1-52f4-42f6-83c9-6410ae5a1d9c",
+        "name": "Tipo arquivo",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -500,
+          -420
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "toBinary",
+          "sourceProperty": "audio_base64",
+          "options": {
+            "fileName": "=audio_dani_ID{{ $('Execute').item.json.chat }}_{{ $now.format('yyyy-MM-dd_HH-mm-ss') }}.mp3"
+          }
+        },
+        "id": "e6b81ef6-f58a-4b5d-a0ec-406a1334e0d4",
+        "name": "Convert to File",
+        "type": "n8n-nodes-base.convertToFile",
+        "typeVersion": 1.1,
+        "position": [
+          340,
+          -580
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "6bbae0b5-8486-4691-aa3c-2778897a601f",
+                "leftValue": "={{ $('variaveis').item.json.Bitrix }}",
+                "rightValue": "true",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "41f9b8b2-3847-4843-98ac-b82fc544ef2d",
+        "name": "Responder Bitrix?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -560,
+          -1080
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f40268a0-feea-4ebb-957e-a5a48bbb62e8",
+                "name": "response",
+                "value": "=Erro ao enviar {{ $('variaveis').first().json.tipo }}. Envie a resposta via texto.",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "ebbbde5f-9181-4e1c-9d8a-2195a4381366",
+        "name": "resposta erro",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          340,
+          -380
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://runtime.hyperflowapis.global/api/dneeXMnM7/dalila",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "client_id",
+                "value": "d65393f4-f062-493a-bfd0-c36aeb5d21b0"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "telefone",
+                "value": "={{ $('variaveis').item.json.telefone }}"
+              },
+              {
+                "name": "output",
+                "value": "={{ $json.result.DOWNLOAD_URL }}"
+              },
+              {
+                "name": "empresa",
+                "value": "={{ $('variaveis').item.json.empresa }}"
+              },
+              {
+                "name": "tipo",
+                "value": "={{ $('variaveis').item.json.tipo }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "7820fcd9-20e3-424c-9a4e-77d08fa1f452",
+        "name": "Enviar audio hyper",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -260,
+          -920
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f40268a0-feea-4ebb-957e-a5a48bbb62e8",
+                "name": "response",
+                "value": "={{ $('variaveis').first().json.tipo }} enviado com sucesso",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "e783803c-05e2-4bbb-8421-b03e91b78432",
+        "name": "resposta",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -920,
+          -1000
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.elevenlabs.io/v1/text-to-speech/x8FWrDHAK5xiFTJLpnHq/with-timestamps",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "output_format",
+                "value": "mp3_44100_128"
+              }
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "xi-api-key",
+                "value": "sk_50771a823f9ca7de1e1cc4026ade688a33d6d0d2968ba17b"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "text",
+                "value": "={{ $('variaveis').item.json.conteudo.trim() }}"
+              },
+              {
+                "name": "model_id",
+                "value": "eleven_multilingual_v2"
+              },
+              {
+                "name": "stability",
+                "value": "1"
+              },
+              {
+                "name": "similarity_boost",
+                "value": "1"
+              },
+              {
+                "name": "style",
+                "value": "0.55"
+              },
+              {
+                "name": "use_speaker_boost",
+                "value": "true"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "2f827ce4-c26d-4f1f-9e2f-2e770da49d4e",
+        "name": "Gerar audio ElevenLabs",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -20,
+          -500
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "content": "## Criar audio\n",
+          "height": 80,
+          "width": 1980,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -960,
+          -720
+        ],
+        "id": "15950b05-539c-46f1-9d99-cf639ef444a2",
+        "name": "Sticky Note"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f3ebcda5-bcb2-4b60-b56e-a44246b0464b",
+                "name": "conteudo",
+                "value": "={{ $json.prompt }}",
+                "type": "string"
+              },
+              {
+                "id": "16b06b75-81ce-4046-bb1d-6ce7c93e598b",
+                "name": "midia",
+                "value": "={{ $json.midia }}",
+                "type": "string"
+              },
+              {
+                "id": "9e841263-29cb-4c9c-9fdc-b7e2d74c16b6",
+                "name": "send_to",
+                "value": "={{ $json.chat }}",
+                "type": "string"
+              },
+              {
+                "id": "7a839a3a-1463-4ec1-91f4-16afe6e266e2",
+                "name": "id_do_bot",
+                "value": "={{ $json.bot }}",
+                "type": "string"
+              },
+              {
+                "id": "3d98fecc-c441-4cdd-9bc6-91d619f47e36",
+                "name": "folder_id",
+                "value": "221739",
+                "type": "string"
+              },
+              {
+                "id": "c3c7fb5d-605a-4a3f-ba39-6fdf1c6ff9ec",
+                "name": "Bitrix",
+                "value": "={{ $json.is_chat }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "79386abe-b408-4981-a380-286ce44e0741",
+        "name": "variaveis",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -720,
+          -420
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "yg3k6mtwatsyxHZR",
+            "mode": "list",
+            "cachedResultName": "Salvar mídia - Dani"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          -260,
+          -1100
+        ],
+        "id": "2006aab9-99fb-416d-8ee8-dd54b5cc777a",
+        "name": "Execute Workflow"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $('pre_upload').item.json.result.uploadUrl }}",
+          "sendBody": true,
+          "contentType": "multipart-form-data",
+          "bodyParameters": {
+            "parameters": [
+              {
+                "parameterType": "formBinaryData",
+                "name": "={{ $('pre_upload').item.json.result.field }}",
+                "inputDataFieldName": "data"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "c6483f87-6707-4a19-8c3b-a0380610ffc9",
+        "name": "upload_bitrix",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1380,
+          -580
+        ],
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/5/adko274f5n0arveg/disk.folder.uploadFile",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "id",
+                "value": "={{ $('variaveis').first().json.folder_id }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "3b1aec85-0fa2-4c5e-8675-dfb6eace0467",
+        "name": "pre_upload",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -240,
+          -500
+        ],
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/2797/h65rcvkxxhuwq612/imbot.message.add",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"BOT_ID\": \"2811\",\n  \"DIALOG_ID\": \"{{ $('variaveis').first().json.send_to }}\",\n  \"CLIENT_ID\": \"35yiybccd1da0j1ibxvrmf5asq0u8dvk\",\n  \"MESSAGE\": \"🎧 Ouça o áudio abaixo:\",\n  \"ATTACH\": [\n\"DISK\": [\n  {{$json[\"result\"][\"FILE_ID\"]}}\n]\n  ]\n}\n",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1600,
+          -580
+        ],
+        "id": "8bfdd2de-c169-4ae0-a546-389e76863bbe",
+        "name": "send_audio_via_bitrix"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.convertio.co/convert",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"apikey\": \"68b639d498ac64650c08dc2a91c035a7\",\n  \"input\": \"base64\",\n  \"file\": \"data:audio/mpeg;base64,{{ $json.base64_audio }}\",\n  \"filename\": \"audio.mp3\",\n  \"outputformat\": \"ogg\"\n}\n",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          760,
+          -580
+        ],
+        "id": "83c54223-1de9-4968-8f18-96f051dd5185",
+        "name": "Criar ogg"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Extrai base64 do binário e coloca como campo json\nreturn items.map(item => {\n  const base64 = item.binary.data.data.toString('base64');\n  return {\n    json: {\n      base64_audio: base64\n    }\n  };\n});\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          560,
+          -580
+        ],
+        "id": "515cf882-ebed-4d05-a088-130c983d84ea",
+        "name": "Code"
+      },
+      {
+        "parameters": {
+          "url": "=https://api.convertio.co/convert/{{ $json.data.id }}/status",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          960,
+          -580
+        ],
+        "id": "49ca3843-d85a-4725-9f27-2b060b1f0b1d",
+        "name": "Recuperar ID"
+      },
+      {
+        "parameters": {
+          "url": "={{ $json.data.output.url }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1180,
+          -580
+        ],
+        "id": "25c19b0b-1325-43c2-8d2e-b6db7a8c6fa5",
+        "name": "Baixar ogg"
+      }
+    ],
+    "connections": {
+      "Execute": {
+        "main": [
+          [
+            {
+              "node": "variaveis",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tipo arquivo": {
+        "main": [
+          [
+            {
+              "node": "pre_upload",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Convert to File": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Responder Bitrix?": {
+        "main": [
+          [
+            {
+              "node": "Execute Workflow",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Enviar audio hyper",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Enviar audio hyper": {
+        "main": [
+          []
+        ]
+      },
+      "Gerar audio ElevenLabs": {
+        "main": [
+          [
+            {
+              "node": "Convert to File",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "resposta erro",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "variaveis": {
+        "main": [
+          [
+            {
+              "node": "Tipo arquivo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "upload_bitrix": {
+        "main": [
+          [
+            {
+              "node": "send_audio_via_bitrix",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "pre_upload": {
+        "main": [
+          [
+            {
+              "node": "Gerar audio ElevenLabs",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Criar ogg": {
+        "main": [
+          [
+            {
+              "node": "Recuperar ID",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "Criar ogg",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Recuperar ID": {
+        "main": [
+          [
+            {
+              "node": "Baixar ogg",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Baixar ogg": {
+        "main": [
+          [
+            {
+              "node": "upload_bitrix",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Responder Bitrix?": [
+        {
+          "json": {
+            "result": {
+              "ID": 222365,
+              "NAME": "audio_dani_ID2797_2025-05-22_17-00-21.mp3",
+              "CODE": null,
+              "STORAGE_ID": "3",
+              "TYPE": "file",
+              "PARENT_ID": "123375",
+              "DELETED_TYPE": 0,
+              "GLOBAL_CONTENT_VERSION": 1,
+              "FILE_ID": 263393,
+              "SIZE": "1967378",
+              "CREATE_TIME": "2025-05-23T00:00:42+03:00",
+              "UPDATE_TIME": "2025-05-23T00:00:42+03:00",
+              "DELETE_TIME": null,
+              "CREATED_BY": "5",
+              "UPDATED_BY": "5",
+              "DELETED_BY": null,
+              "DOWNLOAD_URL": "https://blips.bitrix24.com.br/rest/5/adko274f5n0arveg/download/?token=disk%7CaWQ9MjIyMzY1Jl89ZnpoeDBmblhkNHdzU2owa0ZPeER4elhlaThUakNjZ2s%3D%7CImRvd25sb2FkfGRpc2t8YVdROU1qSXlNelkxSmw4OVpucG9lREJtYmxoa05IZHpVMm93YTBaUGVFUjRlbGhsYVRoVWFrTmpaMnM9fDV8YWRrbzI3NGY1bjBhcnZlZyI%3D.YEWoz0T%2FTHRXMK%2BTCSTfh5pfoPJsmKhf18K6Svt7x%2Fw%3D",
+              "DETAIL_URL": "https://blips.bitrix24.com.br/docs/file/Arquivos_iAs/audio_dani_ID2797_2025-05-22_17-00-21.mp3"
+            }
+          }
+        }
+      ],
+      "Execute": [
+        {
+          "json": {
+            "prompt": "Pesquisei o feedback da stefany.oliveira@blips.com.br entre 02/02/2025 e 02/05/2025, mas não encontrei nenhum dado. Se quiser, posso ajudar com outra busca ou alguma informação diferente!",
+            "midia": "Audio",
+            "chat": "2797",
+            "bot": "2811",
+            "is_chat": "true"
+          }
+        }
+      ]
+    },
+    "versionId": "9a08b617-3da2-46fa-be07-a4c5628175f8",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
