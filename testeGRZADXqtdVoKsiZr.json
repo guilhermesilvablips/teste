@@ -1,0 +1,160 @@
+{
+  "data": {
+    "createdAt": "2025-01-15T17:03:39.503Z",
+    "updatedAt": "2025-01-16T12:26:47.361Z",
+    "id": "GRZADXqtdVoKsiZr",
+    "name": "Teste Fallback 1",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "6ba3d9bf-c015-4d36-a6f3-a519fceb39e8",
+                "name": "erro",
+                "value": "=abs",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          200,
+          0
+        ],
+        "id": "fe103699-80fe-4e66-89c8-1bd71136f8e1",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "url": "www.google.com.br",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          640,
+          -220
+        ],
+        "id": "c61bad81-1485-4b8e-a9c6-1582a6055684",
+        "name": "HTTP Request"
+      },
+      {
+        "parameters": {
+          "errorMessage": "erro"
+        },
+        "type": "n8n-nodes-base.stopAndError",
+        "typeVersion": 1,
+        "position": [
+          780,
+          -380
+        ],
+        "id": "bcac5e4b-9e0b-4654-8efb-25b0ee4352b3",
+        "name": "Stop and Error",
+        "alwaysOutputData": false
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "5fdc04fb-71ea-44a9-a7c0-f412767d1d84",
+                "name": "data",
+                "value": "mock",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          680,
+          0
+        ],
+        "id": "02cd75dc-29bb-4729-af77-af5861d2ec2d",
+        "name": "Edit Fields1"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "714c40ac-3adc-4eb7-9569-5104ea33affb",
+        "name": "When clicking ‘Test workflow’"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "0QwZJ3CGK7pWrhOn",
+            "mode": "list",
+            "cachedResultName": "Teste Fallback 2"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          420,
+          0
+        ],
+        "id": "1392cce9-4a6f-4152-ab00-7416c07aee79",
+        "name": "Execute Workflow"
+      }
+    ],
+    "connections": {
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "Execute Workflow",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request": {
+        "main": [
+          []
+        ]
+      },
+      "Stop and Error": {
+        "main": [
+          []
+        ]
+      },
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "callerPolicy": "workflowsFromSameOwner",
+      "errorWorkflow": "0QwZJ3CGK7pWrhOn"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {},
+    "versionId": "1e5ed0f0-e436-42d2-b6b5-eeefcf7e2336",
+    "triggerCount": 1,
+    "tags": []
+  }
+}
