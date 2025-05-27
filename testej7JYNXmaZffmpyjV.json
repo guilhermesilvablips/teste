@@ -1,0 +1,132 @@
+{
+  "data": {
+    "createdAt": "2024-07-29T16:06:01.868Z",
+    "updatedAt": "2024-07-29T20:00:55.036Z",
+    "id": "j7JYNXmaZffmpyjV",
+    "name": "Verifying Email deliverability using  google sheets and Effibotics API",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "pollTimes": {
+            "item": [
+              {
+                "mode": "everyMinute"
+              }
+            ]
+          },
+          "documentId": {
+            "__rl": true,
+            "value": "https://docs.google.com/spreadsheets/d/1AdMvpmKzWZWQEmhSTCpIJlX-6_9VpobA0PoDiujliyY/edit?gid=1264582000#gid=1264582000",
+            "mode": "url"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 1264582000,
+            "mode": "list",
+            "cachedResultName": "Respostas ao formulário 1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1AdMvpmKzWZWQEmhSTCpIJlX-6_9VpobA0PoDiujliyY/edit#gid=1264582000"
+          },
+          "event": "rowAdded",
+          "options": {}
+        },
+        "id": "e033bb47-6d34-487b-9cb4-952d002f387e",
+        "name": "Google Sheets Trigger",
+        "type": "n8n-nodes-base.googleSheetsTrigger",
+        "position": [
+          460,
+          340
+        ],
+        "typeVersion": 1,
+        "credentials": {
+          "googleSheetsTriggerOAuth2Api": {
+            "id": "zpSKCSoIVVsz5LPD",
+            "name": "Google Sheets Trigger account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "content": "## Check email deliverability ",
+          "height": 364.82606941347825,
+          "width": 1083.1212624694333,
+          "color": 4
+        },
+        "id": "b5887e19-e5c2-4896-bbda-1835a51e1e1b",
+        "name": "Sticky Note",
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          300,
+          260
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "resource": "message",
+          "guildId": {
+            "__rl": true,
+            "value": "783328180500299777",
+            "mode": "list",
+            "cachedResultName": "Blips",
+            "cachedResultUrl": "https://discord.com/channels/783328180500299777"
+          },
+          "channelId": {
+            "__rl": true,
+            "value": "1266473524126814288",
+            "mode": "list",
+            "cachedResultName": "time-crédito",
+            "cachedResultUrl": "https://discord.com/channels/783328180500299777/1266473524126814288"
+          },
+          "content": "=Olá pessoal, nova urgência registrada:\n\n{{ $json.Data }}\n{{ $json['Endereço de e-mail'] }}\n{{ $json['Loc. ou Finan.?'] }}\n{{ $json['CNPJ do cliente'] }}\n{{ $json['Qual a urgência?'] }}\n\nAté mais!\nAtenciosamente,\nPrudente",
+          "options": {}
+        },
+        "id": "d4d7370c-f0a9-4c06-b2a8-6164064f43a7",
+        "name": "Discord",
+        "type": "n8n-nodes-base.discord",
+        "typeVersion": 2,
+        "position": [
+          680,
+          340
+        ],
+        "credentials": {
+          "discordBotApi": {
+            "id": "HwwdTQ09UgBU7GNZ",
+            "name": "Discord Bot account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Google Sheets Trigger": {
+        "main": [
+          [
+            {
+              "node": "Discord",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": {
+      "node:Google Sheets Trigger": {
+        "documentId": "1AdMvpmKzWZWQEmhSTCpIJlX-6_9VpobA0PoDiujliyY",
+        "sheetId": 1264582000,
+        "lastIndexChecked": 1066
+      }
+    },
+    "meta": {
+      "templateId": "2191",
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "e708365f-894b-4137-a81a-22f318ae2314",
+    "triggerCount": 1,
+    "tags": []
+  }
+}
