@@ -1,0 +1,37 @@
+{
+  "data": {
+    "createdAt": "2025-03-20T17:13:16.509Z",
+    "updatedAt": "2025-03-20T18:17:21.634Z",
+    "id": "NTAXUumY96e02w8I",
+    "name": "Jornada do cliente retorno",
+    "active": true,
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "resposta-jornada",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          0,
+          0
+        ],
+        "id": "bbd169a0-50e6-4f0c-96a1-f3032d3d8c58",
+        "name": "Webhook",
+        "webhookId": "62c17846-9de8-439b-8777-45898068ab94"
+      }
+    ],
+    "connections": {},
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {},
+    "versionId": "8e33e096-4bec-4cd5-8e9b-c8ae8251b817",
+    "triggerCount": 1,
+    "tags": []
+  }
+}
