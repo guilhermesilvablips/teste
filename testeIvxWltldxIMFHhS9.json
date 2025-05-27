@@ -1,0 +1,136 @@
+{
+  "data": {
+    "createdAt": "2025-05-12T17:09:31.838Z",
+    "updatedAt": "2025-05-13T19:29:38.010Z",
+    "id": "IvxWltldxIMFHhS9",
+    "name": "Cálculo Dani",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "inputSource": "jsonExample",
+          "jsonExample": "{\n  \"calcular_valor\":\"valor\",\n  \"salario\": 2400,\n  \"data_admissao\": \"18/09/2024\",\n  \"data_demissao\": \"22/04/2025\",\n  \"ferias_proporcionais\": true,\n  \"13_proporcional\": false,\n  \"adiantamento\": 0,\n  \"desconto\": 0,\n  \"calcular_rescisao\": true\n}"
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "45d2f322-21ce-4d09-9baa-ccecf665b954",
+        "name": "Execute"
+      },
+      {
+        "parameters": {
+          "jsCode": "const input = \"salario=2400; data_admissao=18/09/2024; data_demissao=22/04/2025; ferias_proporcionais=true; 13_proporcional=false; adiantamento=0; desconto=0; calcular_rescisao\";\n\nconst result = {};\ninput.split(\";\").forEach(part => {\n  const [key, value] = part.trim().split(\"=\");\n  if (value === undefined) {\n    result[key] = true;  // ex: 'calcular_rescisao' sem valor é tratado como true\n  } else if (!isNaN(value)) {\n    result[key] = parseFloat(value);  // converte para número\n  } else if (value === \"true\" || value === \"false\") {\n    result[key] = value === \"true\";\n  } else {\n    result[key] = value;\n  }\n});\n\nreturn [{ json: result }];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          200,
+          0
+        ],
+        "id": "fcc16961-d532-4155-9a16-25c8f566bfa8",
+        "name": "Resgatar valores"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "779c793c-53bb-4700-afe8-d950f7c0987a",
+                "name": "sucesso",
+                "value": true,
+                "type": "boolean"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1360,
+          0
+        ],
+        "id": "0db0e384-3e21-49c6-91e1-c3a9883b9077",
+        "name": "Sucesso",
+        "executeOnce": true
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "981c46d5-4f12-4b36-b495-0e3fa9078ae6"
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          420,
+          0
+        ],
+        "id": "8b03729e-0d39-4c96-92d8-b9a5f89dac54",
+        "name": "Switch"
+      }
+    ],
+    "connections": {
+      "Execute": {
+        "main": [
+          [
+            {
+              "node": "Resgatar valores",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Resgatar valores": {
+        "main": [
+          [
+            {
+              "node": "Switch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "e73f6c56-16f1-4b7c-86b1-30c5abe85e34",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
