@@ -1,0 +1,759 @@
+{
+  "data": {
+    "createdAt": "2025-02-19T13:44:33.889Z",
+    "updatedAt": "2025-03-10T14:51:50.624Z",
+    "id": "RWVBbrTUMHuKKGmM",
+    "name": "Playgorund LLMs Diogo",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Analise os seguintes processos e responda de forma objetiva: O lead tem processos? Se sim, qual o tipo (Criminal, Cível, Trabalhista, etc.)? Qual seu papel no processo (Autor, Réu, Testemunha, etc.)? O que foi decidido (Absolvido, Condenado, Arquivado, Em andamento, etc.)? Resuma apenas o essencial, sem detalhes específicos como números de processos ou nomes de terceiros.\n\nResponde em jsonToString ou seja:\n'{\n  \"processos\": {\n    \"tipo\": \"\",\n    \"papel\": \"\",\n    \"decisão\": \"\"\n    \"resumo\": \"EX: O lead processou (ou foi processado) uma empresa etc... (diga resumidamente coisas importantes para nossa analise de credito)\"\n  }\n}'\n\nPROCESSOS:\n{{ $json.text }}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.5,
+        "position": [
+          1040,
+          0
+        ],
+        "id": "29515252-15dd-4bab-acd8-2aed8aeb7a43",
+        "name": "Basic LLM Chain",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "modelName": "models/gemini-2.0-flash-exp",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+        "typeVersion": 1,
+        "position": [
+          1120,
+          540
+        ],
+        "id": "48fa1c3e-3c03-49bd-828f-a019ffabaaaa",
+        "name": "Google Gemini Chat Model",
+        "credentials": {
+          "googlePalmApi": {
+            "id": "CuJxjolJuOtVRE1K",
+            "name": "Luan Gemini Key"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.1,
+        "position": [
+          1120,
+          200
+        ],
+        "id": "aca300bb-8aa1-40a0-ad2d-6c1a860050e0",
+        "name": "OpenAI Chat Model",
+        "credentials": {
+          "openAiApi": {
+            "id": "TBRHNzovO90QEFlY",
+            "name": "Test connection n8n"
+          }
+        },
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Analise os seguintes processos e responda de forma objetiva: O lead tem processos? Se sim, qual o tipo (Criminal, Cível, Trabalhista, etc.)? Qual seu papel no processo (Autor, Réu, Testemunha, etc.)? O que foi decidido (Absolvido, Condenado, Arquivado, Em andamento, etc.)? Resuma apenas o essencial, sem detalhes específicos como números de processos ou nomes de terceiros.\n\nResponde em jsonToString ou seja:\n'{\n  \"processos\": {\n    \"tipo\": \"\",\n    \"papel\": \"\",\n    \"decisão\": \"\"\n    \"resumo\": \"EX: O lead processou (ou foi processado) uma empresa etc... (diga resumidamente coisas importantes para nossa analise de credito)\"\n  }\n}'\n\nPROCESSOS:\n{{ $json.text }}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.5,
+        "position": [
+          1040,
+          340
+        ],
+        "id": "0147c522-3cf2-4b9e-af45-3049a76eaec4",
+        "name": "Basic LLM Chain1"
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "Number",
+          "include": "selectedOtherFields",
+          "fieldsToInclude": "Type, MainSubject, CourtType, , Status, , Parties[0].Name, Parties[0].Type, Updates[0].Content, Updates[0].CaptureDate, Decisions[0].DecisionContent",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          140,
+          0
+        ],
+        "id": "f4f4637b-addd-450a-9c2a-a3ec5e4ccd7c",
+        "name": "Separa Processos"
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "processos",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          420,
+          0
+        ],
+        "id": "c6dc9672-7b5c-451d-b78f-6bf14c2691cc",
+        "name": "Agrega processos"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "58ba70af-4a98-406f-980e-60591de664c4",
+                "name": "text",
+                "value": "={{ $json }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          700,
+          0
+        ],
+        "id": "070f8996-d641-466a-9598-8920ad81ac04",
+        "name": "Processos_Data"
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all(); // Obtém os dados do node anterior\n\nreturn items.map(item => {\n  try {\n    // Extrair e limpar o texto\n    const rawText = item.json.text;\n    const jsonMatch = rawText.match(/```json\\n([\\s\\S]+)\\n```/);\n\n    if (!jsonMatch) {\n      return { json: { error: \"Formato inválido de JSON no texto\" } };\n    }\n\n    const jsonString = jsonMatch[1]; // Captura apenas o JSON dentro das backticks\n    const parsedJson = JSON.parse(jsonString); // Converte para JSON válido\n\n    return { json: parsedJson }; // Retorna o JSON transformado\n  } catch (error) {\n    return { json: { error: \"Erro ao processar o JSON\", details: error.message } };\n  }\n});"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1400,
+          0
+        ],
+        "id": "c21492a0-9ab1-4627-ab5c-918d74cb8080",
+        "name": "Code",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all(); // Obtém os dados do node anterior\n\nreturn items.map(item => {\n  try {\n    // Extrair e limpar o texto\n    const rawText = item.json.text;\n    const jsonMatch = rawText.match(/```json\\n([\\s\\S]+)\\n```/);\n\n    if (!jsonMatch) {\n      return { json: { error: \"Formato inválido de JSON no texto\" } };\n    }\n\n    const jsonString = jsonMatch[1]; // Captura apenas o JSON dentro das backticks\n    const parsedJson = JSON.parse(jsonString); // Converte para JSON válido\n\n    return { json: parsedJson }; // Retorna o JSON transformado\n  } catch (error) {\n    return { json: { error: \"Erro ao processar o JSON\", details: error.message } };\n  }\n});"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1400,
+          340
+        ],
+        "id": "1afebcf5-3f81-47fa-923b-d7be2ec6f900",
+        "name": "Code1"
+      },
+      {
+        "parameters": {
+          "inputSource": "passthrough"
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -100,
+          0
+        ],
+        "id": "2b235bc5-325c-4c4c-b082-66a50e2518dd",
+        "name": "When Executed by Another Workflow"
+      }
+    ],
+    "connections": {
+      "Google Gemini Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Basic LLM Chain1",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Basic LLM Chain": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Separa Processos": {
+        "main": [
+          [
+            {
+              "node": "Agrega processos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Agrega processos": {
+        "main": [
+          [
+            {
+              "node": "Processos_Data",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Processos_Data": {
+        "main": [
+          [
+            {
+              "node": "Basic LLM Chain1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Basic LLM Chain1": {
+        "main": [
+          [
+            {
+              "node": "Code1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Separa Processos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "When Executed by Another Workflow": [
+        {
+          "json": {
+            "Number": "00015098220145090071",
+            "Type": "RITO ORDINARIO",
+            "MainSubject": "ANOTACAO / BAIXA / RETIFICACAO",
+            "CourtName": "TRT9",
+            "CourtLevel": "1",
+            "CourtType": "TRABALHISTA",
+            "CourtDistrict": "CASCAVEL",
+            "JudgingBody": "01 VARA DO TRABALHO DE CASCAVEL",
+            "State": "PR",
+            "Status": "ARQUIVADO",
+            "LawsuitHostService": "PJE",
+            "InferredCNJSubjectName": "ANOTAÇÃO / BAIXA / RETIFICAÇÃO",
+            "InferredCNJSubjectNumber": 5352,
+            "InferredCNJProcedureTypeNumber": 0,
+            "InferredBroadCNJSubjectName": "DIREITO DO TRABALHO",
+            "InferredBroadCNJSubjectNumber": 864,
+            "OtherSubjects": [
+              "ANOTACAO / BAIXA / RETIFICACAO",
+              "ACUMULO DE FUNCAO",
+              "ANOTACAO NA CTPS",
+              "BASE DE CALCULO",
+              "CONTRATUAIS",
+              "IMPOSTO DE RENDA",
+              "MULTA PREVISTA EM NORMA COLETIVA",
+              "MULTA DE 40% DO FGTS",
+              "REFLEXOS",
+              "VALE TRANSPORTE"
+            ],
+            "NumberOfVolumes": 0,
+            "NumberOfPages": 0,
+            "Value": 30000,
+            "ResJudicataDate": "0001-01-01T00:00:00",
+            "CloseDate": "2016-04-06T12:42:56",
+            "RedistributionDate": "0001-01-01T00:00:00",
+            "PublicationDate": "2015-04-22T00:00:00",
+            "NoticeDate": "2014-08-06T14:58:41",
+            "LastMovementDate": "2016-04-06T12:42:56",
+            "CaptureDate": "2021-02-21T12:06:20",
+            "LastUpdate": "2021-02-21T12:06:20",
+            "NumberOfParties": 6,
+            "NumberOfUpdates": 36,
+            "LawSuitAge": 608,
+            "AverageNumberOfUpdatesPerMonth": 0,
+            "ReasonForConcealedData": 0,
+            "Parties": [
+              {
+                "IsPartyActive": true,
+                "Name": "J L S O",
+                "Polarity": "ACTIVE",
+                "Type": "CLAIMANT",
+                "PartyDetails": {
+                  "SpecificType": "RECLAMANTE"
+                },
+                "LastCaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Doc": "08905415822",
+                "IsPartyActive": true,
+                "Name": "MARLON JOSE DE OLIVEIRA",
+                "Polarity": "NEUTRAL",
+                "Type": "LAWYER",
+                "IsInference": false,
+                "PartyDetails": {
+                  "SpecificType": "ADVOGADO"
+                },
+                "LastCaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Doc": "04686814936",
+                "IsPartyActive": true,
+                "Name": "ALISSON DAVID PAGANINI SANTOS",
+                "Polarity": "NEUTRAL",
+                "Type": "LAWYER",
+                "IsInference": false,
+                "PartyDetails": {
+                  "SpecificType": "ADVOGADO"
+                },
+                "LastCaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Doc": "51262703972",
+                "IsPartyActive": true,
+                "Name": "SUZANA VALDENIR PERBONI",
+                "Polarity": "NEUTRAL",
+                "Type": "LAWYER",
+                "IsInference": false,
+                "PartyDetails": {
+                  "SpecificType": "ADVOGADO"
+                },
+                "LastCaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Doc": "82006818000186",
+                "IsPartyActive": true,
+                "Name": "MOADIESEL BOMBAS INJETORAS LTDA ME",
+                "Polarity": "PASSIVE",
+                "Type": "CLAIMED",
+                "IsInference": true,
+                "PartyDetails": {
+                  "SpecificType": "RECLAMADO"
+                },
+                "LastCaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Doc": "04251590945",
+                "IsPartyActive": true,
+                "Name": "EZEQUIEL DA SILVA",
+                "Polarity": "NEUTRAL",
+                "Type": "LAWYER",
+                "IsInference": false,
+                "PartyDetails": {
+                  "SpecificType": "ADVOGADO"
+                },
+                "LastCaptureDate": "2021-02-21T12:06:20"
+              }
+            ],
+            "Updates": [
+              {
+                "Content": "ARQUIVADOS OS AUTOS DEFINITIVAMENTE",
+                "PublishDate": "2016-04-06T12:42:56",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "ATA DA AUDIENCIA ATA DE AUDIENCIA PROCESSO: 0001509-82.2014.5.09.0071 AUTOR(ES): JORGE LUIZ DA SILVA OLIVEIRA REU(RE): MOADIESEL BOMBAS INJETORAS LTDA - ME EM 01 DE JULHO DE 2015, NA SALA DE SESSOES DA MM. 1 VARA DO TRABALHO DE CASCAVEL/PR, SOB A DIRECAO DA EXMO(A). JUIZA GRAZIELLA CAROLA ORGIS, REALIZOU-SE AUDIENCIA RELATIVA AO PROCESSO IDENTIFICADO EM EPIGRAFE. AS 16 HORAS, ABERTA A AUDIENCIA, FORAM, DE ORDEM DA EXMO(A). JUIZA DO TRABALHO, APREGOADAS AS PARTES. PRESENTE O(A) AUTOR(ES), ACOMPANHADO(A) DO(A) ADVOGADO(A), DR(A). ALISSON DAVID PAGANINI SANTOS, OAB N 67158D/PR. PRESENTE O SOCIO DO(A) REU(RE), SR(A). MOACIR MICHALICHEN, ACOMPANHADO(A) DO(A) ADVOGADO(A), DR(A). EZEQUIEL DA SILVA, OAB N 51582/PR. CONCILIACAO: PARA POR FIM A DEMANDA, A(O) RE(U) PAGARA A PARTE AUTORA A IMPORTANCIA LIQUIDA DE R$9.000,00, EM NOVE(09) PARCELAS IGUAIS DE R$1.000,00, VENCIVEIS NOS DIAS 10 DE CADA MES, OU PRIMEIRO DIA UTIL SUBSEQUENTE, INICIANDO-SE EM 10/07/2015. O(S) PAGAMENTO(S) DA(S) REFERIDA(S) PARCELA(S) SERA(AO) REALIZADO(S) MEDIANTE DEPOSITOS NA CONTA POUPANCA N 10710666175, DA AGENCIA NUMERO 0100/SICREDI (0710), CUJO(A) TITULAR E O PROCURADOR DO AUTOR (CPF 046.868.149/36). COM O PRESENTE ACORDO A PARTE AUTORA DA QUITACAO INTEGRAL DAS PARCELAS PLEITEADAS E DO EXTINTO CONTRATO DE TRABALHO. ESTABELECEM AS PARTES CLAUSULA PENAL DE 30% NO CASO DE INADIMPLEMENTO OU MORA. O(A) RECLAMANTE FOI ADVERTIDO(A) ACERCA DAS CONSEQUENCIAS DO ACORDO E MOSTROU COMPREENDER O ALCANCE DA COMPOSICAO, DIZENDO-SE SATISFEITO(A) COM O VALOR E CONDICOES PACTUADAS E SER DE LIVRE E ESPONTANEA VONTADE QUE FAZ O PRESENTE ACORDO. DECLARAM AS PARTES QUE O VALOR PACTUADO REFERE-SE A INDENIZACAO DE ALEGADOS DANOS MORAIS. HOMOLOGA-SE O PRESENTE ACORDO, INCLUSIVE NO QUE DIZ RESPEITO A NATUREZA JURIDICA DAS PARCELAS INDICADAS PELAS PARTES, PARA QUE PRODUZA SEUS JURIDICOS E LEGAIS EFEITOS. CUSTAS PELA PARTE AUTORA, NO IMPORTE DE R$ 180,00, SOBRE O VALOR DA AVENCA, DISPENSADAS. CONSIDERAR-SE-A CUMPRIDO O ACORDO, SEM A MANIFESTACAO DA PARTE AUTORA ATE DEZ DIAS APOS AS DATAS APRAZADAS PARA PAGAMENTO. DECLARA-SE INDEVIDA QUALQUER CONTRIBUICAO PREVIDENCIARIA E FISCAL NESTES AUTOS, DIANTE DA NATUREZA EXCLUSIVAMENTE INDENIZATORIA DAS PARCELAS CONVENCIONADAS, OBJETO DE HOMOLOGACAO PELO JUIZO. EM FACE A RECOMENDACAO N 01/2012 DA CORREGEDORIA REGIONAL, DO DESPACHO SCJ 05/2013 E PORTARIA DO MINISTERIO DA FAZENDA N 582/13, FICA DISPENSADO A REMESSA DOS AUTOS A PGF. CUMPRIDO O ACORDO, NO SILENCIO DO(A) AUTOR(A), ARQUIVEM-SE. CIENTES AS PARTES. NADA MAIS. AUDIENCIA ENCERRADA AS 16H17MIN. GRAZIELLA CAROLA ORGIS JUIZA DO TRABALHO",
+                "PublishDate": "2015-07-01T16:24:43",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "ARBITRADAS E DISPENSADAS AS CUSTAS PROCESSUAIS NO VALOR DE 180.00",
+                "PublishDate": "2015-07-01T16:24:43",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "CONCEDIDA A ASSISTENCIA JUDICIARIA GRATUITA A JORGE LUIZ DA SILVA OLIVEIRA",
+                "PublishDate": "2015-07-01T16:24:43",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "HOMOLOGADA A TRANSACAO",
+                "PublishDate": "2015-07-01T16:24:43",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "AUDIENCIA INSTRUCAO REALIZADA (01/07/2015 15:45 - 01 VARA DO TRABALHO DE CASCAVEL)",
+                "PublishDate": "2015-07-01T16:24:43",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "PUBLICADO(A) O(A) INTIMACAO EM 23/04/2015",
+                "PublishDate": "2015-04-23T02:17:06",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "DISPONIBILIZADO (A) O(A) INTIMACAO NO DIARIO DA JUSTICA ELETRONICO",
+                "PublishDate": "2015-04-23T02:17:03",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "PROFERIDO DESPACHO DE MERO EXPEDIENTE",
+                "PublishDate": "2015-04-20T11:30:02",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "MINUTAR DESPACHO 01 VARA DO TRABALHO DE CASCAVELRUA GALIBIS, 328, SANTO ONOFRE, CASCAVEL - PR - CEP: 85806-390 PROCESSO: 0001509-82.2014.5.09.0071 - ACAO TRABALHISTA - RITO ORDINARIO (985) RECLAMANTE: JORGE LUIZ DA SILVA OLIVEIRA RECLAMADA: MOADIESEL BOMBAS INJETORAS LTDA - ME CONCLUSAO FACO CONCLUSOS A PEDIDO SILEI ROMAN SILVERIO SERVIDOR(A) DESPACHO 1 - EM RAZAO DA PARTICIPACAO DESTA MAGISTRADA NO SEMINARIO \"PODER JUDICIARIO: NOVAS PERSPECTIVAS\", ADIO A AUDIENCIA DESIGNADA PARA O DIA 01/JULHO/2015, AS 15H45MIN , MANTIDAS AS MESMAS COMINACOES ANTERIORES. 2 - CIENCIA AS PARTES POR SEUS PROCURADORES CONSTITUIDOS NOS AUTOS, COM URGENCIA. CASCAVEL, 15 DE ABRIL DE 2015 GRAZIELLA CAROLA ORGIS JUIZA DO TRABALHO",
+                "PublishDate": "2015-04-20T11:30:02",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "CONCLUSOS OS AUTOS PARA DESPACHO A GRAZIELLA CAROLA ORGIS",
+                "PublishDate": "2015-04-15T15:11:40",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "AUDIENCIA INSTRUCAO DESIGNADA (01/07/2015 15:45 - 01 VARA DO TRABALHO DE CASCAVEL)",
+                "PublishDate": "2015-04-15T15:10:52",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "AUDIENCIA INSTRUCAO CANCELADA (30/04/2015 14:15 - 01 VARA DO TRABALHO DE CASCAVEL)",
+                "PublishDate": "2015-04-15T14:31:13",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "ATA DA AUDIENCIA ATA DE AUDIENCIA PROCESSO: 0001509-82.2014.5.09.0071 AUTOR(ES): JORGE LUIZ DA SILVA OLIVEIRA REU(RE): MOADIESEL BOMBAS INJETORAS LTDA - ME EM 10 DE NOVEMBRO DE 2014, NA SALA DE SESSOES DA MM. 1 VARA DO TRABALHO DE CASCAVEL/PR, SOB A DIRECAO DA EXMO(A). JUIZA GRAZIELLA CAROLA ORGIS, REALIZOU-SE AUDIENCIA RELATIVA AO PROCESSO IDENTIFICADO EM EPIGRAFE. AS 13H38MIN, ABERTA A AUDIENCIA, FORAM, DE ORDEM DA EXMO(A). JUIZA DO TRABALHO, APREGOADAS AS PARTES. PRESENTE O(A) AUTOR(ES), ACOMPANHADO(A) DO(A) ADVOGADO(A), DR(A). ALISSON DAVID PAGANINI SANTOS, OAB N 35573/PR. PRESENTE O SOCIO DO(A) REU(RE), SR(A). MOACIR MICHALICHEN, ACOMPANHADO(A) DO(A) ADVOGADO(A), DR(A). EZEQUIEL DA SILVA, OAB N 51582/PR. LEITURA DA INICIAL DISPENSADA. PARA ACORDO PRETENDE O(A) AUTOR(A) R$ 25.000,00. CONCILIACAO INICIAL REJEITADA. CONSIDERANDO QUE O PROCESSO TRAMITA POR MEIO ELETRONICO (PJE), E CONSIDERANDO A IMPOSSIBILIDADE DE APRESENTACAO DE DEFESA EM CD, PEN DRIVE OU PETICAO IMPRESSA, COM A EXPRESSA CONCORDANCIA DAS PARTES, DEFIRO O PRAZO ATE 17/11/2014 PARA QUE O(A) RECLAMADO(A) APRESENTE DEFESA (E EVENTUAL EXCECAO OU RECONVENCAO) E DOCUMENTOS, EXCLUSIVAMENTE POR MEIO DO SISTEMA ELETRONICO PJE, SOB PENA DE CONFISSAO FICTA. NO MESMO PRAZO, DEVERA(AO) A(AS) RECLAMADA(AS) REGULARIZAR A REPRESENTACAO PROCESSUAL. A PARTE AUTORA PODERA MANIFESTAR-SE, QUERENDO, SOBRE OS DOCUMENTOS QUE ACOMPANHAM A DEFESA NO PRAZO DE DEZ(10) DIAS, A CONTAR DE 19/11/2014, INCLUSIVE, BEM COMO EVENTUAL EXCECAO OU RECONVENCAO APRESENTADAS, INDEPENDENTEMENTE DE INTIMACAO. A MANIFESTACAO APRESENTADA EXTEMPORANEAMENTE NAO SERA CONHECIDA, EM VIRTUDE DA PRECLUSAO TEMPORAL. PARA REALIZACAO DA INSTRUCAO DESIGNA-SE A DATA DE 30/04/2015, AS 14H15MIN. CIENTES AS PARTES DE QUE DEVERAO COMPARECER PARA DEPOIMENTO PESSOAL, SOB PENA DE CONFISSAO (SUMULA 74 DO COL. TST). AS PARTES DEVERAO ARROLAR SUAS TESTEMUNHAS QUE PRETENDAM SEJAM INTIMADAS ATE TRINTA DIAS ANTES DA AUDIENCIA, EXCETO QUANTO AS TESTEMUNHAS A SEREM OUVIDAS POR CARTA PRECATORIA, CUJA EXPEDICAO PODERA SER REQUERIDA NA AUDIENCIA INSTRUTORIA. DEVERAO AS PARTES OBRIGATORIAMENTE INFORMAR O NUMERO DO CPF DA(S) TESTEMUNHA(S) QUE PRETENDE(M) SEJA(M) INTIMADA(S), PARA VIABILIZAR O CUMPRIMENTO, EIS QUE EXIGENCIA DO SISTEMA OPERACIONAL PJE. ALERTE-SE, DESDE JA, QUE SE NAO PUDER COMPARECER O PROPRIO RECLAMADO PESSOALMENTE, SEJA QUAL FOR O MOTIVO, QUE ESTE NOMEIE UM PREPOSTO, COMO DISCIPLINA O ART. 843,  1, DA CLT. CIENTES AS PARTES. NADA MAIS. AUDIENCIA ENCERRADA AS 13H40MIN. GRAZIELLA CAROLA ORGIS JUIZA DO TRABALHO",
+                "PublishDate": "2014-11-10T17:09:34",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "AUDIENCIA INSTRUCAO DESIGNADA (30/04/2015 14:15 - 01 VARA DO TRABALHO DE CASCAVEL)",
+                "PublishDate": "2014-11-10T17:09:34",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "AUDIENCIA INICIAL REALIZADA (10/11/2014 13:30 - 01 VARA DO TRABALHO DE CASCAVEL)",
+                "PublishDate": "2014-11-10T17:09:34",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "DECORRIDO O PRAZO DE SUZANA VALDENIR PERBONI EM 15/09/2014 23:59:59",
+                "PublishDate": "2014-09-16T00:16:47",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "PUBLICADO(A) O(A) INTIMACAO EM 10/09/2014",
+                "PublishDate": "2014-09-10T02:36:00",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "DISPONIBILIZADO (A) O(A) INTIMACAO NO DIARIO DA JUSTICA ELETRONICO",
+                "PublishDate": "2014-09-10T02:35:57",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "DECORRIDO O PRAZO DE SUZANA VALDENIR PERBONI EM 08/09/2014 23:59:59",
+                "PublishDate": "2014-09-09T04:03:13",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "DECORRIDO O PRAZO DE MOADIESEL BOMBAS INJETORAS LTDA - ME EM 08/09/2014 23:59:59",
+                "PublishDate": "2014-09-09T03:09:56",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "PUBLICADO(A) O(A) INTIMACAO EM 01/09/2014",
+                "PublishDate": "2014-09-02T02:32:43",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "DISPONIBILIZADO (A) O(A) INTIMACAO NO DIARIO DA JUSTICA ELETRONICO",
+                "PublishDate": "2014-09-02T02:32:36",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "EXPEDIDO(A) INTIMACAO A(O) DESTINATARIO",
+                "PublishDate": "2014-08-29T16:18:17",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "EXPEDIDO(A) INTIMACAO A(O) DESTINATARIO",
+                "PublishDate": "2014-08-28T12:36:33",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "CONCEDIDA A ANTECIPACAO DE TUTELA A JORGE LUIZ DA SILVA OLIVEIRA - CPF: 092.824.309-52",
+                "PublishDate": "2014-08-27T18:13:07",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "DECISAO 01 VARA DO TRABALHO DE CASCAVELRUA GALIBIS, 328, SANTO ONOFRE, CASCAVEL - PR - CEP: 85806-390 PROCESSO: 0001509-82.2014.5.09.0071 - ACAO TRABALHISTA - RITO ORDINARIO (985) RECLAMANTE: JORGE LUIZ DA SILVA OLIVEIRA RECLAMADA: MOADIESEL BOMBAS INJETORAS LTDA - ME VISTOS, ETC ANTE O MANIFESTADO NO EXPEDIENTE ID NUM F60F42B, E FACE A JUNTADA DO DOCUMENTO ID A96309A, CONCEDO O PEDIDO FORMULADO LIMINARMENTE PELA PARTE AUTORA. PARA TANTO, DEPOSITE O RECLAMANTE, EM CINCO DIAS, SUA CTPS NA SECRETARIA DO JUIZO. ATO CONTINUO, INTIME-SE A PARTE RECLAMADA PARA QUE PROMOVA A REGULARIZACAO DAS ANOTACOES CONSTANTES DA CTPS DO AUTOR (FUNCAO E ASSINATURA NA PAG. 23 DA CARTEIRA), VISANDO SUPRIR AS EXIGENCIAS DA AGENCIA DO TRABALHADOR, DE MANEIRA A PERMITIR QUE O RECLAMANTE SE HABILITE NO PROGRAMA DO SEGURO DESEMPREGO. CIENCIA. GRAZIELLA CAROLA ORGIS JUIZA DO TRABALHO",
+                "PublishDate": "2014-08-27T18:13:07",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "CONCLUSOS OS AUTOS PARA DECISAO GERAL",
+                "PublishDate": "2014-08-27T17:53:33",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "PROFERIDO DESPACHO DE MERO EXPEDIENTE",
+                "PublishDate": "2014-08-27T16:03:51",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "DESPACHO 01 VARA DO TRABALHO DE CASCAVELRUA GALIBIS, 328, SANTO ONOFRE, CASCAVEL - PR - CEP: 85806-390 PROCESSO: 0001509-82.2014.5.09.0071 - ACAO TRABALHISTA - RITO ORDINARIO (985) RECLAMANTE: JORGE LUIZ DA SILVA OLIVEIRA RECLAMADA: MOADIESEL BOMBAS INJETORAS LTDA - ME DESPACHO RECEBO O EXPEDIENTE ID NUM 269D759 COMO ADITAMENTO A INICIAL, POR MEDIDA DE ECONOMIA E CELERIDADE PROCESSUAL.NO QUE TANGE AO PEDIDO FORMULADO EM SEDE DE LIMINAR INAUDITA ALTERA PARS, NAO HA COMO SE DEFERIR A MEDIDA, EIS QUE AUSENTES OS REQUISITOS EXIGIDOS PARA TANTO (ART. 273 DO CPC). ASSINALO QUE NAO HA PROVA INEQUIVOCA DAS ALEGACOES PRIMEIRAS, JA QUE NAO COMPROVADO NOS AUTOS QUE A AGENCIA DO TRABALHADOR TENHA NEGADO A HABILITACAO DO AUTOR AO PROGRAMA DO SEGURO-DESEMPREGO.NOTIFIQUE-SE A PARTE RE DO PRESENTE ADITAMENTO, BEM COMO DA PRESENTE DECISAO.CIENCIA AO AUTOR. GRAZIELLA CAROLA ORGIS JUIZA DO TRABALHO",
+                "PublishDate": "2014-08-27T16:03:50",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "CONCLUSOS OS AUTOS PARA DESPACHO #NAO PREENCHIDO#",
+                "PublishDate": "2014-08-27T13:30:11",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "PUBLICADO(A) O(A) INTIMACAO EM 12/08/2014",
+                "PublishDate": "2014-08-09T01:41:35",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "DISPONIBILIZADO (A) O(A) INTIMACAO NO DIARIO DA JUSTICA ELETRONICO",
+                "PublishDate": "2014-08-09T01:41:32",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "EXPEDIDO(A) NOTIFICACAO A(O) DESTINATARIO",
+                "PublishDate": "2014-08-07T16:47:30",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "AUDIENCIA INICIAL DESIGNADA (10/11/2014 13:30 - 01 VARA DO TRABALHO DE CASCAVEL)",
+                "PublishDate": "2014-08-07T16:45:21",
+                "CaptureDate": "2021-02-21T12:06:20"
+              },
+              {
+                "Content": "DISTRIBUIDO POR SORTEIO",
+                "PublishDate": "2014-08-06T14:58:41",
+                "CaptureDate": "2021-02-21T12:06:20"
+              }
+            ],
+            "Petitions": [],
+            "Decisions": [
+              {
+                "DecisionContent": "DEFIRO O PRAZO ATE 17/11/2014 PARA QUE O(A) RECLAMADO(A) APRESENTE DEFESA (E EVENTUAL EXCECAO OU RECONVENCAO) E DOCUMENTOS, EXCLUSIVAMENTE POR MEIO DO SISTEMA ELETRONICO PJE, SOB PENA DE CONFISSAO FICTA.",
+                "DecisionDate": "2014-11-10T17:09:34"
+              }
+            ]
+          }
+        },
+        {
+          "json": {
+            "Number": "00004319020208160170",
+            "Type": "CARTA PRECATORIA CIVEL",
+            "MainSubject": "4972 - DUPLICATA",
+            "CourtName": "TJPR",
+            "CourtLevel": "1",
+            "CourtType": "ESPECIAL CIVEL",
+            "CourtDistrict": "TOLEDO",
+            "Judge": "RAPHAEL DE MORAIS DANTAS",
+            "JudgingBody": "JUIZADO ESPECIAL CIVEL DE TOLEDO",
+            "State": "PR",
+            "Status": "ARQUIVADO",
+            "LawsuitHostService": "OTHER",
+            "InferredCNJSubjectName": "DUPLICATA",
+            "InferredCNJSubjectNumber": 4972,
+            "InferredCNJProcedureTypeName": "CARTA PRECATÓRIA CÍVEL",
+            "InferredCNJProcedureTypeNumber": 261,
+            "InferredBroadCNJSubjectName": "DIREITO CIVIL",
+            "InferredBroadCNJSubjectNumber": 899,
+            "OtherSubjects": [
+              "4972 - DUPLICATA"
+            ],
+            "NumberOfVolumes": 0,
+            "NumberOfPages": 0,
+            "Value": -1,
+            "ResJudicataDate": "0001-01-01T00:00:00",
+            "CloseDate": "2020-01-24T00:00:00",
+            "RedistributionDate": "0001-01-01T00:00:00",
+            "PublicationDate": "0001-01-01T00:00:00",
+            "NoticeDate": "2020-01-15T00:00:00",
+            "LastMovementDate": "2020-01-24T00:00:00",
+            "CaptureDate": "2025-02-08T17:52:28",
+            "LastUpdate": "2025-02-08T17:52:28",
+            "NumberOfParties": 4,
+            "NumberOfUpdates": 14,
+            "LawSuitAge": 9,
+            "AverageNumberOfUpdatesPerMonth": 0,
+            "ReasonForConcealedData": 0,
+            "Parties": [
+              {
+                "Doc": "33225064874",
+                "IsPartyActive": true,
+                "Name": "RAPHAEL DE MORAIS DANTAS",
+                "Polarity": "NEUTRAL",
+                "Type": "REPORTER",
+                "IsInference": true,
+                "PartyDetails": {
+                  "SpecificType": "JUIZ"
+                },
+                "LastCaptureDate": "2025-02-08T17:52:28"
+              },
+              {
+                "Doc": "82006818000186",
+                "IsPartyActive": true,
+                "Name": "MOADISEL BOMBAS INJETORAS LTDA ME",
+                "Polarity": "NEUTRAL",
+                "Type": "OTHER",
+                "IsInference": false,
+                "PartyDetails": {
+                  "SpecificType": "DEPRECANTE"
+                },
+                "LastCaptureDate": "2025-02-08T17:52:28"
+              },
+              {
+                "IsPartyActive": true,
+                "Name": "EZEQUIEL DA SILVA",
+                "Polarity": "NEUTRAL",
+                "Type": "LAWYER",
+                "PartyDetails": {
+                  "OAB": "51582N",
+                  "State": "PR",
+                  "SpecificType": "ADVOGADO (DEPRECANTE)"
+                },
+                "LastCaptureDate": "2025-02-08T17:52:28"
+              },
+              {
+                "Doc": "02535420000106",
+                "IsPartyActive": true,
+                "Name": "CONSTRUMAQ LTDA",
+                "Polarity": "NEUTRAL",
+                "Type": "OTHER",
+                "IsInference": false,
+                "PartyDetails": {
+                  "SpecificType": "DEPRECADO"
+                },
+                "LastCaptureDate": "2025-02-08T17:52:28"
+              }
+            ],
+            "Updates": [
+              {
+                "Content": "ARQUIVADO DEFINITIVAMENTE DEVOLUCAO DE CARTA PRECATORIA REALIZADA A(AO) 1 JUIZADO ESPECIAL CIVEL DE CASCAVEL",
+                "PublishDate": "2020-01-24T00:00:00",
+                "CaptureDate": "2025-02-08T17:52:28"
+              },
+              {
+                "Content": "RECEBIDOS OS AUTOS RECEBIDO DO(A) DISTRIBUIDOR",
+                "PublishDate": "2020-01-24T00:00:00",
+                "CaptureDate": "2025-02-08T17:52:28"
+              },
+              {
+                "Content": "JUNTADA DE CERTIDAO",
+                "PublishDate": "2020-01-24T00:00:00",
+                "CaptureDate": "2025-02-08T17:52:28"
+              },
+              {
+                "Content": "REMETIDOS OS AUTOS PARA DISTRIBUIDOR BAIXA",
+                "PublishDate": "2020-01-24T00:00:00",
+                "CaptureDate": "2025-02-08T17:52:28"
+              },
+              {
+                "Content": "ATO CUMPRIDO PELA PARTE OU INTERESSADO LEITURA DE MANDADO REALIZADA - MANDADO LIDO EM 24/01/2020 - REFERENTE AO EVENTO DE EXPEDICAO (SEQ. 7) EXPEDICAO DE MANDADO (17/01/2020 11:16:25). PARTE: CONSTRUMAQ LTDA",
+                "PublishDate": "2020-01-24T00:00:00",
+                "CaptureDate": "2025-02-08T17:52:28"
+              },
+              {
+                "Content": "MANDADO DEVOLVIDO REFERENTE AO EVENTO (SEQ. 7) EXPEDICAO DE MANDADO (17/01/2020 11:16:25). PARTE: CONSTRUMAQ LTDA",
+                "PublishDate": "2020-01-24T00:00:00",
+                "CaptureDate": "2025-02-08T17:52:28"
+              },
+              {
+                "Content": "REGISTRO DE DISTRIBUICAO DE MANDADO DISTRIBUICAO REALIZADA REFERENTE AO MANDADO EXPEDIDO (SEQ. 7) EM 17/01/2020 11:16:25. TIPO: DISTRIBUICAO INICIAL AUTOMATICA. OFICIAL DE JUSTICA DESIGNADO: JOSE VALDIR ORTIZ. PARTE: CONSTRUMAQ LTDA",
+                "PublishDate": "2020-01-20T00:00:00",
+                "CaptureDate": "2025-02-08T17:52:28"
+              },
+              {
+                "Content": "EXPEDICAO DE MANDADO REFERENTE AO EVENTO (SEQ. 1) JUNTADA DE PETICAO DE INICIAL(15/01/2020 15:00:18). NATUREZA: CITACAO E INTIMACAO PARA AUDIENCIA. PARTE: CONSTRUMAQ LTDA. IDENTIFICADOR DO CUMPRIMENTO: 0001",
+                "PublishDate": "2020-01-17T00:00:00",
+                "CaptureDate": "2025-02-08T17:52:28"
+              },
+              {
+                "Content": "RECEBIDOS OS AUTOS RECEBIDO DO(A) DISTRIBUIDOR",
+                "PublishDate": "2020-01-15T00:00:00",
+                "CaptureDate": "2025-02-08T17:52:28"
+              },
+              {
+                "Content": "JUNTADA DE ANOTACAO DE DISTRIBUICAO",
+                "PublishDate": "2020-01-15T00:00:00",
+                "CaptureDate": "2025-02-08T17:52:28"
+              },
+              {
+                "Content": "RECEBIDOS OS AUTOS",
+                "PublishDate": "2020-01-15T00:00:00",
+                "CaptureDate": "2025-02-08T17:52:28"
+              },
+              {
+                "Content": "REMETIDOS OS AUTOS PARA DISTRIBUIDOR REGISTRO DE DISTRIBUICAO",
+                "PublishDate": "2020-01-15T00:00:00",
+                "CaptureDate": "2025-02-08T17:52:28"
+              },
+              {
+                "Content": "DISTRIBUIDO PARA COMPETENCIA EXCLUSIVA JUIZADO ESPECIAL CIVEL DE TOLEDO",
+                "PublishDate": "2020-01-15T00:00:00",
+                "CaptureDate": "2025-02-08T17:52:28"
+              },
+              {
+                "Content": "JUNTADA DE PETICAO DE INICIAL",
+                "PublishDate": "2020-01-15T00:00:00",
+                "CaptureDate": "2025-02-08T17:52:28"
+              }
+            ],
+            "Petitions": [],
+            "Decisions": []
+          }
+        }
+      ]
+    },
+    "versionId": "f5d76534-c619-4a77-a60a-cda165fa339f",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-08-08T16:17:37.968Z",
+        "updatedAt": "2024-08-08T16:17:37.968Z",
+        "id": "tv6Ov4En3lT5oHhf",
+        "name": "pedro"
+      }
+    ]
+  }
+}
