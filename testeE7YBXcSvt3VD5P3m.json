@@ -1,0 +1,448 @@
+{
+  "data": {
+    "createdAt": "2024-09-04T16:28:10.861Z",
+    "updatedAt": "2024-09-04T20:06:37.832Z",
+    "id": "E7YBXcSvt3VD5P3m",
+    "name": "Jota github backup",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "25cce90c-5853-4cd2-b403-446cbd08efc3",
+        "name": "When clicking ‘Test workflow’",
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          820,
+          380
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "9fe4f96c-53a2-49ec-9098-07a537c7b821",
+                "name": "name",
+                "value": "backup-n8n-workflows",
+                "type": "string"
+              },
+              {
+                "id": "32f234df-b5fa-4ec4-8637-e70fd9af9dd5",
+                "name": "owner",
+                "value": "blips-ai",
+                "type": "string"
+              },
+              {
+                "id": "736e6714-51a0-48b5-b1b7-ce6adb182ed7",
+                "name": "path",
+                "value": "flows/",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "985a7726-9205-4429-8b36-1f034d36d2aa",
+        "name": "Edit Fields",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1040,
+          380
+        ]
+      },
+      {
+        "parameters": {
+          "filters": {},
+          "requestOptions": {}
+        },
+        "id": "b30c26d9-869a-44d5-b767-a84004d85679",
+        "name": "n8n",
+        "type": "n8n-nodes-base.n8n",
+        "typeVersion": 1,
+        "position": [
+          1680,
+          380
+        ],
+        "credentials": {
+          "n8nApi": {
+            "id": "xhoakxkuKHeW1q6m",
+            "name": "n8n account 2"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "fieldsToAggregate": {
+            "fieldToAggregate": [
+              {
+                "fieldToAggregate": "name"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "4e0d497b-1a25-4274-968b-e64b40c8c9db",
+        "name": "Agregando fluxos",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          1460,
+          380
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "toJson",
+          "mode": "each",
+          "options": {
+            "fileName": "={{ $json.name.replace(/\\s+/g, '-').toLowerCase() }}-{{ $json.id }}.json"
+          }
+        },
+        "id": "f62211cf-5c44-45ae-86db-50906e0821cb",
+        "name": "Json to binary",
+        "type": "n8n-nodes-base.convertToFile",
+        "typeVersion": 1.1,
+        "position": [
+          1900,
+          380
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "list",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $json.name }}",
+            "mode": "name"
+          },
+          "filePath": "={{ $json.path }}"
+        },
+        "id": "82b6c8ea-f1fb-41c2-a04a-36f1dfdadf5f",
+        "name": "lista github",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          1240,
+          380
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "5c9e30c6-c44b-4f66-bc83-b79f91fa5d26",
+        "name": "Loop Over Items",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          2120,
+          380
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "edit",
+          "owner": {
+            "__rl": true,
+            "value": "blips-ai",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "https://github.com/blips-ai/backup-n8n-workflows",
+            "mode": "url"
+          },
+          "filePath": "=flows/{{ $binary.data.fileName.replace('.json','') }}",
+          "binaryData": true,
+          "commitMessage": "=Atualizando backup do fluxo {{ $binary.data.fileName.replace('.json','') }}"
+        },
+        "id": "a94b49ca-810b-4cea-bc08-57a9c364b7d1",
+        "name": "GitHub",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          2740,
+          100
+        ],
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "owner": {
+            "__rl": true,
+            "value": "=blips-ai",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "https://github.com/blips-ai/backup-n8n-workflows",
+            "mode": "url"
+          },
+          "filePath": "=flows/{{ $binary.data.fileName.replace('.json','') }}",
+          "binaryData": true,
+          "commitMessage": "=Criando bakcup do fluxo {{ $binary.data.fileName.replace('.json','') }}"
+        },
+        "id": "1e8cfc3f-c4fe-4a2c-b4e1-942ef04444ba",
+        "name": "GitHub1",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          2740,
+          540
+        ],
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "amount": 2
+        },
+        "id": "839d5d15-86f4-46b7-a314-33048792418b",
+        "name": "Wait",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          2980,
+          100
+        ],
+        "webhookId": "b2bde9d2-b56f-4c34-974e-c959532ab6e4"
+      },
+      {
+        "parameters": {
+          "amount": 2
+        },
+        "id": "0fb5fffe-7a59-47ac-aacb-e5a7331b0f49",
+        "name": "Wait1",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          2980,
+          540
+        ],
+        "webhookId": "b2bde9d2-b56f-4c34-974e-c959532ab6e4"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "50ae2c13-ef19-4593-91a0-0e851cab136b",
+                "leftValue": "={{ $node['Agregando fluxos'].json.name }}",
+                "rightValue": "={{ $binary.data.fileName.replace('.json', '' ) }}",
+                "operator": {
+                  "type": "array",
+                  "operation": "contains",
+                  "rightType": "any"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "06c57994-a6a7-4000-ba92-37e3c492c184",
+        "name": "If",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          2400,
+          380
+        ]
+      }
+    ],
+    "connections": {
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "lista github",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "n8n": {
+        "main": [
+          [
+            {
+              "node": "Json to binary",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Agregando fluxos": {
+        "main": [
+          [
+            {
+              "node": "n8n",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Json to binary": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "lista github": {
+        "main": [
+          [
+            {
+              "node": "Agregando fluxos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [],
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GitHub": {
+        "main": [
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GitHub1": {
+        "main": [
+          [
+            {
+              "node": "Wait1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait1": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "GitHub",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "GitHub1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "7aff6cb9-22cb-4486-8bc6-3f1bf5a5162c",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-09-04T16:29:06.012Z",
+        "updatedAt": "2024-09-04T16:29:06.012Z",
+        "id": "BE02Sm4q2whnN44W",
+        "name": "Jota"
+      }
+    ]
+  }
+}
