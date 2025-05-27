@@ -1,0 +1,3254 @@
+{
+  "data": {
+    "createdAt": "2024-10-25T15:33:57.222Z",
+    "updatedAt": "2025-05-20T17:17:01.584Z",
+    "id": "71HfwsVdQvHtbqLi",
+    "name": "BDC API",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://plataforma.bigdatacorp.com.br/empresas",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "q",
+                "value": "=doc{ {{ $json.CNPJ }} }"
+              },
+              {
+                "name": "Datasets",
+                "value": "kyc"
+              },
+              {
+                "name": "AccessToken",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSU5GUkFFU1RSVVRVUkFAQkxJUFMuQ09NLkJSIiwianRpIjoiODAxOTJjNjQtN2QwYS00OWY3LTljZDMtMjM5MDU3NDRjOGJhIiwibmFtZVVzZXIiOiJpbmZyYWVzdHJ1dHVyYUBibGlwcy5jb20uYnIiLCJ1bmlxdWVfbmFtZSI6IklORlJBRVNUUlVUVVJBQEJMSVBTLkNPTS5CUiIsImRvbWFpbiI6IkJMSVBTIiwicHJvZHVjdHMiOlsiQklHQk9PU1QiXSwibmJmIjoxNzIyMjg1NDIyLCJleHAiOjE3NTMzODk0MjIsImlhdCI6MTcyMjI4NTQyMiwiaXNzIjoiQmlnIERhdGEgQ29ycC4ifQ.xHlCc6hfGlbXO9HoYZAp8yJFAK_d5Ocp0exdLfj6c1o"
+              },
+              {
+                "name": "tokenID",
+                "value": "66a7fd6e6637873c7bc3b9b7"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "ecc13169-123f-45e6-90ec-0dae9713ecc3",
+        "name": "post_companies_kyc",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1220,
+          -660
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "322e58fb-8448-4bd7-8638-1d456bf138b8",
+                "name": "date",
+                "value": "={{ $now.toFormat(\"yyyy-MM-dd HH:mm:ss\") }}",
+                "type": "string"
+              },
+              {
+                "id": "c8fd2836-5505-49be-a343-1f0ea277be2b",
+                "name": "cpf_cnpj",
+                "value": "={{ $('lead').first().json.CNPJ }}",
+                "type": "string"
+              },
+              {
+                "id": "bf8a4ab5-6259-4238-ad7f-08c6d99d2b7f",
+                "name": "bureau",
+                "value": "QueryBDC",
+                "type": "string"
+              },
+              {
+                "id": "31b5beba-a4cf-41d8-9789-448075e5b3bb",
+                "name": "query",
+                "value": "companies_kyc",
+                "type": "string"
+              },
+              {
+                "id": "b9dd4408-55db-41c7-a938-6f51526e1972",
+                "name": "output_payload",
+                "value": "={{ $json }}",
+                "type": "object"
+              },
+              {
+                "id": "e1b30f74-e1f7-4691-a377-62837a5bc9df",
+                "name": "input_payload",
+                "value": "={{ {} }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "94ef8a2e-b7e4-4486-ab8f-00521dad3301",
+        "name": "save_cv_QueryBDC_companies_kyc",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1500,
+          -660
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "insert",
+          "projectId": {
+            "__rl": true,
+            "value": "blips-prod-v2",
+            "mode": "list",
+            "cachedResultName": "blips-prod-v2",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-prod-v2"
+          },
+          "datasetId": {
+            "__rl": true,
+            "value": "analise_de_credito",
+            "mode": "list",
+            "cachedResultName": "analise_de_credito"
+          },
+          "tableId": {
+            "__rl": true,
+            "value": "catalogo_variaveis",
+            "mode": "list",
+            "cachedResultName": "catalogo_variaveis"
+          },
+          "options": {}
+        },
+        "id": "7947fe71-bf6c-47f7-8983-0421a9c96841",
+        "name": "Save CV Companies KYC",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          1760,
+          -660
+        ],
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "78403caf-d089-48ef-bdc3-f371f9205d73",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              },
+              {
+                "id": "7ac37d72-6cd0-4dde-b380-900648d0b54c",
+                "name": "func",
+                "value": "=format_companies_kyc",
+                "type": "string"
+              },
+              {
+                "id": "b194be5c-c81e-4da4-ba04-d7c8482516e9",
+                "name": "={{ $('save_cv_QueryBDC_companies_kyc').first().json.bureau + \"_\" + $('save_cv_QueryBDC_companies_kyc').first().json.query }}",
+                "value": "={{ $('save_cv_QueryBDC_companies_kyc').first().json.output_payload }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "3fbbe37c-9007-4a2f-8411-5728a15b6977",
+        "name": "set_companies_kyc",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2040,
+          -660
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "1f2f62b1-1433-483d-b11c-9b6d25e61df7",
+        "name": "Utils_BDC_companies_kyc",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          2300,
+          -660
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://plataforma.bigdatacorp.com.br/pessoas",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "q",
+                "value": "=doc{ {{ $json.CPF }} }"
+              },
+              {
+                "name": "Datasets",
+                "value": "kyc"
+              },
+              {
+                "name": "AccessToken",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSU5GUkFFU1RSVVRVUkFAQkxJUFMuQ09NLkJSIiwianRpIjoiODAxOTJjNjQtN2QwYS00OWY3LTljZDMtMjM5MDU3NDRjOGJhIiwibmFtZVVzZXIiOiJpbmZyYWVzdHJ1dHVyYUBibGlwcy5jb20uYnIiLCJ1bmlxdWVfbmFtZSI6IklORlJBRVNUUlVUVVJBQEJMSVBTLkNPTS5CUiIsImRvbWFpbiI6IkJMSVBTIiwicHJvZHVjdHMiOlsiQklHQk9PU1QiXSwibmJmIjoxNzIyMjg1NDIyLCJleHAiOjE3NTMzODk0MjIsImlhdCI6MTcyMjI4NTQyMiwiaXNzIjoiQmlnIERhdGEgQ29ycC4ifQ.xHlCc6hfGlbXO9HoYZAp8yJFAK_d5Ocp0exdLfj6c1o"
+              },
+              {
+                "name": "tokenID",
+                "value": "66a7fd6e6637873c7bc3b9b7"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "9cc7155f-0328-4290-a367-826816bd88e0",
+        "name": "post_peoplev2_kyc",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1220,
+          1560
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://plataforma.bigdatacorp.com.br/pessoas",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "q",
+                "value": "=doc{ {{ $json.CPF }} }"
+              },
+              {
+                "name": "Datasets",
+                "value": "processes"
+              },
+              {
+                "name": "AccessToken",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSU5GUkFFU1RSVVRVUkFAQkxJUFMuQ09NLkJSIiwianRpIjoiODAxOTJjNjQtN2QwYS00OWY3LTljZDMtMjM5MDU3NDRjOGJhIiwibmFtZVVzZXIiOiJpbmZyYWVzdHJ1dHVyYUBibGlwcy5jb20uYnIiLCJ1bmlxdWVfbmFtZSI6IklORlJBRVNUUlVUVVJBQEJMSVBTLkNPTS5CUiIsImRvbWFpbiI6IkJMSVBTIiwicHJvZHVjdHMiOlsiQklHQk9PU1QiXSwibmJmIjoxNzIyMjg1NDIyLCJleHAiOjE3NTMzODk0MjIsImlhdCI6MTcyMjI4NTQyMiwiaXNzIjoiQmlnIERhdGEgQ29ycC4ifQ.xHlCc6hfGlbXO9HoYZAp8yJFAK_d5Ocp0exdLfj6c1o"
+              },
+              {
+                "name": "tokenID",
+                "value": "66a7fd6e6637873c7bc3b9b7"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "96100dd0-fd4b-4644-bf73-4100239b0e65",
+        "name": "post_peoplev2_processes",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1220,
+          1800
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://plataforma.bigdatacorp.com.br/empresas",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "q",
+                "value": "=doc{ {{ $json.CNPJ }} }"
+              },
+              {
+                "name": "Datasets",
+                "value": "processes"
+              },
+              {
+                "name": "AccessToken",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSU5GUkFFU1RSVVRVUkFAQkxJUFMuQ09NLkJSIiwianRpIjoiODAxOTJjNjQtN2QwYS00OWY3LTljZDMtMjM5MDU3NDRjOGJhIiwibmFtZVVzZXIiOiJpbmZyYWVzdHJ1dHVyYUBibGlwcy5jb20uYnIiLCJ1bmlxdWVfbmFtZSI6IklORlJBRVNUUlVUVVJBQEJMSVBTLkNPTS5CUiIsImRvbWFpbiI6IkJMSVBTIiwicHJvZHVjdHMiOlsiQklHQk9PU1QiXSwibmJmIjoxNzIyMjg1NDIyLCJleHAiOjE3NTMzODk0MjIsImlhdCI6MTcyMjI4NTQyMiwiaXNzIjoiQmlnIERhdGEgQ29ycC4ifQ.xHlCc6hfGlbXO9HoYZAp8yJFAK_d5Ocp0exdLfj6c1o"
+              },
+              {
+                "name": "tokenID",
+                "value": "66a7fd6e6637873c7bc3b9b7"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "7ef8cc5c-c0ba-4e4c-a453-0d73e04d2966",
+        "name": "post_companies_processes",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1220,
+          -440
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "content": "Obsoleto PGFN",
+          "height": 222.13472633686388,
+          "width": 318.650279653624
+        },
+        "id": "3d54a176-9863-4380-a31d-713515013889",
+        "name": "Sticky Note4",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          1140,
+          -920
+        ]
+      },
+      {
+        "parameters": {
+          "content": "Obsoleto",
+          "height": 241.25303341538867,
+          "width": 243.18515764752223
+        },
+        "id": "4e12da22-9ee9-4a12-902a-74791d73cb7d",
+        "name": "Sticky Note5",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          1160,
+          480
+        ]
+      },
+      {
+        "parameters": {
+          "content": "Andress[0] é sempre Priority 1 ?",
+          "height": 222.41652744508045,
+          "width": 243.74499164670476,
+          "color": 3
+        },
+        "id": "e6fe6641-4db2-4b06-bf7f-c99390e071f0",
+        "name": "Sticky Note6",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          1160,
+          780
+        ]
+      },
+      {
+        "parameters": {
+          "content": "QUAL CPF VAI ANALISAR ?\nDIRETOR, SOCIO OU OQUE VEM NO FORMULARIO ?",
+          "height": 267.8337551449407,
+          "width": 252.76675697791694,
+          "color": 3
+        },
+        "id": "33e4e254-ee27-4acd-915d-d91b05bbe556",
+        "name": "Sticky Note7",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          1160,
+          -1420
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "322e58fb-8448-4bd7-8638-1d456bf138b8",
+                "name": "date",
+                "value": "={{ $now.toFormat(\"yyyy-MM-dd HH:mm:ss\") }}",
+                "type": "string"
+              },
+              {
+                "id": "c8fd2836-5505-49be-a343-1f0ea277be2b",
+                "name": "cpf_cnpj",
+                "value": "={{ $('lead').first().json.CNPJ }}",
+                "type": "string"
+              },
+              {
+                "id": "bf8a4ab5-6259-4238-ad7f-08c6d99d2b7f",
+                "name": "bureau",
+                "value": "QueryBDC",
+                "type": "string"
+              },
+              {
+                "id": "31b5beba-a4cf-41d8-9789-448075e5b3bb",
+                "name": "query",
+                "value": "relationships",
+                "type": "string"
+              },
+              {
+                "id": "b9dd4408-55db-41c7-a938-6f51526e1972",
+                "name": "output_payload",
+                "value": "={{ $json }}",
+                "type": "object"
+              },
+              {
+                "id": "6ff91fc8-5120-4984-b275-fd4c04753b89",
+                "name": "input_payload",
+                "value": "={{ {} }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "eccdeae8-f4ee-4fe7-89a0-ae611eb99eb8",
+        "name": "save_cv_QueryBDC_companies_relationships1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1500,
+          -1340
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "a4257504-729e-46be-a53d-92c80395fa57",
+        "name": "Utils_BDC_companies_relationships1",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          2300,
+          -1340
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "55d71697-3014-43fa-97b2-473a4efb8de0",
+        "name": "Utils_BDC_peoplev2_basic_data1",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          2300,
+          260
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "34be9ff2-8f24-48b6-bbf3-8b39e1eca0a7",
+        "name": "Utils_BDC_peoplev2_addresses_extended1",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          2300,
+          820
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "322e58fb-8448-4bd7-8638-1d456bf138b8",
+                "name": "date",
+                "value": "={{ $now.toFormat(\"yyyy-MM-dd HH:mm:ss\") }}",
+                "type": "string"
+              },
+              {
+                "id": "c8fd2836-5505-49be-a343-1f0ea277be2b",
+                "name": "cpf_cnpj",
+                "value": "={{ $('lead').first().json.CPF }}",
+                "type": "string"
+              },
+              {
+                "id": "bf8a4ab5-6259-4238-ad7f-08c6d99d2b7f",
+                "name": "bureau",
+                "value": "QueryBDC",
+                "type": "string"
+              },
+              {
+                "id": "31b5beba-a4cf-41d8-9789-448075e5b3bb",
+                "name": "query",
+                "value": "peoplev2_basic_data",
+                "type": "string"
+              },
+              {
+                "id": "b9dd4408-55db-41c7-a938-6f51526e1972",
+                "name": "output_payload",
+                "value": "={{ $json }}",
+                "type": "object"
+              },
+              {
+                "id": "6ee56856-a5ae-4ec3-b398-7ee0e449aafd",
+                "name": "input_payload",
+                "value": "={{ {} }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "8fbadc7d-f55a-4b55-bc53-315f39f859d3",
+        "name": "save_cv_QueryBDC_peoplev2_basic_data1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1500,
+          260
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "322e58fb-8448-4bd7-8638-1d456bf138b8",
+                "name": "date",
+                "value": "={{ $now.toFormat(\"yyyy-MM-dd HH:mm:ss\") }}",
+                "type": "string"
+              },
+              {
+                "id": "c8fd2836-5505-49be-a343-1f0ea277be2b",
+                "name": "cpf_cnpj",
+                "value": "={{ $('lead').first().json.CPF }}",
+                "type": "string"
+              },
+              {
+                "id": "bf8a4ab5-6259-4238-ad7f-08c6d99d2b7f",
+                "name": "bureau",
+                "value": "QueryBDC",
+                "type": "string"
+              },
+              {
+                "id": "31b5beba-a4cf-41d8-9789-448075e5b3bb",
+                "name": "query",
+                "value": "ondemand_pf_antecedente",
+                "type": "string"
+              },
+              {
+                "id": "b9dd4408-55db-41c7-a938-6f51526e1972",
+                "name": "output_payload",
+                "value": "={{ $json }}",
+                "type": "object"
+              },
+              {
+                "id": "7ba0fc85-d2e7-4417-8b88-472f3047a507",
+                "name": "input_payload",
+                "value": "={{ {} }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "5b7e8a06-ee46-4136-82f8-9b83eb64638c",
+        "name": "save_cv_QueryBDC_peoplev2_ondemand_pf_antecedente1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1500,
+          1060
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "322e58fb-8448-4bd7-8638-1d456bf138b8",
+                "name": "date",
+                "value": "={{ $now.toFormat(\"yyyy-MM-dd HH:mm:ss\") }}",
+                "type": "string"
+              },
+              {
+                "id": "c8fd2836-5505-49be-a343-1f0ea277be2b",
+                "name": "cpf_cnpj",
+                "value": "={{ $('lead').first().json.CPF }}",
+                "type": "string"
+              },
+              {
+                "id": "bf8a4ab5-6259-4238-ad7f-08c6d99d2b7f",
+                "name": "bureau",
+                "value": "QueryBDC",
+                "type": "string"
+              },
+              {
+                "id": "31b5beba-a4cf-41d8-9789-448075e5b3bb",
+                "name": "query",
+                "value": "ondemand_nada_consta",
+                "type": "string"
+              },
+              {
+                "id": "b9dd4408-55db-41c7-a938-6f51526e1972",
+                "name": "output_payload",
+                "value": "={{ $json }}",
+                "type": "object"
+              },
+              {
+                "id": "8c24fe03-afba-4d4b-88a9-ce4d845cf4b1",
+                "name": "input_payload",
+                "value": "={{ {} }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "5a94131b-cd58-4be5-9aca-b6c4f66dfd8b",
+        "name": "save_cv_QueryBDC_peoplev2_ondemand_nada_consta1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1500,
+          1300
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "6185230b-d37c-4444-bb28-7e79400c35d6",
+        "name": "Utils_BDC_peoplev2_ondemand_nada_consta1",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          2300,
+          1300
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "738da312-c3e1-4ffe-b59d-c3fde1a8d205",
+        "name": "Utils_BDC_peoplev2_ondemand_pf_antecedente1",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          2300,
+          1060
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "322e58fb-8448-4bd7-8638-1d456bf138b8",
+                "name": "date",
+                "value": "={{ $now.toFormat(\"yyyy-MM-dd HH:mm:ss\") }}",
+                "type": "string"
+              },
+              {
+                "id": "c8fd2836-5505-49be-a343-1f0ea277be2b",
+                "name": "cpf_cnpj",
+                "value": "={{ $('lead').first().json.CNPJ }}",
+                "type": "string"
+              },
+              {
+                "id": "bf8a4ab5-6259-4238-ad7f-08c6d99d2b7f",
+                "name": "bureau",
+                "value": "QueryBDC",
+                "type": "string"
+              },
+              {
+                "id": "31b5beba-a4cf-41d8-9789-448075e5b3bb",
+                "name": "query",
+                "value": "companies_basic_data",
+                "type": "string"
+              },
+              {
+                "id": "b9dd4408-55db-41c7-a938-6f51526e1972",
+                "name": "output_payload",
+                "value": "={{ $json }}",
+                "type": "object"
+              },
+              {
+                "id": "e1b30f74-e1f7-4691-a377-62837a5bc9df",
+                "name": "input_payload",
+                "value": "={{ {} }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "98fa9fe4-1ecb-4759-840f-134da1fb7906",
+        "name": "save_cv_QueryBDC_companies_basic_data1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1500,
+          -1120
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://bigboost.bigdatacorp.com.br/companies",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "q",
+                "value": "=doc{ {{ $json.CNPJ }} }"
+              },
+              {
+                "name": "Datasets",
+                "value": "ondemand_pgfn"
+              },
+              {
+                "name": "AccessToken",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSU5GUkFFU1RSVVRVUkFAQkxJUFMuQ09NLkJSIiwianRpIjoiODAxOTJjNjQtN2QwYS00OWY3LTljZDMtMjM5MDU3NDRjOGJhIiwibmFtZVVzZXIiOiJpbmZyYWVzdHJ1dHVyYUBibGlwcy5jb20uYnIiLCJ1bmlxdWVfbmFtZSI6IklORlJBRVNUUlVUVVJBQEJMSVBTLkNPTS5CUiIsImRvbWFpbiI6IkJMSVBTIiwicHJvZHVjdHMiOlsiQklHQk9PU1QiXSwibmJmIjoxNzIyMjg1NDIyLCJleHAiOjE3NTMzODk0MjIsImlhdCI6MTcyMjI4NTQyMiwiaXNzIjoiQmlnIERhdGEgQ29ycC4ifQ.xHlCc6hfGlbXO9HoYZAp8yJFAK_d5Ocp0exdLfj6c1o"
+              },
+              {
+                "name": "tokenID",
+                "value": "66a7fd6e6637873c7bc3b9b7"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "6be5e811-d0fb-4d7b-8f4a-2760d7d33409",
+        "name": "post_companies_ondemand_pgfn1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1220,
+          -900
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://bigboost.bigdatacorp.com.br/peoplev2",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "q",
+                "value": "=doc{ {{ $json.CPF }} }"
+              },
+              {
+                "name": "Datasets",
+                "value": "ondemand_pgfn"
+              },
+              {
+                "name": "AccessToken",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSU5GUkFFU1RSVVRVUkFAQkxJUFMuQ09NLkJSIiwianRpIjoiODAxOTJjNjQtN2QwYS00OWY3LTljZDMtMjM5MDU3NDRjOGJhIiwibmFtZVVzZXIiOiJpbmZyYWVzdHJ1dHVyYUBibGlwcy5jb20uYnIiLCJ1bmlxdWVfbmFtZSI6IklORlJBRVNUUlVUVVJBQEJMSVBTLkNPTS5CUiIsImRvbWFpbiI6IkJMSVBTIiwicHJvZHVjdHMiOlsiQklHQk9PU1QiXSwibmJmIjoxNzIyMjg1NDIyLCJleHAiOjE3NTMzODk0MjIsImlhdCI6MTcyMjI4NTQyMiwiaXNzIjoiQmlnIERhdGEgQ29ycC4ifQ.xHlCc6hfGlbXO9HoYZAp8yJFAK_d5Ocp0exdLfj6c1o"
+              },
+              {
+                "name": "tokenID",
+                "value": "66a7fd6e6637873c7bc3b9b7"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "d1a72aad-80b1-493f-9a35-c6d84896cece",
+        "name": "post_peoplev2_ondemand_pgfn1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1220,
+          540
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://bigboost.bigdatacorp.com.br/peoplev2",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "q",
+                "value": "=doc{ {{ $json.CPF }} }"
+              },
+              {
+                "name": "Datasets",
+                "value": "ondemand_pf_antecedente"
+              },
+              {
+                "name": "AccessToken",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSU5GUkFFU1RSVVRVUkFAQkxJUFMuQ09NLkJSIiwianRpIjoiODAxOTJjNjQtN2QwYS00OWY3LTljZDMtMjM5MDU3NDRjOGJhIiwibmFtZVVzZXIiOiJpbmZyYWVzdHJ1dHVyYUBibGlwcy5jb20uYnIiLCJ1bmlxdWVfbmFtZSI6IklORlJBRVNUUlVUVVJBQEJMSVBTLkNPTS5CUiIsImRvbWFpbiI6IkJMSVBTIiwicHJvZHVjdHMiOlsiQklHQk9PU1QiXSwibmJmIjoxNzIyMjg1NDIyLCJleHAiOjE3NTMzODk0MjIsImlhdCI6MTcyMjI4NTQyMiwiaXNzIjoiQmlnIERhdGEgQ29ycC4ifQ.xHlCc6hfGlbXO9HoYZAp8yJFAK_d5Ocp0exdLfj6c1o"
+              },
+              {
+                "name": "tokenID",
+                "value": "66a7fd6e6637873c7bc3b9b7"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "58a47625-57e6-4506-af02-69b434eab1ad",
+        "name": "post_peoplev2_ondemand_pf_antecedente1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1220,
+          1060
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://bigboost.bigdatacorp.com.br/peoplev2",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "q",
+                "value": "=doc{ {{ $json.CPF }} }"
+              },
+              {
+                "name": "Datasets",
+                "value": "ondemand_nada_consta"
+              },
+              {
+                "name": "AccessToken",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSU5GUkFFU1RSVVRVUkFAQkxJUFMuQ09NLkJSIiwianRpIjoiODAxOTJjNjQtN2QwYS00OWY3LTljZDMtMjM5MDU3NDRjOGJhIiwibmFtZVVzZXIiOiJpbmZyYWVzdHJ1dHVyYUBibGlwcy5jb20uYnIiLCJ1bmlxdWVfbmFtZSI6IklORlJBRVNUUlVUVVJBQEJMSVBTLkNPTS5CUiIsImRvbWFpbiI6IkJMSVBTIiwicHJvZHVjdHMiOlsiQklHQk9PU1QiXSwibmJmIjoxNzIyMjg1NDIyLCJleHAiOjE3NTMzODk0MjIsImlhdCI6MTcyMjI4NTQyMiwiaXNzIjoiQmlnIERhdGEgQ29ycC4ifQ.xHlCc6hfGlbXO9HoYZAp8yJFAK_d5Ocp0exdLfj6c1o"
+              },
+              {
+                "name": "tokenID",
+                "value": "66a7fd6e6637873c7bc3b9b7"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "edf8fdb7-0dd3-4721-b9d7-3e5b10a32ced",
+        "name": "post_peoplev2_ondemand_nada_consta1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1220,
+          1300
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://bigboost.bigdatacorp.com.br/peoplev2",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "q",
+                "value": "=doc{ {{ $json.CPF }} }"
+              },
+              {
+                "name": "Datasets",
+                "value": "addresses_extended"
+              },
+              {
+                "name": "AccessToken",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSU5GUkFFU1RSVVRVUkFAQkxJUFMuQ09NLkJSIiwianRpIjoiODAxOTJjNjQtN2QwYS00OWY3LTljZDMtMjM5MDU3NDRjOGJhIiwibmFtZVVzZXIiOiJpbmZyYWVzdHJ1dHVyYUBibGlwcy5jb20uYnIiLCJ1bmlxdWVfbmFtZSI6IklORlJBRVNUUlVUVVJBQEJMSVBTLkNPTS5CUiIsImRvbWFpbiI6IkJMSVBTIiwicHJvZHVjdHMiOlsiQklHQk9PU1QiXSwibmJmIjoxNzIyMjg1NDIyLCJleHAiOjE3NTMzODk0MjIsImlhdCI6MTcyMjI4NTQyMiwiaXNzIjoiQmlnIERhdGEgQ29ycC4ifQ.xHlCc6hfGlbXO9HoYZAp8yJFAK_d5Ocp0exdLfj6c1o"
+              },
+              {
+                "name": "tokenID",
+                "value": "66a7fd6e6637873c7bc3b9b7"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "8bd8c068-50b5-4214-9222-895886339c36",
+        "name": "post_peoplev2_addresses_extended1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1220,
+          820
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "322e58fb-8448-4bd7-8638-1d456bf138b8",
+                "name": "date",
+                "value": "={{ $now.toFormat(\"yyyy-MM-dd HH:mm:ss\") }}",
+                "type": "string"
+              },
+              {
+                "id": "c8fd2836-5505-49be-a343-1f0ea277be2b",
+                "name": "cpf_cnpj",
+                "value": "={{ $('lead').first().json.CPF }}",
+                "type": "string"
+              },
+              {
+                "id": "bf8a4ab5-6259-4238-ad7f-08c6d99d2b7f",
+                "name": "bureau",
+                "value": "QueryBDC",
+                "type": "string"
+              },
+              {
+                "id": "31b5beba-a4cf-41d8-9789-448075e5b3bb",
+                "name": "query",
+                "value": "addresses_extended",
+                "type": "string"
+              },
+              {
+                "id": "b9dd4408-55db-41c7-a938-6f51526e1972",
+                "name": "output_payload",
+                "value": "={{ $json }}",
+                "type": "object"
+              },
+              {
+                "id": "ea9e8cdd-345a-4f81-96ac-5e1b34053d52",
+                "name": "input_payload",
+                "value": "={{ {} }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "b7f06912-38a4-49e1-b06c-2872225607a7",
+        "name": "save_cv_QueryBDC_peoplev2_addresses_extended1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1500,
+          820
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://bigboost.bigdatacorp.com.br/peoplev2",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "q",
+                "value": "=doc{ {{ $json.CPF }} }"
+              },
+              {
+                "name": "Datasets",
+                "value": "basic_data"
+              },
+              {
+                "name": "AccessToken",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSU5GUkFFU1RSVVRVUkFAQkxJUFMuQ09NLkJSIiwianRpIjoiODAxOTJjNjQtN2QwYS00OWY3LTljZDMtMjM5MDU3NDRjOGJhIiwibmFtZVVzZXIiOiJpbmZyYWVzdHJ1dHVyYUBibGlwcy5jb20uYnIiLCJ1bmlxdWVfbmFtZSI6IklORlJBRVNUUlVUVVJBQEJMSVBTLkNPTS5CUiIsImRvbWFpbiI6IkJMSVBTIiwicHJvZHVjdHMiOlsiQklHQk9PU1QiXSwibmJmIjoxNzIyMjg1NDIyLCJleHAiOjE3NTMzODk0MjIsImlhdCI6MTcyMjI4NTQyMiwiaXNzIjoiQmlnIERhdGEgQ29ycC4ifQ.xHlCc6hfGlbXO9HoYZAp8yJFAK_d5Ocp0exdLfj6c1o"
+              },
+              {
+                "name": "tokenID",
+                "value": "66a7fd6e6637873c7bc3b9b7"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 10000
+          }
+        },
+        "id": "70dcc615-4111-4a75-ae74-d4f519203ffd",
+        "name": "post_peoplev2_basic_data1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1220,
+          260
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://bigboost.bigdatacorp.com.br/companies",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "q",
+                "value": "=doc{ {{ $json.CNPJ }} }"
+              },
+              {
+                "name": "Datasets",
+                "value": "basic_data"
+              },
+              {
+                "name": "AccessToken",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSU5GUkFFU1RSVVRVUkFAQkxJUFMuQ09NLkJSIiwianRpIjoiODAxOTJjNjQtN2QwYS00OWY3LTljZDMtMjM5MDU3NDRjOGJhIiwibmFtZVVzZXIiOiJpbmZyYWVzdHJ1dHVyYUBibGlwcy5jb20uYnIiLCJ1bmlxdWVfbmFtZSI6IklORlJBRVNUUlVUVVJBQEJMSVBTLkNPTS5CUiIsImRvbWFpbiI6IkJMSVBTIiwicHJvZHVjdHMiOlsiQklHQk9PU1QiXSwibmJmIjoxNzIyMjg1NDIyLCJleHAiOjE3NTMzODk0MjIsImlhdCI6MTcyMjI4NTQyMiwiaXNzIjoiQmlnIERhdGEgQ29ycC4ifQ.xHlCc6hfGlbXO9HoYZAp8yJFAK_d5Ocp0exdLfj6c1o"
+              },
+              {
+                "name": "tokenID",
+                "value": "66a7fd6e6637873c7bc3b9b7"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 10000
+          }
+        },
+        "id": "92b7172c-2e71-4dfb-8f6b-a1e99363f9f7",
+        "name": "post_companies_basic_data1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1220,
+          -1120
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://bigboost.bigdatacorp.com.br/companies",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "q",
+                "value": "=doc{ {{ $json.CNPJ }} }"
+              },
+              {
+                "name": "Datasets",
+                "value": "relationships"
+              },
+              {
+                "name": "AccessToken",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSU5GUkFFU1RSVVRVUkFAQkxJUFMuQ09NLkJSIiwianRpIjoiODAxOTJjNjQtN2QwYS00OWY3LTljZDMtMjM5MDU3NDRjOGJhIiwibmFtZVVzZXIiOiJpbmZyYWVzdHJ1dHVyYUBibGlwcy5jb20uYnIiLCJ1bmlxdWVfbmFtZSI6IklORlJBRVNUUlVUVVJBQEJMSVBTLkNPTS5CUiIsImRvbWFpbiI6IkJMSVBTIiwicHJvZHVjdHMiOlsiQklHQk9PU1QiXSwibmJmIjoxNzIyMjg1NDIyLCJleHAiOjE3NTMzODk0MjIsImlhdCI6MTcyMjI4NTQyMiwiaXNzIjoiQmlnIERhdGEgQ29ycC4ifQ.xHlCc6hfGlbXO9HoYZAp8yJFAK_d5Ocp0exdLfj6c1o"
+              },
+              {
+                "name": "tokenID",
+                "value": "66a7fd6e6637873c7bc3b9b7"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 10000
+          }
+        },
+        "id": "2fa963c6-ac47-4f68-ae68-a99e8f8326b7",
+        "name": "post_companies_relationships1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1220,
+          -1340
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "operation": "insert",
+          "projectId": {
+            "__rl": true,
+            "value": "blips-prod-v2",
+            "mode": "list",
+            "cachedResultName": "blips-prod-v2",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-prod-v2"
+          },
+          "datasetId": {
+            "__rl": true,
+            "value": "analise_de_credito",
+            "mode": "list",
+            "cachedResultName": "analise_de_credito"
+          },
+          "tableId": {
+            "__rl": true,
+            "value": "catalogo_variaveis",
+            "mode": "list",
+            "cachedResultName": "catalogo_variaveis"
+          },
+          "options": {}
+        },
+        "id": "7d394652-4a47-4301-a5ae-f4f7cb2c3e19",
+        "name": "Save CV Companies Relationships1",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          1760,
+          -1340
+        ],
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleApi": {
+            "id": "KvFeNUBUHv7uR0PF",
+            "name": "Google BigQuery account - New Motor"
+          }
+        },
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "operation": "insert",
+          "projectId": {
+            "__rl": true,
+            "value": "blips-prod-v2",
+            "mode": "list",
+            "cachedResultName": "blips-prod-v2",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-prod-v2"
+          },
+          "datasetId": {
+            "__rl": true,
+            "value": "analise_de_credito",
+            "mode": "list",
+            "cachedResultName": "analise_de_credito"
+          },
+          "tableId": {
+            "__rl": true,
+            "value": "catalogo_variaveis",
+            "mode": "list",
+            "cachedResultName": "catalogo_variaveis"
+          },
+          "options": {}
+        },
+        "id": "9eed8c0c-2510-420b-82b4-b3e7899c443d",
+        "name": "Save CV Companies Basic Data1",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          1760,
+          -1120
+        ],
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "credentials": {
+          "googleApi": {
+            "id": "KvFeNUBUHv7uR0PF",
+            "name": "Google BigQuery account - New Motor"
+          }
+        },
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "operation": "insert",
+          "projectId": {
+            "__rl": true,
+            "value": "blips-prod-v2",
+            "mode": "list",
+            "cachedResultName": "blips-prod-v2",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-prod-v2"
+          },
+          "datasetId": {
+            "__rl": true,
+            "value": "analise_de_credito",
+            "mode": "list",
+            "cachedResultName": "analise_de_credito"
+          },
+          "tableId": {
+            "__rl": true,
+            "value": "catalogo_variaveis",
+            "mode": "list",
+            "cachedResultName": "catalogo_variaveis"
+          },
+          "options": {}
+        },
+        "id": "6bc8fe9d-55f5-4f8b-8cf4-03c5d14c8f96",
+        "name": "Save CV PeopleV2 Basic Data1",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          1760,
+          260
+        ],
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleApi": {
+            "id": "KvFeNUBUHv7uR0PF",
+            "name": "Google BigQuery account - New Motor"
+          }
+        },
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "operation": "insert",
+          "projectId": {
+            "__rl": true,
+            "value": "blips-prod-v2",
+            "mode": "list",
+            "cachedResultName": "blips-prod-v2",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-prod-v2"
+          },
+          "datasetId": {
+            "__rl": true,
+            "value": "analise_de_credito",
+            "mode": "list",
+            "cachedResultName": "analise_de_credito"
+          },
+          "tableId": {
+            "__rl": true,
+            "value": "catalogo_variaveis",
+            "mode": "list",
+            "cachedResultName": "catalogo_variaveis"
+          },
+          "options": {}
+        },
+        "id": "ab8d6ae5-ab6c-4f65-9fa1-bfaa2570a7c6",
+        "name": "Save CV PeopleV2 Address Extended1",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          1760,
+          820
+        ],
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleApi": {
+            "id": "KvFeNUBUHv7uR0PF",
+            "name": "Google BigQuery account - New Motor"
+          }
+        },
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "operation": "insert",
+          "projectId": {
+            "__rl": true,
+            "value": "blips-prod-v2",
+            "mode": "list",
+            "cachedResultName": "blips-prod-v2",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-prod-v2"
+          },
+          "datasetId": {
+            "__rl": true,
+            "value": "analise_de_credito",
+            "mode": "list",
+            "cachedResultName": "analise_de_credito"
+          },
+          "tableId": {
+            "__rl": true,
+            "value": "catalogo_variaveis",
+            "mode": "list",
+            "cachedResultName": "catalogo_variaveis"
+          },
+          "options": {}
+        },
+        "id": "63d78786-a8a0-47c5-91d6-d648057add42",
+        "name": "Save CV PeopleV2 Ondemand PF Antecedente1",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          1760,
+          1060
+        ],
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "credentials": {
+          "googleApi": {
+            "id": "KvFeNUBUHv7uR0PF",
+            "name": "Google BigQuery account - New Motor"
+          }
+        },
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "operation": "insert",
+          "projectId": {
+            "__rl": true,
+            "value": "blips-prod-v2",
+            "mode": "list",
+            "cachedResultName": "blips-prod-v2",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-prod-v2"
+          },
+          "datasetId": {
+            "__rl": true,
+            "value": "analise_de_credito",
+            "mode": "list",
+            "cachedResultName": "analise_de_credito"
+          },
+          "tableId": {
+            "__rl": true,
+            "value": "catalogo_variaveis",
+            "mode": "list",
+            "cachedResultName": "catalogo_variaveis"
+          },
+          "options": {}
+        },
+        "id": "2510616a-db06-4122-b555-f8db304672a2",
+        "name": "Save CV PeopleV2 Ondemand Nada Consta1",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          1760,
+          1300
+        ],
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleApi": {
+            "id": "KvFeNUBUHv7uR0PF",
+            "name": "Google BigQuery account - New Motor"
+          }
+        },
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "78403caf-d089-48ef-bdc3-f371f9205d73",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              },
+              {
+                "id": "7ac37d72-6cd0-4dde-b380-900648d0b54c",
+                "name": "func",
+                "value": "=format_peoplev2_basic_data",
+                "type": "string"
+              },
+              {
+                "id": "b194be5c-c81e-4da4-ba04-d7c8482516e9",
+                "name": "={{ $('save_cv_QueryBDC_peoplev2_basic_data1').first().json.bureau + \"_\" + $('save_cv_QueryBDC_peoplev2_basic_data1').first().json.query }}",
+                "value": "={{ $('save_cv_QueryBDC_peoplev2_basic_data1').first().json.output_payload }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "f00a6367-f33b-48d3-b8a8-79a10290cbc5",
+        "name": "set_peoplev2_basic_data1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2040,
+          260
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "78403caf-d089-48ef-bdc3-f371f9205d73",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              },
+              {
+                "id": "7ac37d72-6cd0-4dde-b380-900648d0b54c",
+                "name": "func",
+                "value": "=format_companies_relationships",
+                "type": "string"
+              },
+              {
+                "id": "b194be5c-c81e-4da4-ba04-d7c8482516e9",
+                "name": "={{ $('save_cv_QueryBDC_companies_relationships1').first().json.bureau + \"_\" + $('save_cv_QueryBDC_companies_relationships1').first().json.query }}",
+                "value": "={{ $('save_cv_QueryBDC_companies_relationships1').first().json.output_payload }}",
+                "type": "object"
+              },
+              {
+                "id": "ed1c99d3-6215-4e57-95be-bde173fc869a",
+                "name": "cpfCliente",
+                "value": "={{ $('lead').first().json.cpfCliente }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "e5f978df-98c9-4b0b-bfeb-c5d507f39397",
+        "name": "set_companies_relationships1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2040,
+          -1340
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "78403caf-d089-48ef-bdc3-f371f9205d73",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              },
+              {
+                "id": "7ac37d72-6cd0-4dde-b380-900648d0b54c",
+                "name": "func",
+                "value": "=format_companies_basic_data",
+                "type": "string"
+              },
+              {
+                "id": "b194be5c-c81e-4da4-ba04-d7c8482516e9",
+                "name": "={{ $('save_cv_QueryBDC_companies_basic_data1').first().json.bureau + \"_\" + $('save_cv_QueryBDC_companies_basic_data1').first().json.query }}",
+                "value": "={{ $('save_cv_QueryBDC_companies_basic_data1').first().json.output_payload }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "a2086b95-5ad6-4426-a217-cda504a385c5",
+        "name": "set_companies_basic_data1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2040,
+          -1120
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "78403caf-d089-48ef-bdc3-f371f9205d73",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              },
+              {
+                "id": "7ac37d72-6cd0-4dde-b380-900648d0b54c",
+                "name": "func",
+                "value": "=format_peoplev2_addresses_extended",
+                "type": "string"
+              },
+              {
+                "id": "b194be5c-c81e-4da4-ba04-d7c8482516e9",
+                "name": "={{ $('save_cv_QueryBDC_peoplev2_addresses_extended1').first().json.bureau + \"_\" + $('save_cv_QueryBDC_peoplev2_addresses_extended1').first().json.query }}",
+                "value": "={{ $('save_cv_QueryBDC_peoplev2_addresses_extended1').first().json.output_payload }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "7ded4e21-f6e9-430f-891d-40d4371e2374",
+        "name": "set_peoplev2_addresses_extended1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2040,
+          820
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "78403caf-d089-48ef-bdc3-f371f9205d73",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              },
+              {
+                "id": "7ac37d72-6cd0-4dde-b380-900648d0b54c",
+                "name": "func",
+                "value": "=format_peoplev2_ondemand_pf_antecedente",
+                "type": "string"
+              },
+              {
+                "id": "b194be5c-c81e-4da4-ba04-d7c8482516e9",
+                "name": "={{ $('save_cv_QueryBDC_peoplev2_ondemand_pf_antecedente1').first().json.bureau + \"_\" + $('save_cv_QueryBDC_peoplev2_ondemand_pf_antecedente1').first().json.query }}",
+                "value": "={{ $('save_cv_QueryBDC_peoplev2_ondemand_pf_antecedente1').first().json.output_payload }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "f0c2ba7d-77d6-4787-b718-b4ba069ee2ae",
+        "name": "set_peoplev2_ondemand_pf_antecedente1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2040,
+          1060
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "78403caf-d089-48ef-bdc3-f371f9205d73",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              },
+              {
+                "id": "7ac37d72-6cd0-4dde-b380-900648d0b54c",
+                "name": "func",
+                "value": "=format_peoplev2_ondemand_nada_consta",
+                "type": "string"
+              },
+              {
+                "id": "b194be5c-c81e-4da4-ba04-d7c8482516e9",
+                "name": "={{ $('save_cv_QueryBDC_peoplev2_ondemand_nada_consta1').first().json.bureau + \"_\" + $('save_cv_QueryBDC_peoplev2_ondemand_nada_consta1').first().json.query }}",
+                "value": "={{ $('save_cv_QueryBDC_peoplev2_ondemand_nada_consta1').first().json.output_payload }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "3da22d53-fd69-4794-ae8e-10ff2fb99f29",
+        "name": "set_peoplev2_ondemand_nada_consta1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2040,
+          1300
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.endpoint }}",
+                      "rightValue": "companies",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "empresas"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "24aea652-c8b9-4f92-8451-f0deaa6493ce",
+                      "leftValue": "={{ $json.endpoint }}",
+                      "rightValue": "peoplev2",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "pessoas"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "28726d4f-cf26-4b45-a87b-ff5b1ccd26e1",
+        "name": "Qual End Point ?1",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          280,
+          -20
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.dataset }}",
+                      "rightValue": "basic_data",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "dados básicos"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "f20cfcd3-4a56-4889-a8e3-d1155c98c653",
+                      "leftValue": "={{ $json.dataset }}",
+                      "rightValue": "ondemand_pgfn",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "pgfn"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "24aea652-c8b9-4f92-8451-f0deaa6493ce",
+                      "leftValue": "={{ $json.dataset }}",
+                      "rightValue": "addresses_extended",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "endereços"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "6a2d55ae-ab97-4534-93e3-7199c41043eb",
+                      "leftValue": "={{ $json.dataset }}",
+                      "rightValue": "ondemand_pf_antecedente",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "antecedente"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "782b55ce-385a-4a34-a48f-a17ec829482a",
+                      "leftValue": "={{ $json.dataset }}",
+                      "rightValue": "ondemand_nada_consta",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "nada_consta"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "d98360e3-4104-476f-8b5b-8260ca6b4d79",
+                      "leftValue": "={{ $json.dataset }}",
+                      "rightValue": "kyc",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "KYC"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "f2a81e36-858b-4468-ab1c-f0a625c5b3f5",
+                      "leftValue": "={{ $json.dataset }}",
+                      "rightValue": "processos",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Processos"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "6c27c7dc-7f95-4cff-8e3d-e1ea5c3ddab3",
+                      "leftValue": "={{ $json.dataset }}",
+                      "rightValue": "qsa",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "qsa"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "64a717ba-7b2b-491b-a0b1-52355e18cc53",
+        "name": "Qual Dataset ? CPF1",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          780,
+          920
+        ]
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          20,
+          -20
+        ],
+        "id": "4f76fcb0-d421-4ba6-80ee-91cec98d37a7",
+        "name": "lead"
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "51fedcbb-b279-4ce7-a941-b25bb297c8a3",
+        "name": "Utils_BDC_companies_basic_data",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          2300,
+          -1120
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "322e58fb-8448-4bd7-8638-1d456bf138b8",
+                "name": "date",
+                "value": "={{ $now.toFormat(\"yyyy-MM-dd HH:mm:ss\") }}",
+                "type": "string"
+              },
+              {
+                "id": "c8fd2836-5505-49be-a343-1f0ea277be2b",
+                "name": "cpf_cnpj",
+                "value": "={{ $('lead').first().json.CNPJ }}",
+                "type": "string"
+              },
+              {
+                "id": "bf8a4ab5-6259-4238-ad7f-08c6d99d2b7f",
+                "name": "bureau",
+                "value": "QueryBDC",
+                "type": "string"
+              },
+              {
+                "id": "31b5beba-a4cf-41d8-9789-448075e5b3bb",
+                "name": "query",
+                "value": "companies_processos",
+                "type": "string"
+              },
+              {
+                "id": "b9dd4408-55db-41c7-a938-6f51526e1972",
+                "name": "output_payload",
+                "value": "={{ $json }}",
+                "type": "object"
+              },
+              {
+                "id": "e1b30f74-e1f7-4691-a377-62837a5bc9df",
+                "name": "input_payload",
+                "value": "={{ {} }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "2965c983-341f-470a-b0ee-4e44aec04432",
+        "name": "save_cv_QueryBDC_companies_processos",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1500,
+          -440
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "insert",
+          "projectId": {
+            "__rl": true,
+            "value": "blips-prod-v2",
+            "mode": "list",
+            "cachedResultName": "blips-prod-v2",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-prod-v2"
+          },
+          "datasetId": {
+            "__rl": true,
+            "value": "analise_de_credito",
+            "mode": "list",
+            "cachedResultName": "analise_de_credito"
+          },
+          "tableId": {
+            "__rl": true,
+            "value": "catalogo_variaveis",
+            "mode": "list",
+            "cachedResultName": "catalogo_variaveis"
+          },
+          "options": {}
+        },
+        "id": "47304e21-96b6-48a9-a6ea-1eec0a0d3176",
+        "name": "Save CV Companies Processos",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          1760,
+          -440
+        ],
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "78403caf-d089-48ef-bdc3-f371f9205d73",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              },
+              {
+                "id": "7ac37d72-6cd0-4dde-b380-900648d0b54c",
+                "name": "func",
+                "value": "=format_companies_processos",
+                "type": "string"
+              },
+              {
+                "id": "b194be5c-c81e-4da4-ba04-d7c8482516e9",
+                "name": "={{ $('save_cv_QueryBDC_companies_processos').first().json.bureau + \"_\" + $('save_cv_QueryBDC_companies_processos').first().json.query }}",
+                "value": "={{ $('save_cv_QueryBDC_companies_processos').first().json.output_payload }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "ae44ebcc-daae-4690-b258-d257e8649ab1",
+        "name": "set_companies_processos",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2040,
+          -440
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "f0b0bfbe-921c-46b9-a775-5e385d8f0049",
+        "name": "Utils_BDC_companies_processos",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          2300,
+          -440
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "322e58fb-8448-4bd7-8638-1d456bf138b8",
+                "name": "date",
+                "value": "={{ $now.toFormat(\"yyyy-MM-dd HH:mm:ss\") }}",
+                "type": "string"
+              },
+              {
+                "id": "c8fd2836-5505-49be-a343-1f0ea277be2b",
+                "name": "cpf_cnpj",
+                "value": "={{ $('lead').first().json.CNPJ }}",
+                "type": "string"
+              },
+              {
+                "id": "bf8a4ab5-6259-4238-ad7f-08c6d99d2b7f",
+                "name": "bureau",
+                "value": "QueryBDC",
+                "type": "string"
+              },
+              {
+                "id": "31b5beba-a4cf-41d8-9789-448075e5b3bb",
+                "name": "query",
+                "value": "peoplev2_kyc",
+                "type": "string"
+              },
+              {
+                "id": "b9dd4408-55db-41c7-a938-6f51526e1972",
+                "name": "output_payload",
+                "value": "={{ $json }}",
+                "type": "object"
+              },
+              {
+                "id": "e1b30f74-e1f7-4691-a377-62837a5bc9df",
+                "name": "input_payload",
+                "value": "={{ {} }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "5484b251-18f0-48ac-b91e-2c1266ae4aea",
+        "name": "save_cv_QueryBDC_peoplev2_kyc",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1500,
+          1560
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "78403caf-d089-48ef-bdc3-f371f9205d73",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              },
+              {
+                "id": "7ac37d72-6cd0-4dde-b380-900648d0b54c",
+                "name": "func",
+                "value": "=format_peoplev2_kyc",
+                "type": "string"
+              },
+              {
+                "id": "b194be5c-c81e-4da4-ba04-d7c8482516e9",
+                "name": "={{ $('save_cv_QueryBDC_peoplev2_kyc').first().json.bureau + \"_\" + $('save_cv_QueryBDC_peoplev2_kyc').first().json.query }}",
+                "value": "={{ $('save_cv_QueryBDC_peoplev2_kyc').first().json.output_payload }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "b18698f1-caa0-492b-b0c4-b37e03b24cc3",
+        "name": "set_peoplev2_kyc",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2040,
+          1560
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "insert",
+          "projectId": {
+            "__rl": true,
+            "value": "blips-prod-v2",
+            "mode": "list",
+            "cachedResultName": "blips-prod-v2",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-prod-v2"
+          },
+          "datasetId": {
+            "__rl": true,
+            "value": "analise_de_credito",
+            "mode": "list",
+            "cachedResultName": "analise_de_credito"
+          },
+          "tableId": {
+            "__rl": true,
+            "value": "catalogo_variaveis",
+            "mode": "list",
+            "cachedResultName": "catalogo_variaveis"
+          },
+          "options": {}
+        },
+        "id": "411147c9-8ea8-4c5f-ba6c-5e8913d1b595",
+        "name": "Save CV peoplev2 KYC",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          1760,
+          1560
+        ],
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "64298ce6-3fa4-444c-ad13-551c249b3bb4",
+        "name": "Utils_BDC_peoplev2_kyc",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          2300,
+          1560
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "322e58fb-8448-4bd7-8638-1d456bf138b8",
+                "name": "date",
+                "value": "={{ $now.toFormat(\"yyyy-MM-dd HH:mm:ss\") }}",
+                "type": "string"
+              },
+              {
+                "id": "c8fd2836-5505-49be-a343-1f0ea277be2b",
+                "name": "cpf_cnpj",
+                "value": "={{ $('lead').first().json.CNPJ }}",
+                "type": "string"
+              },
+              {
+                "id": "bf8a4ab5-6259-4238-ad7f-08c6d99d2b7f",
+                "name": "bureau",
+                "value": "QueryBDC",
+                "type": "string"
+              },
+              {
+                "id": "31b5beba-a4cf-41d8-9789-448075e5b3bb",
+                "name": "query",
+                "value": "peoplev2_processos",
+                "type": "string"
+              },
+              {
+                "id": "b9dd4408-55db-41c7-a938-6f51526e1972",
+                "name": "output_payload",
+                "value": "={{ $json }}",
+                "type": "object"
+              },
+              {
+                "id": "e1b30f74-e1f7-4691-a377-62837a5bc9df",
+                "name": "input_payload",
+                "value": "={{ {} }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "8c35fc3f-266e-44ce-a3df-9212b703a2ca",
+        "name": "save_cv_QueryBDC_peoplev2_processos",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1500,
+          1800
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "insert",
+          "projectId": {
+            "__rl": true,
+            "value": "blips-prod-v2",
+            "mode": "list",
+            "cachedResultName": "blips-prod-v2",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-prod-v2"
+          },
+          "datasetId": {
+            "__rl": true,
+            "value": "analise_de_credito",
+            "mode": "list",
+            "cachedResultName": "analise_de_credito"
+          },
+          "tableId": {
+            "__rl": true,
+            "value": "catalogo_variaveis",
+            "mode": "list",
+            "cachedResultName": "catalogo_variaveis"
+          },
+          "options": {}
+        },
+        "id": "381530b7-297d-41fa-97a5-d0633f6e2c15",
+        "name": "Save CV peoplev2 Processos",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          1760,
+          1800
+        ],
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "78403caf-d089-48ef-bdc3-f371f9205d73",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              },
+              {
+                "id": "7ac37d72-6cd0-4dde-b380-900648d0b54c",
+                "name": "func",
+                "value": "=format_peoplev2_processos",
+                "type": "string"
+              },
+              {
+                "id": "b194be5c-c81e-4da4-ba04-d7c8482516e9",
+                "name": "={{ $('save_cv_QueryBDC_peoplev2_processos').first().json.bureau + \"_\" + $('save_cv_QueryBDC_peoplev2_processos').first().json.query }}",
+                "value": "={{ $('save_cv_QueryBDC_peoplev2_processos').first().json.output_payload }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "cb20e1eb-2c32-4a28-acaa-d1034854152a",
+        "name": "set_peoplev2_processos",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2040,
+          1800
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "140a3e8e-b5ac-4814-be68-1d4662e6ded2",
+        "name": "Utils_BDC_peoplev2_processos",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          2300,
+          1800
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.dataset }}",
+                      "rightValue": "relationships",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "relações"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "24aea652-c8b9-4f92-8451-f0deaa6493ce",
+                      "leftValue": "={{ $json.dataset }}",
+                      "rightValue": "basic_data",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "dados básicos"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "13f82a8e-23a5-4fb0-8256-f9866e2f4ffc",
+                      "leftValue": "={{ $json.dataset }}",
+                      "rightValue": "ondemand_pgfn",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "pgfn"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "98cd46ac-cc77-4017-b81f-858618ee0f94",
+                      "leftValue": "={{ $json.dataset }}",
+                      "rightValue": "kyc",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "KYC"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "f3893fd6-6a76-45e8-9ed5-4f6f3926ea5a",
+                      "leftValue": "={{ $json.dataset }}",
+                      "rightValue": "processos",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Processos"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "5ff2a8c1-090a-4f81-a5d0-7a76a7c52d19",
+                      "leftValue": "={{ $json.dataset }}",
+                      "rightValue": "sintegra",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "sintegra"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "4a90b485-cf0f-4bb0-b951-e78231d9bf24",
+                      "leftValue": "={{ $json.dataset }}",
+                      "rightValue": "qsa",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "qsa"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d0ed31d2-c768-49d9-ad9c-ab2d9b318d4d",
+        "name": "Qual Dataset ? CNPJ",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          800,
+          -640
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": " https://plataforma.bigdatacorp.com.br/ondemand",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "q",
+                "value": "=doc{ {{ $json.CNPJ }} }"
+              },
+              {
+                "name": "Datasets",
+                "value": "ondemand_sintegra_company"
+              },
+              {
+                "name": "AccessToken",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSU5GUkFFU1RSVVRVUkFAQkxJUFMuQ09NLkJSIiwianRpIjoiODAxOTJjNjQtN2QwYS00OWY3LTljZDMtMjM5MDU3NDRjOGJhIiwibmFtZVVzZXIiOiJpbmZyYWVzdHJ1dHVyYUBibGlwcy5jb20uYnIiLCJ1bmlxdWVfbmFtZSI6IklORlJBRVNUUlVUVVJBQEJMSVBTLkNPTS5CUiIsImRvbWFpbiI6IkJMSVBTIiwicHJvZHVjdHMiOlsiQklHQk9PU1QiXSwibmJmIjoxNzIyMjg1NDIyLCJleHAiOjE3NTMzODk0MjIsImlhdCI6MTcyMjI4NTQyMiwiaXNzIjoiQmlnIERhdGEgQ29ycC4ifQ.xHlCc6hfGlbXO9HoYZAp8yJFAK_d5Ocp0exdLfj6c1o"
+              },
+              {
+                "name": "tokenID",
+                "value": "66a7fd6e6637873c7bc3b9b7"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "cf3635b2-eb83-4d8d-9ba4-6a4306c39d22",
+        "name": "post_companies_ondemand_sintegra",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1220,
+          -200
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://plataforma.bigdatacorp.com.br/empresas",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "q",
+                "value": "=doc{ {{ $json.CNPJ }} }"
+              },
+              {
+                "name": "Datasets",
+                "value": "dynamic_qsa_data"
+              },
+              {
+                "name": "AccessToken",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSU5GUkFFU1RSVVRVUkFAQkxJUFMuQ09NLkJSIiwianRpIjoiODAxOTJjNjQtN2QwYS00OWY3LTljZDMtMjM5MDU3NDRjOGJhIiwibmFtZVVzZXIiOiJpbmZyYWVzdHJ1dHVyYUBibGlwcy5jb20uYnIiLCJ1bmlxdWVfbmFtZSI6IklORlJBRVNUUlVUVVJBQEJMSVBTLkNPTS5CUiIsImRvbWFpbiI6IkJMSVBTIiwicHJvZHVjdHMiOlsiQklHQk9PU1QiXSwibmJmIjoxNzIyMjg1NDIyLCJleHAiOjE3NTMzODk0MjIsImlhdCI6MTcyMjI4NTQyMiwiaXNzIjoiQmlnIERhdGEgQ29ycC4ifQ.xHlCc6hfGlbXO9HoYZAp8yJFAK_d5Ocp0exdLfj6c1o"
+              },
+              {
+                "name": "tokenID",
+                "value": "66a7fd6e6637873c7bc3b9b7"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "a0aa989e-70ed-41bf-bead-ff96dd623272",
+        "name": "post_companies_ondemand_qsa",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1220,
+          20
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://plataforma.bigdatacorp.com.br/empresas",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "q",
+                "value": "=doc{ {{ $json.CNPJ }} }"
+              },
+              {
+                "name": "Datasets",
+                "value": "dynamic_qsa_data"
+              },
+              {
+                "name": "AccessToken",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSU5GUkFFU1RSVVRVUkFAQkxJUFMuQ09NLkJSIiwianRpIjoiODAxOTJjNjQtN2QwYS00OWY3LTljZDMtMjM5MDU3NDRjOGJhIiwibmFtZVVzZXIiOiJpbmZyYWVzdHJ1dHVyYUBibGlwcy5jb20uYnIiLCJ1bmlxdWVfbmFtZSI6IklORlJBRVNUUlVUVVJBQEJMSVBTLkNPTS5CUiIsImRvbWFpbiI6IkJMSVBTIiwicHJvZHVjdHMiOlsiQklHQk9PU1QiXSwibmJmIjoxNzIyMjg1NDIyLCJleHAiOjE3NTMzODk0MjIsImlhdCI6MTcyMjI4NTQyMiwiaXNzIjoiQmlnIERhdGEgQ29ycC4ifQ.xHlCc6hfGlbXO9HoYZAp8yJFAK_d5Ocp0exdLfj6c1o"
+              },
+              {
+                "name": "tokenID",
+                "value": "66a7fd6e6637873c7bc3b9b7"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "43acca37-232c-42a8-be61-de3978fbf747",
+        "name": "post_peoplev2_ondemand_qsa",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1220,
+          2040
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "disabled": true
+      }
+    ],
+    "connections": {
+      "post_companies_kyc": {
+        "main": [
+          [
+            {
+              "node": "save_cv_QueryBDC_companies_kyc",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "save_cv_QueryBDC_companies_kyc": {
+        "main": [
+          [
+            {
+              "node": "Save CV Companies KYC",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Save CV Companies KYC": {
+        "main": [
+          [
+            {
+              "node": "set_companies_kyc",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_companies_kyc": {
+        "main": [
+          [
+            {
+              "node": "Utils_BDC_companies_kyc",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "save_cv_QueryBDC_companies_relationships1": {
+        "main": [
+          [
+            {
+              "node": "Save CV Companies Relationships1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "save_cv_QueryBDC_peoplev2_basic_data1": {
+        "main": [
+          [
+            {
+              "node": "Save CV PeopleV2 Basic Data1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "save_cv_QueryBDC_peoplev2_ondemand_pf_antecedente1": {
+        "main": [
+          [
+            {
+              "node": "Save CV PeopleV2 Ondemand PF Antecedente1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "save_cv_QueryBDC_peoplev2_ondemand_nada_consta1": {
+        "main": [
+          [
+            {
+              "node": "Save CV PeopleV2 Ondemand Nada Consta1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "save_cv_QueryBDC_companies_basic_data1": {
+        "main": [
+          [
+            {
+              "node": "Save CV Companies Basic Data1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "post_peoplev2_ondemand_pf_antecedente1": {
+        "main": [
+          [
+            {
+              "node": "save_cv_QueryBDC_peoplev2_ondemand_pf_antecedente1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "post_peoplev2_ondemand_nada_consta1": {
+        "main": [
+          [
+            {
+              "node": "save_cv_QueryBDC_peoplev2_ondemand_nada_consta1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "post_peoplev2_addresses_extended1": {
+        "main": [
+          [
+            {
+              "node": "save_cv_QueryBDC_peoplev2_addresses_extended1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "save_cv_QueryBDC_peoplev2_addresses_extended1": {
+        "main": [
+          [
+            {
+              "node": "Save CV PeopleV2 Address Extended1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "post_peoplev2_basic_data1": {
+        "main": [
+          [
+            {
+              "node": "save_cv_QueryBDC_peoplev2_basic_data1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "post_companies_basic_data1": {
+        "main": [
+          [
+            {
+              "node": "save_cv_QueryBDC_companies_basic_data1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "post_companies_relationships1": {
+        "main": [
+          [
+            {
+              "node": "save_cv_QueryBDC_companies_relationships1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Save CV Companies Relationships1": {
+        "main": [
+          [
+            {
+              "node": "set_companies_relationships1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Save CV Companies Basic Data1": {
+        "main": [
+          [
+            {
+              "node": "set_companies_basic_data1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Save CV PeopleV2 Basic Data1": {
+        "main": [
+          [
+            {
+              "node": "set_peoplev2_basic_data1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Save CV PeopleV2 Address Extended1": {
+        "main": [
+          [
+            {
+              "node": "set_peoplev2_addresses_extended1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Save CV PeopleV2 Ondemand PF Antecedente1": {
+        "main": [
+          [
+            {
+              "node": "set_peoplev2_ondemand_pf_antecedente1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Save CV PeopleV2 Ondemand Nada Consta1": {
+        "main": [
+          [
+            {
+              "node": "set_peoplev2_ondemand_nada_consta1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_peoplev2_basic_data1": {
+        "main": [
+          [
+            {
+              "node": "Utils_BDC_peoplev2_basic_data1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_companies_relationships1": {
+        "main": [
+          [
+            {
+              "node": "Utils_BDC_companies_relationships1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_companies_basic_data1": {
+        "main": [
+          [
+            {
+              "node": "Utils_BDC_companies_basic_data",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_peoplev2_addresses_extended1": {
+        "main": [
+          [
+            {
+              "node": "Utils_BDC_peoplev2_addresses_extended1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_peoplev2_ondemand_pf_antecedente1": {
+        "main": [
+          [
+            {
+              "node": "Utils_BDC_peoplev2_ondemand_pf_antecedente1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_peoplev2_ondemand_nada_consta1": {
+        "main": [
+          [
+            {
+              "node": "Utils_BDC_peoplev2_ondemand_nada_consta1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Qual End Point ?1": {
+        "main": [
+          [
+            {
+              "node": "Qual Dataset ? CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Qual Dataset ? CPF1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Qual Dataset ? CPF1": {
+        "main": [
+          [
+            {
+              "node": "post_peoplev2_basic_data1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "post_peoplev2_ondemand_pgfn1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "post_peoplev2_addresses_extended1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "post_peoplev2_ondemand_pf_antecedente1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "post_peoplev2_ondemand_nada_consta1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "post_peoplev2_kyc",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "post_peoplev2_processes",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "post_peoplev2_ondemand_qsa",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "lead": {
+        "main": [
+          [
+            {
+              "node": "Qual End Point ?1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "post_companies_processes": {
+        "main": [
+          [
+            {
+              "node": "save_cv_QueryBDC_companies_processos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "save_cv_QueryBDC_companies_processos": {
+        "main": [
+          [
+            {
+              "node": "Save CV Companies Processos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Save CV Companies Processos": {
+        "main": [
+          [
+            {
+              "node": "set_companies_processos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_companies_processos": {
+        "main": [
+          [
+            {
+              "node": "Utils_BDC_companies_processos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "post_peoplev2_kyc": {
+        "main": [
+          [
+            {
+              "node": "save_cv_QueryBDC_peoplev2_kyc",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "post_peoplev2_processes": {
+        "main": [
+          [
+            {
+              "node": "save_cv_QueryBDC_peoplev2_processos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "save_cv_QueryBDC_peoplev2_kyc": {
+        "main": [
+          [
+            {
+              "node": "Save CV peoplev2 KYC",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_peoplev2_kyc": {
+        "main": [
+          [
+            {
+              "node": "Utils_BDC_peoplev2_kyc",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Save CV peoplev2 KYC": {
+        "main": [
+          [
+            {
+              "node": "set_peoplev2_kyc",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "save_cv_QueryBDC_peoplev2_processos": {
+        "main": [
+          [
+            {
+              "node": "Save CV peoplev2 Processos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Save CV peoplev2 Processos": {
+        "main": [
+          [
+            {
+              "node": "set_peoplev2_processos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_peoplev2_processos": {
+        "main": [
+          [
+            {
+              "node": "Utils_BDC_peoplev2_processos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Qual Dataset ? CNPJ": {
+        "main": [
+          [
+            {
+              "node": "post_companies_relationships1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "post_companies_basic_data1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "post_companies_ondemand_pgfn1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "post_companies_kyc",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "post_companies_processes",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "post_companies_ondemand_sintegra",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "post_companies_ondemand_qsa",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "lead": [
+        {
+          "json": {
+            "endpoint": "companies",
+            "dataset": "relationships",
+            "CNPJ": "37052433000109",
+            "cpfCliente": "00723356106"
+          }
+        }
+      ]
+    },
+    "versionId": "3fec23f9-eef6-4588-bc8e-0a339066c959",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-31T16:22:41.803Z",
+        "updatedAt": "2024-07-31T16:22:41.803Z",
+        "id": "mmaXbyiWhptUXaTd",
+        "name": "New Motor"
+      }
+    ]
+  }
+}
