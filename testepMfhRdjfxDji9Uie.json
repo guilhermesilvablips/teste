@@ -1,0 +1,183 @@
+{
+  "data": {
+    "createdAt": "2025-02-12T19:20:18.329Z",
+    "updatedAt": "2025-02-12T20:06:00.602Z",
+    "id": "pMfhRdjfxDji9Uie",
+    "name": "Teste Salvador",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "56b828e9-38a1-4317-89d6-9392c4441361",
+        "name": "When chat message received",
+        "webhookId": "8ad1498c-193e-4418-af48-86b25e210fe9"
+      },
+      {
+        "parameters": {
+          "resource": "assistant",
+          "assistantId": {
+            "__rl": true,
+            "value": "asst_R9mGdqiVISzBtJFYY8V2yPIh",
+            "mode": "list",
+            "cachedResultName": "Salvador - TESTE"
+          },
+          "memory": "threadId",
+          "threadId": "thread_ePnOr2So0tZnZim9DmPUzyht",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.8,
+        "position": [
+          220,
+          0
+        ],
+        "id": "5320bcc5-b96a-437f-bb62-140898243764",
+        "name": "OpenAI",
+        "credentials": {
+          "openAiApi": {
+            "id": "trONZBLzM3mWPjKv",
+            "name": "OpenAi - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "toolDescription": "={\n  \"name\": \"buscar_contrato\",\n  \"description\": \"Buscar informacoes de um contrato, a pesquisa pode ser feita pelo CNPJ ou pelo numero do contrato ou pelo número de série\",\n  \"strict\": false,\n  \"parameters\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"cnpj\": {\n        \"type\": \"string\",\n        \"description\": \"CNPJ do cliente do contrato\"\n      },\n      \"contrato\": {\n        \"type\": \"string\",\n        \"description\": \"Numero do contrato\"\n      },\n      \"numero_serie\": {\n        \"type\": \"string\",\n        \"description\": \"Numero de série/ID do neuronio/ativo associado ao contrato\"\n      }\n    },\n    \"required\": []\n  }\n}",
+          "method": "POST",
+          "url": "https://n8n-dev.blips-labs.com/webhook/buscar_contrato",
+          "sendBody": true,
+          "parametersBody": {
+            "values": [
+              {
+                "name": "contrato",
+                "valueProvider": "modelOptional"
+              },
+              {
+                "name": "cnpj",
+                "valueProvider": "modelOptional"
+              },
+              {
+                "name": "numero_serie",
+                "valueProvider": "modelOptional"
+              }
+            ]
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+        "typeVersion": 1.1,
+        "position": [
+          320,
+          220
+        ],
+        "id": "a1439559-6703-4d25-992e-7f55d3d2001f",
+        "name": "buscar_contrato"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.output }}",
+          "messages": {
+            "messageValues": [
+              {
+                "message": "=Você é um assistente especializado em garantir que as mensagens geradas por um assistente sigam regras específicas de formatação. Seu papel é apenas ajustar a formatação do texto conforme as diretrizes abaixo, sem alterar, adicionar ou remover qualquer conteúdo original da mensagem de entrada.\n\n**Regras de Formatação:**\n- Utilize *asteriscos* para destacar palavras ou frases; nunca utilize # para este propósito.\n- Links devem ser apresentados de forma crua, sem formatação especial como [Nome](link).\n\nSempre que necessário, corrija a formatação para que a mensagem esteja de acordo com essas regras, sem modificar o significado ou adicionar qualquer outro conteúdo."
+              }
+            ]
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.5,
+        "position": [
+          580,
+          0
+        ],
+        "id": "8ffeb410-7692-45f8-b285-2381d2704af0",
+        "name": "Basic LLM Chain"
+      },
+      {
+        "parameters": {
+          "modelName": "models/gemini-2.0-flash-exp",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+        "typeVersion": 1,
+        "position": [
+          580,
+          140
+        ],
+        "id": "3ff40736-da08-4663-ab68-70d53cd0a0ed",
+        "name": "Google Gemini Chat Model",
+        "credentials": {
+          "googlePalmApi": {
+            "id": "nJiJWVZaDecaeKDp",
+            "name": "Google Gemini(PaLM) Api account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "When chat message received": {
+        "main": [
+          [
+            {
+              "node": "OpenAI",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI": {
+        "main": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "buscar_contrato": {
+        "ai_tool": [
+          [
+            {
+              "node": "OpenAI",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Gemini Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "a1bfa383-cbb2-44ac-90c1-d539f1b91a75",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
