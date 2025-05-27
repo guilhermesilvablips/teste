@@ -1,0 +1,90 @@
+{
+  "data": {
+    "createdAt": "2025-04-29T15:09:12.310Z",
+    "updatedAt": "2025-04-29T15:21:28.672Z",
+    "id": "L6as6xEoyy0xlTxp",
+    "name": "MCP Pipedrive",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "path": "dalila-pipedrive"
+        },
+        "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "2b07382d-f567-48ac-9402-12857be17a27",
+        "name": "MCP Server Trigger",
+        "webhookId": "e04e6e55-2a7c-4ab3-8e43-452c9fdd551b"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "sendBody": true,
+          "specifyBody": "model"
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+        "typeVersion": 1.1,
+        "position": [
+          100,
+          220
+        ],
+        "id": "0d991a24-3804-4875-8c98-f238dfed0229",
+        "name": "HTTP Request"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.pipedrive.com/v1/filters",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "pipedriveApi",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"name\": \"Meus Leads Qualificados\",\n  \"type\": \"deals\",\n  \"conditions\": {\n    \"glue\": \"and\",\n    \"conditions\": [\n      {\n        \"glue\": \"and\",\n        \"conditions\": [\n          {\n            \"object\": \"deal\",\n            \"field_id\": \"status\",\n            \"operator\": \"=\",\n            \"value\": \"won\"\n          }\n        ]\n      }\n    ]\n  }\n}\n",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          320,
+          220
+        ],
+        "id": "97681fe3-5609-40ab-b6a3-feba15a74385",
+        "name": "HTTP Request1",
+        "credentials": {
+          "pipedriveApi": {
+            "id": "6OXvSBSLEYwmYiBv",
+            "name": "Pipedrive account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "HTTP Request": {
+        "ai_tool": [
+          [
+            {
+              "node": "MCP Server Trigger",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "62d4604c-904a-420f-9f35-3c77118dfe6e",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
