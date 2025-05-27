@@ -1,0 +1,262 @@
+{
+  "data": {
+    "createdAt": "2024-08-22T13:29:54.093Z",
+    "updatedAt": "2024-10-25T15:44:40.514Z",
+    "id": "0fy9MF9vAmq5rtHJ",
+    "name": "Notificação de Feira - João Octavio",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "resource": "message",
+          "guildId": {
+            "__rl": true,
+            "value": "783328180500299777",
+            "mode": "list",
+            "cachedResultName": "Blips",
+            "cachedResultUrl": "https://discord.com/channels/783328180500299777"
+          },
+          "channelId": {
+            "__rl": true,
+            "value": "1266473524126814288",
+            "mode": "list",
+            "cachedResultName": "time-crédito",
+            "cachedResultUrl": "https://discord.com/channels/783328180500299777/1266473524126814288"
+          },
+          "content": "=Olá pessoal, novo lead da feira {{ $json.evento}} está aguardando análise:\n\n{{ $json.created_at }}\n\n{{ $json.document }}\n\n{{ $json.status }}\n\n{{ $json.id}}",
+          "options": {}
+        },
+        "id": "f45eaddb-b512-47f4-90e8-b5f1d39f8618",
+        "name": "Discord",
+        "type": "n8n-nodes-base.discord",
+        "typeVersion": 2,
+        "position": [
+          560,
+          220
+        ],
+        "credentials": {
+          "discordBotApi": {
+            "id": "HwwdTQ09UgBU7GNZ",
+            "name": "Discord Bot account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "amount": 7,
+          "unit": "minutes"
+        },
+        "id": "c18a9fff-b76b-408d-b670-903ec1bc86b0",
+        "name": "Wait",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          -60,
+          360
+        ],
+        "webhookId": "b673b58b-9e48-4e40-9b8c-415819e042da"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "d94c75cb-083c-4d1d-9512-63527c4f713e",
+                "leftValue": "={{ $json.status }}",
+                "rightValue": "AWAITING_ANALYSIS",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "3d2c486d-c504-478b-b524-da579de42dbd",
+        "name": "If",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          320,
+          360
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT created_at, document, id, status,\n(CASE\n  WHEN event_id = '662197281e138e9493dd50a1' THEN 'Feira Comtex'\n  WHEN event_id = '65e9ff63767b927f23b4fdd0' THEN 'Feira Fespa'\n  WHEN event_id = '65f8285c1c6d02bd0cff2dfc' THEN 'Feira AgresteTex'\n  WHEN event_id = '6660cdc11ffead0d663a8381' THEN 'Teste'\n  WHEN event_id = '6666f570976c2d8e97eac123' THEN 'Feira Fispal 2024'\n  WHEN event_id = '668c352206aad58382243154' THEN 'Future Print'\n  WHEN event_id = '65ea2ee2767b927f23b50468' THEN 'Feira de Testes'\n  WHEN event_id = '669921763da65e06ad100770' THEN 'Estetika 2024'\n  WHEN event_id = '66c3a8098a7b3cfa69602197' THEN 'Febratex'\n  WHEN event_id = '66be6ba7be09ae563b0ca6c9' THEN 'IHRSA 2024'\nEND) as evento  \n  FROM `blips-bigdata.PLATAFORMA.leads` WHERE document = \"{{ $('Webhook').first().json.body.document }}\"\nORDER BY created_at DESC\nLIMIT 1\n  \n",
+          "options": {}
+        },
+        "id": "e123ea34-30ba-44e0-ae84-2fbf088bf610",
+        "name": "bq_leads",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          120,
+          360
+        ],
+        "credentials": {
+          "googleApi": {
+            "id": "KvFeNUBUHv7uR0PF",
+            "name": "Google BigQuery account - New Motor"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "notificacao_feira",
+          "options": {}
+        },
+        "id": "0ff495ee-3b83-4ce3-8419-c0a8220bea6f",
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -260,
+          360
+        ],
+        "webhookId": "292abe33-040a-457c-9700-c29046ac538e"
+      }
+    ],
+    "connections": {
+      "If": {
+        "main": [
+          [
+            {
+              "node": "Discord",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "bq_leads",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "bq_leads": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Webhook": [
+        {
+          "json": {
+            "headers": {
+              "host": "n8n-dev.blips-labs.com",
+              "content-type": "application/json",
+              "accept-encoding": "gzip, br, deflate",
+              "user-agent": "Make/production",
+              "content-length": "1792",
+              "x-datadog-trace-id": "2368035207462405697",
+              "x-datadog-parent-id": "2368035207462405697",
+              "x-datadog-sampling-priority": "0",
+              "x-datadog-tags": "_dd.p.tid=66c4f52b00000000",
+              "traceparent": "00-66c4f52b0000000020dcf3798c6a4641-20dcf3798c6a4641-00",
+              "tracestate": "dd=t.tid:66c4f52b00000000;t.dm:1;s:0",
+              "x-forwarded-for": "54.209.79.175",
+              "x-forwarded-proto": "https",
+              "x-envoy-external-address": "54.209.79.175",
+              "x-request-id": "4705a500-080a-4a3e-8361-f07a106b2ed7"
+            },
+            "params": {},
+            "query": {},
+            "body": {
+              "id": null,
+              "form": "https://confeccao.blips.com.br/?_gl=1%2A1cgkw3v%2A_gcl_aw%2AR0NMLjE3MjEzOTg2NDMuQ2p3S0NBanduZWkwQmhCLUVpd0FBMnh1QnBEaEVnMkFfSEd3TjRCbHhiQTh3Q2s4QW01WVhXN29IZV9UZ1hLdXRsTGdMazNBUTdJbnB4b0NvMWNRQXZEX0J3RQ..%2A_gcl_au%2AODg0MjQ1MDc5LjE3MTk1MTk0ODQ.%2AFPAU%2ANTk3ODM4NTQzLjE3MTk1MTgzMjM.%2A_ga%2ANjAxMzkxNDQ0LjE3MTk1MTgzMjM.%2A_ga_VT48RN99MN%2AMTcyMTk0NzI5OC4xLjAuMTcyMTk0NzI5OC42MC4wLjA.%2A_fplc%2ASTJoUXYlMkJSSWtOSnJIcEtBdXNiNXIyc3pxaUpEYnoybFpoWUdZeDQ5dU1tT1NFY0ZSRUp1RE94JTJCWiUyRmlZejlUd2hqN0U0WlJIb25vQjRZejZQcW5xOXpiQ0dPS3pRemFzUlFaUCUyQkQ2cUdYbGtKdWxvTkpmR2FsVWtoMHVDelElM0QlM0Q.&utm_source=google&utm_medium=ads&utm_campaign=%5Bhk%5D_Search_%7C_Blips_-_Confec%C3%A7%C3%A3o&utm_content=impressora%20dtf&utm_term=DTF&link=Google&gad_source=1&gclid=CjwKCAjw_ZC2BhAQEiwAXSgCloJXFzyGtWz7yYzRYZWzlvszKuT-f_gucny9kulqj8nSklk3l6r68RoCqCoQAvD_BwE",
+              "name": "Sebastião Rodrigo",
+              "email": "personalizabrinde@gmail.com",
+              "gclid": null,
+              "coupon": null,
+              "id_crm": "99226",
+              "origin": "Google",
+              "document": "24749337000164",
+              "referrer": null,
+              "utm_term": "DTF",
+              "cellphone": "22992623295",
+              "client_id": null,
+              "last_name": "Dutra da Cunha",
+              "link_font": "Google",
+              "created_at": "2024-08-20T19:57:24.300Z",
+              "created_by": {},
+              "machine_id": "649ae0d610eae76b76f4bb48",
+              "utm_medium": "ads",
+              "utm_source": "google",
+              "utm_content": "impressora dtf",
+              "company_name": "Personalilza Uniformes e Presentes",
+              "machine_type": "DTF - 2 Cab",
+              "utm_campaign": "[hk]_Search_|_Blips_-_Confecção",
+              "business_rule": {
+                "type": "VENDA"
+              },
+              "negotiation_id": null,
+              "responsible_id": "65c4c1fae6313a660d05a268",
+              "monthly_earnings": "Comprar",
+              "organization_ref": "blips-ativos-1649096498.4232771",
+              "responsible_name": "Ilka",
+              "responsible_type": "SELLER",
+              "personal_document": null,
+              "number_of_employee": null,
+              "commercial_conditions": null,
+              "commercial_conditions_id": null
+            },
+            "webhookUrl": "https://n8n-dev.blips-labs.com/webhook/292abe33-040a-457c-9700-c29046ac538e",
+            "executionMode": "production"
+          }
+        }
+      ]
+    },
+    "versionId": "920acbd7-31cd-43ff-bfec-d016f20d800c",
+    "triggerCount": 1,
+    "tags": []
+  }
+}
