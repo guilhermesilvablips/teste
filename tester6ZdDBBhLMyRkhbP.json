@@ -1,0 +1,1096 @@
+{
+  "data": {
+    "createdAt": "2025-04-23T18:25:15.152Z",
+    "updatedAt": "2025-05-02T12:15:48.465Z",
+    "id": "r6ZdDBBhLMyRkhbP",
+    "name": "Cobrança - Email",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "options": {
+            "temperature": 1
+          }
+        },
+        "id": "f5cdea75-76c4-446b-a128-918ee98494d2",
+        "name": "OpenAI Chat Model",
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1,
+        "position": [
+          -2020,
+          420
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f3984490-3531-404b-925b-a9fcdec57f97",
+                "name": "nufins",
+                "value": "={{ $json.body.dados.titulosVencidos }}",
+                "type": "string"
+              },
+              {
+                "id": "6fdab11c-7ab3-44e4-843a-52214b700610",
+                "name": "contratos",
+                "value": "={{ $json.body.dados.contratos_cobranca }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "55e1d2c4-3b75-4ccc-9419-4daaa092f8e4",
+        "name": "Títulos",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -3840,
+          280
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "26lDnX7mp2gWmc3H",
+          "options": {}
+        },
+        "id": "6425a5fb-21be-4415-b596-3c0470c51879",
+        "name": "Gera Pagamento",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -3140,
+          280
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Pega os dados do node \"Lista dados títulos\"\nconst titulos = $node[\"Lista dados títulos\"].json.resultado;\n\n// Pega os dados do node \"Junta pagamentos\"\nconst pagamentos = $json.data;\n\n// Cria a lista de objetos com os dados combinados, associando pela propriedade nufin\nconst Titulos = titulos.map(titulo => {\n  // Procura o pagamento que tenha o mesmo nufin do título\n  const pagamentoEncontrado = pagamentos.find(p => p.nufin === titulo.nufin);\n  \n  return {\n    nufin: titulo.nufin,\n    numero_contrato: titulo.contrato,\n    data_vencimento: titulo.data_vencimento,\n    dias_vencido: titulo.dias_vencido,\n    // Se encontrado, insere o objeto pagamento com method e chave; caso contrário, null\n    pagamento: pagamentoEncontrado ? pagamentoEncontrado.pagamento : null\n  };\n});\n\n// Retorna o resultado em uma lista única\nreturn [{ json: { Titulos } }];\n"
+        },
+        "id": "7cd22e54-5675-44a0-9bc7-aac1419f5687",
+        "name": "Junta informações de pagamento",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -2660,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const item = $input.last();\n\nconst nufin_array = item.json.nufins.split(',').map(n => n.trim());\nconst contrato_array = item.json.contratos.split(',').map(c => c.trim().split(' ')[0]); // Remove parênteses e dias vencidos\n\nconst resultado = [];\n\n// Função para calcular a data de vencimento\nfunction calcula_data_vencimento(diasVencidos) {\n  const dataAtual = new Date();\n  dataAtual.setDate(dataAtual.getDate() - diasVencidos); // Subtrai dias (negativos somam dias futuros)\n  const dia = String(dataAtual.getDate()).padStart(2, '0');\n  const mes = String(dataAtual.getMonth() + 1).padStart(2, '0'); \n  const ano = dataAtual.getFullYear();\n  return `${dia}/${mes}/${ano}`;\n}\n\n// Construindo a lista de objetos com nufin, contrato e data de vencimento\nfor (let i = 0; i < nufin_array.length; i++) {\n  const diasVencidosMatch = item.json.contratos.split(',')[i].match(/\\(([-\\d]+) dias vencidos\\)/);\n  const diasVencidos = parseInt(diasVencidosMatch?.[1] || \"0\", 10); // Suporte para dias negativos\n  \n  const vencimento = calcula_data_vencimento(diasVencidos);\n  \n  resultado.push({\n    nufin: nufin_array[i],\n    contrato: contrato_array[i],\n    data_vencimento: vencimento,\n    dias_vencido: diasVencidos,\n  });\n}\n\n// Ordena o array resultado pela data_vencimento (formato dd/mm/yyyy)\nresultado.sort((a, b) => {\n  const [diaA, mesA, anoA] = a.data_vencimento.split('/');\n  const [diaB, mesB, anoB] = b.data_vencimento.split('/');\n  const dataA = new Date(anoA, mesA - 1, diaA);\n  const dataB = new Date(anoB, mesB - 1, diaB);\n  return dataA - dataB;\n});\n\nreturn [{ json: { resultado, numeroContratosUnicos: new Set(contrato_array).size } }];\n"
+        },
+        "id": "29367358-8017-4513-b6cf-cc121fd23a7f",
+        "name": "Lista dados títulos",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -3600,
+          280
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "bc4ef639-ec63-436c-b545-9c7a5cec0846",
+                "name": "mensagem",
+                "value": "={{ $('Webhook').item.json.body.mensagem.ativacao }}",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "id": "9a56faad-3929-46b6-8105-ccfa846468da",
+        "name": "Parâmetros Mensagem",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -2440,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d4ba955c-b10f-4998-8807-14cb2e1ae3dd",
+                "name": "Assunto",
+                "value": "={{ $json.text }}",
+                "type": "string"
+              },
+              {
+                "id": "e0a9f18c-e201-4321-b0be-3b48b3bf57f4",
+                "name": "Mensagem",
+                "value": "={{ $('Gera HTML').item.json.text.replaceAll('\\n', '<br>') }}",
+                "type": "string"
+              },
+              {
+                "id": "5f878772-295a-4cbc-a705-19c1717c7cac",
+                "name": "Remetente",
+                "value": "={{ $('Webhook').first().json.body.dados.email }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "80e54bcc-c47e-46ff-a4fc-a32014d2c60e",
+        "name": "Email",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1060,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Quero que você me ajude a criar um código HTML em formato de string válido, não é pra falar mais nada, somente me retornar a String html, sem modificar em nada o corpo do texto que ue já tenho, em absolutamente nada, lembrando de usar as tags certas do html e não usando \\n. Este HTML deve ser usado para emails e precisa atender às seguintes especificações:\n\n0. O corpo da mensagem de entrada **não seja alterado de forma alguma**. Ele deve ser mantido exatamente como fornecido, com apenas as modificações necessárias para formatação em HTML conforme descrito abaixo.\n1. O HTML deve ser gerado como uma string válida sem a formatação de código (ou seja, sem ```), pois será copiado diretamente.\n2. Ele deve respeitar as quebras de linha originais substituindo \"\\n\" por `<br>`, para manter a formatação e legibilidade. \n3. Campos específicos devem estar em **negrito**:\n   - Nome do cliente.\n   - CNPJ (incluindo a palavra \"CNPJ:\").\n   - Número do contrato (apenas o número destacado).\n   - Data de vencimento.\n   - As chaves dos campos da parte de pagamento (ex.: \"Contrato:\", \"Nufin:\", \"Data de Vencimento:\", \"Dias Vencidos:\", \"Forma de Pagamento:\").\n4. Os valores associados às chaves não devem estar em negrito.\n5. O HTML deve ser bem estruturado e legível com indentação adequada.\n6. Não use aspas nem ```.\n\n### Exemplo de texto de entrada:\nPrezado Ivan Lima da Silva - CNPJ: 41226381000109. \\n\\nLembramos que o contrato de número 12403051 venceu em 15/11/2024 e encontra-se com 4 dias vencidos. Solicitamos a regularização do pagamento para evitar quaisquer interrupções em nossos serviços.\\n\\nSegue a lista dos títulos relacionados ao seu contrato:\\n\\n- Contrato: 12403051\\n- Nufin: 749259\\n- Data de Vencimento: 15/11/2024\\n- Dias Vencido: 4\\n- Forma de Pagamento: código pix\\n- Pagamento: 00020101021226900014br.gov.bcb.pix2568pix.santander.com.br/qr/v2/cobv/6f3168ce-9122-4754-bb36-505e751218cd52040000530398654071735.005802BR5924BLIPS SOLUCOES EM ATIVOS6010UBERLANDIA62070503***6304B454\\n\\nCaso o pagamento já tenha sido efetuado, por favor desconsidere esta mensagem. Qualquer dúvida, entre em contato conosco pelo nosso WhatsApp.\n\n### Exemplo de saída esperada em HTML:\nPrezado <b>Ivan Lima da Silva</b> - <b>CNPJ: 41226381000109</b>. <br><br> Lembramos que o <b>contrato de número 12403051</b> venceu em <b>15/11/2024</b> e encontra-se com 4 dias vencidos. Solicitamos a regularização do pagamento para evitar quaisquer interrupções em nossos serviços.<br><br>Segue a lista dos títulos relacionados ao seu contrato:<br><br>- <b>Contrat</b>o: 12403051<br>- <b>Nufin</b>: 749259<br>- <b>Data de Vencimento</b>: 15/11/2024<br>- <b>Dias Vencidos</b>: 4<br>- <b>Forma de Pagamento</b>: código pix<br>- <b>Pagamento:</b> 00020101021226900014br.gov.bcb.pix2568pix.santander.com.br/qr/v2/cobv/6f3168ce-9122-4754-bb36-505e751218cd52040000530398654071735.005802BR5924BLIPS SOLUCOES EM ATIVOS6010UBERLANDIA62070503***6304B454<br><br>Caso o pagamento já tenha sido efetuado, por favor desconsidere esta mensagem. Qualquer dúvida, entre em contato conosco pelo nosso WhatsApp.\n\n\nCom base nessas regras e nos exemplos gere agora para essa mensagem:\n{{ $json.text }}"
+        },
+        "id": "4be51633-80e6-4ade-82dc-e7dacff6ceb4",
+        "name": "Gera HTML",
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.4,
+        "position": [
+          -1680,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "de8e4d8d-d1f1-4548-8eb8-f3f273fbf15e",
+                "leftValue": "={{ $json.text.toUpperCase() }}",
+                "rightValue": "ERRO",
+                "operator": {
+                  "type": "string",
+                  "operation": "contains"
+                }
+              },
+              {
+                "id": "245d86d4-b833-4821-967a-01110d630af7",
+                "leftValue": "={{ $json.text.includes('vazio') }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "id": "e01cc8b8-ab13-453c-90fe-e4eb278b7fe9",
+        "name": "Deu erro?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -1860,
+          80
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "2c232b8e-0019-4983-bd3b-6fd3413ce025",
+        "name": "Wait",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          -440,
+          80
+        ],
+        "webhookId": "4b53a846-2f18-492e-a7dd-73bb58bd08e1"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "1703c06a-c075-43e5-b91d-d43d55d13692",
+                "leftValue": "={{ $json.Assunto }}",
+                "rightValue": "BLIPS",
+                "operator": {
+                  "type": "string",
+                  "operation": "contains"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "3dab05a4-d06d-4f68-833d-7f8d2f256731",
+        "name": "É Blips?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -840,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "sendTo": "={{ $json.Remetente }}",
+          "subject": "={{ $json.Assunto }}",
+          "message": "={{ $json.Mensagem + '\\n'}}\n<div dir=\"ltr\" class=\"gmail_signature\" data-smartmail=\"gmail_signature\"><div dir=\"ltr\"><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"550\" style=\"color:rgb(0,0,0);font-family:&quot;Times New Roman&quot;;font-size:medium;display:inline-table\"><tbody><tr><td><img src=\"https://ci3.googleusercontent.com/meips/ADKq_NZcOpU1mu-PN6yGnBYWsUUyltmQqvF5caSYEQg5mGI7Rob2qDxkxSWPzEGzgLiykCaw6OTGoJlDj5cx7gRmY9VcuL7ldGFPmjms=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/spacer.gif\" width=\"125\" height=\"1\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td><td><img src=\"https://ci3.googleusercontent.com/meips/ADKq_NZcOpU1mu-PN6yGnBYWsUUyltmQqvF5caSYEQg5mGI7Rob2qDxkxSWPzEGzgLiykCaw6OTGoJlDj5cx7gRmY9VcuL7ldGFPmjms=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/spacer.gif\" width=\"13\" height=\"1\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td><td><img src=\"https://ci3.googleusercontent.com/meips/ADKq_NZcOpU1mu-PN6yGnBYWsUUyltmQqvF5caSYEQg5mGI7Rob2qDxkxSWPzEGzgLiykCaw6OTGoJlDj5cx7gRmY9VcuL7ldGFPmjms=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/spacer.gif\" width=\"12\" height=\"1\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td><td><img src=\"https://ci3.googleusercontent.com/meips/ADKq_NZcOpU1mu-PN6yGnBYWsUUyltmQqvF5caSYEQg5mGI7Rob2qDxkxSWPzEGzgLiykCaw6OTGoJlDj5cx7gRmY9VcuL7ldGFPmjms=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/spacer.gif\" width=\"6\" height=\"1\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td><td><img src=\"https://ci3.googleusercontent.com/meips/ADKq_NZcOpU1mu-PN6yGnBYWsUUyltmQqvF5caSYEQg5mGI7Rob2qDxkxSWPzEGzgLiykCaw6OTGoJlDj5cx7gRmY9VcuL7ldGFPmjms=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/spacer.gif\" width=\"4\" height=\"1\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td><td><img src=\"https://ci3.googleusercontent.com/meips/ADKq_NZcOpU1mu-PN6yGnBYWsUUyltmQqvF5caSYEQg5mGI7Rob2qDxkxSWPzEGzgLiykCaw6OTGoJlDj5cx7gRmY9VcuL7ldGFPmjms=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/spacer.gif\" width=\"24\" height=\"1\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td><td><img src=\"https://ci3.googleusercontent.com/meips/ADKq_NZcOpU1mu-PN6yGnBYWsUUyltmQqvF5caSYEQg5mGI7Rob2qDxkxSWPzEGzgLiykCaw6OTGoJlDj5cx7gRmY9VcuL7ldGFPmjms=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/spacer.gif\" width=\"24\" height=\"1\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td><td><img src=\"https://ci3.googleusercontent.com/meips/ADKq_NZcOpU1mu-PN6yGnBYWsUUyltmQqvF5caSYEQg5mGI7Rob2qDxkxSWPzEGzgLiykCaw6OTGoJlDj5cx7gRmY9VcuL7ldGFPmjms=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/spacer.gif\" width=\"24\" height=\"1\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td><td><img src=\"https://ci3.googleusercontent.com/meips/ADKq_NZcOpU1mu-PN6yGnBYWsUUyltmQqvF5caSYEQg5mGI7Rob2qDxkxSWPzEGzgLiykCaw6OTGoJlDj5cx7gRmY9VcuL7ldGFPmjms=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/spacer.gif\" width=\"145\" height=\"1\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td><td><img src=\"https://ci3.googleusercontent.com/meips/ADKq_NZcOpU1mu-PN6yGnBYWsUUyltmQqvF5caSYEQg5mGI7Rob2qDxkxSWPzEGzgLiykCaw6OTGoJlDj5cx7gRmY9VcuL7ldGFPmjms=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/spacer.gif\" width=\"1\" height=\"1\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td><td><img src=\"https://ci3.googleusercontent.com/meips/ADKq_NZcOpU1mu-PN6yGnBYWsUUyltmQqvF5caSYEQg5mGI7Rob2qDxkxSWPzEGzgLiykCaw6OTGoJlDj5cx7gRmY9VcuL7ldGFPmjms=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/spacer.gif\" width=\"21\" height=\"1\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td><td><img src=\"https://ci3.googleusercontent.com/meips/ADKq_NZcOpU1mu-PN6yGnBYWsUUyltmQqvF5caSYEQg5mGI7Rob2qDxkxSWPzEGzgLiykCaw6OTGoJlDj5cx7gRmY9VcuL7ldGFPmjms=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/spacer.gif\" width=\"151\" height=\"1\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td><td><img src=\"https://ci3.googleusercontent.com/meips/ADKq_NZcOpU1mu-PN6yGnBYWsUUyltmQqvF5caSYEQg5mGI7Rob2qDxkxSWPzEGzgLiykCaw6OTGoJlDj5cx7gRmY9VcuL7ldGFPmjms=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/spacer.gif\" width=\"1\" height=\"1\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td></tr><tr><td rowspan=\"13\"><img name=\"m_8700986014248377100_SignatureSanitizer_index_r1_c1\" src=\"https://ci3.googleusercontent.com/meips/ADKq_NayWL6wDYERKFYpI6qUj1vBy-taLqHR4uobeqPWduBf7J4rggJpq_NCSFI_ayWN6g1SgkS-5afqoVltzIqAkkWXrAj7OulFxf_1dCzQFyjIJ_ohpg=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/mkt@blips.com.br.png\" width=\"125\" height=\"125\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td><td colspan=\"11\" valign=\"top\"><p style=\"margin:0px\"></p></td><td><img src=\"https://ci3.googleusercontent.com/meips/ADKq_NZcOpU1mu-PN6yGnBYWsUUyltmQqvF5caSYEQg5mGI7Rob2qDxkxSWPzEGzgLiykCaw6OTGoJlDj5cx7gRmY9VcuL7ldGFPmjms=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/spacer.gif\" width=\"1\" height=\"14\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td></tr><tr><td rowspan=\"12\" valign=\"top\"><p style=\"margin:0px\"></p></td><td rowspan=\"2\" colspan=\"7\"><font style=\"font-family:Sora,&quot;Trebuchet MS&quot;,Helvetica,Arial,sans-serif;font-size:18px;font-weight:800\">Blips</font></td><td rowspan=\"12\"><img name=\"m_8700986014248377100_SignatureSanitizer_index_r2_c10\" src=\"https://ci3.googleusercontent.com/meips/ADKq_NbNWKkNo3VPuL3SbcY_5DVd1jAOOcEBxhDhALuoe2nqv9YoXhhiZgFP4KA5eb-X8exXhJoTus0aH0cbsdRoJwVBzYY7m-g2is1KrPIcyeKS=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/index_r2_c10.png\" width=\"1\" height=\"111\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td><td colspan=\"2\" valign=\"top\"><p style=\"margin:0px\"></p></td><td><img src=\"https://ci3.googleusercontent.com/meips/ADKq_NZcOpU1mu-PN6yGnBYWsUUyltmQqvF5caSYEQg5mGI7Rob2qDxkxSWPzEGzgLiykCaw6OTGoJlDj5cx7gRmY9VcuL7ldGFPmjms=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/spacer.gif\" width=\"1\" height=\"15\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td></tr><tr><td rowspan=\"11\" valign=\"top\"><p style=\"margin:0px\"></p></td><td rowspan=\"7\"><a href=\"https://blips.com.br/\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=https://blips.com.br/&amp;source=gmail&amp;ust=1731511574080000&amp;usg=AOvVaw0S2OwRIen-Oeme5bEhlrlQ\"><img name=\"m_8700986014248377100_SignatureSanitizer_index_r3_c12\" src=\"https://ci3.googleusercontent.com/meips/ADKq_NaXMgtPPYqXcDdH3HOKR4bYNUotZUoHjTP8N8atPYcxzwgWO9P9ykl3FD9HtUiZicwyTzJ0KiHnn_xEig06bWRrswSUMCBlF-Gt3oaCULl3=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/index_r3_c12.png\" width=\"151\" height=\"51\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></a></td><td><img src=\"https://ci3.googleusercontent.com/meips/ADKq_NZcOpU1mu-PN6yGnBYWsUUyltmQqvF5caSYEQg5mGI7Rob2qDxkxSWPzEGzgLiykCaw6OTGoJlDj5cx7gRmY9VcuL7ldGFPmjms=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/spacer.gif\" width=\"1\" height=\"3\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td></tr><tr><td colspan=\"7\" valign=\"top\"><p style=\"margin:0px\"></p></td><td><img src=\"https://ci3.googleusercontent.com/meips/ADKq_NZcOpU1mu-PN6yGnBYWsUUyltmQqvF5caSYEQg5mGI7Rob2qDxkxSWPzEGzgLiykCaw6OTGoJlDj5cx7gRmY9VcuL7ldGFPmjms=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/spacer.gif\" width=\"1\" height=\"3\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td></tr><tr><td colspan=\"7\"><font style=\"font-family:Sora,&quot;Trebuchet MS&quot;,Helvetica,Arial,sans-serif;font-size:11px\"></font><font style=\"font-family:Sora,&quot;Trebuchet MS&quot;,Helvetica,Arial,sans-serif;font-size:9px;color:rgb(251,186,0)\">Cobrança</font></td><td><img src=\"https://ci3.googleusercontent.com/meips/ADKq_NZcOpU1mu-PN6yGnBYWsUUyltmQqvF5caSYEQg5mGI7Rob2qDxkxSWPzEGzgLiykCaw6OTGoJlDj5cx7gRmY9VcuL7ldGFPmjms=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/spacer.gif\" width=\"1\" height=\"13\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td></tr><tr><td colspan=\"7\" valign=\"top\"><p style=\"margin:0px\"></p></td><td><img src=\"https://ci3.googleusercontent.com/meips/ADKq_NZcOpU1mu-PN6yGnBYWsUUyltmQqvF5caSYEQg5mGI7Rob2qDxkxSWPzEGzgLiykCaw6OTGoJlDj5cx7gRmY9VcuL7ldGFPmjms=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/spacer.gif\" width=\"1\" height=\"13\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td></tr><tr><td><img name=\"m_8700986014248377100_SignatureSanitizer_index_r7_c3\" src=\"https://ci3.googleusercontent.com/meips/ADKq_Naz6dXguUfp5meRigwi4heW-iMhOaVhH2NjDB5sydYAewbxbmrTyG5qoD6DX3kfNi4naCBeHIf226maxcvGiiJFsaTpGrK2kqqcEtYZ8PI=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/index_r7_c3.png\" width=\"12\" height=\"11\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td><td rowspan=\"5\" valign=\"top\"><p style=\"margin:0px\"></p></td><td colspan=\"5\"><font style=\"font-family:Sora,&quot;Trebuchet MS&quot;,Helvetica,Arial,sans-serif;font-size:14px\"><a href=\"https://wa.me/553484256589\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=https://wa.me/553484256589&amp;source=gmail&amp;ust=1731511574081000&amp;usg=AOvVaw0M8mAhKOon8AfyEQjMNTNf\">034 98425-6589 (whatsapp)</a></font></td><td><img src=\"https://ci3.googleusercontent.com/meips/ADKq_NZcOpU1mu-PN6yGnBYWsUUyltmQqvF5caSYEQg5mGI7Rob2qDxkxSWPzEGzgLiykCaw6OTGoJlDj5cx7gRmY9VcuL7ldGFPmjms=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/spacer.gif\" width=\"1\" height=\"11\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td></tr><tr><td valign=\"top\"><p style=\"margin:0px\"></p></td><td colspan=\"5\" valign=\"top\"><p style=\"margin:0px\"></p></td><td><img src=\"https://ci3.googleusercontent.com/meips/ADKq_NZcOpU1mu-PN6yGnBYWsUUyltmQqvF5caSYEQg5mGI7Rob2qDxkxSWPzEGzgLiykCaw6OTGoJlDj5cx7gRmY9VcuL7ldGFPmjms=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/spacer.gif\" width=\"1\" height=\"7\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td></tr><tr><td rowspan=\"2\"><img name=\"m_8700986014248377100_SignatureSanitizer_index_r9_c3\" src=\"https://ci3.googleusercontent.com/meips/ADKq_Na_r5BfH9Jgdo6uiwiqSmD47N6z11YRm2deyT1qM6j7oBcxrBoTa_Wg3yGKDv4VgjICm2J28WGyYsCmHUqpk3hK0k5SVW7X20BwuZYg610=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/index_r9_c3.png\" width=\"12\" height=\"12\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td><td rowspan=\"2\" colspan=\"5\"><font style=\"font-family:Sora,&quot;Trebuchet MS&quot;,Helvetica,Arial,sans-serif;font-size:12px\"><a href=\"mailto:boleto@blips.com.br\" target=\"_blank\">boleto@blips.com.br</a></font></td><td><img src=\"https://ci3.googleusercontent.com/meips/ADKq_NZcOpU1mu-PN6yGnBYWsUUyltmQqvF5caSYEQg5mGI7Rob2qDxkxSWPzEGzgLiykCaw6OTGoJlDj5cx7gRmY9VcuL7ldGFPmjms=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/spacer.gif\" width=\"1\" height=\"1\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td></tr><tr><td rowspan=\"4\" valign=\"top\"><p style=\"margin:0px\"></p></td><td><img src=\"https://ci3.googleusercontent.com/meips/ADKq_NZcOpU1mu-PN6yGnBYWsUUyltmQqvF5caSYEQg5mGI7Rob2qDxkxSWPzEGzgLiykCaw6OTGoJlDj5cx7gRmY9VcuL7ldGFPmjms=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/spacer.gif\" width=\"1\" height=\"11\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td></tr><tr><td valign=\"top\"><p style=\"margin:0px\"></p></td><td colspan=\"5\" valign=\"top\"><p style=\"margin:0px\"></p></td><td><img src=\"https://ci3.googleusercontent.com/meips/ADKq_NZcOpU1mu-PN6yGnBYWsUUyltmQqvF5caSYEQg5mGI7Rob2qDxkxSWPzEGzgLiykCaw6OTGoJlDj5cx7gRmY9VcuL7ldGFPmjms=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/spacer.gif\" width=\"1\" height=\"5\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td></tr><tr><td colspan=\"3\"><a href=\"https://facebook.com/blips.com.br/\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=https://facebook.com/blips.com.br/&amp;source=gmail&amp;ust=1731511574081000&amp;usg=AOvVaw3JdviOUtRg2d23LGuL7e05\"><img name=\"m_8700986014248377100_SignatureSanitizer_index_r12_c3\" src=\"https://ci3.googleusercontent.com/meips/ADKq_NY6uQrYPElEedWmtDjzkkXlRWQfwKS7Q4cCSsZVNdsmfZLLsXi7OOwc7SId5gsqDD-gFa8DkE3MXY4CZyuoArbzN8reQOYG4impeflof4AE=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/index_r12_c3.png\" width=\"22\" height=\"20\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></a></td><td><a href=\"https://instagram.com/blips.com.br/\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=https://instagram.com/blips.com.br/&amp;source=gmail&amp;ust=1731511574081000&amp;usg=AOvVaw2J578gQxV_kL0ni2D2dn47\"><img name=\"m_8700986014248377100_SignatureSanitizer_index_r12_c6\" src=\"https://ci3.googleusercontent.com/meips/ADKq_NZqjTC4ET5uZMYuIq3Za9Wo7Hl_vIky0v2rz_8GzBdpYWJFWZA8HtCuLqizRFyw5zIqm3ZPAXnI9hOVl7zdSeJBOu-PwMr2j4YJjQmzbVHV=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/index_r12_c6.png\" width=\"24\" height=\"20\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></a></td><td><a href=\"https://youtube.com/@BlipsAtivos\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=https://youtube.com/@BlipsAtivos&amp;source=gmail&amp;ust=1731511574081000&amp;usg=AOvVaw2NFeWzlzzn0yXmMBvwelgD\"><img name=\"m_8700986014248377100_SignatureSanitizer_index_r12_c7\" src=\"https://ci3.googleusercontent.com/meips/ADKq_Nbey6FA2oTEE4iHneHOYVHfTHBkN56fzN68rfaGPYMF2T7rNNa0JMMIyhcvcih26340HiuNMeSACOChqIv_slNVh5tQV1kSLBv0HECkJ0YY=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/index_r12_c7.png\" width=\"24\" height=\"20\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></a></td><td><a href=\"https://linkedin.com/company/65329130/\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=https://linkedin.com/company/65329130/&amp;source=gmail&amp;ust=1731511574081000&amp;usg=AOvVaw2ofzdUiWDL0JYUimOnt_V4\"><img name=\"m_8700986014248377100_SignatureSanitizer_index_r12_c8\" src=\"https://ci3.googleusercontent.com/meips/ADKq_NZoStNfVRPUH6-5mAPsadeaD6rr566yRnakV3WW-SXHzRFfEHgZe4azVGu06Mp7dk8iD2oMsMQ2WA2OygMAXDf-djnvMf1EjF2Mw6J4ikob=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/index_r12_c8.png\" width=\"24\" height=\"20\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></a></td><td rowspan=\"2\" valign=\"top\"><p style=\"margin:0px\"></p></td><td><img src=\"https://ci3.googleusercontent.com/meips/ADKq_NZcOpU1mu-PN6yGnBYWsUUyltmQqvF5caSYEQg5mGI7Rob2qDxkxSWPzEGzgLiykCaw6OTGoJlDj5cx7gRmY9VcuL7ldGFPmjms=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/spacer.gif\" width=\"1\" height=\"20\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td></tr><tr><td colspan=\"6\" valign=\"top\"><p style=\"margin:0px\"></p></td><td><img src=\"https://ci3.googleusercontent.com/meips/ADKq_NZcOpU1mu-PN6yGnBYWsUUyltmQqvF5caSYEQg5mGI7Rob2qDxkxSWPzEGzgLiykCaw6OTGoJlDj5cx7gRmY9VcuL7ldGFPmjms=s0-d-e1-ft#https://blips.com.br/email/assinatura/img/spacer.gif\" width=\"1\" height=\"9\" alt=\"\" style=\"display:block\" class=\"CToWUd\" data-bit=\"iit\"></td></tr></tbody></table></div></div>",
+          "options": {
+            "appendAttribution": false
+          }
+        },
+        "id": "dfe47d9e-01f1-4f5f-ad24-d1e4ab58da6a",
+        "name": "Envia Email - BLIPS",
+        "type": "n8n-nodes-base.gmail",
+        "typeVersion": 2.1,
+        "position": [
+          -640,
+          80
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 3000,
+        "maxTries": 5,
+        "alwaysOutputData": true,
+        "webhookId": "37234cc6-144b-449a-98d1-39f1341b091b"
+      },
+      {
+        "parameters": {
+          "sendTo": "={{ $json.Remetente }}",
+          "subject": "={{ $json.Assunto }}",
+          "message": "={{ $json.Mensagem + '\\n'}}\n\n<img style=\"display: block;-webkit-user-select: none;margin: 0;background-color: hsl(0, 0%, 90%);transition: background-color 300ms;\" src=\"https://promo.idealdistribuidora.com/wp-content/uploads/2024/12/01_ASSINATURA-IDEAL-e1733769739995.png\">",
+          "options": {
+            "appendAttribution": false
+          }
+        },
+        "id": "d276e9a4-b355-4d07-94bd-14aaf789fce1",
+        "name": "Envia Email - IDEAL",
+        "type": "n8n-nodes-base.gmail",
+        "typeVersion": 2.1,
+        "position": [
+          -640,
+          280
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 3000,
+        "maxTries": 5,
+        "alwaysOutputData": true,
+        "webhookId": "4e039f97-339e-492f-bf25-dd8aac336811"
+      },
+      {
+        "parameters": {
+          "resource": "thread",
+          "operation": "get",
+          "threadId": "={{ $json.threadId }}",
+          "options": {}
+        },
+        "id": "a2b4c5a9-4967-4207-87be-0d43b2c30a74",
+        "name": "Verifica resposta",
+        "type": "n8n-nodes-base.gmail",
+        "typeVersion": 2.1,
+        "position": [
+          -240,
+          80
+        ],
+        "webhookId": "6ddeca36-9b2e-440a-844e-2710d6123ca5"
+      },
+      {
+        "parameters": {},
+        "id": "4f12ee48-2f41-493f-9f43-17510341ef6d",
+        "name": "Wait1",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          -440,
+          280
+        ],
+        "webhookId": "4b53a846-2f18-492e-a7dd-73bb58bd08e1"
+      },
+      {
+        "parameters": {
+          "resource": "thread",
+          "operation": "get",
+          "threadId": "={{ $json.threadId }}",
+          "options": {}
+        },
+        "id": "33ff4ec5-dee4-4e07-baf6-5835bad6080f",
+        "name": "Verifica resposta1",
+        "type": "n8n-nodes-base.gmail",
+        "typeVersion": 2.1,
+        "position": [
+          -240,
+          280
+        ],
+        "webhookId": "0240d0c9-f5ca-427c-a7d1-2a96d30fa918"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Crie um assunto de email de cobrança para uma empresa que deseja comunicar de forma respeitosa e profissional a pendência de um pagamento. O assunto deve ser claro e direto, utilizando uma linguagem formal que transmita importância sem incomodar o cliente e deve ser exatamente de acordo com algum dos exemplos, não pode ser nada diferente de algum exemplo. O exemplo deve ser escolhido com base no corpo da mensagem.\n\nO resultado deve ser somente o texto do assunto, sem nenhuma referência do tipo \"Assunto: {assunto}\" somente {assunto}\n\n# Exemplos:\n  - Lembrete de Pagamento - Cliente BLIPS \n  - Lembrete de Pagamento - Cliente IDEAL\n  - Aviso de Bloqueio - Cliente BLIPS\n  - Aviso de Bloqueio - Cliente IDEAL\n  - Pagamento Atrasado - Cliente BLIPS\n  - Pagamento Atrasado - Cliente IDEAL\n  - Aviso de Retirada - Cliente BLIPS\n  - Aviso de Retirada - Cliente IDEAL\n  - Aviso de Distrato - Cliente BLIPS\n  - Aviso de Distrato - Cliente IDEAL\n  - Cancelamento de Contrato - Cliente BLIPS\n  - Cancelamento de Contrato - Cliente IDEAL\n\nA empresa do cliente atual é: {{ $('Webhook').item.json.body.dados.modalidade === 'LOCACAO' ? 'BLIPS' : 'IDEAL' }}\n\nEmail: {{ $json.text }}"
+        },
+        "id": "27e9398c-64ce-4fe0-b8d7-7b8a29a67423",
+        "name": "Gera assunto",
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.4,
+        "position": [
+          -1420,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "documentId": {
+            "__rl": true,
+            "value": "1hBag2re5oTl3u8ZRPm7Oxm6vtGEml8ieV6Uy_rDinls",
+            "mode": "list",
+            "cachedResultName": "[BLIPS] Envios Cobrança",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1hBag2re5oTl3u8ZRPm7Oxm6vtGEml8ieV6Uy_rDinls/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Base Blips",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1hBag2re5oTl3u8ZRPm7Oxm6vtGEml8ieV6Uy_rDinls/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "EMAIL_ENVIADO": "={{ ($json.resultado !== null) ? $json.resultado : true }}",
+              "row_number": "={{ $('Webhook').first().json.body.linha }}"
+            },
+            "matchingColumns": [
+              "row_number"
+            ],
+            "schema": [
+              {
+                "id": "NOME",
+                "displayName": "NOME",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "DOCUMENTO",
+                "displayName": "DOCUMENTO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "TELEFONE",
+                "displayName": "TELEFONE",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "EMAIL",
+                "displayName": "EMAIL",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "DIAS VENCIDO",
+                "displayName": "DIAS VENCIDO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "DATA ENVIO",
+                "displayName": "DATA ENVIO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "VALOR",
+                "displayName": "VALOR",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "NUFIN",
+                "displayName": "NUFIN",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "NUM CONTRATO",
+                "displayName": "NUM CONTRATO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "MSG ENVIADA",
+                "displayName": "MSG ENVIADA",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "COD_BOLETO",
+                "displayName": "COD_BOLETO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "É IDEAL",
+                "displayName": "É IDEAL",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "INATIVO",
+                "displayName": "INATIVO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "É FIDC",
+                "displayName": "É FIDC",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "LOG ENVIO",
+                "displayName": "LOG ENVIO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "DATA_INT",
+                "displayName": "DATA_INT",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "ARQUIVO",
+                "displayName": "ARQUIVO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "IMAGEM",
+                "displayName": "IMAGEM",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "SPLIT_VALOR",
+                "displayName": "SPLIT_VALOR",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "EMAIL_ENVIADO",
+                "displayName": "EMAIL_ENVIADO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "readOnly": true,
+                "removed": false
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "17ac429a-c301-4971-a5b0-1af2814231d0",
+        "name": "Atualiza envio email",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.4,
+        "position": [
+          160,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "e2e05e38-bff7-4809-9621-b9460afa199a",
+                "name": "resultado",
+                "value": "={{ $json.messages[1].snippet ? !($json.messages[1].snippet.includes('Endereço não encontrado')) : true }}",
+                "type": "boolean"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "efa01b6c-7c90-4888-a9a6-0cda6468ee40",
+        "name": "Resultado",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -40,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "2107f855-24ff-4161-a2ee-6488ca9afb36",
+                "name": "messages",
+                "value": "[{\"nada\": \"nada\"}, {\"snippet\": \"Endereço não encontrado\"}]",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "bab11de7-a07b-4ff6-a1ab-b910abc52082",
+        "name": "Erro",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -240,
+          -100
+        ]
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=# Entrada: \n- {{ $json.mensagem }}\n- Informações sobre os pagamentos em formato json:\n{{ $json.Titulos.toJsonString() }}\n- Caso alguma entrada seja null ou vazia, como número de contrato, nufin, data de vencimento, número de dias vencido, CNPJ do cliente, ou forma de pagamento, retorne \"#ERRO#\".\n\n# Processamento: \nVocê é especialista em redigir e-mails de cobrança formais. Sua tarefa é criar uma mensagem educada e formal, estruturada como um e-mail, sem emojis ou informalidades, que respeite a concordância verbal, nominal e tome muito cuidado com singular e plural. respeitando integralmente o conteúdo e tom da mensagem original do WhatsApp. Não adicione urgência extra ou qualquer consequência futura que não esteja especificada na mensagem de entrada.\n\n**Instruções específicas:**\n- **Se algum pagamento (qualquer um) vier vazio, null sem forma de pagamento, não é pra gerar o email. É pra ter como resultado **OBRIGATORIAMENTE** E **EXATAMENTE**: #ERRO#. Sem NENHUMA outra coisa ou pontuação ou símbolo nem nada, somente '#ERRO#', sem as aspas.** \n- **Se a mensagem original contiver termos específicos, como \"distrato\" ou \"bloqueio de serviço\", esses devem ser mencionados no início da mensagem, refletindo exatamente os termos e ações descritos.**\n- **Evite frases como “última oportunidade” ou sugestões de urgência adicional, focando apenas no conteúdo e contexto original da mensagem.**\n- **Inclua o CNPJ junto ao nome do cliente no início da mensagem.**\n- A parte do além disso, deve ser de acordo com o número de contratos, tome cuidado com singular e plural.\n\nNa **mensagem principal**, siga esta estrutura:\n\n1. **Identificação e Introdução do Cliente:**\n   - Comece mencionando o nome do cliente e seu CNPJ, seguido de uma introdução sobre o vencimento do contrato, especificando ações como \"distrato\" ou \"bloqueio\", se presentes na mensagem original.\n\n2. **Indicação do Contrato e Títulos Vencidos:**\n   - Se o valor de dias_vencido do título for negativo, por exemplo, -3. É porque o título não venceu ainda e vencerá, por exemplo, daqui 3 dias.\n   - A sua mensagem deve levar em conta o número de contratos a serem cobrados, ou seja, o número de contratos únicos: {{ $('Lista dados títulos').item.json.numeroContratosUnicos }}. \n   - Se tiver mais de um título mas esse valor for 1, então quer dizer que todos são do mesmo contrato e só ele deve ser cobrado. Se esse número for maior que 1, tem que mencionar todos os contratos que tem número diferentes mas não pode falar do mesmo contrato duas vezes, por exemplo, se ele tem 3 títulos, 1 do contrato 3243243 e 2 do contrato 5566, você deve falar que o contrato 3243243 está vencido a tantos dias e que além disso ele tem o contrato 5566 vencido a tantos dias com 2 parcelas. Não mencionando nunca o mesmo contrato duas vezes, ou seja, um número de contrato só deve aparecer uma vez, tomar cuidado para não citar ele no início e na parte do além disso.\n   - Se múltiplos títulos são referentes ao mesmo contrato, informe apenas que o contrato está vencido pelo maior número de dias identificado entre os títulos.\n   - Informe o total de parcelas vencidas relacionadas ao contrato.\n   - Organize as informações do título mais vencido para o menos vencido, incluindo data de vencimento e dias vencidos para cada título individual.\n   - Não fale que ele tem contratos diferentes vencidos se todos os títulos forem do mesmo contrato.\n\n3. **Detalhamento da Lista de Pagamentos ao Final da Mensagem:**\n   - Ao final, apresente uma lista detalhada de cada título em ordem de vencimento. Cada entrada deve incluir:\n      - Contrato: [número_contrato]\n      - Nufin: [nufin]\n      - Data de Vencimento: [data_vencimento]\n      - Dias Vencidos: [dias_vencidos]\n      - Forma de Pagamento: [método de pagamento mais chave de pagamento]\n   - Em caso de informação ausente, retorne a resposta \"erro\".\n   - Evite formatação especial para links.\n\n4. **Nota Final:** \n   - Termine com as frases:\n      - “Caso o pagamento já tenha sido efetuado, por favor desconsidere esta mensagem.”\n      - \"Qualquer dúvida entre em contato conosco pelo nosso WhatsApp.\"\n\n5. **Exclusões Específicas:** \n   - Não inclua um assunto para o e-mail.\n   - Evite frases genéricas e instrua o cliente apenas sobre o que foi mencionado no WhatsApp, sem adicionar informações derivadas ou cálculos adicionais.\n\n6. **Importante:** \n   - Mantenha a formalidade, sem aspas ou elementos de encerramento desnecessários.\n   - **Sob nenhuma circunstância realize cálculos ou adicione informações que não estejam explicitamente presentes nos dados de entrada.**\n   - **Cuidado com o plural**. É necessário que o texto esteja com ortografia e concordância verbal e nominal corretas. Atente-se à concordância quando for falar de parcelas e contratos. \n\n# Exemplos de Mensagens de Cobrança:\n\n1. \n- Mensagem de Entrada: \nOlá, [nome] - CNPJ: [cpf_cnpj]! 😊 Tudo bem?\nPassando rapidinho para lembrar que o boleto do(s) contrato(s): [contrato_mais_vencido] vence em 3 dias.\nSe puder, deixe anotado para não perder a data! 📅\nQualquer coisa, estamos por aqui pra ajudar!\n\n- Saída: \nPrezado(a) <Nome do Cliente> - CNPJ: <CNPJ do Cliente>, \nEstamos mandando essa mensagem para lembrar que o contrato de número XXX vence no dia dia/mês/ano. \nAlém disso, você tem outros contratos que estão prestes a vencer YYY que vence em dia/mês/ano e ZZZ que vence em dia/mês/ano (esse número deve estar de acordo com o número de contratos únicois, ou seja, se ele tem dois contratos únicos no além disso só tem que mencionar o único que falta (somente se ele já não tiver sido mencionado), porque ele só tem 2).\n\nAqui estão as informações para pagamento: \n<Pagamento> \n\nCaso o pagamento já tenha sido efetuado, por favor desconsidere esta mensagem.\nQualquer dúvida entre em contato conosco pelo nosso WhatsApp.\n\n2.\n- Mensagem de Entrada:\nOlá, [nome] - CNPJ: [cpf_cnpj]! 😊\nPassando para lembrar sobre o pagamento do título do contrato [contrato_mais_vencido], que vence em [dt_venc]. 📅\nLista dos seus contratos: [contratos_cobranca]\nPara pagar, é só clicar no botão Realizar Pagamento. \nCaso tenha alguma dúvida, use o botão Falar com Atendente – nossa equipe está pronta para te ajudar! 🚀\nAh, e se já tiver feito o pagamento, clique no botão Enviar Comprovante para nos avisar\n\n- Saída:\nPrezado(a) <Nome do Cliente> - CNPJ: <CNPJ do Cliente>\nEstamos mandando essa mensagem para lembrar que o contrato de número XXX tem títulos vencidos desde dia/mês/ano. \nAlém disso, você tem outros contratos que estão prestes a vencer YYY que vence em dia/mês/ano e ZZZ que vence em dia/mês/ano (esse número deve estar de acordo com o número de contratos únicois, ou seja, se ele tem dois contratos únicos no além disso só tem que mencionar o único que falta (somente se ele já não tiver sido mencionado), porque ele só tem 2).\n\nAqui estão as informações para pagamento: \n<Pagamento> \n\nCaso o pagamento já tenha sido efetuado, por favor desconsidere esta mensagem.\nQualquer dúvida entre em contato conosco pelo nosso WhatsApp.\n\n3. \n- Mensagem de Entrada:\nOlá, [nome] - CNPJ: [cpf_cnpj]! 😥\nAinda não encontramos o pagamento do título do contrato [contrato_mais_vencido], vencido em [dt_venc].\nLembrando que, após 8 dias de atraso, os equipamentos deste contrato serão bloqueados automaticamente.\nLista dos contratos vencidos: [contratos_cobranca]\nPara fazer o pagamento, é só clicar em Realizar Pagamento. Se precisar de qualquer ajuda, clique em Falar com Atendente – nossa equipe está aqui para apoiar! 🚀\nE, se já tiver feito o pagamento, só enviar o comprovante pelo botão Enviar Comprovante.\n\n- Saída:\nPrezado(a) <Nome do Cliente> - CNPJ: <CNPJ do Cliente>\nEstamos mandando essa mensagem para avisar que os contratos de número XXX e WWW estão vencidos a 7 dias ou mais e que após 8 dias de atraso, os equipamentos desses contratos serão bloqueados automaticamente.\nAlém disso, você tem outros contratos que estão prestes a vencer YYY que vence em dia/mês/ano e ZZZ que vence em dia/mês/ano (esse número deve estar de acordo com o número de contratos únicois, ou seja, se ele tem dois contratos únicos no além disso só tem que mencionar o único que falta (somente se ele já não tiver sido mencionado), porque ele só tem 2).\n\nAqui estão as informações para pagamento:\n<Pagamento>\n\nCaso o pagamento já tenha sido efetuado, por favor desconsidere esta mensagem.\nQualquer dúvida entre em contato conosco pelo nosso WhatsApp.\n\n4.\n- Mensagem de Entrada:\nOlá, [nome] - CNPJ: [cpf_cnpj]! 🔴\nAinda não identificamos o pagamento do título referente ao contrato [contrato_mais_vencido], vencido em [dt_venc].\nPor isso, os equipamentos deste contrato estão temporariamente bloqueados até que o pagamento seja realizado.\nLista dos contratos vencidos: [contratos_cobranca]\nPara regularizar, é só clicar no botão Realizar Pagamento. E se precisar de qualquer ajuda, clique em Falar com Atendente – nossa equipe está pronta para apoiar você! 🚀\nSe o pagamento já foi feito, é só nos avisar pelo botão Enviar Comprovante.\n\n- Saída:\nPrezado(a) <Nome do Cliente> - CNPJ: <CNPJ do Cliente>\nEstamos mandando essa mensagem para informar que o contratos de número XXX e WWW estão vencidos a 11 dias e que os equipamentos estão bloqueados temporariamente até a regularização dos pagamentos.\nAlém disso, você tem outros contratos que estão prestes a vencer YYY que vence em dia/mês/ano e ZZZ que vence em dia/mês/ano (esse número deve estar de acordo com o número de contratos únicois, ou seja, se ele tem dois contratos únicos no além disso só tem que mencionar o único que falta (somente se ele já não tiver sido mencionado), porque ele só tem 2).\n\nAqui estão as informações para pagamento:\n<Pagamento>\n\nCaso o pagamento já tenha sido efetuado, por favor desconsidere esta mensagem.\nQualquer dúvida entre em contato conosco pelo nosso WhatsApp.\n\n5.\n- Mensagem de Entrada:\nOlá, [nome] - CNPJ: [cpf_cnpj]! ⚠️\nEstamos entrando em contato porque, de acordo com o contrato, se o pagamento dos títulos não for identificado em até 31 dias após o vencimento, seu equipamento seguirá o processo de retirada.\nNão deixe que isso aconteça! Aproveite nossas oportunidades de negociação – é só clicar no botão para falar com a nossa equipe! 🙏\nLista de contratos vencidos: [contratos_cobranca]\nContrato mais vencido: [contrato_mais_vencido]\nTítulo vencido em: [dt_venc]\nPara regularizar, clique no botão Realizar Pagamento. Se tiver dúvidas, é só acionar o botão Falar com Atendente – nossa equipe está aqui para ajudar! 🚀\nSe você já fez o pagamento, por favor, clique no botão Enviar Comprovante para nos avisar.\n\n- Saída:\nPrezado(a) <Nome do Cliente> - CNPJ: <CNPJ do Cliente>\nEstamos entrando em contato para informar que, de acordo com o acordado, se o pagamento dos títulos dos contratos XXX e WWW, vencidos a 20 dias, não for identificado em até 31 dias após o vencimento, os equipamentos seguirão o processo de retirada.\nAlém disso, você tem outros contratos que estão prestes a vencer YYY que vence em dia/mês/ano e ZZZ que vence em dia/mês/ano (esse número deve estar de acordo com o número de contratos únicois, ou seja, se ele tem dois contratos únicos no além disso só tem que mencionar o único que falta (somente se ele já não tiver sido mencionado), porque ele só tem 2).\n\nAqui estão as informações para pagamento:\n<Pagamento>\n\nCaso o pagamento já tenha sido efetuado, por favor desconsidere esta mensagem.\nQualquer dúvida entre em contato conosco pelo nosso WhatsApp.\n\n6.\nOlá, cliente BLIPS! 😔\n[nome] - CNPJ: [cpf_cnpj]\nÉ com grande pesar que informamos que iremos iniciar o processo de distrato e retirada do seu equipamento devido à falta de pagamento da sua mensalidade.\nNossa equipe está aqui para te ajudar a evitar que isso aconteça. É só clicar no botão para que possamos encontrar uma solução juntos!\nLista de contratos vencidos: [contratos_cobranca]\nContrato mais vencido: [contrato_mais_vencido]\nTítulo mais vencido: [dt_venc]\nSe você já fez o pagamento, por favor, ignore este aviso e, se possível, envie o comprovante.\n\n- Saída:\nPrezado(a) <Nome do Cliente> - CNPJ: <CNPJ do Cliente>\nEstamos entrando em contato para informar que iniciaremos o processo de distrato e retirada do equipamento devido à falta de pagamento da mensalidade do contrato XXX, vencido desde dia/mês/ano.\nAlém disso, você tem outros contratos que estão prestes a vencer YYY que vence em dia/mês/ano e ZZZ que vence em dia/mês/ano (esse número deve estar de acordo com o número de contratos únicois, ou seja, se ele tem dois contratos únicos no além disso só tem que mencionar o único que falta (somente se ele já não tiver sido mencionado), porque ele só tem 2).\n\nAqui estão as informações para pagamento:\n<Pagamento>\n\nCaso o pagamento já tenha sido efetuado, por favor desconsidere esta mensagem.\nQualquer dúvida entre em contato conosco pelo nosso WhatsApp.\n\n7.\n- Mensagem de Entrada:\nOlá, [nome] - CNPJ: [cpf_cnpj]! ⛔\nComo não recebemos retorno sobre o pagamento da sua mensalidade, informamos que, nos próximos dias, agendaremos a retirada do seu equipamento e iniciaremos o processo de distrato dos contratos com títulos vencidos há mais de 31 dias.\nLista de contratos vencidos: [contratos_cobranca]\nContrato mais vencido: [contrato_mais_vencido]\nTítulo mais vencido: [dt_venc]\nEsta é a última oportunidade para regularizar sua situação e manter seu contrato ativo. Não perca essa chance – negocie seus débitos agora mesmo!!!\nPara efetuar o pagamento, clique no botão Realizar Pagamento.\nSe você tiver dúvidas, utilize o botão Falar com Atendente; nossa equipe está disponível para ajudar! 🚀\nCaso já tenha efetuado o pagamento, por favor, clique no botão Enviar Comprovante para nos informar.\n\n- Saída:\nPrezado(a) <Nome do Cliente> - CNPJ: <CNPJ do Cliente>\nComo não recebemos retorno sobre o pagamento da sua mensalidade do contrato XXX há mais de 31 dias, informamos que, nos próximos dias, agendaremos a retirada do seu equipamento e iniciaremos o processo de distrato do contrato.\nAlém disso, você tem outros contratos que estão prestes a vencer YYY que vence em dia/mês/ano e ZZZ que vence em dia/mês/ano (esse número deve estar de acordo com o número de contratos únicois, ou seja, se ele tem dois contratos únicos no além disso só tem que mencionar o único que falta (somente se ele já não tiver sido mencionado), porque ele só tem 2).\n\nAqui estão as informações para pagamento:\n<Pagamento>\n\nCaso o pagamento já tenha sido efetuado, por favor desconsidere esta mensagem.\nQualquer dúvida entre em contato conosco pelo nosso WhatsApp.\n\n8.\n- Mensagem de Entrada:\nOlá, [nome] - CNPJ: [cpf_cnpj]! ⚠️\nDe acordo com o contrato, se o pagamento dos títulos não for identificado em até 60 dias após a data de vencimento, seu equipamento será retirado.\nNão deixe que isso aconteça! Aproveite nossas oportunidades de negociação. Clique no botão para falar com nossa equipe! 🙏\nLista de contratos vencidos: [contratos_cobranca]\nContrato mais vencido: [contrato_mais_vencido]\nTítulo vencido em: [dt_venc]\nPara efetuar o pagamento, clique no botão Realizar Pagamento.\nSe tiver dúvidas, utilize o botão Falar com Atendente; nossa equipe está pronta para ajudar! 🚀\nCaso já tenha feito o pagamento, por favor, clique no botão Enviar Comprovante para nos informar.\n\n- Saída:\nPrezado(a) <Nome do Cliente> - CNPJ: <CNPJ do Cliente>\nDe acordo com o contrato, se o pagamento dos títulos do contrato XXX, vencido desde dia/mês/ano, não for identificado em até 60 dias após a data de vencimento, o equipamento será retirado.\nAlém disso, você tem outros contratos que estão prestes a vencer YYY que vence em dia/mês/ano e ZZZ que vence em dia/mês/ano (esse número deve estar de acordo com o número de contratos únicois, ou seja, se ele tem dois contratos únicos no além disso só tem que mencionar o único que falta (somente se ele já não tiver sido mencionado), porque ele só tem 2).\n\nAqui estão as informações para pagamento:\n<Pagamento>\n\nCaso o pagamento já tenha sido efetuado, por favor desconsidere esta mensagem.\nQualquer dúvida entre em contato conosco pelo nosso WhatsApp.\n\n9.\n- Mensagem de Entrada:\nOlá, [nome] - CNPJ: [cpf_cnpj]!\nEsperamos que você esteja bem.\nÉ com pesar que informamos que seu contrato está sendo cancelado devido à falta de pagamento da mensalidade.\nLista de contratos em cancelamento: [contratos_cobranca]\nContrato mais vencido: [contrato_mais_vencido]\nTítulo vencido em: [dt_venc]\nSabemos que momentos difíceis podem acontecer, e estamos aqui para ajudar! Por favor, clique no botão para que nossa equipe possa oferecer um suporte personalizado.\nSe você já efetuou o pagamento, clique no botão Enviar Comprovante para que possamos regularizar o contrato.\n\n- Saída:\nPrezado(a) <Nome do Cliente> - CNPJ: <CNPJ do Cliente>\nInformamos que o contrato XXX está sendo cancelado devido à falta de pagamento da mensalidade desde dia/mês/ano.\nAlém disso, você tem outros contratos que estão prestes a vencer YYY que vence em dia/mês/ano e ZZZ que vence em dia/mês/ano (esse número deve estar de acordo com o número de contratos únicois, ou seja, se ele tem dois contratos únicos no além disso só tem que mencionar o único que falta (somente se ele já não tiver sido mencionado), porque ele só tem 2).\n\nAqui estão as informações para pagamento:\n<Pagamento>\n\nCaso o pagamento já tenha sido efetuado, por favor desconsidere esta mensagem.\nQualquer dúvida entre em contato conosco pelo nosso WhatsApp.\n\n10.\n- Mensagem de Entrada:\nOlá, [nome] - CNPJ: [cpf_cnpj]! 😔\nÉ com grande pesar que informamos que iniciaremos o processo de retirada do seu equipamento devido à falta de pagamento da mensalidade.\nEsta é a última oportunidade para regularizar sua situação e manter seu contrato ativo. Aproveite essa chance, negocie seus débitos e evite a retirada!\nLista de contratos vencidos: [contratos_cobranca]\nContrato mais vencido: [contrato_mais_vencido]\nTítulo vencido em: [dt_venc]\nCaso já tenha realizado o pagamento, por favor, ignore este aviso e, se possível, envie o comprovante.\n\n- Saída:\nPrezado(a) <Nome do Cliente> - CNPJ: <CNPJ do Cliente>\nInformamos que iniciaremos o processo de retirada do equipamento devido à falta de pagamento da mensalidade do contrato XXX, vencido desde dia/mês/ano.\nAlém disso, você tem outros contratos que estão prestes a vencer YYY que vence em dia/mês/ano e ZZZ que vence em dia/mês/ano (esse número deve estar de acordo com o número de contratos únicois, ou seja, se ele tem dois contratos únicos no além disso só tem que mencionar o único que falta (somente se ele já não tiver sido mencionado), porque ele só tem 2).\n\nAqui estão as informações para pagamento:\n<Pagamento>\n\nCaso o pagamento já tenha sido efetuado, por favor desconsidere esta mensagem.\nQualquer dúvida entre em contato conosco pelo nosso WhatsApp.\n\n11.\n- Mensagem de Entrada:\nOlá, [nome] - CNPJ: [cpf_cnpj]!\nEsperamos que você esteja bem. \nGostaríamos de informar que, infelizmente, seu contrato está sendo cancelado devido à falta de pagamento da sua mensalidade.\nLista de contratos em cancelamento: [contratos_cobranca]\nContrato mais vencido: [contrato_mais_vencido]\nTítulo mais vencido: [dt_venc]\nSabemos que momentos desafiadores podem ocorrer e estamos aqui para te ajudar! Por favor, aperte o botão para que nossa equipe possa te oferecer um suporte personalizado. \nCaso tenha pago, por favor clique no botão Enviar comprovante para regularizarmos o contrato.\n\n- Saída:\nPrezado(a) <Nome do Cliente> - CNPJ: <CNPJ do Cliente>\nInformamos que o contrato XXX está sendo cancelado devido à falta de pagamento da mensalidade desde dia/mês/ano.\nAlém disso, você tem outros contratos que estão prestes a vencer YYY que vence em dia/mês/ano e ZZZ que vence em dia/mês/ano (esse número deve estar de acordo com o número de contratos únicois, ou seja, se ele tem dois contratos únicos no além disso só tem que mencionar o único que falta (somente se ele já não tiver sido mencionado), porque ele só tem 2).\n\nAqui estão as informações para pagamento:\n<Pagamento>\n\nCaso o pagamento já tenha sido efetuado, por favor desconsidere esta mensagem.\nQualquer dúvida entre em contato conosco pelo nosso WhatsApp."
+        },
+        "id": "90c005cd-bc27-4cdb-abca-fa244e3f1c9c",
+        "name": "Gera Email",
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.4,
+        "position": [
+          -2220,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "disparo-email",
+          "options": {}
+        },
+        "id": "eda4919c-b87a-47c1-a560-bdb6d7f3d75e",
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -4040,
+          280
+        ],
+        "webhookId": "44606e00-1e5e-4a68-bf62-351f6e8ef841"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "027c48b8-e7af-408e-beff-7b63d34e0aee",
+                "name": "nufins",
+                "value": "={{ $json.resultado.map(item => item.nufin) }}",
+                "type": "array"
+              },
+              {
+                "id": "c9735bec-3ae4-4aef-af5d-1d623ccb11f6",
+                "name": "cnpj",
+                "value": "={{ $('Webhook').item.json.body.dados.cpf_cnpj }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "feb0bcb4-0d9b-45b6-b7bc-99934075ac65",
+        "name": "NUFINs + CNPJ",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -3380,
+          280
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "16a9c9b3-b344-422a-8116-f4b1f36bb809",
+                "leftValue": "={{ $json.data.some(item => item.sucesso === false) }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "false",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -2920,
+          280
+        ],
+        "id": "75b251f2-98ec-496a-96e5-933ebfe4cc3e",
+        "name": "Deu certo a função?"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://automacao.blips-labs.com/webhook/atualiza-dados",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"INDEX_LINHA\": {{ $('Webhook').first().json.body.linha }},\n  \"EMAIL_ENVIADO\": {{ $('Resultado').first().json.resultado !== null ? $('Resultado').first().json.resultado : true }}\n}",
+          "options": {}
+        },
+        "id": "d7216542-525d-4fb5-b263-dffea6cd4473",
+        "name": "Atualiza BQ",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          380,
+          180
+        ]
+      }
+    ],
+    "connections": {
+      "OpenAI Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Gera Email",
+              "type": "ai_languageModel",
+              "index": 0
+            },
+            {
+              "node": "Gera assunto",
+              "type": "ai_languageModel",
+              "index": 0
+            },
+            {
+              "node": "Gera HTML",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Títulos": {
+        "main": [
+          [
+            {
+              "node": "Lista dados títulos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gera Pagamento": {
+        "main": [
+          [
+            {
+              "node": "Deu certo a função?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Junta informações de pagamento": {
+        "main": [
+          [
+            {
+              "node": "Parâmetros Mensagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Lista dados títulos": {
+        "main": [
+          [
+            {
+              "node": "NUFINs + CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parâmetros Mensagem": {
+        "main": [
+          [
+            {
+              "node": "Gera Email",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Email": {
+        "main": [
+          [
+            {
+              "node": "É Blips?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gera HTML": {
+        "main": [
+          [
+            {
+              "node": "Gera assunto",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Deu erro?": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Gera HTML",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "Verifica resposta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "É Blips?": {
+        "main": [
+          [
+            {
+              "node": "Envia Email - BLIPS",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Envia Email - IDEAL",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Envia Email - BLIPS": {
+        "main": [
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Envia Email - IDEAL": {
+        "main": [
+          [
+            {
+              "node": "Wait1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Verifica resposta": {
+        "main": [
+          [
+            {
+              "node": "Resultado",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait1": {
+        "main": [
+          [
+            {
+              "node": "Verifica resposta1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Verifica resposta1": {
+        "main": [
+          [
+            {
+              "node": "Resultado",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gera assunto": {
+        "main": [
+          [
+            {
+              "node": "Email",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Atualiza envio email": {
+        "main": [
+          [
+            {
+              "node": "Atualiza BQ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Resultado": {
+        "main": [
+          [
+            {
+              "node": "Atualiza envio email",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Erro": {
+        "main": [
+          [
+            {
+              "node": "Resultado",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gera Email": {
+        "main": [
+          [
+            {
+              "node": "Deu erro?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Títulos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "NUFINs + CNPJ": {
+        "main": [
+          [
+            {
+              "node": "Gera Pagamento",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Deu certo a função?": {
+        "main": [
+          [
+            {
+              "node": "Junta informações de pagamento",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {
+      "Webhook": [
+        {
+          "json": {
+            "body": {
+              "linha": "29716",
+              "mensagem": {
+                "ativacao": "Olá, Alcimar Soares de Melo - CNPJ: 54555451000114!\n\nEsperamos que você esteja bem. \nGostaríamos de informar que, infelizmente, seu contrato está sendo cancelado devido à falta de pagamento da sua mensalidade.\n\nLista de contratos em cancelamento: 12402376 (91 dias vencidos), 12402376 (30 dias vencidos), 12402376 (61 dias vencidos)\nContrato mais vencido: 12402376\nTítulo mais vencido: 15/11/2024\n\nSabemos que momentos desafiadores podem ocorrer e estamos aqui para te ajudar! Por favor, aperte o botão para que nossa equipe possa te oferecer um suporte personalizado. \nCaso tenha pago, por favor clique no botão Enviar comprovante para regularizarmos o contrato.",
+                "telefone": "82996760978"
+              },
+              "dados": {
+                "nomeparc": "Alcimar Soares de Melo",
+                "email": "contatocrieart@hotmail.com",
+                "cpf_cnpj": "54555451000114",
+                "telefone": "82996760978",
+                "modalidade": "VENDA",
+                "titulo_mais_vencido": "738914",
+                "diasVencido": 91,
+                "dt_venc": "15/11/2024",
+                "titulosVencidos": "738914, 738916, 738915",
+                "contratos_cobranca": "12402376 (91 dias vencidos), 12402376 (30 dias vencidos), 12402376 (61 dias vencidos)",
+                "contrato_mais_vencido": "12402376",
+                "cenario": "future_and_overdue"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "versionId": "537b72cb-e4f4-47f9-a645-5fd553df6df0",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-09T15:07:56.880Z",
+        "updatedAt": "2024-07-09T15:07:56.880Z",
+        "id": "10AfOz2oKmpgqhM9",
+        "name": "Cobranca"
+      }
+    ]
+  }
+}
