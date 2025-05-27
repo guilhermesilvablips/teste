@@ -1,0 +1,376 @@
+{
+  "data": {
+    "createdAt": "2024-08-29T11:15:23.267Z",
+    "updatedAt": "2024-09-03T14:04:36.270Z",
+    "id": "Cw9BDUcdanhFv99q",
+    "name": "Teste comprovante - João Lucas",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "9702d35d-0b52-4859-b6af-6024ec34ad22",
+        "name": "When clicking ‘Test workflow’",
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -300,
+          580
+        ]
+      },
+      {
+        "parameters": {
+          "url": "https://storage.hyperflow.global/whatsapp/1026296185378042",
+          "options": {}
+        },
+        "id": "e3e5b05d-aade-4330-9539-86d90f6600f0",
+        "name": "HTTP Request",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          620,
+          360
+        ]
+      },
+      {
+        "parameters": {
+          "language": "python",
+          "pythonCode": "# Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor item in _input.all():\n  item.binary.data.fileName = 'resposta.'+ item.binary.data.fileExtension\nreturn _input.all()"
+        },
+        "id": "ad182e1f-2cbf-4152-8370-b0aad4012ce0",
+        "name": "Code",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          860,
+          360
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "pdf",
+          "options": {}
+        },
+        "id": "2f44efe3-4041-4a01-9810-052875103bec",
+        "name": "Extract from File",
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          1120,
+          360
+        ]
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "gpt-4o-mini",
+            "mode": "list",
+            "cachedResultName": "gpt-4o-mini"
+          },
+          "options": {}
+        },
+        "id": "f0b05075-4419-4f4e-84b3-cc761e6aa88c",
+        "name": "OpenAI Model",
+        "type": "@n8n/n8n-nodes-langchain.lmOpenAi",
+        "typeVersion": 1,
+        "position": [
+          1360,
+          500
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "erBLFgb3zHf0C8ux",
+            "name": "Open Ai - Cobrança"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Você é um agente especializado em análise de documentos. Sua tarefa é determinar se as imagens ou PDFs fornecidos são comprovantes financeiros. Para realizar essa tarefa, siga os passos abaixo:\n\n1. **Leitura e Interpretação:** Examine cuidadosamente o conteúdo dos arquivos, tanto textos quanto elementos visuais.\n2. **Identificação de Características:** Procure por indicadores típicos de comprovantes financeiros, tais como:\n   - Valores monetários\n   - Logotipos de instituições financeiras\n   - Datas\n   - Termos específicos como \"fatura\", \"nota fiscal\", \"recibo\", entre outros.\n3. **Classificação:** Com base na análise, classifique o documento da seguinte forma:\n   - Retorne \"TRUE\" se o documento for identificado como um comprovante financeiro.\n   - Retorne \"FALSE\" se o documento não for identificado como um comprovante financeiro.\n\n**Importante:** Sua resposta deve ser exclusivamente \"TRUE\" ou \"FALSE\".\n\n\nEntrada: \n{{ $json.text }}"
+        },
+        "id": "3ad35bc1-a9e0-4a7a-ba43-566ec6858888",
+        "name": "Basic LLM Chain",
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.4,
+        "position": [
+          1340,
+          360
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "download",
+          "fileId": {
+            "__rl": true,
+            "value": "1X54ONyS5pp3FXqPLwHomzB4t5Ef8fQR3",
+            "mode": "list",
+            "cachedResultName": "Trabalho 1 - TC - João Lucas.pdf",
+            "cachedResultUrl": "https://drive.google.com/file/d/1X54ONyS5pp3FXqPLwHomzB4t5Ef8fQR3/view?usp=drivesdk"
+          },
+          "options": {}
+        },
+        "id": "9fc0ae0b-d780-4c1e-8568-d1d91ef7212e",
+        "name": "Google Drive",
+        "type": "n8n-nodes-base.googleDrive",
+        "typeVersion": 3,
+        "position": [
+          620,
+          700
+        ],
+        "credentials": {
+          "googleDriveOAuth2Api": {
+            "id": "R1bqxAOxeHcnmU8n",
+            "name": "Drive - João Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "pdf",
+          "options": {}
+        },
+        "id": "8225b749-2738-48a6-8425-9384d5ceed82",
+        "name": "Extract from File1",
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          860,
+          700
+        ]
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "gpt-4o-mini",
+            "mode": "list",
+            "cachedResultName": "gpt-4o-mini"
+          },
+          "options": {}
+        },
+        "id": "7c160844-fc20-4df1-a796-54a423289103",
+        "name": "OpenAI Model1",
+        "type": "@n8n/n8n-nodes-langchain.lmOpenAi",
+        "typeVersion": 1,
+        "position": [
+          1120,
+          880
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "erBLFgb3zHf0C8ux",
+            "name": "Open Ai - Cobrança"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Você é um agente especializado em análise de documentos. Sua tarefa é determinar se as imagens ou PDFs fornecidos são comprovantes financeiros. Para realizar essa tarefa, siga os passos abaixo:\n\n1. **Leitura e Interpretação:** Examine cuidadosamente o conteúdo dos arquivos, tanto textos quanto elementos visuais.\n2. **Identificação de Características:** Procure por indicadores típicos de comprovantes financeiros, tais como:\n   - Valores monetários\n   - Logotipos de instituições financeiras\n   - Datas\n   - Termos específicos como \"fatura\", \"nota fiscal\", \"recibo\", entre outros.\n3. **Classificação:** Com base na análise, classifique o documento da seguinte forma:\n   - Retorne \"TRUE\" se o documento for identificado como um comprovante financeiro.\n   - Retorne \"FALSE\" se o documento não for identificado como um comprovante financeiro.\n\n**Importante:** Sua resposta deve ser exclusivamente \"TRUE\" ou \"FALSE\".\n\n\nEntrada: \n{{ $json.text }}"
+        },
+        "id": "a48cf530-de45-4748-a68b-6c105a39c7c4",
+        "name": "Basic LLM Chain1",
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.4,
+        "position": [
+          1100,
+          700
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/files",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendBody": true,
+          "contentType": "multipart-form-data",
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "purpose",
+                "value": "vision"
+              },
+              {
+                "parameterType": "formBinaryData",
+                "name": "file",
+                "inputDataFieldName": "=data"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "f9d6d141-c94a-4747-8100-7d49c4993812",
+        "name": "HTTP Request1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          360,
+          580
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "erBLFgb3zHf0C8ux",
+            "name": "Open Ai - Cobrança"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "url": "https://storage.hyperflow.global/whatsapp/1679740219484116",
+          "options": {}
+        },
+        "id": "94bed00a-675c-4f9d-ae60-bbbfc512fd3d",
+        "name": "HTTP Request2",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -80,
+          580
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.binary.data.fileName = 'Teste.jpeg';\n}\n\nreturn $input.all();"
+        },
+        "id": "04c74fed-c193-4418-b511-4893e19d5758",
+        "name": "Code1",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          140,
+          580
+        ]
+      }
+    ],
+    "connections": {
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "Extract from File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract from File": {
+        "main": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Drive": {
+        "main": [
+          [
+            {
+              "node": "Extract from File1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract from File1": {
+        "main": [
+          [
+            {
+              "node": "Basic LLM Chain1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Model1": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Basic LLM Chain1",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request1": {
+        "main": [
+          []
+        ]
+      },
+      "HTTP Request2": {
+        "main": [
+          [
+            {
+              "node": "Code1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code1": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "afc0f0bd-3c7a-49f9-ae06-e6a36d7f3dc7",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
