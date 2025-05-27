@@ -1,0 +1,169 @@
+{
+  "data": {
+    "createdAt": "2025-05-02T12:03:34.690Z",
+    "updatedAt": "2025-05-02T15:33:21.560Z",
+    "id": "bj81rtjKqwh3VpjV",
+    "name": "Assistente Cobrança - func - consulta_titulos_suprimentos",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "cnpj"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -1240,
+          260
+        ],
+        "id": "bb1d40ff-993b-413e-afee-b8e8371e9c0d",
+        "name": "Execute"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "07cbaa24-b381-45ec-ab70-f823b144a3e0",
+                "name": "document",
+                "value": "={{$json.cnpj.match(/\\d+/g).join('')}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "691485c8-a4ee-422b-92cc-499639656f80",
+        "name": "document",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1020,
+          260
+        ]
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT\n  tbi.CGC_CPF as DOCUMENTO,\n  tbi.NUFIN,\n  tbi.EMPRESA,\n  PARSE_DATETIME('%d%m%Y %H:%M:%S', tbi.DTVENC) AS DTVENC,\n  DATETIME_DIFF(CURRENT_DATETIME(), PARSE_DATETIME('%d%m%Y %H:%M:%S', tbi.DTVENC), DAY) AS dias_vencido,\n  \n  tbi.VALOR,\n  'SUPRIMENTO' AS tipo,\n  IF(PARSE_DATETIME('%d%m%Y %H:%M:%S', tbi.DTVENC) < CURRENT_DATETIME(), 'VENCIDO', 'NAO VENCIDO') AS ESTA_VENCIDO\nFROM SANKHYA.TitulosVencidosVendaSuprimentos tbi\nWHERE CGC_CPF = '{{$json.document}}'\nORDER BY PARSE_DATETIME('%d%m%Y %H:%M:%S', tbi.DTVENC)",
+          "options": {}
+        },
+        "id": "45d1dc0b-f0a7-4269-8e80-ce49535a128a",
+        "name": "BQ - Títulos",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2,
+        "position": [
+          -820,
+          260
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "w04wIisrxzPl22Vr",
+            "mode": "list",
+            "cachedResultName": "Atualizar dados plataforma"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          -560,
+          260
+        ],
+        "id": "b73f659a-6b31-476a-a698-49616bb976c5",
+        "name": "Atualizar Dados Plataforma"
+      }
+    ],
+    "connections": {
+      "Execute": {
+        "main": [
+          [
+            {
+              "node": "document",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "document": {
+        "main": [
+          [
+            {
+              "node": "BQ - Títulos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "BQ - Títulos": {
+        "main": [
+          [
+            {
+              "node": "Atualizar Dados Plataforma",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Execute": [
+        {
+          "json": {
+            "cnpj": "07343820000125"
+          }
+        }
+      ]
+    },
+    "versionId": "ecbf6673-ea6b-47b3-8100-9181e96256ed",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-09T15:07:56.880Z",
+        "updatedAt": "2024-07-09T15:07:56.880Z",
+        "id": "10AfOz2oKmpgqhM9",
+        "name": "Cobranca"
+      }
+    ]
+  }
+}
