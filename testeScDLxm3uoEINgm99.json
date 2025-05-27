@@ -1,0 +1,58 @@
+{
+  "data": {
+    "createdAt": "2025-01-15T17:10:15.243Z",
+    "updatedAt": "2025-01-15T17:15:40.320Z",
+    "id": "ScDLxm3uoEINgm99",
+    "name": "Teste Fallback 0",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "bcfee8a8-14dc-4235-80e2-0ce19c372725",
+        "name": "When clicking ‘Test workflow’"
+      },
+      {
+        "parameters": {
+          "url": "https://n8n-dev.blips-labs.com/webhook/6aae6a43-7d06-4730-b846-5fcbbc38fda7",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          260,
+          0
+        ],
+        "id": "3196e2ac-41f6-4bb7-b848-31906943051f",
+        "name": "HTTP Request"
+      }
+    ],
+    "connections": {
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {},
+    "versionId": "146aab73-61ff-4f97-a7b8-6ba02e85a22f",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
