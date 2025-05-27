@@ -1,0 +1,3501 @@
+{
+  "data": {
+    "createdAt": "2025-05-13T13:28:14.890Z",
+    "updatedAt": "2025-05-19T13:46:43.994Z",
+    "id": "FE7923QvIS0p8MlU",
+    "name": "Agente Wordpress",
+    "active": true,
+    "nodes": [
+      {
+        "parameters": {
+          "mode": "raw",
+          "jsonOutput": "={\n  \"body\": {\n    \"text\": \"{{ $json.mensagem }}\",\n    \"audio\": \"\",\n    \"file\": \"\",\n    \"image\": \"\",\n    \"id\": \"{{ $json.id + $json.name}}\",\n    \"name\": \"{{ $json.name }}\",\n    \"cnpj\": \"{{ $json.cnpj ? '\"' + $json.cnpj + '\"' : null }}\",\n    \"contrato\": \"{{ $json.contrato ? '\"' + $json.cnpj + '\"' : null }}\"\n  }\n}",
+          "options": {}
+        },
+        "id": "aedadbc9-d25e-4ce5-bde0-b881ca62369a",
+        "name": "Convert to Webhook",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          -280,
+          -1020
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "7fad812c-4f7b-41bb-a426-5aca9dc08bc3",
+                "leftValue": "={{ $('Variáveis Globais1').item.json.em_manutencao }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "33c9ebbe-6bc5-434e-83c9-96dde641760f",
+        "name": "Está em manutenção?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          1700,
+          -1100
+        ]
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "{\n  \"text\": \"Vou te encaminhar para um atendente. Motivo: Fora do Ar\"\n}",
+          "options": {}
+        },
+        "id": "691c5b96-5cd2-476d-bd22-82f12279ddcf",
+        "name": "Fora do Ar",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          1760,
+          -1320
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "0946679f-72ec-4479-b8b6-831d4274caad",
+                "name": "output",
+                "value": "Nova thread criada",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "f948c53b-f6e1-4776-892b-fc2bab39d626",
+        "name": "Resposta Nova Thread",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          4900,
+          -880
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "6174ef56-939f-48d8-97c5-2e458eb06267",
+                "name": "thread_id",
+                "value": "={{ $json[$('Variáveis Globais1').item.json.assistant_id] }}",
+                "type": "string"
+              },
+              {
+                "id": "37da7440-91ec-4311-80e1-4a801a1f6b65",
+                "name": "phone",
+                "value": "={{ $json.phone }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "58436abb-1b9d-443d-9c9e-c112e6784321",
+        "name": "Prepara thread_id",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          3500,
+          -1380
+        ]
+      },
+      {
+        "parameters": {
+          "content": "# Threads",
+          "height": 80,
+          "width": 5680,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          1900,
+          -1500
+        ],
+        "id": "66495fd1-eaf3-417e-b1fc-50e38c88de2d",
+        "name": "Sticky Note"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7559921d-c049-4a9b-ac44-6ed138a90997",
+                "name": "Text",
+                "value": "={{ $('Variáveis Globais1').first().json.mensagem }}",
+                "type": "string"
+              },
+              {
+                "id": "f1d9a98e-25d7-4521-8856-a5f3756c2fbb",
+                "name": "Image",
+                "value": "={{ $('Variáveis Globais1').first().json.image }}",
+                "type": "string"
+              },
+              {
+                "id": "2172ec76-01ae-4322-9ac4-fe3d05f02ae2",
+                "name": "Audio",
+                "value": "={{ $('Variáveis Globais1').first().json.audio }}",
+                "type": "string"
+              },
+              {
+                "id": "790dac21-485b-413b-b536-8cae02b44499",
+                "name": "File",
+                "value": "={{ $('Variáveis Globais1').first().json.file }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          5300,
+          -1380
+        ],
+        "id": "025ce57b-ca4f-4074-ae25-e8b8f0c43478",
+        "name": "Mensagem de Entrada"
+      },
+      {
+        "parameters": {
+          "resource": "audio",
+          "operation": "transcribe",
+          "options": {
+            "language": "pt"
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.8,
+        "position": [
+          6140,
+          -1140
+        ],
+        "id": "a33c4af7-6924-4bc9-9d0f-41aebe4fe6d1",
+        "name": "Transcreve Áudio",
+        "credentials": {
+          "openAiApi": {
+            "id": "tuJNruAgnnM96by3",
+            "name": "Open AI - Suporte Técnico"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "image",
+          "operation": "analyze",
+          "modelId": {
+            "__rl": true,
+            "value": "gpt-4o",
+            "mode": "list",
+            "cachedResultName": "GPT-4O"
+          },
+          "text": "=Descreva com o máximo de detalhes possível a imagem que o usuário mandou. \n\nA sua respoosta deve ser um texto em formato markdom somente, mas sem a marcação: ```markdown",
+          "imageUrls": "={{ $json.Image }}",
+          "options": {
+            "detail": "high"
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.8,
+        "position": [
+          6020,
+          -1320
+        ],
+        "id": "e18ff85b-12a2-4c06-b09d-cb077d077f42",
+        "name": "Analisa Imagem",
+        "credentials": {
+          "openAiApi": {
+            "id": "tuJNruAgnnM96by3",
+            "name": "Open AI - Suporte Técnico"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "url": "={{ $json.Audio }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          5920,
+          -1140
+        ],
+        "id": "f23011dc-6909-4780-ba99-a944c99eaa8d",
+        "name": "Baixa Áudio"
+      },
+      {
+        "parameters": {
+          "url": "={{ $json.File }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          5920,
+          -960
+        ],
+        "id": "f2e9c8f0-0606-412f-96c1-efd88b21b191",
+        "name": "Baixa Arquvo"
+      },
+      {
+        "parameters": {
+          "operation": "pdf",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          6140,
+          -960
+        ],
+        "id": "d8833919-b99f-4173-a22e-8f7f45ddecec",
+        "name": "Extract from File"
+      },
+      {
+        "parameters": {
+          "numberInputs": 3
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3,
+        "position": [
+          6580,
+          -1040
+        ],
+        "id": "12cd9b3b-2138-4aef-922e-ad5533e6f78b",
+        "name": "Merge"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d26eff7f-8e3a-4e57-87e8-b6a37acd614b",
+                "name": "Imagem",
+                "value": "={{ $json.content || null}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          6340,
+          -1220
+        ],
+        "id": "aea88bcb-5f83-449a-9727-5c3651a6ad09",
+        "name": "Imagem"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d26eff7f-8e3a-4e57-87e8-b6a37acd614b",
+                "name": "Audio",
+                "value": "={{ $json.text || null}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          6340,
+          -1040
+        ],
+        "id": "8d31c2ec-99bf-456e-a58f-b6642beb0f61",
+        "name": "Audio"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d26eff7f-8e3a-4e57-87e8-b6a37acd614b",
+                "name": "File",
+                "value": "={{ $json.text || null}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          6340,
+          -860
+        ],
+        "id": "23508dfc-9fb0-4481-a55a-f74faae4a8b1",
+        "name": "File"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "738378d6-6859-4a79-815e-480e434d91b4",
+                "leftValue": "={{ !!$json.Image }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          5720,
+          -1240
+        ],
+        "id": "b88b6edd-115e-49a9-a1c7-a569b5f0fc96",
+        "name": "Imagem?"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "e0d66719-5d03-45e8-8949-69fbb06fa7a5",
+                "leftValue": "={{ !!$json.Audio }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          5720,
+          -1060
+        ],
+        "id": "0909420b-173f-4400-b6d5-16f29ee0e1ea",
+        "name": "Áudio?"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "bc7409ca-bd64-4c6c-b4e0-70c64dc79e39",
+                "leftValue": "={{ !!$json.File }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          5720,
+          -880
+        ],
+        "id": "fa315ed1-57e3-459f-a1bd-7ec1f1a418aa",
+        "name": "Arquivo?"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "26d2a0d2-2a36-479d-89c4-f97424eadc01",
+                "name": "mensagem",
+                "value": "={{ \n  $json.body.mensagem.replace(/\\n/g, '') \n}}",
+                "type": "string"
+              },
+              {
+                "id": "9a6ac739-b3c8-4011-8d1b-403e9f655893",
+                "name": "id",
+                "value": "={{ $json.body.id }}",
+                "type": "string"
+              },
+              {
+                "id": "21237808-e3f5-4d82-ad6f-28ad18e62cc5",
+                "name": "name",
+                "value": "={{ $json.body.name }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "82bc8ca6-eea9-4249-8058-74c2321eb797",
+        "name": "Dados Assistente",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -500,
+          -1020
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "26d2a0d2-2a36-479d-89c4-f97424eadc01",
+                "name": "arguments.mensagem",
+                "value": "={{ $json.chatInput }}",
+                "type": "string"
+              },
+              {
+                "id": "9a6ac739-b3c8-4011-8d1b-403e9f655893",
+                "name": "id",
+                "value": "1111111111111111111111111111111111",
+                "type": "string"
+              },
+              {
+                "id": "21237808-e3f5-4d82-ad6f-28ad18e62cc5",
+                "name": "name",
+                "value": "chatClara",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "76b82ce0-e996-42ed-b0e0-7609636afb0b",
+        "name": "Dados Chat",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -500,
+          -720
+        ]
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -740,
+          -720
+        ],
+        "id": "52a1f97f-60fb-4208-b2b9-7ad7fcb5476a",
+        "name": "Chat",
+        "webhookId": "fae2724d-4e54-4686-97f9-66912393afb9"
+      },
+      {
+        "parameters": {
+          "mode": "raw",
+          "jsonOutput": "={\n  \"body\": {\n    \"text\": \"{{ $json.arguments.mensagem }}\",\n    \"audio\": \"\",\n    \"file\": \"\",\n    \"image\": \"\",\n    \"id\": \"{{ $json.id + $json.name}}\",\n    \"name\": \"{{ $json.name }}\",\n    \"cnpj\": {{ $json.cnpj ? '\"' + $json.cnpj + '\"' : null }},\n    \"contrato\": {{ $json.contrato ? '\"' + $json.cnpj + '\"' : null }}\n  }\n}",
+          "options": {}
+        },
+        "id": "66ff7cf4-562c-4d16-abf1-f9b0bcdb0abd",
+        "name": "Chat Convert",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          -280,
+          -720
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "3ef0b51a-e140-40a4-83fe-06c77c1d8ecf",
+                "leftValue": "={{ $json.fileId }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "d482888c-e416-4a68-9761-86821149b8c1",
+        "name": "possui arquivo?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          320,
+          -1220
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://blips.bitrix24.com.br/rest/2491/odgp2tzocbi1o76k/disk.file.get",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "id",
+                "value": "={{ $json.fileId }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "dabe04fb-88cd-43f1-911c-c4358d1ffb23",
+        "name": "buscar arquivo bitrix",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          580,
+          -1380
+        ],
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Obtém o primeiro item de input e transforma o campo \"body\" em uma string JSON\nconst inputString = JSON.stringify($input.first().json.body);\n\n// Função auxiliar para setar um valor em um objeto de forma aninhada a partir de um caminho\nfunction setNestedValue(obj, path, value) {\n  // Expressão regular para capturar todos os segmentos da chave, por exemplo:\n// \"data[BOT][2587][BOT_ID]\" => [\"data\", \"BOT\", \"2587\", \"BOT_ID\"]\n  const keys = path.match(/([^[\\]]+)/g);\n  \n  // Percorre os segmentos e cria os objetos aninhados conforme necessário\n  let current = obj;\n  keys.forEach((key, index) => {\n    // Se for o último segmento, atribui o valor\n    if (index === keys.length - 1) {\n      current[key] = value;\n    } else {\n      // Se a chave ainda não existir ou não for um objeto, cria um objeto vazio\n      if (!current[key] || typeof current[key] !== 'object') {\n        current[key] = {};\n      }\n      current = current[key];\n    }\n  });\n}\n\n// Faz o parse da string para obter um objeto \"flat\"\nconst parsedData = JSON.parse(inputString);\n\n// Objeto que receberá a estrutura aninhada final\nconst result = {};\n\n// Itera sobre cada chave do objeto parseado\nfor (const key in parsedData) {\n  if (key.includes('[')) {\n    // Se a chave contém colchetes, usa a função para setar o valor de forma aninhada\n    setNestedValue(result, key, parsedData[key]);\n  } else {\n    // Caso contrário, atribui o valor diretamente\n    result[key] = parsedData[key];\n  }\n}\n\n// Retorna o objeto final (no n8n, o resultado do nó será o output)\nreturn {\n  json: result\n};\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -500,
+          -1220
+        ],
+        "id": "ea5906ed-75a1-4bda-8c12-adecf4c190b7",
+        "name": "Formata Entrada"
+      },
+      {
+        "parameters": {
+          "jsCode": "// 1) Pega a entrada do webhook (geralmente items[0].json)\nconst entrada = $input.first().json || {};\n\n// 2) Coletamos o domínio do Bitrix\nconst domain = entrada.auth?.domain || '';\n\n// 3) Variáveis para armazenar os dados do primeiro arquivo encontrado\nlet fileType = '';\nlet fileDownloadUrl = '';\nlet fileId = '';\n\n// 4) Acessamos a estrutura de FILES dentro de data.PARAMS\nconst files = entrada.data?.PARAMS?.FILES || {};\n\n// 5) Iteramos pelos arquivos (sendo FILES um objeto, percorremos suas chaves)\nfor (const key in files) {\n  if (Object.prototype.hasOwnProperty.call(files, key)) {\n    const file = files[key];\n    \n    // Capturamos os valores desejados do arquivo\n    fileType = file.type;\n    fileDownloadUrl = `https://${domain}${file.urlDownload}`;\n    fileId = file.id;\n    \n    // Se desejar processar somente o primeiro arquivo encontrado, interrompa o loop\n    break;\n  }\n}\n\n// 6) Retorna os dados extraídos\nreturn [\n  {\n    json: {\n      ...entrada,\n      fileId,\n      fileType,\n      fileDownloadUrl\n    }\n  }\n];\n"
+        },
+        "id": "72030604-0048-439b-b233-20adae47a93d",
+        "name": "Files Bitrix",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -300,
+          -1220
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "raw",
+          "jsonOutput": "={\n  \"body\": {\n    \"text\": \"{{ $json.data.PARAMS.MESSAGE }}\",\n    \"audio\": \"\",\n    \"file\": \"\",\n    \"image\": \"\",\n    \"id\": \"{{ $json.data.USER.ID }}\",\n    \"name\": \"{{ $json.data.USER.NAME }}\",\n    \"first_name\": \"{{ $json.data.USER.FIRST_NAME }}\",\n    \"bot_id\": {{ $json.data.BOT.keys().first() }},\n    \"cnpj\": null,\n    \"contrato\": null\n  }\n}",
+          "options": {}
+        },
+        "id": "4d171723-a437-4b57-8328-b6ead6f45e3f",
+        "name": "Convert Bitrix",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          840,
+          -900
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "raw",
+          "jsonOutput": "={\n  \"body\": {\n    \"text\": \"{{ $json.data?.PARAMS?.MESSAGE.replaceAll('\\n','\\\\n') || '' }}\",\n    \"audio\": {{ ($json.result?.NAME?.includes('mp3') || $json.result?.NAME?.includes('ogg')) ? JSON.stringify($json.result?.DOWNLOAD_URL) : null }},\n    \"file\": {{ $json.result?.NAME?.includes('pdf') ? JSON.stringify($json.result?.DOWNLOAD_URL) : null }},\n    \"image\": {{ ($json.result?.NAME?.includes('jpg') || $json.result?.NAME?.includes('png') || $json.result?.NAME?.includes('jpeg')) ? JSON.stringify($json.result?.DOWNLOAD_URL) : null }},\n    \"id\": \"{{ $('Bitrix.get').item.json.result[0].EMAIL || '' }}\",\n    \"name\": \"{{ $json.data?.USER?.NAME || '' }}\",\n    \"first_name\": \"{{ $json.data?.USER?.FIRST_NAME || '' }}\",\n    \"bot_id\": \"{{ Object.keys($json.data?.BOT || {})[0] || '' }}\",\n    \"chat_id\": \"{{ $json.data.PARAMS.TO_CHAT_ID }}\",\n    \"cnpj\": null,\n    \"contrato\": null\n  }\n}",
+          "options": {}
+        },
+        "id": "993e9d7e-5195-480b-9329-d5587639f9e2",
+        "name": "Convert Bitrix1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          1040,
+          -1200
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "34619abf-8ef7-4879-afeb-3350651ea8c9",
+                "name": "data",
+                "value": "={{ $('Files Bitrix').item.json.data }}",
+                "type": "object"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          840,
+          -1200
+        ],
+        "id": "34a8f9db-c137-4821-bb04-a86786e47b78",
+        "name": "Pega o resto"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "f1fde6f4-7935-41d7-a6b6-5d597a234b3f",
+                "leftValue": "={{ $('Webhook - Bitrix').isExecuted }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          7300,
+          -60
+        ],
+        "id": "d73b7c73-5e92-4fe5-b22f-62efa5d2ebd2",
+        "name": "Bitrix?"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ed3cb56b-bd80-4b34-baf8-0df7a6dee1d6",
+                "name": "BOT_ID",
+                "value": "={{ $('Formata Entrada').first().json.data.BOT.keys().first() }}",
+                "type": "string"
+              },
+              {
+                "id": "f5a78dea-ff72-4e62-8b5c-516c720a1dab",
+                "name": "CLIENT_ID",
+                "value": "={{ $('Webhook - Bitrix').first().json.query.CLIENT_ID }}",
+                "type": "string"
+              },
+              {
+                "id": "a5dfb187-69c1-4915-bddc-72ca18e7e249",
+                "name": "DIALOG_ID",
+                "value": "={{ $('Formata Entrada').first().json.data.PARAMS.DIALOG_ID }}",
+                "type": "string"
+              },
+              {
+                "id": "26cb7dd2-8541-488e-8c1e-6a7fa062589f",
+                "name": "MESSAGE",
+                "value": "={{$json.resposta}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          9320,
+          -1080
+        ],
+        "id": "355bc9c4-5fb4-4b93-a089-ecbf025c4d6e",
+        "name": "setBitrix24Message"
+      },
+      {
+        "parameters": {
+          "jsCode": "let alternar = true\n\nconst texto = $input.first().json.resposta\nconst resultado = texto.replace(/\\*\\*/g, () => {\n    if (alternar) {\n        alternar = false;\n        return \"[B]\";\n    } else {\n        alternar = true;\n        return \"[/B]\";\n    }\n})\n\nreturn {json: {data:resultado}}"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          7820,
+          -140
+        ],
+        "id": "250490a1-5cdc-4f87-bf6d-34541aa5d6b7",
+        "name": "Formata Bitrix"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $('Variáveis Globais1').first().json.resposta }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ $json }}",
+          "options": {}
+        },
+        "id": "1c797c15-a990-458f-bebd-02de9a5c4718",
+        "name": "Resposta - Bitrix",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          9500,
+          -1080
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7c1b2057-426f-4145-8055-fdc5874008d0",
+                "name": "output",
+                "value": "={{ $json.text.trim() }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          7540,
+          -40
+        ],
+        "id": "221d0675-15c2-4b0e-b7a8-ffe29752001d",
+        "name": "Resposta Normal"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "f1fde6f4-7935-41d7-a6b6-5d597a234b3f",
+                "leftValue": "={{ $('Webhook - Bitrix').isExecuted }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          5200,
+          -660
+        ],
+        "id": "70bd5b74-ad0c-455d-8e35-499ab0318746",
+        "name": "Bitrix?1"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ed3cb56b-bd80-4b34-baf8-0df7a6dee1d6",
+                "name": "BOT_ID",
+                "value": "={{ $('Formata Entrada').first().json.data.BOT['2621'].BOT_ID }}",
+                "type": "string"
+              },
+              {
+                "id": "f5a78dea-ff72-4e62-8b5c-516c720a1dab",
+                "name": "CLIENT_ID",
+                "value": "={{ $('Webhook - Bitrix').item.json.query.CLIENT_ID }}",
+                "type": "string"
+              },
+              {
+                "id": "a5dfb187-69c1-4915-bddc-72ca18e7e249",
+                "name": "DIALOG_ID",
+                "value": "={{ $('Formata Entrada').first().json.data.PARAMS.DIALOG_ID }}",
+                "type": "string"
+              },
+              {
+                "id": "26cb7dd2-8541-488e-8c1e-6a7fa062589f",
+                "name": "MESSAGE",
+                "value": "={{ $json.data }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          5640,
+          -680
+        ],
+        "id": "7bc8d250-5999-48f9-bc07-67e1b44366a1",
+        "name": "setBitrix24Message1"
+      },
+      {
+        "parameters": {
+          "jsCode": "let alternar = true\n\nconst texto = $input.first().json.output\nconst resultado = texto.replace(/\\*\\*/g, () => {\n    if (alternar) {\n        alternar = false;\n        return \"[B]\";\n    } else {\n        alternar = true;\n        return \"[/B]\";\n    }\n})\n\nreturn {json: {data:resultado}}"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          5420,
+          -680
+        ],
+        "id": "bf8454ae-9933-4abe-b8d1-60ee9f400c04",
+        "name": "Formata Bitrix1"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $('Variáveis Globais1').first().json.resposta }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ $json }}",
+          "options": {}
+        },
+        "id": "dc066caf-21b6-4ff4-80df-346a19a31150",
+        "name": "Resposta - Bitrix1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          5840,
+          -680
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b14a9643-2a2c-4a8b-ac19-3dcb674d25f3",
+                "name": "output",
+                "value": "={{ $json.output }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          5420,
+          -520
+        ],
+        "id": "7f25c101-f360-4356-9c28-b54eb1039904",
+        "name": "Output"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7ad31b6c-7354-457f-a0c6-dbfa49a21888",
+                "name": "assistant_id",
+                "value": "Wordpress_iA",
+                "type": "string"
+              },
+              {
+                "id": "fceb30c6-4cfa-4b5c-9332-a16d4274f9ae",
+                "name": "user_id",
+                "value": "={{ \n        $json.body.id.startsWith('55') \n          ? $json.body.id.slice(2) \n          : $json.body.id\n      \n}}",
+                "type": "string"
+              },
+              {
+                "id": "29ee7639-66d8-4dff-a58f-16ae2cce8b66",
+                "name": "name",
+                "value": "={{ $json.body.name }}",
+                "type": "string"
+              },
+              {
+                "id": "83ebd2f5-8de9-4df5-8441-a815b8e7376b",
+                "name": "mensagem",
+                "value": "={{ $json.body.text }}",
+                "type": "string"
+              },
+              {
+                "id": "07f81212-dadd-4bed-a1f6-518cceb87b99",
+                "name": "cnpj",
+                "value": "={{ $json.body.cnpj }}",
+                "type": "string"
+              },
+              {
+                "id": "308c63ca-37cb-4bb4-9808-de899c779065",
+                "name": "contrato",
+                "value": "={{ $json.body.contrato }}",
+                "type": "string"
+              },
+              {
+                "id": "271d07a0-b9db-4844-8222-e2e0a9e07b94",
+                "name": "audio",
+                "value": "={{ $json.body.audio }}",
+                "type": "string"
+              },
+              {
+                "id": "a21a7505-b077-4483-9443-3403727bb9c8",
+                "name": "file",
+                "value": "={{ $json.body.file }}",
+                "type": "string"
+              },
+              {
+                "id": "88600670-5791-4785-a578-c9b092ab92ca",
+                "name": "image",
+                "value": "={{ $json.body.image }}",
+                "type": "string"
+              },
+              {
+                "id": "ca9a01b5-df52-494b-8c2e-d10a7baf0902",
+                "name": "ChamadaWebhook",
+                "value": "=false",
+                "type": "boolean"
+              },
+              {
+                "id": "c939dafe-6b12-41ae-a162-2011342112f4",
+                "name": "nome_agente",
+                "value": "Wordpress",
+                "type": "string"
+              },
+              {
+                "id": "6e418ed5-765b-44b6-887c-4c6f2097e2f6",
+                "name": "em_manutencao",
+                "value": "={{ false }}",
+                "type": "boolean"
+              },
+              {
+                "id": "1d4646d1-5cac-4703-a5df-c98721984bbe",
+                "name": "resposta",
+                "value": "=https://blips.bitrix24.com.br/rest/2491/odgp2tzocbi1o76k/imbot.message.add",
+                "type": "string"
+              },
+              {
+                "id": "ba114fa3-ac38-4459-96dc-265507f095e2",
+                "name": "tempo_thread",
+                "value": 12,
+                "type": "number"
+              },
+              {
+                "id": "965802fe-7b63-4c5a-9b4d-9cfafee585f3",
+                "name": "tempo_espera_mensagens",
+                "value": 30,
+                "type": "number"
+              },
+              {
+                "id": "7445cfc8-7290-4c71-a153-99852aab910d",
+                "name": "platform",
+                "value": "={{ $('Webhook - Bitrix').isExecuted ? \"Bitrix\" : $('Webhook - Assistentes').isExecuted || $('Chamada Assistete').isExecuted ? \"Assistentes\" : \"\" }}",
+                "type": "string"
+              },
+              {
+                "id": "4bb08d06-7127-4ebe-ace8-977ae98e57c0",
+                "name": "chat_id",
+                "value": "={{ $json.chat_id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "7d2e0d59-ccf2-40ca-88bd-759c6330da9e",
+        "name": "Variáveis Globais1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          1280,
+          -1100
+        ]
+      },
+      {
+        "parameters": {
+          "collection": "users",
+          "options": {},
+          "query": "={\n  \"phone\": \"{{ $('Variáveis Globais1').item.json.user_id }}\"\n}"
+        },
+        "id": "c4bd32ef-2fe5-4fd2-8c51-a12418128a06",
+        "name": "MongoDB - Get User1",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1,
+        "position": [
+          1940,
+          -1080
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "mongoDb": {
+            "id": "lITPy0bTilBgUc70",
+            "name": "MongoDB - Juarez"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "1bbb3958-988e-479e-add8-6584965f9d3f",
+                "leftValue": "={{ !!Object.keys($node[\"MongoDB - Get User1\"].data).length }}",
+                "rightValue": 1,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "492bce9d-8f3d-45d8-be94-c590dd5013c9",
+        "name": "If - User Exists1",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          2140,
+          -1080
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b9c8dcb8-7a7d-4a06-8ad2-6fc05f1694bf",
+                "name": "name",
+                "value": "={{ $('Variáveis Globais1').item.json.user_name }}",
+                "type": "string"
+              },
+              {
+                "id": "322f9814-b3ff-45f8-9210-47e5ee4aaf11",
+                "name": "phone",
+                "value": "={{ $('Variáveis Globais1').item.json.user_id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "45b378ff-bd07-4228-a0d0-08eee75feaaa",
+        "name": "Prepara User1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          2360,
+          -1000
+        ],
+        "alwaysOutputData": false
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "collection": "users",
+          "updateKey": "phone",
+          "fields": "=name,phone",
+          "upsert": true,
+          "options": {}
+        },
+        "id": "46978e49-90d4-47f2-b46b-5baaefe4f133",
+        "name": "MongoDB - Create User1",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1,
+        "position": [
+          2540,
+          -1000
+        ],
+        "credentials": {
+          "mongoDb": {
+            "id": "lITPy0bTilBgUc70",
+            "name": "MongoDB - Juarez"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "id": "57f9ac3f-41a0-439c-8159-8a3ca18f5573",
+        "name": "Merge - User1",
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 2.1,
+        "position": [
+          2820,
+          -1080
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "a481b5b5-85f3-495c-9301-fb5433b0dccc",
+                "leftValue": "={{ !! $json[$('Variáveis Globais1').first().json.assistant_id]  }}",
+                "rightValue": "'sadasdasdas'",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "198ba5a6-0d0e-499f-8c2c-eeb43ee10170",
+        "name": "Possui Thread salva no banco?1",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          3080,
+          -1040
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "8c73c213-25d5-4b66-95fa-f8c9b4460480",
+                "leftValue": "={{ $('MongoDB - Get User1').item.json[$('Variáveis Globais1').item.json.assistant_id] }}",
+                "rightValue": "={{ $('Possui Thread salva no banco?1').item.json[$('Variáveis Globais1').item.json.assistant_id] }}",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEquals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "967c5297-f32a-4570-a045-b5b7d0f9bd1a",
+        "name": "Mudou a thread_id?1",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          3280,
+          -1200
+        ]
+      },
+      {
+        "parameters": {
+          "collection": "messages",
+          "options": {},
+          "query": "={\n  \"thread_id\": \"{{ $json[$('Variáveis Globais1').first().json.assistant_id] }}\",\n  \"message_date\": {\"$gte\": \"{{$now.minus($('Variáveis Globais1').first().json.tempo_thread, 'hours').toISO()}}\"}\n}"
+        },
+        "id": "750383d7-c09a-47de-9eb9-afd10388c6d5",
+        "name": "Conta as mensagens recentes1",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1,
+        "position": [
+          3500,
+          -1180
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "mongoDb": {
+            "id": "jgLY33sWojEA1rzs",
+            "name": "NascimentoDB"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "2f9b9d5a-e6c8-4052-961e-89a2e11d59f5",
+                "leftValue": "={{ $('Variáveis Globais1').item.json.mensagem.trim() }}",
+                "rightValue": "=/limpar_thread",
+                "operator": {
+                  "type": "string",
+                  "operation": "notContains"
+                }
+              },
+              {
+                "id": "6afa8f21-47c3-4ebf-9b3f-85c5694c94d4",
+                "leftValue": "={{!! $json._id }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "65b6e317-11c2-414e-9531-04fd5de8ddca",
+        "name": "É para continuar a thread_id?1",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          3720,
+          -1180
+        ],
+        "executeOnce": true
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "e67f5454-b878-4de4-a5e0-9136f74539ad",
+                "name": "thread_id",
+                "value": "={{ $json.thread_id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d6975a59-ae37-452d-af3c-c16e159d6ca4",
+        "name": "Add thread_id1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          4080,
+          -1380
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b9c8dcb8-7a7d-4a06-8ad2-6fc05f1694bf",
+                "name": "phone",
+                "value": "={{ $('Possui Thread salva no banco?1').item.json.phone }}",
+                "type": "string"
+              },
+              {
+                "id": "322f9814-b3ff-45f8-9210-47e5ee4aaf11",
+                "name": "={{ $('Variáveis Globais1').item.json.assistant_id }}",
+                "value": "={{ $json.id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "ab27dc29-9d84-467f-a4cd-56122c625f16",
+        "name": "Prepara atualização1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          4180,
+          -1020
+        ],
+        "alwaysOutputData": false
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "collection": "users",
+          "updateKey": "phone",
+          "fields": "={{ $('Variáveis Globais1').item.json.assistant_id }}",
+          "options": {}
+        },
+        "id": "e38faabd-e948-401b-b364-7eb2f1aa6f37",
+        "name": "Atualizar thread_id1",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1,
+        "position": [
+          4380,
+          -1020
+        ],
+        "credentials": {
+          "mongoDb": {
+            "id": "lITPy0bTilBgUc70",
+            "name": "MongoDB - Juarez"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "2f9b9d5a-e6c8-4052-961e-89a2e11d59f5",
+                "leftValue": "={{ $('Variáveis Globais1').item.json.mensagem }}",
+                "rightValue": "/limpar_thread",
+                "operator": {
+                  "type": "string",
+                  "operation": "contains"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "54e6e493-ffac-478b-ac15-c8569d187993",
+        "name": "Foi uma solicitação p/ limpar?1",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          4500,
+          -780
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b9c8dcb8-7a7d-4a06-8ad2-6fc05f1694bf",
+                "name": "user_id",
+                "value": "={{ new String($('MongoDB - Get User1').first().json._id).toString() }}",
+                "type": "string"
+              },
+              {
+                "id": "322f9814-b3ff-45f8-9210-47e5ee4aaf11",
+                "name": "thread_id",
+                "value": "={{ $('Add thread_id1').item.json.thread_id }}",
+                "type": "string"
+              },
+              {
+                "id": "c124c295-55c0-4e1e-b489-393b63ca22f7",
+                "name": "message",
+                "value": "={{ !!$('Variáveis Globais1').first().json.mensagem ? 'Mensagem de texto: ' + $('Variáveis Globais1').first().json.mensagem : '' }}\n{{ !$json.Audio.isEmpty() ? 'Mensagem de Audio: ' + $json.Audio : '' }}\n{{ !$json.Imagem.isEmpty() ? 'Descrição Imagem em Anexo: ' + $json.Imagem : '' }}\n{{ !$json.File.isEmpty() ? 'Texto Arquivo em Anexo: ' + $json.File : '' }}",
+                "type": "string"
+              },
+              {
+                "id": "2c10a020-ae36-4d88-a9b1-4c125058d68f",
+                "name": "message_date",
+                "value": "={{ $now.toISO() }}",
+                "type": "string"
+              },
+              {
+                "id": "a572d77e-c0aa-4b6f-b44b-2baa0c02a9cb",
+                "name": "assistant_id",
+                "value": "={{ $('Variáveis Globais1').item.json.assistant_id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "b4e7c111-cfbd-49bd-93e4-cb6a584b9ea1",
+        "name": "Prepara mensagem1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          6940,
+          -1240
+        ],
+        "alwaysOutputData": false
+      },
+      {
+        "parameters": {
+          "operation": "insert",
+          "collection": "messages",
+          "fields": "user_id,thread_id,message,message_date,assistant_id",
+          "options": {}
+        },
+        "id": "20ada72f-9ef8-445a-8a02-a0cbe38e4007",
+        "name": "Insere a mensagem1",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1,
+        "position": [
+          7140,
+          -1240
+        ],
+        "credentials": {
+          "mongoDb": {
+            "id": "lITPy0bTilBgUc70",
+            "name": "MongoDB - Juarez"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "collection": "messages",
+          "options": {
+            "sort": "{\"message_date\": 1}"
+          },
+          "query": "={\n  \"thread_id\": \"{{ $('Add thread_id1').item.json.thread_id }}\",\n  \"process_date\": null\n}"
+        },
+        "id": "fcfe0380-af3a-4ca6-ad5a-e3410fd6807a",
+        "name": "Busca as mensagens1",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1,
+        "position": [
+          6820,
+          -1000
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "mongoDb": {
+            "id": "lITPy0bTilBgUc70",
+            "name": "MongoDB - Juarez"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "collection": "messages",
+          "options": {},
+          "query": "={\n  \"thread_id\": \"{{ $('Add thread_id1').first().json.thread_id }}\",\n  \"message_date\": {\"$gte\": \"{{$now.minus($('Variáveis Globais1').first().json.tempo_espera_mensagens, 'seconds').toISO()}}\"},\n  \"process_date\": null\n}"
+        },
+        "id": "c54a3779-7e63-4a6e-95ac-528b883c47d6",
+        "name": "Conta as mensagens1",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1,
+        "position": [
+          7360,
+          -1240
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "mongoDb": {
+            "id": "lITPy0bTilBgUc70",
+            "name": "MongoDB - Juarez"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "a481b5b5-85f3-495c-9301-fb5433b0dccc",
+                "leftValue": "={{ $input.all().length }}",
+                "rightValue": 1,
+                "operator": {
+                  "type": "number",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "0d1c06aa-df8d-411a-b777-850492b3cdac",
+        "name": "Primeira mensagem?1",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          7580,
+          -1240
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const messagesArray = $('Busca as mensagens1').all();\nlet allMessages = \"\";\n\nmessagesArray.forEach(item => {\n  allMessages += item.json.message + \"  \";\n});\n\nallMessages = allMessages.trim();\nreturn [{\"message\": allMessages}]"
+        },
+        "id": "de24e975-da1c-4bc8-ab39-56ddd0936094",
+        "name": "Concatena todas mensagens1",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          7500,
+          -1000
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "beed4a68-7ca4-480d-b203-3f43ca5c2ce5",
+                "name": "process_date",
+                "value": "={{ $now.toISO() }}",
+                "type": "string"
+              },
+              {
+                "id": "ed79557d-a9f1-4938-8639-2b3c86df2ce0",
+                "name": "thread_id",
+                "value": "={{ $('Prepara mensagem1').item.json.thread_id }}",
+                "type": "string"
+              },
+              {
+                "id": "d5795955-d791-42b4-ad4e-a4c6b08bb79a",
+                "name": "_id",
+                "value": "={{ new String($json._id).toString() }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d844f02b-e38b-4f71-995c-83d2dec2d121",
+        "name": "Define process_date1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          7040,
+          -1000
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "collection": "messages",
+          "updateKey": "_id",
+          "fields": "process_date",
+          "options": {}
+        },
+        "id": "6cddfabd-1a92-467f-8777-9acd7f208477",
+        "name": "Marca para processar1",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1,
+        "position": [
+          7260,
+          -1000
+        ],
+        "credentials": {
+          "mongoDb": {
+            "id": "lITPy0bTilBgUc70",
+            "name": "MongoDB - Juarez"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "amount": "={{ \n  $('Variáveis Globais1').first().json.tempo_espera_mensagens \n  * \n  (\n    $('Variáveis Globais1').first().json.ChamadaWebhook ? 1 : 0\n  ) \n}}"
+        },
+        "id": "cb32e9c8-d9e4-4764-b83f-20a1396b455f",
+        "name": "Espera chegar mais mensagens1",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          7840,
+          -1260
+        ],
+        "webhookId": "d9776e47-f7c9-41c4-a170-73de8cdbcab0"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/threads",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "3d97fcdc-8b85-4312-9a1e-b789fa1bbbb9",
+        "name": "Criar Thread1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          3940,
+          -1020
+        ],
+        "retryOnFail": true,
+        "maxTries": 5,
+        "credentials": {
+          "openAiApi": {
+            "id": "tuJNruAgnnM96by3",
+            "name": "Open AI - Suporte Técnico"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "content": "# Assistente",
+          "height": 80,
+          "width": 1720,
+          "color": 3
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          7600,
+          -1500
+        ],
+        "id": "161565cb-d6b5-4bda-a589-5bf881d7ccbd",
+        "name": "Sticky Note6"
+      },
+      {
+        "parameters": {
+          "fieldsToAggregate": {
+            "fieldToAggregate": [
+              {
+                "fieldToAggregate": "Imagem"
+              },
+              {
+                "fieldToAggregate": "Audio"
+              },
+              {
+                "fieldToAggregate": "File"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          6740,
+          -1240
+        ],
+        "id": "cf111de0-cb1f-4a4e-a49b-246252c44b2e",
+        "name": "Aggregate1"
+      },
+      {
+        "parameters": {
+          "content": "# Entrada",
+          "height": 80,
+          "width": 2120,
+          "color": 7
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -260,
+          -1500
+        ],
+        "id": "4d691478-688d-48f8-9739-0855c8a947aa",
+        "name": "Sticky Note7"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "b0427f70-0a4f-4ccf-b2cf-e3d582abfefa",
+                "leftValue": "={{ $('Webhook - Assistentes').isExecuted || $('Chamada Assistete').isExecuted }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "false",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          9060,
+          -1060
+        ],
+        "id": "1cfd20ad-e661-4441-ad72-76df3ad81150",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "chamar-comercial",
+          "responseMode": "lastNode",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -740,
+          -1220
+        ],
+        "id": "522ea6d7-e6d1-4e14-9fc3-bb395072a5ea",
+        "name": "Webhook - Bitrix",
+        "webhookId": "21e15a14-cfbf-433b-8638-ef2f4346d9aa"
+      },
+      {
+        "parameters": {
+          "operation": "insert",
+          "collection": "messages",
+          "fields": "user_id,thread_id,message,message_date,assistant_id, process_date",
+          "options": {}
+        },
+        "id": "d7b0f498-1b0b-437a-b1ff-bef0c4cabb54",
+        "name": "Insere a mensagem",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1,
+        "position": [
+          4240,
+          -780
+        ],
+        "credentials": {
+          "mongoDb": {
+            "id": "jgLY33sWojEA1rzs",
+            "name": "NascimentoDB"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b9c8dcb8-7a7d-4a06-8ad2-6fc05f1694bf",
+                "name": "user_id",
+                "value": "={{ new String($('MongoDB - Get User1').first().json._id).toString() }}",
+                "type": "string"
+              },
+              {
+                "id": "322f9814-b3ff-45f8-9210-47e5ee4aaf11",
+                "name": "thread_id",
+                "value": "={{ $json[$('Variáveis Globais1').first().json.assistant_id] }}",
+                "type": "string"
+              },
+              {
+                "id": "c124c295-55c0-4e1e-b489-393b63ca22f7",
+                "name": "message",
+                "value": "=Thread Start",
+                "type": "string"
+              },
+              {
+                "id": "2c10a020-ae36-4d88-a9b1-4c125058d68f",
+                "name": "message_date",
+                "value": "={{ $now.toISO() }}",
+                "type": "string"
+              },
+              {
+                "id": "a572d77e-c0aa-4b6f-b44b-2baa0c02a9cb",
+                "name": "assistant_id",
+                "value": "={{ $('Variáveis Globais1').item.json.assistant_id }}",
+                "type": "string"
+              },
+              {
+                "id": "5296d0cc-a9ff-44c7-ae04-caa8cb54fef0",
+                "name": "process_date",
+                "value": "={{ $now.toISO() }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "ff85248b-da72-49be-8882-412a6ff0fb53",
+        "name": "Prepara info Nova Thread",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          4580,
+          -1020
+        ],
+        "alwaysOutputData": false
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "93be4dc6-6d23-4d7c-bc3e-b2e5a5714da5",
+          "responseMode": "lastNode",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -740,
+          -1020
+        ],
+        "id": "926c57d5-417f-4dd3-a7f9-7022a740c214",
+        "name": "Webhook - Assistentes",
+        "webhookId": "93be4dc6-6d23-4d7c-bc3e-b2e5a5714da5"
+      },
+      {
+        "parameters": {
+          "inputSource": "passthrough"
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -740,
+          -880
+        ],
+        "id": "b7dc0cba-d828-439e-abab-b923ac433a9b",
+        "name": "Chamada Assistete"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "9b9d8e41-884e-478d-b8ab-f8c5fd76fb3c",
+                "name": "={{ $('Variáveis Globais1').item.json.assistant_id }}",
+                "value": "={{ $('Prepara info Nova Thread').item.json.thread_id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          4720,
+          -720
+        ],
+        "id": "40c7542e-c346-43c8-ab85-48d66318e21f",
+        "name": "Return"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "a4fa7e17-e07e-44f4-8c3c-1a99787722f6",
+                "name": "pergunta",
+                "value": "={{$json.message}}",
+                "type": "string"
+              },
+              {
+                "id": "23167326-20e7-49d3-ba7d-a321a365a57c",
+                "name": "metadados",
+                "value": "=Hoje é {{ $now.toLocaleString({weekday: 'long'})}} {{ $now.format('dd-LL-yyyy') }} {{$now.format('HH:mm:ss') }} horas no horário de brasília\nVocê está falando com {{ $('Variáveis Globais1').first().json.first_name }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          7700,
+          -1000
+        ],
+        "id": "2cc6bd6a-60ce-4574-b96a-3bc7354546ea",
+        "name": "Payload"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "3bfce6dd-5462-4dba-9d98-206ce3976981",
+                "name": "resposta",
+                "value": "={{ ($json.output).replaceAll('**','*').replace(/\\*+(.*?)\\*+/g, '[B]$1[/B]').replace(/.*.*/g,\"\").trim() }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          8620,
+          -1060
+        ],
+        "id": "fce50946-bea6-4075-924e-77b7336304cd",
+        "name": "Resposta"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "3bfce6dd-5462-4dba-9d98-206ce3976981",
+                "name": "resposta",
+                "value": "={{ $('Resposta').item.json.resposta }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          8860,
+          -1060
+        ],
+        "id": "9b6a4ea4-1379-43e1-a44e-2d46a2cdbb15",
+        "name": "recover_Resposta"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/user.get",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "ID",
+                "value": "={{ $('Formata Entrada').item.json.data.USER.ID }}"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "responseFormat": "json"
+              }
+            }
+          }
+        },
+        "id": "848feed3-2028-4587-9513-8d804d7f09e9",
+        "name": "Bitrix.get",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          120,
+          -1220
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const list = {\n  \"users\" : [\n        \"pedro.alves@blips.com.br\"\n  ]\n,\n \"chats\" : [\"17849\"]\n\n}\n  \n  \n  \n\nreturn {\"list\": list}"
+        },
+        "id": "1b24dc1d-3b98-450d-a87f-12455663a65e",
+        "name": "Testers",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -100,
+          -1220
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7131394b-2df5-48e9-a7cd-d581ae375d67",
+                "name": "teste",
+                "value": "={{ !!$('Testers').item.json.list.users.includes($json.user_id) || !!$('Testers').item.json.list.chats.includes($json.chat_id) }}",
+                "type": "boolean"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "1990ea05-b0c1-4026-a6f3-18ffca628ff9",
+        "name": "execution_mode",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          1480,
+          -1100
+        ]
+      },
+      {
+        "parameters": {
+          "toolDescription": "Descobrir o ID de um post",
+          "url": "=https://ajuda.blips.com.br/wp-json/wp/v2/posts?status=any&_fields=id,title",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpBasicAuth",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "categories",
+                "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters0_Value', `id da categoria do post`, 'string') }}"
+              },
+              {
+                "name": "search",
+                "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters1_Value', `termo de pesquisa por nome do post`, 'string') }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequestTool",
+        "typeVersion": 4.2,
+        "position": [
+          160,
+          200
+        ],
+        "id": "42398753-db9b-41f7-a42f-b97a75d67898",
+        "name": "Post metadata",
+        "credentials": {
+          "httpBasicAuth": {
+            "id": "4NP4kaawXsOnXwJU",
+            "name": "Pedro WP"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "toolDescription": "Requisitar o conteúdo de um post",
+          "url": "=https://n8n-dev.blips-labs.com/webhook/home/equipamento",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "id",
+                "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters0_Value', ``, 'string') }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequestTool",
+        "typeVersion": 4.2,
+        "position": [
+          360,
+          200
+        ],
+        "id": "f866cc89-f183-4e80-b443-7f23ef1312de",
+        "name": "Post content"
+      },
+      {
+        "parameters": {
+          "modelId": {
+            "__rl": true,
+            "value": "gpt-4.1",
+            "mode": "list",
+            "cachedResultName": "GPT-4.1"
+          },
+          "messages": {
+            "values": [
+              {
+                "content": "Você é responsável por trazer informações sobre um wordpress\n\nSe não achar na busca específica, use a busca geral e filtre\n\nUm post só tem uma categoria\nSempre descubra a categoria antes de pesquisar os posts\nconteúdos são sempre sobre posts\nPrimeiro descubra o id do post depois pesquise o conteúdo dele",
+                "role": "assistant"
+              },
+              {
+                "content": "=conteudo da vert 72L"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.8,
+        "position": [
+          0,
+          0
+        ],
+        "id": "90abf56e-cf0b-4a66-9b78-7c81e5e91125",
+        "name": "OpenAI1",
+        "credentials": {
+          "openAiApi": {
+            "id": "tuJNruAgnnM96by3",
+            "name": "Open AI - Suporte Técnico"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "toolDescription": "Descobrir o id de todas categorias ou uma especifica.\nSe não encontrar a partir da específica busque geral e filtre",
+          "url": "=https://ajuda.blips.com.br/wp-json/wp/v2/categories?&_fields=id,description,name,slug",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpBasicAuth",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "search",
+                "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters0_Value', `termo para categoria especifica`, 'string') }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequestTool",
+        "typeVersion": 4.2,
+        "position": [
+          -40,
+          200
+        ],
+        "id": "0e34089e-a580-461b-9822-179cf5bfdae9",
+        "name": "Categorias1",
+        "credentials": {
+          "httpBasicAuth": {
+            "id": "4NP4kaawXsOnXwJU",
+            "name": "Pedro WP"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "assistant",
+          "assistantId": {
+            "__rl": true,
+            "value": "asst_vrl7IoftcAcjrIOSEMOz7TzC",
+            "mode": "list",
+            "cachedResultName": "Scraper Wordpress"
+          },
+          "prompt": "define",
+          "text": "={{ JSON.stringify($('Payload').item.json) }}",
+          "memory": "threadId",
+          "threadId": "={{ $('Add thread_id1').item.json.thread_id }}",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.8,
+        "position": [
+          8080,
+          -1020
+        ],
+        "id": "07279e75-729c-40a7-9e7e-471ba5f474a3",
+        "name": "OpenAI2",
+        "retryOnFail": false,
+        "waitBetweenTries": 2000,
+        "credentials": {
+          "openAiApi": {
+            "id": "tuJNruAgnnM96by3",
+            "name": "Open AI - Suporte Técnico"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "toolDescription": "Descobrir o id de todas categorias ou uma especifica.\nSe não encontrar a partir da específica busque geral e filtre",
+          "url": "=https://ajuda.blips.com.br/wp-json/wp/v2/categories?&_fields=id,description,name,slug",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpBasicAuth",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "search",
+                "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters0_Value', `termo para categoria especifica`, 'string') }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequestTool",
+        "typeVersion": 4.2,
+        "position": [
+          8100,
+          -800
+        ],
+        "id": "722a9082-0766-4731-9cf2-3089bc43c3f1",
+        "name": "Categorias2",
+        "credentials": {
+          "httpBasicAuth": {
+            "id": "4NP4kaawXsOnXwJU",
+            "name": "Pedro WP"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "toolDescription": "Descobrir o ID de um post",
+          "url": "=https://ajuda.blips.com.br/wp-json/wp/v2/posts?status=any&_fields=id,title",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpBasicAuth",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "categories",
+                "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters0_Value', `id da categoria do post`, 'string') }}"
+              },
+              {
+                "name": "search",
+                "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters1_Value', `termo de pesquisa por nome do post`, 'string') }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequestTool",
+        "typeVersion": 4.2,
+        "position": [
+          8280,
+          -800
+        ],
+        "id": "8f6792e0-398d-4965-a6ac-073bf3acdc6c",
+        "name": "Post metadata1",
+        "credentials": {
+          "httpBasicAuth": {
+            "id": "4NP4kaawXsOnXwJU",
+            "name": "Pedro WP"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "toolDescription": "Requisitar o conteúdo de um post",
+          "url": "=https://n8n-dev.blips-labs.com/webhook/home/equipamento",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "id",
+                "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters0_Value', ``, 'string') }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequestTool",
+        "typeVersion": 4.2,
+        "position": [
+          8440,
+          -800
+        ],
+        "id": "49338d40-7eb1-4844-b1fe-ac9813339898",
+        "name": "Post content1"
+      },
+      {
+        "parameters": {
+          "url": "=https://api.openai.com/v1/threads/{{ $('Add thread_id1').item.json.thread_id }}/runs",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "99988064-75cb-44a1-bc9c-6c4d370339df",
+        "name": "Lista Runs2",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          8640,
+          -840
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "tuJNruAgnnM96by3",
+            "name": "Open AI - Suporte Técnico"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "amount": 2,
+          "unit": "seconds"
+        },
+        "id": "6f8248d1-9a58-409d-b9c8-9b4576daaa58",
+        "name": "Espera rodar um pouco2",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1,
+        "position": [
+          8640,
+          -320
+        ],
+        "webhookId": "cd9abf53-057d-487c-9bf9-2477ff777316"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "f51d259a-6bef-49b8-8f2a-e966e8d96248",
+                "leftValue": "={{$json.data[0].status}}",
+                "rightValue": "completed",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "88fc4f30-3ae0-47e9-a11c-2c843e603496",
+                "leftValue": "={{$json.data[0].status}}",
+                "rightValue": "failed",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "bec38f44-f57a-45ff-acfa-da798707d0b9",
+                "leftValue": "={{$json.data[0].status}}",
+                "rightValue": "expired",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "de544920-fd7a-4a48-acb5-e3dc242f53de",
+                "leftValue": "={{$json.data[0].status}}",
+                "rightValue": "canceled",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "6c66d279-66f6-4ce8-a694-d4811a49ebc8",
+                "leftValue": "={{$json.data[0].status}}",
+                "rightValue": "incomplete",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          8640,
+          -560
+        ],
+        "id": "1794dc52-632e-4a46-bb5b-5309fb9fded2",
+        "name": "Já terminou a outra?2"
+      }
+    ],
+    "connections": {
+      "Convert to Webhook": {
+        "main": [
+          [
+            {
+              "node": "Variáveis Globais1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Está em manutenção?": {
+        "main": [
+          [],
+          [
+            {
+              "node": "MongoDB - Get User1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Resposta Nova Thread": {
+        "main": [
+          [
+            {
+              "node": "Bitrix?1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepara thread_id": {
+        "main": [
+          [
+            {
+              "node": "Add thread_id1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Mensagem de Entrada": {
+        "main": [
+          [
+            {
+              "node": "Áudio?",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Arquivo?",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Imagem?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Transcreve Áudio": {
+        "main": [
+          [
+            {
+              "node": "Audio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Analisa Imagem": {
+        "main": [
+          [
+            {
+              "node": "Imagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Baixa Áudio": {
+        "main": [
+          [
+            {
+              "node": "Transcreve Áudio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Baixa Arquvo": {
+        "main": [
+          [
+            {
+              "node": "Extract from File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract from File": {
+        "main": [
+          [
+            {
+              "node": "File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          [
+            {
+              "node": "Aggregate1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Imagem": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Audio": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "File": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 2
+            }
+          ]
+        ]
+      },
+      "Imagem?": {
+        "main": [
+          [
+            {
+              "node": "Analisa Imagem",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Imagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Áudio?": {
+        "main": [
+          [
+            {
+              "node": "Baixa Áudio",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Audio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Arquivo?": {
+        "main": [
+          [
+            {
+              "node": "Baixa Arquvo",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados Assistente": {
+        "main": [
+          [
+            {
+              "node": "Convert to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados Chat": {
+        "main": [
+          [
+            {
+              "node": "Chat Convert",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Chat": {
+        "main": [
+          [
+            {
+              "node": "Dados Chat",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Chat Convert": {
+        "main": [
+          [
+            {
+              "node": "Variáveis Globais1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "possui arquivo?": {
+        "main": [
+          [
+            {
+              "node": "buscar arquivo bitrix",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Pega o resto",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "buscar arquivo bitrix": {
+        "main": [
+          [
+            {
+              "node": "Pega o resto",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Formata Entrada": {
+        "main": [
+          [
+            {
+              "node": "Files Bitrix",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Files Bitrix": {
+        "main": [
+          [
+            {
+              "node": "Testers",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Convert Bitrix": {
+        "main": [
+          [
+            {
+              "node": "Variáveis Globais1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Convert Bitrix1": {
+        "main": [
+          [
+            {
+              "node": "Variáveis Globais1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Pega o resto": {
+        "main": [
+          [
+            {
+              "node": "Convert Bitrix1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Bitrix?": {
+        "main": [
+          [
+            {
+              "node": "Formata Bitrix",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Resposta Normal",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "setBitrix24Message": {
+        "main": [
+          [
+            {
+              "node": "Resposta - Bitrix",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Bitrix?1": {
+        "main": [
+          [
+            {
+              "node": "Formata Bitrix1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Output",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "setBitrix24Message1": {
+        "main": [
+          [
+            {
+              "node": "Resposta - Bitrix1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Formata Bitrix1": {
+        "main": [
+          [
+            {
+              "node": "setBitrix24Message1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Variáveis Globais1": {
+        "main": [
+          [
+            {
+              "node": "execution_mode",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "MongoDB - Get User1": {
+        "main": [
+          [
+            {
+              "node": "If - User Exists1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If - User Exists1": {
+        "main": [
+          [
+            {
+              "node": "Merge - User1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Prepara User1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepara User1": {
+        "main": [
+          [
+            {
+              "node": "MongoDB - Create User1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "MongoDB - Create User1": {
+        "main": [
+          [
+            {
+              "node": "Merge - User1",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Merge - User1": {
+        "main": [
+          [
+            {
+              "node": "Possui Thread salva no banco?1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Possui Thread salva no banco?1": {
+        "main": [
+          [
+            {
+              "node": "Mudou a thread_id?1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Criar Thread1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Mudou a thread_id?1": {
+        "main": [
+          [
+            {
+              "node": "Prepara thread_id",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Conta as mensagens recentes1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Conta as mensagens recentes1": {
+        "main": [
+          [
+            {
+              "node": "É para continuar a thread_id?1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "É para continuar a thread_id?1": {
+        "main": [
+          [
+            {
+              "node": "Add thread_id1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Criar Thread1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Add thread_id1": {
+        "main": [
+          [
+            {
+              "node": "Mensagem de Entrada",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepara atualização1": {
+        "main": [
+          [
+            {
+              "node": "Atualizar thread_id1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Atualizar thread_id1": {
+        "main": [
+          [
+            {
+              "node": "Prepara info Nova Thread",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Foi uma solicitação p/ limpar?1": {
+        "main": [
+          [
+            {
+              "node": "Resposta Nova Thread",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Return",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepara mensagem1": {
+        "main": [
+          [
+            {
+              "node": "Insere a mensagem1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Insere a mensagem1": {
+        "main": [
+          [
+            {
+              "node": "Conta as mensagens1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Busca as mensagens1": {
+        "main": [
+          [
+            {
+              "node": "Define process_date1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Conta as mensagens1": {
+        "main": [
+          [
+            {
+              "node": "Primeira mensagem?1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Primeira mensagem?1": {
+        "main": [
+          [
+            {
+              "node": "Espera chegar mais mensagens1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Concatena todas mensagens1": {
+        "main": [
+          [
+            {
+              "node": "Payload",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Define process_date1": {
+        "main": [
+          [
+            {
+              "node": "Marca para processar1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Marca para processar1": {
+        "main": [
+          [
+            {
+              "node": "Concatena todas mensagens1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Espera chegar mais mensagens1": {
+        "main": [
+          [
+            {
+              "node": "Busca as mensagens1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Criar Thread1": {
+        "main": [
+          [
+            {
+              "node": "Prepara atualização1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aggregate1": {
+        "main": [
+          [
+            {
+              "node": "Prepara mensagem1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "setBitrix24Message",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook - Bitrix": {
+        "main": [
+          [
+            {
+              "node": "Formata Entrada",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepara info Nova Thread": {
+        "main": [
+          [
+            {
+              "node": "Insere a mensagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Insere a mensagem": {
+        "main": [
+          [
+            {
+              "node": "Foi uma solicitação p/ limpar?1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook - Assistentes": {
+        "main": [
+          [
+            {
+              "node": "Dados Assistente",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Chamada Assistete": {
+        "main": [
+          [
+            {
+              "node": "Dados Assistente",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Return": {
+        "main": [
+          [
+            {
+              "node": "Merge - User1",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Payload": {
+        "main": [
+          [
+            {
+              "node": "OpenAI2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Resposta": {
+        "main": [
+          [
+            {
+              "node": "recover_Resposta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "recover_Resposta": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Bitrix.get": {
+        "main": [
+          [
+            {
+              "node": "possui arquivo?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Testers": {
+        "main": [
+          [
+            {
+              "node": "Bitrix.get",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "execution_mode": {
+        "main": [
+          [
+            {
+              "node": "Está em manutenção?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Post metadata": {
+        "ai_tool": [
+          [
+            {
+              "node": "OpenAI1",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Post content": {
+        "ai_tool": [
+          [
+            {
+              "node": "OpenAI1",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Categorias1": {
+        "ai_tool": [
+          [
+            {
+              "node": "OpenAI1",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Categorias2": {
+        "ai_tool": [
+          [
+            {
+              "node": "OpenAI2",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Post metadata1": {
+        "ai_tool": [
+          [
+            {
+              "node": "OpenAI2",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Post content1": {
+        "ai_tool": [
+          [
+            {
+              "node": "OpenAI2",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI2": {
+        "main": [
+          [
+            {
+              "node": "Resposta",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Lista Runs2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Lista Runs2": {
+        "main": [
+          [
+            {
+              "node": "Já terminou a outra?2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Espera rodar um pouco2": {
+        "main": [
+          [
+            {
+              "node": "Lista Runs2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Já terminou a outra?2": {
+        "main": [
+          [
+            {
+              "node": "OpenAI2",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Espera rodar um pouco2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Chamada Assistete": [
+        {
+          "json": {
+            "body": {
+              "name": "Clara",
+              "id": "Teste",
+              "mensagem": "Quero vídeos de instalação da cnc"
+            }
+          }
+        }
+      ]
+    },
+    "versionId": "c16b3d54-eafc-465f-b49b-8d95a9544938",
+    "triggerCount": 3,
+    "tags": []
+  }
+}
