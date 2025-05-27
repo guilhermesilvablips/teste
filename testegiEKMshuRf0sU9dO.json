@@ -1,0 +1,396 @@
+{
+  "data": {
+    "createdAt": "2024-09-11T18:49:24.400Z",
+    "updatedAt": "2024-09-11T19:27:42.999Z",
+    "id": "giEKMshuRf0sU9dO",
+    "name": "transcricao audio teste",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "699ce50d-25bd-4d47-80a6-8bc89f258f72",
+        "name": "Execute Workflow Trigger",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          -1080,
+          540
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4d6b42b6-f4a7-4673-a560-4e7a798c488e",
+                "name": "transcicao_ligacao",
+                "value": "={{ $json.text }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "b705102e-0e8a-473a-b729-fd83d81da96c",
+        "name": "Definir mensagem audio1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          -200,
+          1040
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/audio/transcriptions",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendBody": true,
+          "contentType": "multipart-form-data",
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "model",
+                "value": "whisper-1"
+              },
+              {
+                "parameterType": "formBinaryData",
+                "name": "file",
+                "inputDataFieldName": "data"
+              },
+              {
+                "name": "language",
+                "value": "pt"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "7cfa7f4b-7b4b-412e-a5b0-9c183a0f0e47",
+        "name": "Transcreve o áudio",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -420,
+          1040
+        ],
+        "retryOnFail": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "items[0].binary.data.fileName = 'audio.ogg';\n\nreturn items;"
+        },
+        "id": "c0931c53-f062-4356-aed7-23268d460a93",
+        "name": "Code",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -640,
+          1040
+        ]
+      },
+      {
+        "parameters": {
+          "url": "={{ $json.recordUrl }}",
+          "options": {}
+        },
+        "id": "01209686-8ef2-453d-8a43-6d2e3409c2cb",
+        "name": "Baixar Áudio",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -860,
+          540
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://n8n-dev.blips-labs.com/webhook-test/olivetto_agente_externo",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "message",
+                "value": "=Transcrição da ligação:\n{{ $json.text }}"
+              },
+              {
+                "name": "id_agente",
+                "value": "asst_FQWeijgX9B2jgBC3bfINCZBa"
+              },
+              {
+                "name": "nome_agente",
+                "value": "Nascimento"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "8d27751a-2344-41bc-979b-bdae3b2dfe89",
+        "name": "Enviar Olivetto",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          160,
+          1060
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://speech.googleapis.com/v1/speech:longrunningrecognize",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "googleCloudNaturalLanguageOAuth2Api",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "{\n  \"Content-Type\": \"application/json\"\n}\n",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"config\": {\n    \"encoding\": \"LINEAR16\",\n    \"sampleRateHertz\": 16000,\n    \"languageCode\": \"pt-BR\",\n    \"enableAutomaticPunctuation\": true,\n    \"diarizationConfig\": {\n      \"enableSpeakerDiarization\": true,\n      \"minSpeakerCount\": 2,\n      \"maxSpeakerCount\": 2\n    }\n  },\n  \"audio\": {\n    \"content\": \"{{ $json.base64Audio }}\"\n  }\n}",
+          "options": {}
+        },
+        "id": "09f0ae49-8612-4f88-8c4c-abcd46ef857b",
+        "name": "Transcreve o áudio1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -420,
+          360
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "googleCloudNaturalLanguageOAuth2Api": {
+            "id": "nWtdcj4ypJgslWrD",
+            "name": "Google Cloud Natural Language account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "const audioBinary = items[0].binary.data.data; // Supondo que o áudio esteja no campo 'data'\nconst audioBase64 = audioBinary.toString('base64'); // Converter binário para base64\n\nreturn [\n  {\n    json: {\n      base64Audio: audioBase64\n    }\n  }\n];\n"
+        },
+        "id": "acec4070-b884-4fad-b5c3-4ad5f2d301d3",
+        "name": "Code1",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -640,
+          360
+        ]
+      },
+      {
+        "parameters": {
+          "url": "=https://speech.googleapis.com/v1/operations/{{ $json.name }}",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "googleCloudNaturalLanguageOAuth2Api",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "{\n  \"Content-Type\": \"application/json\"\n}\n",
+          "options": {}
+        },
+        "id": "01a5b1d0-f4f2-4a13-9e5c-bf86660da9f3",
+        "name": "Transcreve o áudio3",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -180,
+          360
+        ],
+        "retryOnFail": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "url": "=https://speech.googleapis.com/v1/operations/{{ $json.name }}",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "googleCloudNaturalLanguageOAuth2Api",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "{\n  \"Content-Type\": \"application/json\"\n}\n",
+          "options": {}
+        },
+        "id": "73b25938-8536-43bf-97fb-da8697f64939",
+        "name": "Transcreve o áudio4",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          300,
+          160
+        ],
+        "retryOnFail": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "04598839-ad44-4e2c-9b29-f2ea8eb87a94",
+                "leftValue": "={{ $json.done }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "42e7b246-7d61-4968-97f6-2675de30a66a",
+        "name": "If",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          40,
+          360
+        ]
+      },
+      {
+        "parameters": {
+          "amount": 2
+        },
+        "id": "6e11cd73-5476-4cb4-8c26-eecf2b7129fb",
+        "name": "Wait",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          240,
+          500
+        ],
+        "webhookId": "9126291b-2c28-4777-b431-eb244a2cc430"
+      }
+    ],
+    "connections": {
+      "Execute Workflow Trigger": {
+        "main": [
+          [
+            {
+              "node": "Baixar Áudio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Transcreve o áudio": {
+        "main": [
+          [
+            {
+              "node": "Definir mensagem audio1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "Transcreve o áudio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Baixar Áudio": {
+        "main": [
+          [
+            {
+              "node": "Code1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Transcreve o áudio1": {
+        "main": [
+          [
+            {
+              "node": "Transcreve o áudio3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code1": {
+        "main": [
+          [
+            {
+              "node": "Transcreve o áudio1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Transcreve o áudio3": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "Transcreve o áudio3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Execute Workflow Trigger": [
+        {
+          "json": {
+            "recordUrl": "https://fs3.api4com.com/recordings/blips.api4com.com/1003@blips.api4com.com/dd6acf1b-2b4e-404c-a426-9697bf29dbe7.mp3"
+          }
+        }
+      ]
+    },
+    "versionId": "463be8b4-ec3e-4029-b0a9-966bc68ddb36",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
