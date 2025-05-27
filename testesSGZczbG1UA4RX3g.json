@@ -1,0 +1,6196 @@
+{
+  "data": {
+    "createdAt": "2024-10-25T15:33:09.305Z",
+    "updatedAt": "2025-04-10T18:21:23.621Z",
+    "id": "sSGZczbG1UA4RX3g",
+    "name": "3 - Recuperação de Dados",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "1fd32e08-3f68-4fb9-8ec6-5fffb5289962",
+        "name": "lead",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          -2660,
+          2320
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "71HfwsVdQvHtbqLi",
+          "options": {}
+        },
+        "id": "1af99ff9-3dbc-4978-906a-f28df78a933d",
+        "name": "BDC - companies - relationships",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          -1220
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "71HfwsVdQvHtbqLi",
+          "options": {}
+        },
+        "id": "78a05081-8e36-4600-8f19-30916e2a2bad",
+        "name": "BDC - companies - basic_data",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          -780
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "endpoint",
+                "value": "companies",
+                "type": "string"
+              },
+              {
+                "id": "5db45c71-e6af-4aad-b4cd-5138c8e796cc",
+                "name": "dataset",
+                "value": "relationships",
+                "type": "string"
+              },
+              {
+                "id": "7192c77e-a81e-4d6b-8204-7bd8d7539e8f",
+                "name": "CNPJ",
+                "value": "={{ $json.doc }}",
+                "type": "string"
+              },
+              {
+                "id": "a7b7c12b-5cfb-4cfe-ac74-79261b2e7275",
+                "name": "cpfCliente",
+                "value": "={{ $('lead').first().json.cpfCliente }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "efea0c22-ce4b-4a0a-9b54-55daddbca8df",
+        "name": "request_bdc_companies_relationships",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          -1220
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "endpoint",
+                "value": "companies",
+                "type": "string"
+              },
+              {
+                "id": "5db45c71-e6af-4aad-b4cd-5138c8e796cc",
+                "name": "dataset",
+                "value": "basic_data",
+                "type": "string"
+              },
+              {
+                "id": "7192c77e-a81e-4d6b-8204-7bd8d7539e8f",
+                "name": "CNPJ",
+                "value": "={{ $json.doc }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "8fc49ac9-da02-483b-9ad2-7d980dc38b61",
+        "name": "request_bdc_companies_basic_data",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          -780
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "84399af4-3bef-40db-97ef-fb84c4a05ad8",
+                "name": "doc",
+                "value": "={{ $json.doc }}",
+                "type": "string"
+              },
+              {
+                "id": "72e469a6-670b-4df2-a6d0-f90912701603",
+                "name": "type",
+                "value": "=J",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d534fe88-4873-4d5f-8967-b30645ebb6dd",
+        "name": "request_format_serasa_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          4580
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "m5W8ruT52JLwbTDD",
+          "options": {}
+        },
+        "id": "3af9ed23-7f58-4ecd-baf1-dc52d6a0c52b",
+        "name": "SERASA - CNPJ",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          4580
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "12bd7ff2-c1b0-4a14-a1a4-1691decd6e84",
+        "name": "Utils - companies - relationships",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          -1440
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "func",
+                "value": "format_companies_basic_data",
+                "type": "string"
+              },
+              {
+                "id": "e4f3fb2b-ab65-4e10-a95c-6cf9441ba4b4",
+                "name": "QueryBDC_companies_basic_data",
+                "value": "={{ $json.catalogo_de_variaveis.QueryBDC_companies_basic_data.output_payload }}",
+                "type": "object"
+              },
+              {
+                "id": "bd5ca322-fb25-4215-af5d-3f6c6c2c55d6",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "b583d388-4329-4270-a4f2-c7b00f24cebe",
+        "name": "format_bdc_companies_basic_data",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          -1000
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "7cc64142-82df-4856-b405-7f9e68a95bb7",
+        "name": "Utils - companies - basic_data",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          -1000
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7192c77e-a81e-4d6b-8204-7bd8d7539e8f",
+                "name": "documento",
+                "value": "={{ $json.doc }}",
+                "type": "string"
+              },
+              {
+                "id": "2f0f25b5-a83c-46b4-8908-0826048d8f2a",
+                "name": "type",
+                "value": "2",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "4e359b8e-8d7e-45d8-abd5-541a65ddc51d",
+        "name": "request_bmp_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          3680
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "Wn8zfhykCCyP3mLK",
+          "options": {}
+        },
+        "id": "4af1868b-7728-44a2-9668-8191389bd2f2",
+        "name": "BMP - CNPJ",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          3680
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "func",
+                "value": "={{$json.type}}",
+                "type": "string"
+              },
+              {
+                "id": "e4f3fb2b-ab65-4e10-a95c-6cf9441ba4b4",
+                "name": "QueryBMP_1",
+                "value": "={{ $json.catalogo_de_variaveis.QueryBMP_1.output_payload }}",
+                "type": "object"
+              },
+              {
+                "id": "bd5ca322-fb25-4215-af5d-3f6c6c2c55d6",
+                "name": "api",
+                "value": "BMP",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "a8b070a3-ad04-4cb1-b712-5f3bc4708376",
+        "name": "format_bmp_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          3080
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "func",
+                "value": "={{ $json.type }}",
+                "type": "string"
+              },
+              {
+                "id": "e4f3fb2b-ab65-4e10-a95c-6cf9441ba4b4",
+                "name": "QueryBMP_2",
+                "value": "={{ $json.catalogo_de_variaveis.QueryBMP_2.output_payload }}",
+                "type": "object"
+              },
+              {
+                "id": "bd5ca322-fb25-4215-af5d-3f6c6c2c55d6",
+                "name": "api",
+                "value": "BMP",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "bc2ca0f3-25e1-4e16-971d-407d0253ad59",
+        "name": "format_bmp_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          3480
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "c78a2c49-213f-4940-9aad-6db857fffb93",
+        "name": "Utils - BMP - CNPJ",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          3480
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "func",
+                "value": "format_serasa",
+                "type": "string"
+              },
+              {
+                "id": "e4f3fb2b-ab65-4e10-a95c-6cf9441ba4b4",
+                "name": "QuerySerasa_J",
+                "value": "={{ $json.catalogo_de_variaveis.QuerySerasa_J.output_payload }}",
+                "type": "string"
+              },
+              {
+                "id": "bd5ca322-fb25-4215-af5d-3f6c6c2c55d6",
+                "name": "api",
+                "value": "Serasa",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "9aed58a1-3ea0-4a00-bedc-105efc6d0eed",
+        "name": "format_serasa_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          4380
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "d8f20f92-c23b-48ad-a60e-953c53843135",
+        "name": "Utils - Serasa - CNPJ",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          4380
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "616af14c-5307-4ae9-a956-19d8773f81b7",
+                "name": "documento",
+                "value": "={{ $json.doc }}",
+                "type": "string"
+              },
+              {
+                "id": "b3454c95-6e1a-4fac-a3c6-86b1923e3b01",
+                "name": "type",
+                "value": "1",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "336e32b9-9543-4529-bb90-29a97ca90734",
+        "name": "request_bmp_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          3280
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "Wn8zfhykCCyP3mLK",
+          "options": {}
+        },
+        "id": "4dc9d6bc-cb35-404f-b447-0a9a867cd549",
+        "name": "BMP - CPF",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          3280
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "func",
+                "value": "format_serasa",
+                "type": "string"
+              },
+              {
+                "id": "e4f3fb2b-ab65-4e10-a95c-6cf9441ba4b4",
+                "name": "QuerySerasa_F",
+                "value": "={{ $json.catalogo_de_variaveis.QuerySerasa_F.output_payload }}",
+                "type": "string"
+              },
+              {
+                "id": "bd5ca322-fb25-4215-af5d-3f6c6c2c55d6",
+                "name": "api",
+                "value": "Serasa",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "7c234e1e-f76e-4f10-b2c7-509e29236ba8",
+        "name": "format_serasa_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          3900
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "7b8b4494-781e-4429-9bdc-c1ca33422627",
+        "name": "Utils - BMP - CPF",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          3080
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "a5719436-4476-478c-8c96-1c0b87ea43a1",
+        "name": "Utils - Serasa - CPF",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          3900
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "m5W8ruT52JLwbTDD",
+          "options": {}
+        },
+        "id": "467502d3-1a09-4d66-b7d9-094327dd4fcd",
+        "name": "SERASA - CPF",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          4100
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4f2274bb-066e-4418-9487-49e640478ad5",
+                "name": "serasa_cpf",
+                "value": "={{ $json }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "6ec8f038-5e79-4f58-ad84-e7ca499833e9",
+        "name": "serasa_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -100,
+          4000
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4f2274bb-066e-4418-9487-49e640478ad5",
+                "name": "src_cpf",
+                "value": "={{ $json }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "38e254c9-7860-4cfc-a51d-b9c54321d297",
+        "name": "src_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -120,
+          3180
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4f2274bb-066e-4418-9487-49e640478ad5",
+                "name": "relationships",
+                "value": "={{ $json }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "a5c89b9f-5c64-4ee2-abc3-d83096759c60",
+        "name": "relationships_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -100,
+          -1340
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4f2274bb-066e-4418-9487-49e640478ad5",
+                "name": "basic_data",
+                "value": "={{ $json }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "b99d9ec9-97a6-4763-a90f-060d18c8c1b9",
+        "name": "basic_data_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -100,
+          -900
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4f2274bb-066e-4418-9487-49e640478ad5",
+                "name": "scr_cnpj",
+                "value": "={{ $json }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "daae604a-8688-4607-be25-9a2caaa52a78",
+        "name": "scr_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -120,
+          3580
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4f2274bb-066e-4418-9487-49e640478ad5",
+                "name": "serasa_cnpj",
+                "value": "={{ $json }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "0000a53a-6f97-4031-b6a0-1620cc974cb6",
+        "name": "serasa_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -120,
+          4480
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "0fec6895-551e-4fed-bb91-f573ea22f712",
+        "name": "Utils - BDC - peoplev2 - addresses_extended_cnpj",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          820,
+          -1020
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "endpoint",
+                "value": "peoplev2",
+                "type": "string"
+              },
+              {
+                "id": "5db45c71-e6af-4aad-b4cd-5138c8e796cc",
+                "name": "dataset",
+                "value": "addresses_extended",
+                "type": "string"
+              },
+              {
+                "id": "616af14c-5307-4ae9-a956-19d8773f81b7",
+                "name": "CPF",
+                "value": "={{ $('lead').first().json.doc }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "5faa2691-45fc-4239-af02-bb54375f3ef7",
+        "name": "request_bdc_peoplev2_addresses_extended_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          620,
+          -800
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "71HfwsVdQvHtbqLi",
+          "options": {}
+        },
+        "id": "aecdd48e-7352-4e64-9721-95e070699ec9",
+        "name": "BDC - peoplev2 - addresses_extended_cnpj",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          820,
+          -800
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4f2274bb-066e-4418-9487-49e640478ad5",
+                "name": "address_final",
+                "value": "={{ $json }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "1031a1f7-e131-42ba-8499-5f9e22d5ca64",
+        "name": "address_final_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1040,
+          -920
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4f2274bb-066e-4418-9487-49e640478ad5",
+                "name": "relationships",
+                "value": "={{ $json }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "e0d7143f-13d2-4a22-9981-280278dae6c7",
+        "name": "relationships_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -120,
+          440
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4f2274bb-066e-4418-9487-49e640478ad5",
+                "name": "address_final",
+                "value": "={{ $json }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "5e2c31a9-6872-48fd-8435-cd8db04ffbe5",
+        "name": "address_final_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -120,
+          860
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "func",
+                "value": "format_peoplev2_basic_data",
+                "type": "string"
+              },
+              {
+                "id": "e4f3fb2b-ab65-4e10-a95c-6cf9441ba4b4",
+                "name": "QueryBDC_ondemand_pf_antecedente",
+                "value": "={{ $json.catalogo_de_variaveis.QueryBDC_ondemand_pf_antecedente.output_payload }}",
+                "type": "object"
+              },
+              {
+                "id": "bd5ca322-fb25-4215-af5d-3f6c6c2c55d6",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "be4d741f-57ae-4d4e-b998-5e8cbbc89913",
+        "name": "format_peoplev2_ondemand_pf_antecedente",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          1200
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "653ed33f-2bba-4038-a262-3ad575858389",
+        "name": "Utils - BDC - peoplev2 - ondemand_pf_antecedente",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          1200
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "endpoint",
+                "value": "peoplev2",
+                "type": "string"
+              },
+              {
+                "id": "5db45c71-e6af-4aad-b4cd-5138c8e796cc",
+                "name": "dataset",
+                "value": "ondemand_pf_antecedente",
+                "type": "string"
+              },
+              {
+                "id": "616af14c-5307-4ae9-a956-19d8773f81b7",
+                "name": "CPF",
+                "value": "={{ $json.doc }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "14a58c55-e9f2-4653-bac7-385cee9df257",
+        "name": "request_bdc_peoplev2_ondemand_pf_antecedente",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          1420
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "71HfwsVdQvHtbqLi",
+          "options": {}
+        },
+        "id": "d31ea3c5-f428-479c-8bdb-ba3ccb23671f",
+        "name": "BDC - peoplev2 - ondemand_pf_antecedente",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          1420
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "func",
+                "value": "format_peoplev2_addresses_extended",
+                "type": "string"
+              },
+              {
+                "id": "e4f3fb2b-ab65-4e10-a95c-6cf9441ba4b4",
+                "name": "QueryBDC_addresses_extended",
+                "value": "={{ $('lead').item.json.catalogo_de_variaveis.QueryBDC_addresses_extended.output_payload }}",
+                "type": "object"
+              },
+              {
+                "id": "bd5ca322-fb25-4215-af5d-3f6c6c2c55d6",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "3152e92e-4b6e-4f63-abb9-b02b87ce8223",
+        "name": "format_peoplev2_addresses_extended_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          620,
+          -1020
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "func",
+                "value": "format_peoplev2_basic_data",
+                "type": "string"
+              },
+              {
+                "id": "e4f3fb2b-ab65-4e10-a95c-6cf9441ba4b4",
+                "name": "QueryBDC_basic_data",
+                "value": "={{ $('lead').item.json.catalogo_de_variaveis.QueryBDC_basic_data.output_payload }}",
+                "type": "object"
+              },
+              {
+                "id": "bd5ca322-fb25-4215-af5d-3f6c6c2c55d6",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "2e1773d4-2e12-42e6-ae86-ab496a2ad081",
+        "name": "format_peoplev2_basic_data_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          620,
+          -1480
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4f2274bb-066e-4418-9487-49e640478ad5",
+                "name": "antecedentes",
+                "value": "={{ $json }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "a5c88658-b2cd-426b-8c29-df7399049a9c",
+        "name": "antecedentes",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -120,
+          1300
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4f2274bb-066e-4418-9487-49e640478ad5",
+                "name": "mandatos",
+                "value": "={{ $json }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "abe44a5f-b73a-480d-a0ea-f9416b76f454",
+        "name": "mandatos",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -120,
+          1780
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "84399af4-3bef-40db-97ef-fb84c4a05ad8",
+                "name": "doc",
+                "value": "={{ $json.doc }}",
+                "type": "string"
+              },
+              {
+                "id": "72e469a6-670b-4df2-a6d0-f90912701603",
+                "name": "type",
+                "value": "=F",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "bee0b1f0-023b-4d23-9ac4-83089d7345e9",
+        "name": "request_format_serasa_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          4100
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "endpoint",
+                "value": "peoplev2",
+                "type": "string"
+              },
+              {
+                "id": "5db45c71-e6af-4aad-b4cd-5138c8e796cc",
+                "name": "dataset",
+                "value": "ondemand_nada_consta",
+                "type": "string"
+              },
+              {
+                "id": "616af14c-5307-4ae9-a956-19d8773f81b7",
+                "name": "CPF",
+                "value": "={{ $json.doc }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "49b65c62-914d-45c1-955e-d49987183522",
+        "name": "request_bdc_peoplev2_ondemand_nada_consta",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          1880
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "func",
+                "value": "format_peoplev2_basic_data",
+                "type": "string"
+              },
+              {
+                "id": "e4f3fb2b-ab65-4e10-a95c-6cf9441ba4b4",
+                "name": "QueryBDC_ondemand_nada_consta",
+                "value": "={{ $json.catalogo_de_variaveis.QueryBDC_ondemand_nada_consta.output_payload }}",
+                "type": "object"
+              },
+              {
+                "id": "bd5ca322-fb25-4215-af5d-3f6c6c2c55d6",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "ef047f80-0500-4601-b756-09e08c55f2dd",
+        "name": "format_peoplev2_ondemand_nada_consta",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          1660
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "e1dd0c39-4e4c-413c-ba0f-7a48c886c0b5",
+        "name": "Utils - BDC - peoplev2 - ondemand_nada_consta",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          1660
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "71HfwsVdQvHtbqLi",
+          "options": {}
+        },
+        "id": "fe26a650-f9cb-4939-8356-77dd73d64730",
+        "name": "BDC - peoplev2 - ondemand_nada_consta",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          1880
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "func",
+                "value": "format_peoplev2_basic_data",
+                "type": "string"
+              },
+              {
+                "id": "e4f3fb2b-ab65-4e10-a95c-6cf9441ba4b4",
+                "name": "QueryBDC_peoplev2_basic_data",
+                "value": "={{ $json.catalogo_de_variaveis.QueryBDC_peoplev2_basic_data.output_payload }}",
+                "type": "object"
+              },
+              {
+                "id": "bd5ca322-fb25-4215-af5d-3f6c6c2c55d6",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "052a8ce9-a54e-4239-bf33-4ca5220ec4c2",
+        "name": "format_peoplev2_basic_data",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          340
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "func",
+                "value": "format_peoplev2_addresses_extended",
+                "type": "string"
+              },
+              {
+                "id": "e4f3fb2b-ab65-4e10-a95c-6cf9441ba4b4",
+                "name": "QueryBDC_addresses_extended",
+                "value": "={{ $json.catalogo_de_variaveis.QueryBDC_addresses_extended.output_payload }}",
+                "type": "object"
+              },
+              {
+                "id": "bd5ca322-fb25-4215-af5d-3f6c6c2c55d6",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "c0e2bf25-c8bc-4b30-8519-65134684b220",
+        "name": "format_peoplev2_addresses_extended",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          760
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "b306ba05-ab3f-404d-85b9-bddd027acb82",
+        "name": "Utils - BDC - peoplev2 - addresses_extended",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          760
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "71HfwsVdQvHtbqLi",
+          "options": {}
+        },
+        "id": "7e0e441b-2f58-4aaf-a93f-8ecb1d2a52bb",
+        "name": "BDC - peoplev2 - addresses_extended",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          980
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "endpoint",
+                "value": "peoplev2",
+                "type": "string"
+              },
+              {
+                "id": "5db45c71-e6af-4aad-b4cd-5138c8e796cc",
+                "name": "dataset",
+                "value": "addresses_extended",
+                "type": "string"
+              },
+              {
+                "id": "616af14c-5307-4ae9-a956-19d8773f81b7",
+                "name": "CPF",
+                "value": "={{ $json.doc }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "7122c2c6-c2d1-4994-8bad-6ad6f9b82f5c",
+        "name": "request_bdc_peoplev2_addresses_extended",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          980
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.api }}",
+                      "rightValue": "BDC",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "0e720ebc-ee53-4cec-bbc6-20bf4d883b5b"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "BigDataCorp"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "a665c27c-407d-4f84-937d-6004871adc2f",
+                      "leftValue": "={{ $json.api }}",
+                      "rightValue": "BMP",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "BMP"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "9f53b358-72e5-4ba6-a1d5-d755691057ee",
+                      "leftValue": "={{ $json.api }}",
+                      "rightValue": "Serasa",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Serasa"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "849071e1-6809-47b4-97e5-03b934c6b7ad",
+                      "leftValue": "={{ $json.api }}",
+                      "rightValue": "DestravaAi",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "DestravaAi"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "320ee20d-ccc0-418f-ad21-6213cc5bddfb",
+        "name": "Qual API ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -2400,
+          2300
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "func",
+                "value": "format_companies_relationships",
+                "type": "string"
+              },
+              {
+                "id": "e4f3fb2b-ab65-4e10-a95c-6cf9441ba4b4",
+                "name": "QueryBDC_relationships",
+                "value": "={{ $json.catalogo_de_variaveis.QueryBDC_relationships.output_payload }}",
+                "type": "object"
+              },
+              {
+                "id": "bd5ca322-fb25-4215-af5d-3f6c6c2c55d6",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              },
+              {
+                "id": "9f0f0a2d-7fd5-4192-93ac-85c826dc262c",
+                "name": "cpfCliente",
+                "value": "={{ $('lead').first().json.cpfCliente }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "f20912e7-14f5-4590-94cc-53e483cbdbd0",
+        "name": "format_bdc_companies_relationships",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          -1440
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4f2274bb-066e-4418-9487-49e640478ad5",
+                "name": "relationships",
+                "value": "={{ $json.relationships }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "5f5e6af1-0904-4f52-9652-42733fa9f971",
+        "name": "relationships_cnpj_result",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          200,
+          -1100
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4f2274bb-066e-4418-9487-49e640478ad5",
+                "name": "basic_data",
+                "value": "={{ $json }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "056ab97c-0c69-4294-ae46-5a2cd4ea9e3d",
+        "name": "basic_data_cnpj_result",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          180,
+          -660
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4f2274bb-066e-4418-9487-49e640478ad5",
+                "name": "relationships",
+                "value": "={{ $json }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "31de1d21-6809-4f1f-a05c-4c6df0110065",
+        "name": "relationships_cnpj_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1040,
+          -1380
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('lead').item.json.catalogo_de_variaveis.QuerySerasa_J }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "exists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "sim"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "56858dc1-0f9d-41ad-80e8-8173f479e239",
+                      "leftValue": "={{ $('lead').item.json.catalogo_de_variaveis.QuerySerasa_J }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "notExists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Não"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d5f22c13-c534-44c4-ae8e-2f47f6191513",
+        "name": "O lead tem Serasa CNPJ no Catálogo ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -760,
+          4480
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('lead').item.json.catalogo_de_variaveis.QueryBMP_2 }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "exists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Sim"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "f8225398-d1ac-48c5-90cd-810e63dba50b",
+                      "leftValue": "={{ $('lead').item.json.catalogo_de_variaveis.QueryBMP_2 }}",
+                      "rightValue": "Não",
+                      "operator": {
+                        "type": "object",
+                        "operation": "notExists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Não"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "47c06188-114d-47b8-a64d-794ecf8abd27",
+        "name": "O lead tem BMP CNPJ no Catálogo ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -780,
+          3580
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('lead').item.json.catalogo_de_variaveis.QuerySerasa_F }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "exists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "sim"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "56858dc1-0f9d-41ad-80e8-8173f479e239",
+                      "leftValue": "={{ $('lead').item.json.catalogo_de_variaveis.QuerySerasa_F }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "notExists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Não"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "3fbe10d2-2f2c-4945-88aa-327adfb4c813",
+        "name": "O lead tem Serasa CPF no Catálogo ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -780,
+          4000
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('lead').item.json.catalogo_de_variaveis.QueryBMP_1 }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "exists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Sim"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "f8225398-d1ac-48c5-90cd-810e63dba50b",
+                      "leftValue": "={{ $('lead').item.json.catalogo_de_variaveis.QueryBMP_1 }}",
+                      "rightValue": "Não",
+                      "operator": {
+                        "type": "object",
+                        "operation": "notExists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Não"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "63bedff9-d09b-4fef-8ef0-0bc226f67ff8",
+        "name": "O lead tem BMP CPF no Catálogo ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -780,
+          3180
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('lead').item.json.catalogo_de_variaveis.QueryBDC_ondemand_nada_consta }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "exists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Sim"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "57ceee48-4a17-4406-8499-f2900b6b35ef",
+                      "leftValue": "={{ $('lead').item.json.catalogo_de_variaveis.QueryBDC_ondemand_nada_consta }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "notExists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Não"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "17ea7d9b-96e4-4ca9-953a-8cf8500e4d86",
+        "name": "Tem Mandatos No Catálogo ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -780,
+          1780
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('lead').item.json.catalogo_de_variaveis.QueryBDC_ondemand_pf_antecedente }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "exists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Sim"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "57ceee48-4a17-4406-8499-f2900b6b35ef",
+                      "leftValue": "={{ $('lead').item.json.catalogo_de_variaveis.QueryBDC_ondemand_pf_antecedente }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "notExists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Não"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "baf2a201-088a-4882-b064-a5495e186d52",
+        "name": "Tem Antecendentes No Catálogo ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -780,
+          1320
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('lead').item.json.catalogo_de_variaveis.QueryBDC_addresses_extended }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "exists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Sim"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "57ceee48-4a17-4406-8499-f2900b6b35ef",
+                      "leftValue": "={{ $('lead').item.json.catalogo_de_variaveis.QueryBDC_addresses_extended }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "notExists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Não"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "c5259e6d-f6de-45c9-873b-c6b800584899",
+        "name": "CPF  tem Endereço Ext. no Catálogo ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -800,
+          860
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.type }}",
+                      "rightValue": "1",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "aec80c0a-d5be-4a2c-986e-f17c65e9cf9a"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "CPF"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "808b7c24-8835-491a-902c-8119571e2fc0",
+                      "leftValue": "={{ $json.type }}",
+                      "rightValue": "2",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "CNPJ"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "e472f019-00e0-4f39-8735-44acdf1e66e6",
+        "name": "Tipo 1 CPF ou 2 CNPJ ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -1500,
+          3200
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.type }}",
+                      "rightValue": "F",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "f3d1f714-6702-4e6c-a056-2b8b1dbfa084"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "CPF"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "808b7c24-8835-491a-902c-8119571e2fc0",
+                      "leftValue": "={{ $json.type }}",
+                      "rightValue": "J",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "CNPJ"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "a9957be1-6120-4d55-8ee7-882e643156a9",
+        "name": "Pessoa Física ou Jurídica ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -1500,
+          4140
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.type }}",
+                      "rightValue": "relationships",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "relações"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "24aea652-c8b9-4f92-8451-f0deaa6493ce",
+                      "leftValue": "={{ $json.type }}",
+                      "rightValue": "basic_data",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "dados básicos"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "13f82a8e-23a5-4fb0-8256-f9866e2f4ffc",
+                      "leftValue": "={{ $json.type }}",
+                      "rightValue": "kyc",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "kyc"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "03789a45-da5c-4ca7-81f7-d61696799565",
+                      "leftValue": "={{ $json.type }}",
+                      "rightValue": "processos",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "processos"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "66c6412c-e015-4a3b-886e-5db39d791b8e",
+        "name": "Qual Dataset ? CNPJ",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -1140,
+          -900
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('basic_data_cnpj').item.json.basic_data }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "empty",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Sim"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "6fe24715-4947-4a6f-9380-f418ae4e0b81",
+                      "leftValue": "={{ $('basic_data_cnpj').item.json.basic_data }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "notEmpty",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Não"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "f9e7565e-1e3a-4408-adef-cc1227684b12",
+        "name": "Dados Básicos CNPJ Vazio ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          120,
+          -900
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('lead').item.json.catalogo_de_variaveis.QueryBDC_addresses_extended }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "exists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Sim"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "57ceee48-4a17-4406-8499-f2900b6b35ef",
+                      "leftValue": "={{ $('lead').item.json.catalogo_de_variaveis.QueryBDC_addresses_extended }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "notExists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Não"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "df8d33ea-a554-47f6-b239-6c2d3f1428ac",
+        "name": "O lead tem Endereço Ext. no Catálogo ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          380,
+          -920
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "ed5e0fb1-fc26-4c70-8358-2777d716dfc4",
+        "name": "Utils - BDC - peoplev2 - basic_data_cnpj",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          820,
+          -1480
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "endpoint",
+                "value": "peoplev2",
+                "type": "string"
+              },
+              {
+                "id": "5db45c71-e6af-4aad-b4cd-5138c8e796cc",
+                "name": "dataset",
+                "value": "basic_data",
+                "type": "string"
+              },
+              {
+                "id": "7192c77e-a81e-4d6b-8204-7bd8d7539e8f",
+                "name": "CPF",
+                "value": "={{ $('lead').first().json.cpfCliente }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "4ef17356-f08b-4960-b753-77afb61723c8",
+        "name": "request_bdc_peoplev2_basic_data_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          620,
+          -1260
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "71HfwsVdQvHtbqLi",
+          "options": {}
+        },
+        "id": "1c13c572-8017-4953-a823-4bde9de21ca5",
+        "name": "BDC - peoplev2 - basic_data_cnpj",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          820,
+          -1260
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "endpoint",
+                "value": "peoplev2",
+                "type": "string"
+              },
+              {
+                "id": "5db45c71-e6af-4aad-b4cd-5138c8e796cc",
+                "name": "dataset",
+                "value": "basic_data",
+                "type": "string"
+              },
+              {
+                "id": "616af14c-5307-4ae9-a956-19d8773f81b7",
+                "name": "CPF",
+                "value": "={{ $json.doc }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "019629be-a513-4808-a3ad-3af983e7e25f",
+        "name": "request_bdc_peoplev2_basic_data",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          560
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "e3680f8e-6b63-48cb-8587-7f2f2a2bb9a6",
+        "name": "Utils - BDC - peoplev2 - basic_data",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          340
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "71HfwsVdQvHtbqLi",
+          "options": {}
+        },
+        "id": "5cae607d-eb0d-4de1-a5f4-50a230f6f1f4",
+        "name": "BDC - peoplev2 - basic_data",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          560
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('lead').item.json.catalogo_de_variaveis.QueryBDC_peoplev2_basic_data }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "exists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Sim"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "57ceee48-4a17-4406-8499-f2900b6b35ef",
+                      "leftValue": "={{ $('lead').item.json.catalogo_de_variaveis.QueryBDC_peoplev2_basic_data }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "notExists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Não"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "2fc92294-1875-40cc-ad6e-d1e70e2477a2",
+        "name": "O lead tem Dados Basicos CPF ADM/SOCIO ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          380,
+          -1360
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('relationships_cnpj').item.json.relationships }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "empty",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Sim"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "6fe24715-4947-4a6f-9380-f418ae4e0b81",
+                      "leftValue": "={{ $('relationships_cnpj').item.json.relationships }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "notEmpty",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Não"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "2d577579-7cc6-4349-8f3a-33cecca5b165",
+        "name": "Relaões CNPJ Vazio ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          120,
+          -1340
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "d9372d75-cba7-4a52-89c2-f50103370f26",
+                      "leftValue": "={{ $json['catalogo_de_variaveis'].QueryBDC_relationships }}",
+                      "rightValue": "ondemand_pgfn",
+                      "operator": {
+                        "type": "object",
+                        "operation": "exists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Sim"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "6ed62a0b-c421-4f64-9b3d-04a6f7443ed6",
+                      "leftValue": "={{ $json['catalogo_de_variaveis'].QueryBDC_relationships }}",
+                      "rightValue": "pgfn_off",
+                      "operator": {
+                        "type": "object",
+                        "operation": "notExists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Não"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "3136de15-6fbb-46fa-805f-6e4ae76452a0",
+        "name": "O lead tem Relações no Catálogo ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -780,
+          -1320
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.catalogo_de_variaveis.QueryBDC_companies_basic_data }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "exists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Sim"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "7ada0cd7-8c8e-44cf-b069-124f31fe9456",
+                      "leftValue": "={{ $json.catalogo_de_variaveis.QueryBDC_companies_basic_data }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "notExists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Não"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "5f7ad07d-dd97-493f-bec2-8c76970a8046",
+        "name": "O lead tem Dados Básicos no Catálogo ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -780,
+          -900
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.catalogo_de_variaveis.QueryBDC_peoplev2_basic_data }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "exists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Sim"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "57ceee48-4a17-4406-8499-f2900b6b35ef",
+                      "leftValue": "={{ $json.catalogo_de_variaveis.QueryBDC_peoplev2_basic_data }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "notExists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Não"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d229bc95-16f9-4346-ad16-5481ec698bdb",
+        "name": "O lead tem Dados Basicos CPF ADM/SOCIO ?1",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -780,
+          460
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.type }}",
+                      "rightValue": "basic_data",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "dados básicos"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "24aea652-c8b9-4f92-8451-f0deaa6493ce",
+                      "leftValue": "={{ $json.type }}",
+                      "rightValue": "addresses_extended",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "endereços"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "6a2d55ae-ab97-4534-93e3-7199c41043eb",
+                      "leftValue": "={{ $json.type }}",
+                      "rightValue": "ondemand_pf_antecedente",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "antecedentes"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "782b55ce-385a-4a34-a48f-a17ec829482a",
+                      "leftValue": "={{ $json.type }}",
+                      "rightValue": "ondemand_nada_consta",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "nada_consta"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "17c6778b-9a0a-4dc1-8320-5feae52bbd1a",
+                      "leftValue": "={{ $json.type }}",
+                      "rightValue": "kyc",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "kyc"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "9a983411-542f-4490-b20d-5e4122ef1092",
+                      "leftValue": "={{ $json.type }}",
+                      "rightValue": "processos",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "processos"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "8ab15326-893a-4fe6-a926-03c4aa1b11ae",
+        "name": "Qual Dataset ? CPF",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -1140,
+          700
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.endpoint }}",
+                      "rightValue": "companies",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "empresas"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "24aea652-c8b9-4f92-8451-f0deaa6493ce",
+                      "leftValue": "={{ $json.endpoint }}",
+                      "rightValue": "peoplev2",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "pessoas"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "a1cf8b9e-4b2f-4ca1-ae69-184f5efe5faa",
+        "name": "Qual End Point ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -1400,
+          340
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.catalogo_de_variaveis.QueryBDC_companies_kyc }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "exists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Sim"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "7ada0cd7-8c8e-44cf-b069-124f31fe9456",
+                      "leftValue": "={{ $json.catalogo_de_variaveis.QueryBDC_companies_kyc }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "notExists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Não"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "43d51584-6dfe-4cdb-821e-26efdaf5d8b6",
+        "name": "O lead tem KYC no Catálogo ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -780,
+          -440
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "ee6df71f-a647-480a-865a-b235981a4b47",
+        "name": "Utils - companies - kyc",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          -540
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4f2274bb-066e-4418-9487-49e640478ad5",
+                "name": "kyc",
+                "value": "={{ $json.kyc }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "735b1ada-51bf-4e59-8ae3-27cefd9f9740",
+        "name": "kyc_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -100,
+          -440
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "endpoint",
+                "value": "companies",
+                "type": "string"
+              },
+              {
+                "id": "5db45c71-e6af-4aad-b4cd-5138c8e796cc",
+                "name": "dataset",
+                "value": "kyc",
+                "type": "string"
+              },
+              {
+                "id": "7192c77e-a81e-4d6b-8204-7bd8d7539e8f",
+                "name": "CNPJ",
+                "value": "={{ $json.doc }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "06e24703-20c2-4256-b417-723930dfdcb3",
+        "name": "request_bdc_companies_kyc",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          -320
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "71HfwsVdQvHtbqLi",
+          "options": {}
+        },
+        "id": "1125b2bd-c49a-4944-b5c4-c24c17189ad3",
+        "name": "BDC - companies - kyc",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          -320
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.catalogo_de_variaveis.QueryBDC_companies_processos }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "exists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Sim"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "7ada0cd7-8c8e-44cf-b069-124f31fe9456",
+                      "leftValue": "={{ $json.catalogo_de_variaveis.QueryBDC_companies_processos }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "notExists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Não"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "e564b0ca-64f1-4b98-97c5-beea2877b9df",
+        "name": "O lead tem Processos no Catálogo ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -780,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "func",
+                "value": "format_companies_processos",
+                "type": "string"
+              },
+              {
+                "id": "e4f3fb2b-ab65-4e10-a95c-6cf9441ba4b4",
+                "name": "QueryBDC_companies_processos",
+                "value": "={{ $json.catalogo_de_variaveis.QueryBDC_companies_processos.output_payload }}",
+                "type": "object"
+              },
+              {
+                "id": "bd5ca322-fb25-4215-af5d-3f6c6c2c55d6",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "4ea1f5e6-0bf9-43c3-8a36-1d964cca575f",
+        "name": "format_bdc_companies_processos",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          -100
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "func",
+                "value": "format_companies_kyc",
+                "type": "string"
+              },
+              {
+                "id": "e4f3fb2b-ab65-4e10-a95c-6cf9441ba4b4",
+                "name": "QueryBDC_companies_kyc",
+                "value": "={{ $json.catalogo_de_variaveis.QueryBDC_companies_kyc.output_payload }}",
+                "type": "object"
+              },
+              {
+                "id": "bd5ca322-fb25-4215-af5d-3f6c6c2c55d6",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "b5721be2-d05b-4179-93e4-d75121aa8e52",
+        "name": "format_bdc_companies_kyc",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          -540
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "99bb619e-f3a4-462d-83c0-2db3c0bb7d99",
+        "name": "Utils - companies - processos",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          -100
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "endpoint",
+                "value": "companies",
+                "type": "string"
+              },
+              {
+                "id": "5db45c71-e6af-4aad-b4cd-5138c8e796cc",
+                "name": "dataset",
+                "value": "processos",
+                "type": "string"
+              },
+              {
+                "id": "7192c77e-a81e-4d6b-8204-7bd8d7539e8f",
+                "name": "CNPJ",
+                "value": "={{ $json.doc }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "eabd9075-6b1d-4d6f-8d6c-d7ccf22351fa",
+        "name": "request_bdc_companies_processos",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          120
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "71HfwsVdQvHtbqLi",
+          "options": {}
+        },
+        "id": "a2550c88-206b-4b89-8fbb-6a523ddd6dbb",
+        "name": "BDC - companies - processos",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          120
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4f2274bb-066e-4418-9487-49e640478ad5",
+                "name": "processos",
+                "value": "={{ $json.processos }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "7f06b19b-df3d-4971-b163-a45d4399b061",
+        "name": "processos_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -100,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.catalogo_de_variaveis.QueryBDC_peoplev2_kyc }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "exists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Sim"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "7ada0cd7-8c8e-44cf-b069-124f31fe9456",
+                      "leftValue": "={{ $json.catalogo_de_variaveis.QueryBDC_peoplev2_kyc }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "notExists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Não"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "e8acf460-15cb-436a-b3a3-64efa326bed8",
+        "name": "O lead tem KYC CPF no Catálogo ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -780,
+          2220
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "func",
+                "value": "format_peoplev2_kyc",
+                "type": "string"
+              },
+              {
+                "id": "e4f3fb2b-ab65-4e10-a95c-6cf9441ba4b4",
+                "name": "QueryBDC_peoplev2_kyc",
+                "value": "={{ $json.catalogo_de_variaveis.QueryBDC_peoplev2_kyc.output_payload }}",
+                "type": "object"
+              },
+              {
+                "id": "bd5ca322-fb25-4215-af5d-3f6c6c2c55d6",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "7b726aa6-b92b-460c-9c34-dde9450896b7",
+        "name": "format_bdc_peoplev2_kyc",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          2120
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "0d88b4d8-7765-4f1e-829f-95270787dbd7",
+        "name": "Utils - peoplev2 - kyc",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          2120
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4f2274bb-066e-4418-9487-49e640478ad5",
+                "name": "kyc",
+                "value": "={{ $json.kyc }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "0eb96b67-a217-49de-84a5-a0b5e2f12a0d",
+        "name": "kyc_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -100,
+          2220
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "endpoint",
+                "value": "peoplev2",
+                "type": "string"
+              },
+              {
+                "id": "5db45c71-e6af-4aad-b4cd-5138c8e796cc",
+                "name": "dataset",
+                "value": "kyc",
+                "type": "string"
+              },
+              {
+                "id": "7192c77e-a81e-4d6b-8204-7bd8d7539e8f",
+                "name": "CPF",
+                "value": "={{ $json.doc }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "f9d9faf4-37d5-454c-932e-a61105f4be87",
+        "name": "request_bdc_peoplev2_kyc",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          2340
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.catalogo_de_variaveis.QueryBDC_peoplev2_processos }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "exists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Sim"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "7ada0cd7-8c8e-44cf-b069-124f31fe9456",
+                      "leftValue": "={{ $json.catalogo_de_variaveis.QueryBDC_peoplev2_processos }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "notExists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Não"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "afb9775a-3e43-43fd-9e71-3179b869d85e",
+        "name": "O lead tem Processos CPF no Catálogo ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -780,
+          2680
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "func",
+                "value": "format_peoplev2_processos",
+                "type": "string"
+              },
+              {
+                "id": "e4f3fb2b-ab65-4e10-a95c-6cf9441ba4b4",
+                "name": "QueryBDC_peoplev2_processos",
+                "value": "={{ $json.catalogo_de_variaveis.QueryBDC_peoplev2_processos.output_payload }}",
+                "type": "object"
+              },
+              {
+                "id": "bd5ca322-fb25-4215-af5d-3f6c6c2c55d6",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "5979345f-9251-45d7-b71e-a15b9ce4c507",
+        "name": "format_bdc_peoplev2_processos",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          2580
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "3ae79167-cad5-4898-a2b2-55e7662fdde2",
+        "name": "Utils - peoplev2 - processos",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          2580
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4f2274bb-066e-4418-9487-49e640478ad5",
+                "name": "processos",
+                "value": "={{ $json.processos }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "660487cb-1b2a-44cd-8e42-30be81ebab7f",
+        "name": "processos_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -100,
+          2680
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "endpoint",
+                "value": "peoplev2",
+                "type": "string"
+              },
+              {
+                "id": "5db45c71-e6af-4aad-b4cd-5138c8e796cc",
+                "name": "dataset",
+                "value": "processos",
+                "type": "string"
+              },
+              {
+                "id": "7192c77e-a81e-4d6b-8204-7bd8d7539e8f",
+                "name": "CPF",
+                "value": "={{ $json.doc }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d81c1aad-8602-4564-8cae-5bdb5f1aade8",
+        "name": "request_bdc_peoplev2_processos",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          2820
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "71HfwsVdQvHtbqLi",
+          "options": {}
+        },
+        "id": "afe93c69-b90e-4b00-8d7c-fd71e8b225ba",
+        "name": "BDC - peoplev2 - kyc",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          2340
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "71HfwsVdQvHtbqLi",
+          "options": {}
+        },
+        "id": "2fa7db47-dae9-4384-a590-a98aca060179",
+        "name": "BDC - peoplev2 - processos",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          2820
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('lead').item.json.catalogo_de_variaveis.QueryDestravaAi_receivable }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "exists",
+                        "singleValue": true
+                      },
+                      "id": "9771b586-cf38-4135-98d9-faec25dd6573"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "sim"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "56858dc1-0f9d-41ad-80e8-8173f479e239",
+                      "leftValue": "={{ $('lead').item.json.catalogo_de_variaveis.QueryDestravaAi_receivable }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "notExists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Não"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "bfeaa99a-7c7f-472d-aef1-6ab853efeee8",
+        "name": "O lead tem DestravaAi CPF no Catálogo ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -780,
+          5020
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.type }}",
+                      "rightValue": "receivable",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "f3d1f714-6702-4e6c-a056-2b8b1dbfa084"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Recebiveis"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "1ed6b754-01ef-4f19-8ef7-cab28206a37a",
+        "name": "Tipo de consulta ? DestravaAi",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -1500,
+          5020
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "func",
+                "value": "format_receivable",
+                "type": "string"
+              },
+              {
+                "id": "e4f3fb2b-ab65-4e10-a95c-6cf9441ba4b4",
+                "name": "QueryDestravaAi_receivable",
+                "value": "={{ $json.catalogo_de_variaveis.QueryDestravaAi_receivable.output_payload }}",
+                "type": "string"
+              },
+              {
+                "id": "bd5ca322-fb25-4215-af5d-3f6c6c2c55d6",
+                "name": "api",
+                "value": "DestravaAi",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d0022977-6c17-4606-a500-ce43fb1e6aa7",
+        "name": "format_destravaai_receivable",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          4920
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "f50dc8bc-644d-4583-9a5d-b36e67c35112",
+        "name": "Utils - DestravaAi - Receivable",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          4920
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4f2274bb-066e-4418-9487-49e640478ad5",
+                "name": "destravaai_receivable",
+                "value": "={{ $json }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "58986bba-ca1d-413d-bdef-bc34d53b9680",
+        "name": "dastravaai_receivable",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -100,
+          5020
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "84399af4-3bef-40db-97ef-fb84c4a05ad8",
+                "name": "cnpj",
+                "value": "={{ $json.cnpj }}",
+                "type": "string"
+              },
+              {
+                "id": "72e469a6-670b-4df2-a6d0-f90912701603",
+                "name": "type",
+                "value": "=receivable",
+                "type": "string"
+              },
+              {
+                "id": "3532affe-f7b2-472e-b848-d3d49e97e3ae",
+                "name": "nome",
+                "value": "={{ $json.nome }}",
+                "type": "string"
+              },
+              {
+                "id": "1b6c7d1e-e6c5-4e6e-b301-09178a430eb8",
+                "name": "nome_fantasia",
+                "value": "={{ $json.nome_fantasia }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "88965c47-d66e-4311-91b7-382c773b8963",
+        "name": "request_format_destravaai_receivable",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          5120
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "m5W8ruT52JLwbTDD",
+          "options": {}
+        },
+        "id": "900d2dec-c7a2-47d8-9d62-359c1d50c1d8",
+        "name": "DestravaAi - Receivable",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          5120
+        ]
+      }
+    ],
+    "connections": {
+      "lead": {
+        "main": [
+          [
+            {
+              "node": "Qual API ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "BDC - companies - relationships": {
+        "main": [
+          [
+            {
+              "node": "relationships_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "BDC - companies - basic_data": {
+        "main": [
+          [
+            {
+              "node": "basic_data_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "request_bdc_companies_relationships": {
+        "main": [
+          [
+            {
+              "node": "BDC - companies - relationships",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "request_bdc_companies_basic_data": {
+        "main": [
+          [
+            {
+              "node": "BDC - companies - basic_data",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "request_format_serasa_cnpj": {
+        "main": [
+          [
+            {
+              "node": "SERASA - CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils - companies - relationships": {
+        "main": [
+          [
+            {
+              "node": "relationships_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "format_bdc_companies_basic_data": {
+        "main": [
+          [
+            {
+              "node": "Utils - companies - basic_data",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils - companies - basic_data": {
+        "main": [
+          [
+            {
+              "node": "basic_data_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "request_bmp_cnpj": {
+        "main": [
+          [
+            {
+              "node": "BMP - CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "BMP - CNPJ": {
+        "main": [
+          [
+            {
+              "node": "scr_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "format_bmp_cpf": {
+        "main": [
+          [
+            {
+              "node": "Utils - BMP - CPF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "format_bmp_cnpj": {
+        "main": [
+          [
+            {
+              "node": "Utils - BMP - CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils - BMP - CNPJ": {
+        "main": [
+          [
+            {
+              "node": "scr_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "format_serasa_cnpj": {
+        "main": [
+          [
+            {
+              "node": "Utils - Serasa - CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils - Serasa - CNPJ": {
+        "main": [
+          [
+            {
+              "node": "serasa_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "request_bmp_cpf": {
+        "main": [
+          [
+            {
+              "node": "BMP - CPF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "BMP - CPF": {
+        "main": [
+          [
+            {
+              "node": "src_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "format_serasa_cpf": {
+        "main": [
+          [
+            {
+              "node": "Utils - Serasa - CPF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "SERASA - CNPJ": {
+        "main": [
+          [
+            {
+              "node": "serasa_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils - BMP - CPF": {
+        "main": [
+          [
+            {
+              "node": "src_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils - Serasa - CPF": {
+        "main": [
+          [
+            {
+              "node": "serasa_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "SERASA - CPF": {
+        "main": [
+          [
+            {
+              "node": "serasa_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "relationships_cnpj": {
+        "main": [
+          [
+            {
+              "node": "Relaões CNPJ Vazio ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils - BDC - peoplev2 - addresses_extended_cnpj": {
+        "main": [
+          [
+            {
+              "node": "address_final_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "request_bdc_peoplev2_addresses_extended_cnpj": {
+        "main": [
+          [
+            {
+              "node": "BDC - peoplev2 - addresses_extended_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "BDC - peoplev2 - addresses_extended_cnpj": {
+        "main": [
+          [
+            {
+              "node": "address_final_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "format_peoplev2_ondemand_pf_antecedente": {
+        "main": [
+          [
+            {
+              "node": "Utils - BDC - peoplev2 - ondemand_pf_antecedente",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "request_bdc_peoplev2_ondemand_pf_antecedente": {
+        "main": [
+          [
+            {
+              "node": "BDC - peoplev2 - ondemand_pf_antecedente",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "format_peoplev2_addresses_extended_cnpj": {
+        "main": [
+          [
+            {
+              "node": "Utils - BDC - peoplev2 - addresses_extended_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "format_peoplev2_basic_data_cnpj": {
+        "main": [
+          [
+            {
+              "node": "Utils - BDC - peoplev2 - basic_data_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils - BDC - peoplev2 - ondemand_pf_antecedente": {
+        "main": [
+          [
+            {
+              "node": "antecedentes",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "BDC - peoplev2 - ondemand_pf_antecedente": {
+        "main": [
+          [
+            {
+              "node": "antecedentes",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "request_format_serasa_cpf": {
+        "main": [
+          [
+            {
+              "node": "SERASA - CPF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "request_bdc_peoplev2_ondemand_nada_consta": {
+        "main": [
+          [
+            {
+              "node": "BDC - peoplev2 - ondemand_nada_consta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "format_peoplev2_ondemand_nada_consta": {
+        "main": [
+          [
+            {
+              "node": "Utils - BDC - peoplev2 - ondemand_nada_consta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils - BDC - peoplev2 - ondemand_nada_consta": {
+        "main": [
+          [
+            {
+              "node": "mandatos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "BDC - peoplev2 - ondemand_nada_consta": {
+        "main": [
+          [
+            {
+              "node": "mandatos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "format_peoplev2_basic_data": {
+        "main": [
+          [
+            {
+              "node": "Utils - BDC - peoplev2 - basic_data",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "format_peoplev2_addresses_extended": {
+        "main": [
+          [
+            {
+              "node": "Utils - BDC - peoplev2 - addresses_extended",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils - BDC - peoplev2 - addresses_extended": {
+        "main": [
+          [
+            {
+              "node": "address_final_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "BDC - peoplev2 - addresses_extended": {
+        "main": [
+          [
+            {
+              "node": "address_final_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "request_bdc_peoplev2_addresses_extended": {
+        "main": [
+          [
+            {
+              "node": "BDC - peoplev2 - addresses_extended",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "basic_data_cnpj": {
+        "main": [
+          [
+            {
+              "node": "Dados Básicos CNPJ Vazio ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Qual API ?": {
+        "main": [
+          [
+            {
+              "node": "Qual End Point ?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Tipo 1 CPF ou 2 CNPJ ?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Pessoa Física ou Jurídica ?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Tipo de consulta ? DestravaAi",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "format_bdc_companies_relationships": {
+        "main": [
+          [
+            {
+              "node": "Utils - companies - relationships",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "O lead tem Serasa CNPJ no Catálogo ?": {
+        "main": [
+          [
+            {
+              "node": "format_serasa_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "request_format_serasa_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "O lead tem BMP CNPJ no Catálogo ?": {
+        "main": [
+          [
+            {
+              "node": "format_bmp_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "request_bmp_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "O lead tem Serasa CPF no Catálogo ?": {
+        "main": [
+          [
+            {
+              "node": "format_serasa_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "request_format_serasa_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "O lead tem BMP CPF no Catálogo ?": {
+        "main": [
+          [
+            {
+              "node": "format_bmp_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "request_bmp_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tem Mandatos No Catálogo ?": {
+        "main": [
+          [
+            {
+              "node": "format_peoplev2_ondemand_nada_consta",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "request_bdc_peoplev2_ondemand_nada_consta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tem Antecendentes No Catálogo ?": {
+        "main": [
+          [
+            {
+              "node": "format_peoplev2_ondemand_pf_antecedente",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "request_bdc_peoplev2_ondemand_pf_antecedente",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "CPF  tem Endereço Ext. no Catálogo ?": {
+        "main": [
+          [
+            {
+              "node": "format_peoplev2_addresses_extended",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "request_bdc_peoplev2_addresses_extended",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tipo 1 CPF ou 2 CNPJ ?": {
+        "main": [
+          [
+            {
+              "node": "O lead tem BMP CPF no Catálogo ?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "O lead tem BMP CNPJ no Catálogo ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Pessoa Física ou Jurídica ?": {
+        "main": [
+          [
+            {
+              "node": "O lead tem Serasa CPF no Catálogo ?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "O lead tem Serasa CNPJ no Catálogo ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Qual Dataset ? CNPJ": {
+        "main": [
+          [
+            {
+              "node": "O lead tem Relações no Catálogo ?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "O lead tem Dados Básicos no Catálogo ?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "O lead tem KYC no Catálogo ?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "O lead tem Processos no Catálogo ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados Básicos CNPJ Vazio ?": {
+        "main": [
+          [
+            {
+              "node": "O lead tem Endereço Ext. no Catálogo ?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "basic_data_cnpj_result",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "O lead tem Endereço Ext. no Catálogo ?": {
+        "main": [
+          [
+            {
+              "node": "format_peoplev2_addresses_extended_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "request_bdc_peoplev2_addresses_extended_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils - BDC - peoplev2 - basic_data_cnpj": {
+        "main": [
+          [
+            {
+              "node": "relationships_cnpj_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "request_bdc_peoplev2_basic_data_cnpj": {
+        "main": [
+          [
+            {
+              "node": "BDC - peoplev2 - basic_data_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "BDC - peoplev2 - basic_data_cnpj": {
+        "main": [
+          [
+            {
+              "node": "relationships_cnpj_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "request_bdc_peoplev2_basic_data": {
+        "main": [
+          [
+            {
+              "node": "BDC - peoplev2 - basic_data",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils - BDC - peoplev2 - basic_data": {
+        "main": [
+          [
+            {
+              "node": "relationships_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "BDC - peoplev2 - basic_data": {
+        "main": [
+          [
+            {
+              "node": "relationships_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "O lead tem Dados Basicos CPF ADM/SOCIO ?": {
+        "main": [
+          [
+            {
+              "node": "format_peoplev2_basic_data_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "request_bdc_peoplev2_basic_data_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Relaões CNPJ Vazio ?": {
+        "main": [
+          [
+            {
+              "node": "O lead tem Dados Basicos CPF ADM/SOCIO ?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "relationships_cnpj_result",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "O lead tem Relações no Catálogo ?": {
+        "main": [
+          [
+            {
+              "node": "format_bdc_companies_relationships",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "request_bdc_companies_relationships",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "O lead tem Dados Básicos no Catálogo ?": {
+        "main": [
+          [
+            {
+              "node": "format_bdc_companies_basic_data",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "request_bdc_companies_basic_data",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "O lead tem Dados Basicos CPF ADM/SOCIO ?1": {
+        "main": [
+          [
+            {
+              "node": "format_peoplev2_basic_data",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "request_bdc_peoplev2_basic_data",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Qual Dataset ? CPF": {
+        "main": [
+          [
+            {
+              "node": "O lead tem Dados Basicos CPF ADM/SOCIO ?1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "CPF  tem Endereço Ext. no Catálogo ?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Tem Antecendentes No Catálogo ?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Tem Mandatos No Catálogo ?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "O lead tem KYC CPF no Catálogo ?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "O lead tem Processos CPF no Catálogo ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Qual End Point ?": {
+        "main": [
+          [
+            {
+              "node": "Qual Dataset ? CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Qual Dataset ? CPF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "O lead tem KYC no Catálogo ?": {
+        "main": [
+          [
+            {
+              "node": "format_bdc_companies_kyc",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "request_bdc_companies_kyc",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils - companies - kyc": {
+        "main": [
+          [
+            {
+              "node": "kyc_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "request_bdc_companies_kyc": {
+        "main": [
+          [
+            {
+              "node": "BDC - companies - kyc",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "BDC - companies - kyc": {
+        "main": [
+          [
+            {
+              "node": "kyc_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "O lead tem Processos no Catálogo ?": {
+        "main": [
+          [
+            {
+              "node": "format_bdc_companies_processos",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "request_bdc_companies_processos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "format_bdc_companies_processos": {
+        "main": [
+          [
+            {
+              "node": "Utils - companies - processos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "format_bdc_companies_kyc": {
+        "main": [
+          [
+            {
+              "node": "Utils - companies - kyc",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils - companies - processos": {
+        "main": [
+          [
+            {
+              "node": "processos_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "request_bdc_companies_processos": {
+        "main": [
+          [
+            {
+              "node": "BDC - companies - processos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "BDC - companies - processos": {
+        "main": [
+          [
+            {
+              "node": "processos_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "O lead tem KYC CPF no Catálogo ?": {
+        "main": [
+          [
+            {
+              "node": "format_bdc_peoplev2_kyc",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "request_bdc_peoplev2_kyc",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "format_bdc_peoplev2_kyc": {
+        "main": [
+          [
+            {
+              "node": "Utils - peoplev2 - kyc",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils - peoplev2 - kyc": {
+        "main": [
+          [
+            {
+              "node": "kyc_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "request_bdc_peoplev2_kyc": {
+        "main": [
+          [
+            {
+              "node": "BDC - peoplev2 - kyc",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "O lead tem Processos CPF no Catálogo ?": {
+        "main": [
+          [
+            {
+              "node": "format_bdc_peoplev2_processos",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "request_bdc_peoplev2_processos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "format_bdc_peoplev2_processos": {
+        "main": [
+          [
+            {
+              "node": "Utils - peoplev2 - processos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils - peoplev2 - processos": {
+        "main": [
+          [
+            {
+              "node": "processos_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "request_bdc_peoplev2_processos": {
+        "main": [
+          [
+            {
+              "node": "BDC - peoplev2 - processos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "BDC - peoplev2 - kyc": {
+        "main": [
+          [
+            {
+              "node": "kyc_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "BDC - peoplev2 - processos": {
+        "main": [
+          [
+            {
+              "node": "processos_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "O lead tem DestravaAi CPF no Catálogo ?": {
+        "main": [
+          [
+            {
+              "node": "format_destravaai_receivable",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "request_format_destravaai_receivable",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tipo de consulta ? DestravaAi": {
+        "main": [
+          [
+            {
+              "node": "O lead tem DestravaAi CPF no Catálogo ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "format_destravaai_receivable": {
+        "main": [
+          [
+            {
+              "node": "Utils - DestravaAi - Receivable",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils - DestravaAi - Receivable": {
+        "main": [
+          [
+            {
+              "node": "dastravaai_receivable",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "request_format_destravaai_receivable": {
+        "main": [
+          [
+            {
+              "node": "DestravaAi - Receivable",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "DestravaAi - Receivable": {
+        "main": [
+          [
+            {
+              "node": "dastravaai_receivable",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "lead": [
+        {
+          "json": {
+            "api": "BMP",
+            "endpoint": "N/A",
+            "type": "2",
+            "catalogo_de_variaveis": {
+              "QuerySerasa_F": {
+                "date": "2025-03-11T13:05:29",
+                "cpf_cnpj": "08872717400",
+                "bureau": "QuerySerasa",
+                "query": "F",
+                "input_payload": {},
+                "output_payload": {
+                  "data": "B49C      000008872717400FC     CH0000200            S99SFIMAN                            SS   00000000000 00      000000000000000 C83892A S100        000000000000000 000000000               00  2025031113052900160016    0017                                                                0000000000000000                3#                                  00                                         P002RE02                     REHM                                                                                  N00100PPBPCBN0N   145884                          S                                                                N00300000000000000000000000  RXPS                                                                                  N20000JOANDERSON ALVES DE LIMA                                              190719902 27112024N                    N20001JOSEANE LIMA DE PAULA                                                                                        N21099NAO CONSTAM OCORRENCIAS                                                                                      N23099NAO CONSTAM OCORRENCIAS                                                                                      N24099NAO CONSTAM OCORRENCIAS                                                                                      N25099NAO CONSTAM OCORRENCIAS                                                                                      N27099NAO CONSTAM OCORRENCIAS                                                                                      N44099NAO CONSTAM INFORMACOES                                                                                      N69000JOANDERSON ALVES DE LIMA 08872717400    1503672700010410000PB2012021220241129N                               N6900052 150 427 JOANDERSON ALVES DE LIMA ME  5215042700017010000PB2023091220241221N                               N6900058 108 299 JOANDERSON ALVES DE LIMA ME  5810829900018210000PB2024111420250207N                               F900REHM000551E     19,50ESPACO RESERVADO PARA MENSAGEM DA INSTITUICAO                                         HRLNT999000PROCESSO ENCERRADO NORMALMENTE                                                                             \u0003\n"
+                }
+              },
+              "QueryBMP_1": {
+                "date": "2025-03-11T13:05:28",
+                "cpf_cnpj": "08872717400",
+                "bureau": "QueryBMP",
+                "query": "1",
+                "input_payload": {},
+                "output_payload": {
+                  "cnpjDaIfSolicitante": null,
+                  "codigoDoCliente": "08872717400",
+                  "coobrigacaoAssumida": 0,
+                  "coobrigacaoAssumidaSpecified": true,
+                  "coobrigacaoRecebida": 0,
+                  "coobrigacaoRecebidaSpecified": true,
+                  "dataBaseConsultada": "2024-12",
+                  "dataInicioRelacionamento": "2010-03-02",
+                  "listaDeMensagensDeValidacao": null,
+                  "listaDeResumoDasOperacoes": [
+                    {
+                      "listaDeVencimentos": [
+                        {
+                          "codigoVencimento": "v140",
+                          "valorVencimento": 3769.2,
+                          "valorVencimentoSpecified": true
+                        },
+                        {
+                          "codigoVencimento": "v150",
+                          "valorVencimento": 1597.91,
+                          "valorVencimentoSpecified": true
+                        },
+                        {
+                          "codigoVencimento": "v110",
+                          "valorVencimento": 16329.82,
+                          "valorVencimentoSpecified": true
+                        },
+                        {
+                          "codigoVencimento": "v120",
+                          "valorVencimento": 3221.95,
+                          "valorVencimentoSpecified": true
+                        },
+                        {
+                          "codigoVencimento": "v130",
+                          "valorVencimento": 1622.34,
+                          "valorVencimentoSpecified": true
+                        }
+                      ],
+                      "modalidade": "1304",
+                      "variacaoCambial": "N"
+                    },
+                    {
+                      "listaDeVencimentos": [
+                        {
+                          "codigoVencimento": "v40",
+                          "valorVencimento": 4722.65,
+                          "valorVencimentoSpecified": true
+                        },
+                        {
+                          "codigoVencimento": "v20",
+                          "valorVencimento": 4249.67,
+                          "valorVencimentoSpecified": true
+                        }
+                      ],
+                      "modalidade": "1904",
+                      "variacaoCambial": "N"
+                    },
+                    {
+                      "listaDeVencimentos": [
+                        {
+                          "codigoVencimento": "v110",
+                          "valorVencimento": 174.09,
+                          "valorVencimentoSpecified": true
+                        }
+                      ],
+                      "modalidade": "0204",
+                      "variacaoCambial": "N"
+                    },
+                    {
+                      "listaDeVencimentos": [
+                        {
+                          "codigoVencimento": "v140",
+                          "valorVencimento": 4332.08,
+                          "valorVencimentoSpecified": true
+                        },
+                        {
+                          "codigoVencimento": "v150",
+                          "valorVencimento": 7742.47,
+                          "valorVencimentoSpecified": true
+                        },
+                        {
+                          "codigoVencimento": "v160",
+                          "valorVencimento": 12396.27,
+                          "valorVencimentoSpecified": true
+                        },
+                        {
+                          "codigoVencimento": "v110",
+                          "valorVencimento": 1594.06,
+                          "valorVencimentoSpecified": true
+                        },
+                        {
+                          "codigoVencimento": "v120",
+                          "valorVencimento": 1553.89,
+                          "valorVencimentoSpecified": true
+                        },
+                        {
+                          "codigoVencimento": "v130",
+                          "valorVencimento": 1518.49,
+                          "valorVencimentoSpecified": true
+                        },
+                        {
+                          "codigoVencimento": "v165",
+                          "valorVencimento": 4933.9,
+                          "valorVencimentoSpecified": true
+                        }
+                      ],
+                      "modalidade": "0401",
+                      "variacaoCambial": "N"
+                    }
+                  ],
+                  "quantidadeDeInstituicoes": 13,
+                  "quantidadeDeOperacoes": 44,
+                  "quantidadeOperacoesDiscordancia": 0,
+                  "quantidadeOperacoesSubJudice": 0,
+                  "responsabilidadeTotalDiscordancia": 0,
+                  "responsabilidadeTotalDiscordanciaSpecified": true,
+                  "responsabilidadeTotalSubJudice": 0,
+                  "responsabilidadeTotalSubJudiceSpecified": true,
+                  "riscoIndiretoVendor": 0,
+                  "riscoIndiretoVendorSpecified": true,
+                  "tipoDoCliente": "1"
+                }
+              },
+              "QueryBDC_peoplev2_basic_data": {
+                "date": "2025-03-11T11:53:38",
+                "cpf_cnpj": "08872717400",
+                "bureau": "QueryBDC",
+                "query": "peoplev2_basic_data",
+                "input_payload": {},
+                "output_payload": {
+                  "ElapsedMilliseconds": 68,
+                  "Evidences": {},
+                  "QueryDate": "2025-03-11T14:53:38.0946785Z",
+                  "QueryId": "bacd8a2a-51af-4801-9f41-e898c07d686b",
+                  "Result": [
+                    {
+                      "BasicData": {
+                        "Age": 34,
+                        "Aliases": {
+                          "CommonName": "JOANDERSON LIMA",
+                          "StandardizedName": "JOANDERSOM ALVE LIMA"
+                        },
+                        "AlternativeIdNumbers": {
+                          "RG - PB": "3341256",
+                          "SocialSecurityNumber": "16192716049"
+                        },
+                        "BirthCountry": "BRASILEIRA",
+                        "BirthDate": "1990-07-19T00:00:00Z",
+                        "CapturedBirthDateFromRFSource": "1990-07-19",
+                        "ChineseSign": "Horse",
+                        "CreationDate": "2016-08-23T00:00:00Z",
+                        "ExtendedDocumentInformation": {
+                          "RG - PB": {
+                            "CreationDate": "2019-10-24T21:57:47.553Z",
+                            "DocumentIssuingAgency": "SSP",
+                            "DocumentIssuingStateCode": "PB",
+                            "DocumentLast4Digits": "1256",
+                            "DocumentNumber": "3341256",
+                            "LastUpdateDate": "2019-10-24T21:57:47.553Z",
+                            "Sources": [
+                              "MEI-RF"
+                            ]
+                          }
+                        },
+                        "FatherName": "",
+                        "FirstAndLastNameUniquenessScore": 0.00571429,
+                        "FirstNameUniquenessScore": 0.001,
+                        "Gender": "M",
+                        "HasObitIndication": false,
+                        "IsValidBirthDateInRFSource": true,
+                        "LastUpdateDate": "2025-01-21T00:00:00",
+                        "MaritalStatusData": {},
+                        "MotherName": "JOSEANE LIMA DE PAULA",
+                        "Name": "JOANDERSON ALVES DE LIMA",
+                        "NameUniquenessScore": 0.996,
+                        "NameWordCount": 4,
+                        "NumberOfFullNameNamesakes": 2,
+                        "TaxIdCountry": "BRAZIL",
+                        "TaxIdFiscalRegion": "AL-PB-PE-RN",
+                        "TaxIdNumber": "08872717400",
+                        "TaxIdOrigin": "RECEITA FEDERAL",
+                        "TaxIdStatus": "REGULAR",
+                        "TaxIdStatusDate": "2025-01-21T00:00:00",
+                        "TaxIdStatusRegistrationDate": "2007-05-12T00:00:00Z",
+                        "ZodiacSign": "CANCER"
+                      },
+                      "MatchKeys": "doc{08872717400}"
+                    }
+                  ],
+                  "Status": {
+                    "basic_data": [
+                      {
+                        "Code": 0,
+                        "Message": "OK"
+                      }
+                    ]
+                  }
+                }
+              },
+              "QueryBDC_ondemand_sintegra_company": {
+                "date": "2025-03-11T16:04:37",
+                "cpf_cnpj": "58108299000182",
+                "bureau": "QueryBDC",
+                "query": "ondemand_sintegra_company",
+                "input_payload": {
+                  "Datasets": "ondemand_sintegra_company",
+                  "q": "doc{58108299000182}"
+                },
+                "output_payload": {
+                  "ElapsedMilliseconds": 4534,
+                  "Evidences": {},
+                  "QueryDate": "2025-03-11T16:04:33.2564871Z",
+                  "QueryId": "44f1fe11-2652-421b-97a6-ed48fd58ff25",
+                  "Result": [
+                    {
+                      "MatchKeys": "doc{58108299000182}",
+                      "OnlineQuery": [
+                        {
+                          "InputParameters": "doc{58108299000182}",
+                          "Origin": "Sintegra",
+                          "QueryDate": "2025-03-11T16:04:33.3598777Z",
+                          "QueryResultData": {
+                            "Address.AddressCore.0": null,
+                            "Address.City.0": "Campina Grande",
+                            "Address.Complement.0": null,
+                            "Address.Country.0": null,
+                            "Address.Neighborhood.0": null,
+                            "Address.Number.0": null,
+                            "Address.State.0": "PB",
+                            "Address.ZipCode.0": null,
+                            "BusinessName": null,
+                            "Companysize": "Não informado",
+                            "Docnumberstatus": "Sem restrição",
+                            "FoundingDate": "14/11/2024",
+                            "Historic.DocNumber.0": "58.108.299/0001-82",
+                            "Historic.DocNumberStatus.0": "Sem restrição",
+                            "Historic.ICMSRule.0": "SIMEI",
+                            "Historic.Nsu.0": "221867842",
+                            "Historic.Reason.0": "Inclusão",
+                            "Historic.State.0": "PB - 25",
+                            "Historic.StateRegistrationNumber.0": "165118237",
+                            "Historic.StateRegistrationStatus.0": "Habilitado",
+                            "Historic.StatusDate.0": "01/01/0001",
+                            "Historic.UpdateDate.0": "14/11/2024",
+                            "IdNumber": "58108299000182",
+                            "Maincnae": "4541206",
+                            "OfficialName": "58.108.299 JOANDERSON ALVES DE LIMA",
+                            "Presumedcredit": "Não informado",
+                            "Producertype": "Não",
+                            "RawResultFileType_58.108.299 JOANDERSON ALVES DE LIMA": "html",
+                            "RawResultFile_58.108.299 JOANDERSON ALVES DE LIMA": "https://s3.amazonaws.com/BigDataCorp/BigBoost/RawResults/On_Demand/44f1fe11-2652-421b-97a6-ed48fd58ff25_ondemand_sintegra_company_20250311.html",
+                            "State": "PB (CCC)",
+                            "StateRegistration": "165118237",
+                            "StateRegistrationEntry.PB.Number": "165118237",
+                            "StateRegistrationEntry.PB.Status": "Habilitado",
+                            "StateRegistrationEntry.PB.Type": "IE Normal",
+                            "Stateregistrationinformationasrecipient": "Obrigatória",
+                            "Stateregistrationtype": "IE Normal",
+                            "StatesData.AddressState.0": "PB",
+                            "StatesData.DocNumber.0": "58.108.299/0001-82",
+                            "StatesData.DocNumberStatus.0": "Sem restrição",
+                            "StatesData.StateOfRegistration.0": "PB - 25",
+                            "StatesData.StateRegistrationNumber.0": "165118237",
+                            "StatesData.StateRegistrationStatus.0": "Habilitado",
+                            "StatesData.StateRegistrationType.0": "IE Normal",
+                            "Status": "Habilitado",
+                            "Tributationregime": "SIMEI"
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "Status": {
+                    "ondemand_sintegra_company": [
+                      {
+                        "Code": 0,
+                        "Message": "OK"
+                      }
+                    ]
+                  }
+                }
+              },
+              "QueryBDC_basic_data": {
+                "date": "2025-03-11T16:04:31",
+                "cpf_cnpj": "58108299000182",
+                "bureau": "QueryBDC",
+                "query": "basic_data",
+                "input_payload": {
+                  "Datasets": "basic_data",
+                  "q": "doc{58108299000182}"
+                },
+                "output_payload": {
+                  "ElapsedMilliseconds": 53,
+                  "Evidences": {},
+                  "QueryDate": "2025-03-11T16:04:31.4660261Z",
+                  "QueryId": "f1a225eb-11ce-46f3-88b6-63e8b33eafb1",
+                  "Result": [
+                    {
+                      "BasicData": {
+                        "Activities": [
+                          {
+                            "Activity": "COMERCIO A VAREJO DE PECAS E ACESSORIOS NOVOS PARA MOTOCICLETAS E MOTONETAS",
+                            "Code": "4541206",
+                            "IsMain": true
+                          }
+                        ],
+                        "AdditionalOutputData": {
+                          "COMEX": "",
+                          "COMEXLastUpdate": "0001-01-01T12:00:00Z",
+                          "Capital": "TRINTA MIL REAIS",
+                          "CapitalRS": "30000.00",
+                          "NIRE": "",
+                          "NIRECompanySize": "",
+                          "NIREHeadquartersCapital": "0",
+                          "NIREHeadquartersType": "",
+                          "NIRELastCaptureDate": "0001-01-01T12:00:00Z"
+                        },
+                        "Age": 0,
+                        "Aliases": {
+                          "UnstandardizedRFOfficialName": "58.108.299 JOANDERSON ALVES DE LIMA",
+                          "UnstandardizedRFTradeName": ""
+                        },
+                        "AlternativeIdNumbers": {},
+                        "CompanyType_ReceitaFederal": "ME",
+                        "CreationDate": "2024-11-14T00:00:00Z",
+                        "FoundedDate": "2024-11-14T00:00:00Z",
+                        "HeadquarterState": "PB",
+                        "HistoricalData": {
+                          "HasChangedTaxRegime": false,
+                          "HasChangedTradeName": false,
+                          "HistoricalDataEvolution": {
+                            "TaxRegime": [
+                              {
+                                "StartDate": "2024-11-14T00:00:00Z",
+                                "Value": "MEI"
+                              }
+                            ],
+                            "TradeName": [
+                              {
+                                "StartDate": "2024-11-14T00:00:00Z",
+                                "Value": ""
+                              }
+                            ]
+                          }
+                        },
+                        "IsConglomerate": false,
+                        "IsHeadquarter": true,
+                        "LastUpdateDate": "2025-02-08T00:00:00Z",
+                        "LegalNature": {
+                          "Activity": "EMPRESARIO (INDIVIDUAL)",
+                          "Code": "2135"
+                        },
+                        "NameUniquenessScore": 1,
+                        "OfficialName": "58.108.299 JOANDERSON ALVES DE LIMA",
+                        "OfficialNameUniquenessScore": 1,
+                        "SpecialSituation": "",
+                        "TaxIdCountry": "Brazil",
+                        "TaxIdNumber": "58108299000182",
+                        "TaxIdOrigin": "Receita Federal",
+                        "TaxIdStatus": "ATIVA",
+                        "TaxIdStatusDate": "2025-02-08T00:00:00Z",
+                        "TaxIdStatusRegistrationDate": "2024-11-14T00:00:00Z",
+                        "TaxRegime": "MEI",
+                        "TaxRegimes": {
+                          "Simples": true
+                        },
+                        "TradeName": "",
+                        "TradeNameUniquenessScore": -1
+                      },
+                      "MatchKeys": "doc{58108299000182}"
+                    }
+                  ],
+                  "Status": {
+                    "basic_data": [
+                      {
+                        "Code": 0,
+                        "Message": "OK"
+                      }
+                    ]
+                  }
+                }
+              },
+              "QueryBDC_relationships.filter(relatedentitytaxidtype=cpf)": {
+                "date": "2025-03-11T16:04:29",
+                "cpf_cnpj": "58108299000182",
+                "bureau": "QueryBDC",
+                "query": "relationships.filter(relatedentitytaxidtype=cpf)",
+                "input_payload": {
+                  "Datasets": "relationships.filter(relatedentitytaxidtype=cpf)",
+                  "q": "doc{58108299000182}"
+                },
+                "output_payload": {
+                  "ElapsedMilliseconds": 199,
+                  "Evidences": {},
+                  "QueryDate": "2025-03-11T16:04:29.1386324Z",
+                  "QueryId": "6cd96e9e-d625-4a10-bfc5-a96f8ec25c06",
+                  "Result": [
+                    {
+                      "MatchKeys": "doc{58108299000182}",
+                      "Relationships": {
+                        "CurrentRelationships": [
+                          {
+                            "CreationDate": "2024-11-14T00:00:00Z",
+                            "LastUpdateDate": "2025-02-08T00:00:00Z",
+                            "RelatedEntityName": "JOANDERSON ALVES DE LIMA",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "08872717400",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "INFERENCE",
+                            "RelationshipEndDate": "9999-12-31T23:59:59.9999999",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "OWNER",
+                            "RelationshipStartDate": "2024-11-14T00:00:00Z",
+                            "RelationshipType": "QSA"
+                          }
+                        ],
+                        "HistoricalRelationships": [],
+                        "IsFamilyCompany": false,
+                        "IsFamilyOperated": false,
+                        "Relationships": [
+                          {
+                            "CreationDate": "2024-11-14T00:00:00Z",
+                            "LastUpdateDate": "2025-02-08T00:00:00Z",
+                            "RelatedEntityName": "JOANDERSON ALVES DE LIMA",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "08872717400",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "INFERENCE",
+                            "RelationshipEndDate": "9999-12-31T23:59:59.9999999",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "OWNER",
+                            "RelationshipStartDate": "2024-11-14T00:00:00Z",
+                            "RelationshipType": "QSA"
+                          }
+                        ],
+                        "TotalEmployees": 0,
+                        "TotalOwned": 0,
+                        "TotalOwners": 1,
+                        "TotalRelationships": 1
+                      }
+                    }
+                  ],
+                  "Status": {
+                    "relationships": [
+                      {
+                        "Code": 0,
+                        "Message": "OK"
+                      }
+                    ]
+                  }
+                }
+              },
+              "QueryBDC_addresses_extended": {
+                "date": "2025-03-11T16:04:27",
+                "cpf_cnpj": "58108299000182",
+                "bureau": "QueryBDC",
+                "query": "addresses_extended",
+                "input_payload": {
+                  "Datasets": "addresses_extended",
+                  "q": "doc{58108299000182}"
+                },
+                "output_payload": {
+                  "ElapsedMilliseconds": 991,
+                  "Evidences": {},
+                  "QueryDate": "2025-03-11T16:04:26.7435474Z",
+                  "QueryId": "f2b59763-21d7-4548-908e-62d67ade48cd",
+                  "Result": [
+                    {
+                      "ExtendedAddresses": {
+                        "Addresses": [
+                          {
+                            "AddressCurrentlyInRFSite": true,
+                            "AddressEntityAge": 86,
+                            "AddressEntityBadPassages": 0,
+                            "AddressEntityCrawlingPassages": 2,
+                            "AddressEntityMonthAveragePassages": 0.71,
+                            "AddressEntityQueryPassages": -1,
+                            "AddressEntityTotalPassages": 2,
+                            "AddressEntityValidationPassages": 0,
+                            "AddressGlobalAge": 4787,
+                            "AddressGlobalBadPassages": 0,
+                            "AddressGlobalCrawlingPassages": 27,
+                            "AddressGlobalMonthAveragePassages": 0.17,
+                            "AddressGlobalQueryPassages": -1,
+                            "AddressGlobalTotalPassages": 27,
+                            "AddressGlobalValidationPassages": 0,
+                            "AddressMain": "R LEONTINA TAVARES DE MACEDO",
+                            "AddressNumberOfEntities": 9,
+                            "BuildCode": "E5D5BF746F9846D82AA2B722EDDE2C49085DE10B8C66DACB201D3AEB2831783B",
+                            "BuildingCode": "E5D5BF746F9846D82AA2B722EDDE2C49085DE10B8C66DACB201D3AEB2831783B",
+                            "City": "CAMPINA GRANDE",
+                            "Complement": "",
+                            "ComplementType": "",
+                            "Country": "BRASIL",
+                            "CreationDate": "2024-11-14T00:00:00Z",
+                            "EntityFirstPassageDate": "2024-11-14T00:00:00Z",
+                            "EntityLastPassageDate": "2025-02-08T00:00:00Z",
+                            "GlobalFirstPassageDate": "2012-01-01T00:00:00Z",
+                            "GlobalLastPassageDate": "2025-02-08T00:00:00Z",
+                            "HasOptIn": false,
+                            "HouseholdCode": "E5D5BF746F9846D82AA2B722EDDE2C49085DE10B8C66DACB201D3AEB2831783B",
+                            "IsActive": true,
+                            "IsIndirectAssociation": false,
+                            "IsLikelyFromAccountant": false,
+                            "IsMainForEntity": true,
+                            "IsMainForOtherEntity": true,
+                            "IsRatified": true,
+                            "IsRecentForEntity": true,
+                            "IsRecentForOtherEntity": true,
+                            "LastUpdateDate": "2025-02-08T00:00:00Z",
+                            "LastValidationDate": "0001-01-01T00:00:00",
+                            "Latitude": -7.21746,
+                            "Longitude": -35.86425,
+                            "Neighborhood": "MONTE CASTELO",
+                            "Number": "S/N",
+                            "OwnHeadquarters": false,
+                            "Priority": 1,
+                            "State": "PB",
+                            "Title": "",
+                            "Type": "OFFICIAL REGISTRATION",
+                            "Typology": "R",
+                            "ZipCode": "58407010"
+                          }
+                        ],
+                        "NewestAddressPassageDate": "2025-02-08T00:00:00Z",
+                        "OldestAddressPassageDate": "2024-11-14T00:00:00Z",
+                        "TotalActiveAddresses": 1,
+                        "TotalAddressPassages": 2,
+                        "TotalAddresses": 1,
+                        "TotalBadAddressPassages": 0,
+                        "TotalPersonalAddresses": 1,
+                        "TotalUniqueAddresses": 0,
+                        "TotalWorkAddresses": 0
+                      },
+                      "MatchKeys": "doc{58108299000182}"
+                    }
+                  ],
+                  "Status": {
+                    "addresses_extended": [
+                      {
+                        "Code": 0,
+                        "Message": "OK"
+                      }
+                    ]
+                  }
+                }
+              },
+              "QuerySerasa_J": {
+                "date": "2025-03-11T13:05:16",
+                "cpf_cnpj": "58108299000182",
+                "bureau": "QuerySerasa",
+                "query": "J",
+                "input_payload": {},
+                "output_payload": {
+                  "data": "B49C      058108299000182JC     CH0000200            S99SFIMAN                            SS   00000000000 00      000000000000000 C83892A S100        000000000000000 000000000               00  2025031113051600150015    0016                                                                0000000000000000                3#                                  00                                         P002RE02                     REH3                                                                                  N00100PPBPBJN0N   143016                          S                                                                N00300000000000000000000000  NRC5                                                                                  N2000058.108.299 JOANDERSON ALVES DE LIMA ME                                141120242 08022025N                    N20001                                                                                                             N21099NAO CONSTAM OCORRENCIAS                                                                                      N23099NAO CONSTAM OCORRENCIAS                                                                                      N24099NAO CONSTAM OCORRENCIAS                                                                                      N25099NAO CONSTAM OCORRENCIAS                                                                                      N27099NAO CONSTAM OCORRENCIAS                                                                                      N44099NAO CONSTAM INFORMACOES                                                                                      N70000F00008872717400JOANDERSON ALVES DE LIMA                                    1000NCF                           N70500F00008872717400JOANDERSON ALVES DE LIMA                                    ADMINISTR           NC            F900REH30011103202513:05:16029800291PROBABILIDADE DE INADIMPLENCIA:  2,91%                                         T999000PROCESSO ENCERRADO NORMALMENTE                                                                             \u0003\n"
+                }
+              },
+              "QueryBMP_2": {
+                "date": "2025-03-11T13:05:14",
+                "cpf_cnpj": "58108299000182",
+                "bureau": "QueryBMP",
+                "query": "2",
+                "input_payload": {},
+                "output_payload": {
+                  "cnpjDaIfSolicitante": null,
+                  "codigoDoCliente": "58108299",
+                  "coobrigacaoAssumida": 0,
+                  "coobrigacaoAssumidaSpecified": true,
+                  "coobrigacaoRecebida": 0,
+                  "coobrigacaoRecebidaSpecified": true,
+                  "dataBaseConsultada": "2024-12",
+                  "dataInicioRelacionamento": null,
+                  "listaDeMensagensDeValidacao": [
+                    {
+                      "codigo": "50",
+                      "mensagem": "Cliente não possui dados no SCR na data-base."
+                    }
+                  ],
+                  "listaDeResumoDasOperacoes": [],
+                  "quantidadeDeInstituicoes": 0,
+                  "quantidadeDeOperacoes": 0,
+                  "quantidadeOperacoesDiscordancia": 0,
+                  "quantidadeOperacoesSubJudice": 0,
+                  "responsabilidadeTotalDiscordancia": 0,
+                  "responsabilidadeTotalDiscordanciaSpecified": true,
+                  "responsabilidadeTotalSubJudice": 0,
+                  "responsabilidadeTotalSubJudiceSpecified": true,
+                  "riscoIndiretoVendor": 0,
+                  "riscoIndiretoVendorSpecified": true,
+                  "tipoDoCliente": "2"
+                }
+              },
+              "QueryBDC_companies_basic_data": {
+                "date": "2025-03-11T13:05:07",
+                "cpf_cnpj": "58108299000182",
+                "bureau": "QueryBDC",
+                "query": "companies_basic_data",
+                "input_payload": {},
+                "output_payload": {
+                  "ElapsedMilliseconds": 66,
+                  "Evidences": {},
+                  "QueryDate": "2025-03-11T16:05:06.9417833Z",
+                  "QueryId": "d2bc62d3-44e1-4bd5-9b4a-6101c3578576",
+                  "Result": [
+                    {
+                      "BasicData": {
+                        "Activities": [
+                          {
+                            "Activity": "COMERCIO A VAREJO DE PECAS E ACESSORIOS NOVOS PARA MOTOCICLETAS E MOTONETAS",
+                            "Code": "4541206",
+                            "IsMain": true
+                          }
+                        ],
+                        "AdditionalOutputData": {
+                          "COMEX": "",
+                          "COMEXLastUpdate": "0001-01-01T12:00:00Z",
+                          "Capital": "TRINTA MIL REAIS",
+                          "CapitalRS": "30000.00",
+                          "NIRE": "",
+                          "NIRECompanySize": "",
+                          "NIREHeadquartersCapital": "0",
+                          "NIREHeadquartersType": "",
+                          "NIRELastCaptureDate": "0001-01-01T12:00:00Z"
+                        },
+                        "Age": 0,
+                        "Aliases": {
+                          "UnstandardizedRFOfficialName": "58.108.299 JOANDERSON ALVES DE LIMA",
+                          "UnstandardizedRFTradeName": ""
+                        },
+                        "AlternativeIdNumbers": {},
+                        "CompanyType_ReceitaFederal": "ME",
+                        "CreationDate": "2024-11-14T00:00:00Z",
+                        "FoundedDate": "2024-11-14T00:00:00Z",
+                        "HeadquarterState": "PB",
+                        "HistoricalData": {
+                          "HasChangedTaxRegime": false,
+                          "HasChangedTradeName": false,
+                          "HistoricalDataEvolution": {
+                            "TaxRegime": [
+                              {
+                                "StartDate": "2024-11-14T00:00:00Z",
+                                "Value": "MEI"
+                              }
+                            ],
+                            "TradeName": [
+                              {
+                                "StartDate": "2024-11-14T00:00:00Z",
+                                "Value": ""
+                              }
+                            ]
+                          }
+                        },
+                        "IsConglomerate": false,
+                        "IsHeadquarter": true,
+                        "LastUpdateDate": "2025-02-08T00:00:00Z",
+                        "LegalNature": {
+                          "Activity": "EMPRESARIO (INDIVIDUAL)",
+                          "Code": "2135"
+                        },
+                        "NameUniquenessScore": 1,
+                        "OfficialName": "58.108.299 JOANDERSON ALVES DE LIMA",
+                        "OfficialNameUniquenessScore": 1,
+                        "SpecialSituation": "",
+                        "TaxIdCountry": "Brazil",
+                        "TaxIdNumber": "58108299000182",
+                        "TaxIdOrigin": "Receita Federal",
+                        "TaxIdStatus": "ATIVA",
+                        "TaxIdStatusDate": "2025-02-08T00:00:00Z",
+                        "TaxIdStatusRegistrationDate": "2024-11-14T00:00:00Z",
+                        "TaxRegime": "MEI",
+                        "TaxRegimes": {
+                          "Simples": true
+                        },
+                        "TradeName": "",
+                        "TradeNameUniquenessScore": -1
+                      },
+                      "MatchKeys": "doc{58108299000182}"
+                    }
+                  ],
+                  "Status": {
+                    "basic_data": [
+                      {
+                        "Code": 0,
+                        "Message": "OK"
+                      }
+                    ]
+                  }
+                }
+              },
+              "QueryBDC_companies_kyc": {
+                "date": "2025-03-11T13:05:11",
+                "cpf_cnpj": "58108299000182",
+                "bureau": "QueryBDC",
+                "query": "companies_kyc",
+                "input_payload": {},
+                "output_payload": {
+                  "ElapsedMilliseconds": 186,
+                  "Evidences": {},
+                  "QueryDate": "2025-03-11T16:05:10.8812172Z",
+                  "QueryId": "d93378f4-73c1-4c35-b4fb-6eb030b4e398",
+                  "Result": [
+                    {
+                      "KycData": {
+                        "IsCurrentlyElectoralDonor": false,
+                        "IsCurrentlyPEP": false,
+                        "IsCurrentlySanctioned": false,
+                        "IsHistoricalElectoralDonor": false,
+                        "Last180DaysSanctions": 0,
+                        "Last30DaysSanctions": 0,
+                        "Last365DaysSanctions": 0,
+                        "Last3YearsPEPOccurence": 0,
+                        "Last5PlusYearsPEPOccurence": 0,
+                        "Last5YearsPEPOccurence": 0,
+                        "Last90DaysSanctions": 0,
+                        "LastYearPEPOccurence": 0,
+                        "PEPHistory": [],
+                        "SanctionsHistory": [],
+                        "TotalElectoralDonationAmount": 0,
+                        "TotalElectoralDonationAmountLastTwoElections": 0,
+                        "TotalElectoralDonations": 0,
+                        "TotalElectoralDonationsLastTwoElections": 0,
+                        "WasPreviouslySanctioned": false
+                      },
+                      "MatchKeys": "doc{58108299000182}"
+                    }
+                  ],
+                  "Status": {
+                    "kyc": [
+                      {
+                        "Code": 0,
+                        "Message": "OK"
+                      }
+                    ]
+                  }
+                }
+              },
+              "QueryBDC_companies_processos": {
+                "date": "2025-03-11T13:05:11",
+                "cpf_cnpj": "58108299000182",
+                "bureau": "QueryBDC",
+                "query": "companies_processos",
+                "input_payload": {},
+                "output_payload": {
+                  "ElapsedMilliseconds": 177,
+                  "Evidences": {},
+                  "QueryDate": "2025-03-11T16:05:11.7675474Z",
+                  "QueryId": "428c1b47-cc3c-499f-a26b-15f94243c79b",
+                  "Result": [
+                    {
+                      "Lawsuits": {
+                        "Last180DaysLawsuits": 0,
+                        "Last30DaysLawsuits": 0,
+                        "Last365DaysLawsuits": 0,
+                        "Last90DaysLawsuits": 0,
+                        "Lawsuits": [],
+                        "TotalLawsuits": 0,
+                        "TotalLawsuitsAsAuthor": 0,
+                        "TotalLawsuitsAsDefendant": 0,
+                        "TotalLawsuitsAsOther": 0
+                      },
+                      "MatchKeys": "doc{58108299000182}"
+                    }
+                  ],
+                  "Status": {
+                    "processes": [
+                      {
+                        "Code": 0,
+                        "Message": "OK"
+                      }
+                    ]
+                  }
+                }
+              },
+              "QueryBDC_relationships": {
+                "date": "2025-03-11T13:05:04",
+                "cpf_cnpj": "58108299000182",
+                "bureau": "QueryBDC",
+                "query": "relationships",
+                "input_payload": {},
+                "output_payload": {
+                  "ElapsedMilliseconds": 70,
+                  "Evidences": {},
+                  "QueryDate": "2025-03-11T16:05:04.4045328Z",
+                  "QueryId": "9240c9ac-5472-4471-b7f6-9a7a67fce42a",
+                  "Result": [
+                    {
+                      "MatchKeys": "doc{58108299000182}",
+                      "Relationships": {
+                        "CurrentRelationships": [
+                          {
+                            "CreationDate": "2024-11-14T00:00:00Z",
+                            "LastUpdateDate": "2025-02-08T00:00:00Z",
+                            "RelatedEntityName": "JOANDERSON ALVES DE LIMA",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "08872717400",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "INFERENCE",
+                            "RelationshipEndDate": "9999-12-31T23:59:59.9999999",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "OWNER",
+                            "RelationshipStartDate": "2024-11-14T00:00:00Z",
+                            "RelationshipType": "QSA"
+                          }
+                        ],
+                        "HistoricalRelationships": [],
+                        "IsFamilyCompany": false,
+                        "IsFamilyOperated": false,
+                        "Relationships": [
+                          {
+                            "CreationDate": "2024-11-14T00:00:00Z",
+                            "LastUpdateDate": "2025-02-08T00:00:00Z",
+                            "RelatedEntityName": "JOANDERSON ALVES DE LIMA",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "08872717400",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "INFERENCE",
+                            "RelationshipEndDate": "9999-12-31T23:59:59.9999999",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "OWNER",
+                            "RelationshipStartDate": "2024-11-14T00:00:00Z",
+                            "RelationshipType": "QSA"
+                          }
+                        ],
+                        "TotalEmployees": 0,
+                        "TotalOwned": 0,
+                        "TotalOwners": 1,
+                        "TotalRelationships": 1
+                      }
+                    }
+                  ],
+                  "Status": {
+                    "relationships": [
+                      {
+                        "Code": 0,
+                        "Message": "OK"
+                      }
+                    ]
+                  }
+                }
+              },
+              "QueryBlips_score": {
+                "date": "2025-03-11T12:05:17",
+                "cpf_cnpj": "58108299000182",
+                "bureau": "QueryBlips",
+                "query": "score",
+                "input_payload": {},
+                "output_payload": {
+                  "score": {
+                    "observacoes": [
+                      "1. O score de saída do modelo está entre 0 e 1, sendo 1 o perfil mais arriscado.",
+                      "2. O score foi invertido para o intervalo entre 0 e 1000, onde valores menores indicam maior risco."
+                    ],
+                    "score": {
+                      "rating": "C",
+                      "valor_invertido": 719.28,
+                      "valor_modelo": 0.280718
+                    },
+                    "status": "success",
+                    "user_email": null
+                  },
+                  "status": "success",
+                  "user_email": "Usuário não identificado"
+                }
+              }
+            },
+            "doc": "58108299000182",
+            "bacen_fundacao": 2000
+          }
+        }
+      ]
+    },
+    "versionId": "ed6b74e0-cdd2-40ec-9192-df09de50840e",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-31T16:22:41.803Z",
+        "updatedAt": "2024-07-31T16:22:41.803Z",
+        "id": "mmaXbyiWhptUXaTd",
+        "name": "New Motor"
+      }
+    ]
+  }
+}
