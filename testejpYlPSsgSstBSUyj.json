@@ -1,0 +1,953 @@
+{
+  "data": {
+    "createdAt": "2025-05-05T18:17:40.315Z",
+    "updatedAt": "2025-05-21T12:40:11.597Z",
+    "id": "jpYlPSsgSstBSUyj",
+    "name": "Recuperação de Leads",
+    "active": true,
+    "nodes": [
+      {
+        "parameters": {
+          "inputSource": "passthrough"
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "a3bb82a1-3942-4e08-882d-950214e6435b",
+        "name": "lead"
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT\n  tipo_maquina,\n  segment,\n  valor.double_value AS preco\nFROM\n  `blips-bigdata.PLATAFORMA.modelo`\nWHERE\n  tipo_maquina LIKE '%{{$('lead').first().json.body.machine_type}}%'  -- insira trecho relevante aqui\nLIMIT 100",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          500,
+          180
+        ],
+        "id": "f19a8ec4-f342-4b4e-9e9a-5b3b1d132273",
+        "name": "plataforma_modelos",
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "884c9980-c8ce-4d6e-94e1-da1dcb28fe97",
+                "name": "segment",
+                "value": "={{ $json.segment }}",
+                "type": "string"
+              },
+              {
+                "id": "0f1974a8-3779-4e4f-8377-67990ccf6724",
+                "name": "equipment_value",
+                "value": "={{ $json.preco }}",
+                "type": "string"
+              },
+              {
+                "id": "52e95ad9-0e95-4d64-88d3-0790d6619610",
+                "name": "recuperado",
+                "value": "TRUE",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1240,
+          200
+        ],
+        "id": "c9b7471e-82f3-4772-9269-0603fe383589",
+        "name": "return_segment_value"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.body.machine_type }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "string",
+                        "operation": "empty",
+                        "singleValue": true
+                      },
+                      "id": "d528d168-389f-4e29-9681-e6ed036982be"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "salvar_lead"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "c511e2fe-46e2-483f-8718-dbe5b6a99aee",
+                      "leftValue": "={{ $json.body.machine_type }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "string",
+                        "operation": "notEmpty",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "buscar_maquina"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          220,
+          0
+        ],
+        "id": "3bae5ca7-8fec-4763-9ca4-a96746b2927e",
+        "name": "Tipo de Lead ?"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "a6c89aaa-e94b-4d10-9d8a-fa8e59b41aa4",
+                "leftValue": "={{ $json }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "object",
+                  "operation": "empty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          740,
+          180
+        ],
+        "id": "1dc73b70-72c0-4b61-bd7d-5d3a9e138708",
+        "name": "Recuperado ?"
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1IwwxBOciqFkPzkplYHxqLAzYhrhzZh1qzoUx8aNBHdE",
+            "mode": "list",
+            "cachedResultName": "Estudo de leads invalidos",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1IwwxBOciqFkPzkplYHxqLAzYhrhzZh1qzoUx8aNBHdE/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Página1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1IwwxBOciqFkPzkplYHxqLAzYhrhzZh1qzoUx8aNBHdE/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "lead_id": "={{ $('lead').first().json.body.id }}",
+              "cpf": "={{ $('lead').first().json.body.personal_document }}",
+              "cnpj": "={{ $('lead').first().json.body.document }}",
+              "machine_type": "={{ $('lead').first().json.body.machine_type }}",
+              "organization": "={{ $('lead').first().json.body.organization_ref }}",
+              "origin": "={{ $('lead').first().json.body.origin }}",
+              "cellphone": "={{ $('lead').first().json.body.cellphone }}",
+              "name": "={{ $('lead').first().json.body.name }}",
+              "recuperado": "FALSE"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "lead_id",
+                "displayName": "lead_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "cnpj",
+                "displayName": "cnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "cpf",
+                "displayName": "cpf",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "machine_type",
+                "displayName": "machine_type",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "organization",
+                "displayName": "organization",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "origin",
+                "displayName": "origin",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "cellphone",
+                "displayName": "cellphone",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "name",
+                "displayName": "name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "recuperado",
+                "displayName": "recuperado",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          1000,
+          -20
+        ],
+        "id": "23382fe9-7f16-4202-88b9-b36ca62f90e7",
+        "name": "Salvar Lead FALSE",
+        "retryOnFail": true,
+        "credentials": {
+          "googleApi": {
+            "id": "2b5fy3dagItEtiXX",
+            "name": "Google Sheets account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1IwwxBOciqFkPzkplYHxqLAzYhrhzZh1qzoUx8aNBHdE",
+            "mode": "list",
+            "cachedResultName": "Estudo de leads invalidos",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1IwwxBOciqFkPzkplYHxqLAzYhrhzZh1qzoUx8aNBHdE/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Página1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1IwwxBOciqFkPzkplYHxqLAzYhrhzZh1qzoUx8aNBHdE/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "lead_id": "={{ $('lead').first().json.body.id }}",
+              "cpf": "={{ $('lead').first().json.body.personal_document }}",
+              "cnpj": "={{ $('lead').first().json.body.document }}",
+              "machine_type": "={{ $('lead').first().json.body.machine_type }}",
+              "organization": "={{ $('lead').first().json.body.organization_ref }}",
+              "origin": "={{ $('lead').first().json.body.origin }}",
+              "cellphone": "={{ $('lead').first().json.body.cellphone }}",
+              "name": "={{ $('lead').first().json.body.name }}",
+              "recuperado": "TRUE"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "lead_id",
+                "displayName": "lead_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "cnpj",
+                "displayName": "cnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "cpf",
+                "displayName": "cpf",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "machine_type",
+                "displayName": "machine_type",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "organization",
+                "displayName": "organization",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "origin",
+                "displayName": "origin",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "cellphone",
+                "displayName": "cellphone",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "name",
+                "displayName": "name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "recuperado",
+                "displayName": "recuperado",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          1000,
+          200
+        ],
+        "id": "406fecdc-bf9c-4d1d-9989-27ebf512ad28",
+        "name": "Salvar Lead TRUE",
+        "retryOnFail": true,
+        "credentials": {
+          "googleApi": {
+            "id": "2b5fy3dagItEtiXX",
+            "name": "Google Sheets account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "52e95ad9-0e95-4d64-88d3-0790d6619610",
+                "name": "recuperado",
+                "value": "FALSE",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1240,
+          -20
+        ],
+        "id": "7b7976a2-2177-4770-913a-681b5f2aa2d5",
+        "name": "return_false"
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "9ae1a843-c36c-49e1-914c-bd89a9e01271",
+          "responseMode": "lastNode",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          0,
+          -420
+        ],
+        "id": "9e1a2ec5-63d3-40cf-be7e-ab65c1f01573",
+        "name": "Webhook",
+        "webhookId": "9ae1a843-c36c-49e1-914c-bd89a9e01271"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://plataforma.bigdatacorp.com.br/pessoas",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "AccessToken",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSU5GUkFFU1RSVVRVUkFAQkxJUFMuQ09NLkJSIiwianRpIjoiODAxOTJjNjQtN2QwYS00OWY3LTljZDMtMjM5MDU3NDRjOGJhIiwibmFtZVVzZXIiOiJpbmZyYWVzdHJ1dHVyYUBibGlwcy5jb20uYnIiLCJ1bmlxdWVfbmFtZSI6IklORlJBRVNUUlVUVVJBQEJMSVBTLkNPTS5CUiIsImRvbWFpbiI6IkJMSVBTIiwicHJvZHVjdHMiOlsiQklHQk9PU1QiXSwibmJmIjoxNzIyMjg1NDIyLCJleHAiOjE3NTMzODk0MjIsImlhdCI6MTcyMjI4NTQyMiwiaXNzIjoiQmlnIERhdGEgQ29ycC4ifQ.xHlCc6hfGlbXO9HoYZAp8yJFAK_d5Ocp0exdLfj6c1o"
+              },
+              {
+                "name": "tokenID",
+                "value": "66a7fd6e6637873c7bc3b9b7"
+              },
+              {
+                "name": "Datasets",
+                "value": "basic_data"
+              },
+              {
+                "name": "q",
+                "value": "=email{ {{ $json.body.email }} }, phone{ {{ $json.body.phone }} }"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "0b0c474e-ba72-4eb8-866c-75ba9cc23142",
+        "name": "post_basic_data_peoplev2",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          260,
+          -420
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "url": "https://maps.googleapis.com/maps/api/place/textsearch/json",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "query",
+                "value": "={{ $json.Result[0].BasicData.OfficialName }}"
+              },
+              {
+                "name": "key",
+                "value": "AIzaSyCxO2xR4Y1HCxOfSkLvnGz3oMwT8kgzmz8"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          500,
+          -180
+        ],
+        "id": "2e18003e-0546-4416-aa0e-c4615e9c47c1",
+        "name": "GET EMPRESA",
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://plataforma.bigdatacorp.com.br/empresas",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "AccessToken",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSU5GUkFFU1RSVVRVUkFAQkxJUFMuQ09NLkJSIiwianRpIjoiODAxOTJjNjQtN2QwYS00OWY3LTljZDMtMjM5MDU3NDRjOGJhIiwibmFtZVVzZXIiOiJpbmZyYWVzdHJ1dHVyYUBibGlwcy5jb20uYnIiLCJ1bmlxdWVfbmFtZSI6IklORlJBRVNUUlVUVVJBQEJMSVBTLkNPTS5CUiIsImRvbWFpbiI6IkJMSVBTIiwicHJvZHVjdHMiOlsiQklHQk9PU1QiXSwibmJmIjoxNzIyMjg1NDIyLCJleHAiOjE3NTMzODk0MjIsImlhdCI6MTcyMjI4NTQyMiwiaXNzIjoiQmlnIERhdGEgQ29ycC4ifQ.xHlCc6hfGlbXO9HoYZAp8yJFAK_d5Ocp0exdLfj6c1o"
+              },
+              {
+                "name": "tokenID",
+                "value": "66a7fd6e6637873c7bc3b9b7"
+              },
+              {
+                "name": "Datasets",
+                "value": "basic_data"
+              },
+              {
+                "name": "q",
+                "value": "=email{ {{ $('Webhook').first().json.body.email }} }, phone{ {{ $('Webhook').first().json.body.phone }} }"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "9b68a950-af6b-45ee-a20e-f89d42810a8a",
+        "name": "post_basic_data_companies",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          500,
+          -420
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "afd03e54-f9b0-4a48-bb10-775da3661356",
+                "name": "cnpj",
+                "value": "={{ $('post_basic_data_companies').first().json }}",
+                "type": "object"
+              },
+              {
+                "id": "9b3a7887-098f-4bdc-bd90-8ba62e186de1",
+                "name": "cpf",
+                "value": "={{ $('post_basic_data_peoplev2').first().json }}",
+                "type": "object"
+              },
+              {
+                "id": "58ccf08f-b062-4905-9f5e-12d1c7b3a582",
+                "name": "relationship",
+                "value": "={{ $json }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1180,
+          -420
+        ],
+        "id": "ca46e774-943c-4904-84c4-071677b05aa4",
+        "name": "result"
+      },
+      {
+        "parameters": {
+          "workflowId": "71HfwsVdQvHtbqLi",
+          "options": {}
+        },
+        "id": "01c3df3d-fe05-4552-a93d-7d9dcb179dce",
+        "name": "BDC - companies - relationships",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          960,
+          -420
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "endpoint",
+                "value": "companies",
+                "type": "string"
+              },
+              {
+                "id": "5db45c71-e6af-4aad-b4cd-5138c8e796cc",
+                "name": "dataset",
+                "value": "relationships",
+                "type": "string"
+              },
+              {
+                "id": "7192c77e-a81e-4d6b-8204-7bd8d7539e8f",
+                "name": "CNPJ",
+                "value": "={{ $json.Result[0].BasicData.TaxIdNumber }}",
+                "type": "string"
+              },
+              {
+                "id": "a7b7c12b-5cfb-4cfe-ac74-79261b2e7275",
+                "name": "cpfCliente",
+                "value": "={{ $('post_basic_data_peoplev2').item.json.Result[0].BasicData.TaxIdNumber }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "3a0ca608-db09-4178-b115-21fbf1b004d8",
+        "name": "request_bdc_companies_relationships",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          740,
+          -420
+        ]
+      }
+    ],
+    "connections": {
+      "lead": {
+        "main": [
+          [
+            {
+              "node": "Tipo de Lead ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "plataforma_modelos": {
+        "main": [
+          [
+            {
+              "node": "Recuperado ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tipo de Lead ?": {
+        "main": [
+          [
+            {
+              "node": "Salvar Lead FALSE",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "plataforma_modelos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Recuperado ?": {
+        "main": [
+          [
+            {
+              "node": "Salvar Lead FALSE",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Salvar Lead TRUE",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Salvar Lead TRUE": {
+        "main": [
+          [
+            {
+              "node": "return_segment_value",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Salvar Lead FALSE": {
+        "main": [
+          [
+            {
+              "node": "return_false",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "post_basic_data_peoplev2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "post_basic_data_peoplev2": {
+        "main": [
+          [
+            {
+              "node": "post_basic_data_companies",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "post_basic_data_companies": {
+        "main": [
+          [
+            {
+              "node": "request_bdc_companies_relationships",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "request_bdc_companies_relationships": {
+        "main": [
+          [
+            {
+              "node": "BDC - companies - relationships",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "BDC - companies - relationships": {
+        "main": [
+          [
+            {
+              "node": "result",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "lead": [
+        {
+          "json": {
+            "headers": {
+              "x-forwarded-for": "34.96.46.14",
+              "x-forwarded-proto": "https",
+              "x-forwarded-port": "443",
+              "host": "motor-credito.blips-labs.com",
+              "x-amzn-trace-id": "Root=1-68191bfd-5e48560d33c2d74f45b80ee2",
+              "content-length": "948",
+              "user-agent": "python-requests/2.27.1",
+              "accept-encoding": "gzip, deflate",
+              "accept": "*/*",
+              "content-type": "application/json"
+            },
+            "params": {},
+            "query": {},
+            "body": {
+              "integration": "CREDIT_ANALYSIS_BQ_N8N",
+              "url_webhook": "https://blips-backend-prod-yc62attz3a-uc.a.run.app/v2/leads/credit-query-gcp/webhook",
+              "id": "68191bfb4e6a2f30c0a1bad6",
+              "segments": [],
+              "type_all": true,
+              "personal_document": "99719380144",
+              "document": "59974646000112",
+              "responsible_id": "6671e7557af0c90a818ca11b",
+              "responsible_name": "Dayanne Ribeiro de Assis",
+              "responsible_type": "SELLER",
+              "business_rule_type": "LOCACAO",
+              "equipment_value": "N/A",
+              "is_with_sale": false,
+              "machine_type": "Ultrassom Microfocado Sonora - Kit Beauty Face",
+              "organization_ref": "Blips",
+              "address_final": {
+                "zip_code": "71615720",
+                "city": "Brasília",
+                "complement": "",
+                "neighborhood": "Setor de Habitações Individuais Sul",
+                "st_ave": "Quadra SHIS QI 7 Bloco B",
+                "state": "DF"
+              },
+              "origin": "BotConversa",
+              "monthly_earnings": "",
+              "number_employees": "",
+              "created_at": "2025-05-05T20:13:49.22Z",
+              "cellphone": "556184000115",
+              "name": "Jorge"
+            },
+            "webhookUrl": "https://motor-credito.blips-labs.com/webhook/plataforma",
+            "executionMode": "production"
+          }
+        }
+      ],
+      "Webhook": [
+        {
+          "json": {
+            "headers": {
+              "host": "n8n-dev.blips-labs.com",
+              "user-agent": "axios/1.7.4",
+              "content-length": "108",
+              "accept": "application/json,text/html,application/xhtml+xml,application/xml,text/*;q=0.9, image/*;q=0.8, */*;q=0.7",
+              "accept-encoding": "gzip, compress, deflate, br",
+              "content-type": "application/json",
+              "x-forwarded-for": "3.209.52.59",
+              "x-forwarded-host": "n8n-dev.blips-labs.com",
+              "x-forwarded-proto": "https",
+              "x-railway-edge": "railway/us-east4",
+              "x-railway-request-id": "tyA1SqMSR5in8kQPO8K9hQ",
+              "x-real-ip": "3.209.52.59",
+              "x-request-start": "1747661399650"
+            },
+            "params": {},
+            "query": {},
+            "body": {
+              "email": "rossine.caixeta@gmail.com",
+              "phone": "64999470688",
+              "name": "Rossine",
+              "company_name": "Pessoa física"
+            },
+            "webhookUrl": "https://n8n-dev.blips-labs.com/webhook/9ae1a843-c36c-49e1-914c-bd89a9e01271",
+            "executionMode": "production"
+          }
+        }
+      ]
+    },
+    "versionId": "8ff5f59a-ae02-4aa7-90b7-e152065a61fb",
+    "triggerCount": 1,
+    "tags": [
+      {
+        "createdAt": "2024-07-31T16:22:41.803Z",
+        "updatedAt": "2024-07-31T16:22:41.803Z",
+        "id": "mmaXbyiWhptUXaTd",
+        "name": "New Motor"
+      }
+    ]
+  }
+}
