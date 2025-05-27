@@ -1,0 +1,617 @@
+{
+  "data": {
+    "createdAt": "2025-01-23T14:26:52.770Z",
+    "updatedAt": "2025-02-13T16:40:34.985Z",
+    "id": "Agf4A5gHHRiXzEId",
+    "name": "Análise Instagram",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "664e6bde-8b7e-4c47-aadc-86a1d0294367",
+        "name": "Execute Workflow Trigger",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          -1380,
+          80
+        ]
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "data.posts",
+          "options": {}
+        },
+        "id": "4c514ab4-1569-475b-b36d-f60bbedc864d",
+        "name": "Split Out",
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          240,
+          80
+        ]
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "b6cd4cc0-fb26-4a66-a985-a308766e52d1",
+        "name": "Loop Over Items",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          640,
+          80
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "9e069b1d-9cb6-416a-afe6-b4cc6552ddfb",
+                "name": "transcricao_post",
+                "value": "={{ $json.choices[0].message.content }}",
+                "type": "string"
+              },
+              {
+                "id": "7b814ade-3040-4850-8702-12106fc09e3d",
+                "name": "tempo_publicacao",
+                "value": "={{ $now.diffTo($('Split Out').all()[$runIndex].json.timestamp.toDateTime(), 'days') }}",
+                "type": "number"
+              },
+              {
+                "id": "13a71ffc-b266-41f1-bad9-c33733cdee5c",
+                "name": "likes",
+                "value": "={{ $('Split Out').all()[$runIndex].json.like_count }}",
+                "type": "number"
+              },
+              {
+                "id": "bb0cb703-ef4f-44a1-94e8-9c24b89700d3",
+                "name": "comentarios",
+                "value": "={{ $('Split Out').all()[$runIndex].json.comments_count }}",
+                "type": "number"
+              },
+              {
+                "id": "d1d25124-c436-4a13-b79d-ebf7592910e7",
+                "name": "legenda",
+                "value": "={{ $('Split Out').all()[$runIndex].json.caption }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "bd852f25-0c6b-4139-9894-eafa6550c925",
+        "name": "Dados posts",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1100,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "bd3a1d06-22d1-428c-9c23-4be208ee9bb0",
+                "name": "data",
+                "value": "={{ $json.data.replace(/[\\x00-\\x1F\\x7F]/g, '') }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "7277da0f-c5b8-47f4-aa21-3ddb4886d127",
+        "name": "Dados insta",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          20,
+          80
+        ]
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "posts",
+          "options": {}
+        },
+        "id": "7832fbc4-145a-44ef-bf75-fdd8cbf9faa6",
+        "name": "Lista dados posts",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          880,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// 1) Obter os dados que chegam ao Code Node.\n// Se \"items[0].json\" for um array contendo um objeto, como no exemplo acima:\nconst data = items[0].json; \n\n// 2) Pegar o array de posts dentro do primeiro objeto do array 'data'.\nconst posts = data.posts;\n\n// -- Se sua estrutura for { \"posts\": [...] } sem um array externo, faça:\n// const posts = data.posts;\n\n// 3) Calcular a média de engajamento\n//    Engajamento de cada post = likes + comentarios\n//    Para calcular a média, somamos o engajamento de cada post e dividimos pelo número de posts.\nlet totalEngagement = 0;\nposts.forEach(post => {\n  totalEngagement += (post.likes + post.comentarios);\n});\n\n// Protegendo contra o caso de não haver posts:\nconst media_engajamento = posts.length > 0\n  ? totalEngagement / posts.length\n  : 0;\n\n// 4) Calcular a frequência média de publicações (média de dias entre posts).\n//    Precisamos ordenar por \"tempo_publicacao\" e calcular a média das diferenças.\nlet frenquencia_postagem = 0;\nif (posts.length > 1) {\n  posts.sort((a, b) => a.tempo_publicacao - b.tempo_publicacao);\n\n  let somaDiferencas = 0;\n  for (let i = 1; i < posts.length; i++) {\n    somaDiferencas += posts[i].tempo_publicacao - posts[i - 1].tempo_publicacao;\n  }\n  frenquencia_postagem = somaDiferencas / (posts.length - 1);\n}\n\n// 5) Retornamos esses resultados em um único objeto:\nreturn [\n  {\n    json: {\n      frenquencia_postagem,\n      media_engajamento\n    }\n  }\n];\n"
+        },
+        "id": "466d745d-cbf1-413f-93bf-bac862615a31",
+        "name": "Calcular frequencia e engajamento",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1100,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "response",
+          "include": "specifiedFields",
+          "fieldsToInclude": "output",
+          "options": {}
+        },
+        "id": "9c22bfb2-f356-43b2-aa13-9d6595153ecc",
+        "name": "Aggregate3",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          1880,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "gpt-4o-2024-11-20",
+            "mode": "list",
+            "cachedResultName": "gpt-4o-2024-11-20"
+          },
+          "options": {
+            "temperature": 1,
+            "topP": 0.9
+          }
+        },
+        "id": "83643369-bcc2-4563-8053-08d2d248827b",
+        "name": "OpenAI Model2",
+        "type": "@n8n/n8n-nodes-langchain.lmOpenAi",
+        "typeVersion": 1,
+        "position": [
+          1560,
+          180
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "8gIG4Uz2T3nfRlHR",
+            "name": "OpenAi - Credito"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n  \"segmento_alinhado\": {\n    \"nome\": \"Comunicação Visual\",\n     \"esta_relacionado\": true,\n     \"motivo\": \"Os posts analisados mostram elementos de sinalização e materiais gráficos, que são características do segmento de comunicação visual.\"  \n  },\n  \n  \"quantidade_publicacoes\": 13,\n  \n  \"tempo_sem_postar\": {\n    \"dias\": 153,\n    \"data_ultimo_post\": \"11/06/2024\"\n  },\n  \n  \"frequencia_media_postagem\": {\n    \"dias\": 145\n  },\n  \n  \"frequencia_media_engajamento\": {\n    \"valor\": 5.1\n  },\n\n  \n  \"bio_preenchida\": {\n    \"esta_preenchida\": true,\n    \"nivel_preenchimento\": \"Moderado\",\n    \"analise\": \"A bio contém informações claras sobre horários de funcionamento e serviços oferecidos, o que demonstra um bom nível de detalhamento e utilidade para os visitantes do perfil.\"\n  },\n  \n  \"quantidade_seguidores\": 936,\n  \n  \"tema_perfil\": \"O perfil trata de serviços de comunicação visual, incluindo impressão de materiais gráficos e sinalização.\",\n  \n  \"perfil_profissional\": true,\n  \n  \"perfil_novo\": false\n}\n"
+        },
+        "id": "6bd4061b-8f41-4d43-98de-b060ef8c6880",
+        "name": "Structured Output Parser1",
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.2,
+        "position": [
+          1720,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "3d5d7563-ddd8-4a02-9dea-b284ce593efb",
+                "name": "nome",
+                "value": "={{ $('Dados insta').first().json.data.nome }}",
+                "type": "string"
+              },
+              {
+                "id": "b6510009-7483-4aa0-af9e-02c92ce3057f",
+                "name": "seguidores",
+                "value": "={{ $('Dados insta').first().json.data.seguidores }}",
+                "type": "string"
+              },
+              {
+                "id": "06dcbb58-5909-4f88-bfdf-d76b2aa13ef5",
+                "name": "seguindo",
+                "value": "={{ $('Dados insta').first().json.data.seguindo }}",
+                "type": "string"
+              },
+              {
+                "id": "75ce92e3-4fc6-4f95-ab1c-9348a101385a",
+                "name": "bio",
+                "value": "={{ $('Dados insta').first().json.data.bio }}",
+                "type": "string"
+              },
+              {
+                "id": "633c1bb9-c67d-49fc-9694-5fb694911613",
+                "name": "publicacoes",
+                "value": "={{ $('Dados insta').first().json.data.publicacoes }}",
+                "type": "string"
+              },
+              {
+                "id": "a27aa9f4-d773-4f41-b506-18439e23f83c",
+                "name": "media_engajamento",
+                "value": "={{ $json.media_engajamento }}",
+                "type": "number"
+              },
+              {
+                "id": "19bf94bc-732e-4dc2-b0a0-1baa558bc84f",
+                "name": "frenquencia_postagem",
+                "value": "={{ $json.frenquencia_postagem }}",
+                "type": "number"
+              },
+              {
+                "id": "1b23e3e3-f60f-409f-aaa2-0c5ffccd2cd7",
+                "name": "posts",
+                "value": "={{ $('Lista dados posts').first().json.posts }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "795732cb-1a05-44f0-993c-dbfa900840db",
+        "name": "Dados analise",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1320,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=**Dados instagram:** {{ $('Dados analise').item.json.toJsonString() }}\n\nVocê está recebendo dados de um perfil de Instagram para realizar uma análise detalhada. As respostas devem ser objetivas, claras e baseadas exclusivamente nas informações fornecidas. Caso haja dados insuficientes ou inconsistentes, responda diretamente que não foi possível concluir a análise e justifique.  \n\nAntes de determinar o segmento, considere as análises dos posts e quaisquer informações adicionais disponíveis nos dados fornecidos. Responda \"Dados insuficientes\" caso as informações não sejam suficientes para identificar o segmento.  \n\nOs segmentos atendidos pela empresa são os seguintes:\n1. **Comunicação Visual**: Sinalização, fachadas, adesivos, letra caixa, brindes e personalizados, como calendários, copos e metais, personalizacao de objetos (Tenha atenção para não confundir com Confecção).  \n2. **Confecção**: Plotter de impressão, sublimação, uniformes, vestuário, estamparia personalizada, produção de camisetas (Tenha atenção para não confundir com Comunicação Visual). \n3. **Construção**: Pequenos construtores, fazendas, serviços como cercas e piscinas.  \n4. **Sorvete**: Sorveterias, cafeterias, quiosques e lojas de conveniência, ramo alimentício no geral, padarias,confeitarias,lanches,, hamburguerias, qualquer coisa que esteja relacionado a alimentos de quaisquer tipos, todos os tipos de alimentos.  \n5. **Fitness**: Academias, estúdios, redes de academia, equipamentos como esteiras e simuladores de escada. \n6. **Estética**: Clínicas de estética, esteticistas e bioesteticistas, estética pessoal. (Não considere estética automotiva, ou outras estéticas que não sao relacionadas ao corpo humano).  \n\nCom base nos dados fornecidos, responda as perguntas abaixo:  \n\n1. **Qual segmento você considera que o Instagram dessa pessoa está alinhado?**  \n   Analise exclusivamente os dados fornecidos, especialmente as análises dos posts. Caso haja falta de informações para determinar o segmento responda com \"Dados insuficientes\". É interessante que voce determine de que segmento se trata o perfil dessa pessoa, mesmo que não esteja alinhado com os segmentos passados acima, como esportes, religião,perfil pessoal, etc. (Dica: use a pergunta 10 para te ajudar a responder essa questao).\n\n2. **Os posts no perfil estão relacionados ao segmento {{ $('Execute Workflow Trigger').first().json.segmento }}?**  \n   Responda apenas **SIM** ou **NÃO**. (Use a pergunta 1 para te ajudar a responder essa pergunta. Caso o segmento respondido na pergunta 1 seja igual a {{ $('Execute Workflow Trigger').first().json.segmento }} então a resposta será true, caso seja diferenete então a reposta será false). \n\n3. **Diga de maneira breve o motivo desse Instagram estar ou não estar relacionado ao segmento informado.** (Leve en consideração o segmento passado pela pessoa: {{ $('Execute Workflow Trigger').first().json.segmento }}, com o segmento que você pressupos na pergunta 1).  \n\n4. **Quantas publicações o perfil possui?**  \n   Responda com o número exato fornecido.  \n\n5. **Há quanto tempo o usuário não posta?**  \n   Responda no formato exato:  \n   *O usuário não posta há X dias.*  \n   Substitua a variável **X** pelo menor valor de 'tempo_publicacao' recebido \n\n6. **Qual é a frequência média de postagem?**  \n   Responda no formato exato:  \n   *O usuário faz um post a cada X dias.*  \n   Substitua **X** pelo valor da variável:  \n   - `{{ $json.frenquencia_postagem }}`  \n\n7. **Qual é a média de engajamento?**  \n   Responda no formato exato:  \n   *A frequência média de engajamento do usuário é X.*  \n   Substitua **X** pelo valor da variável:  \n   - `{{ $json.media_engajamento }}`  \n\n8. **A bio desse usuário está preenchida?**  \n   Responda no formato exato:  \n   *A bio desse usuário está X preenchida.*  \n   Substitua **X** por uma das opções: **\"Nada\", \"Levemente\", \"Moderadamente\" ou \"Bastante\"**, com base na análise da bio.  \n\n9. **Quantos seguidores o perfil possui?**  \n   Responda com o número exato fornecido.  \n\n10. **Sobre o que trata o perfil?**  \n    Resuma em poucas palavras, com base nos dados disponíveis.  \n\n11. **O perfil é pessoal ou profissional?**  \n    Responda com base nas informações fornecidas, levando em conta a analise dos primeiros posts do feed, bio, e tipo de conteudo desse instagram.  \n\n12. **O perfil parece ser novo?**  \n    Considere o primeiro post, a frequência de postagens e o número total de posts.  \n\n**Nota Importante:** Caso os dados fornecidos contenham mensagens de erro, valores nulos ou indefinidos em grande quantidade, responda:  \n*\"A análise não foi possível porque o Instagram foi inserido incorretamente ou não é público.\"*  \n",
+          "hasOutputParser": true
+        },
+        "id": "9cfa23c4-a85f-47e4-b33f-9d8a1470fed7",
+        "name": "Analisar instagram",
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.4,
+        "position": [
+          1540,
+          0
+        ],
+        "retryOnFail": true
+      },
+      {
+        "parameters": {
+          "amount": 2
+        },
+        "id": "04ea5323-7af0-4bb2-a0db-8efdf05f050a",
+        "name": "Wait1",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          1320,
+          180
+        ],
+        "webhookId": "0783d297-d622-42e0-92d7-fd1df7610b76"
+      },
+      {
+        "parameters": {
+          "resource": "image",
+          "operation": "analyze",
+          "modelId": {
+            "__rl": true,
+            "value": "gpt-4o-mini-2024-07-18",
+            "mode": "list",
+            "cachedResultName": "GPT-4O-MINI-2024-07-18"
+          },
+          "text": "=Sobre o que é essa imagem? Essa imagem foi postada com a seguinte legenda: {{ $json.caption }}",
+          "imageUrls": "={{ $json.media_url }}",
+          "simplify": false,
+          "options": {}
+        },
+        "id": "2cd83ca1-e2ed-4dc0-b389-79264f3850f1",
+        "name": "Analisar imagens posts",
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.4,
+        "position": [
+          880,
+          180
+        ],
+        "retryOnFail": false,
+        "alwaysOutputData": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "8gIG4Uz2T3nfRlHR",
+            "name": "OpenAi - Credito"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "function normalizeUsername(username) {\n    return username\n        .normalize(\"NFD\")\n        .replace(/[\\u0300-\\u036f]/g, \"\") // Remove acentos\n        .toLowerCase();\n}\n\nfunction strategyRemoveSpaces(username) {\n    return username.replace(/\\s+/g, \"\");\n}\n\nfunction strategyRemoveInnerUnderscores(username) {\n    const match = username.match(/(.*?)(_+)$/);\n    if (match) {\n        const [_, namePart, trailingUnderscores] = match;\n        const cleanedName = namePart.replace(/_/g, \"\");\n        return cleanedName + trailingUnderscores;\n    }\n    return username.replace(/_/g, \"\");\n}\n\nasync function fetchUserData(username) {\n    const URL_BASE = \"https://www.instagram.com/api/v1/users/web_profile_info\";\n    const headers = {\n        \"User-Agent\":\n            \"Mozilla/5.0 (iPhone; CPU iPhone OS 12_3_1 like Mac OS X) \" +\n            \"AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Instagram 105.0.0.11.118 \" +\n            \"(iPhone11,8; iOS 12_3_1; en_US; en-US; scale=2.00; 828x1792; 165586599)\"\n    };\n\n    try {\n        const response = await fetch(`${URL_BASE}?username=${username}`, {\n            method: \"GET\",\n            headers\n        });\n\n        console.log(response.json())\n      \n        if (!response.ok) {\n            throw new Error(`HTTP error! Status: ${response.status}`);\n        }\n\n        const data = await response.json();\n        return data?.data?.user || {};\n    } catch (error) {\n        console.error(\"Error fetching user data:\", error);\n        return {};\n    }\n}\n\nasync function tryUsernameWithStrategies(baseUsername, strategies) {\n    let username = normalizeUsername(baseUsername);\n    let userData = await fetchUserData(username);\n    console.log(userData)\n    if (Object.keys(userData).length) return userData;\n\n    for (const strategy of strategies) {\n        const usernameVariant = strategy(username);\n        userData = await fetchUserData(usernameVariant);\n        if (Object.keys(userData).length) return userData;\n    }\n    return {};\n}\n\nasync function execute() {\n    \n    const baseUsername = $input.all()[0].json.username;\n    console.log(baseUsername);\n    const strategies = [strategyRemoveSpaces, strategyRemoveInnerUnderscores];\n    const userData = await tryUsernameWithStrategies(baseUsername, strategies);\n\n    if (!userData || Object.keys(userData).length === 0) {\n        return { error: \"Usuário não encontrado.\" };\n    }\n\n    const user = {\n        _id: userData.id || \"\",\n        name: userData.full_name || \"Nome não disponível\",\n        username: userData.username || \"\",\n        img_url: userData.profile_pic_url_hd || \"\",\n        email: userData.business_email || \"\",\n        bio: userData.biography || \"\",\n        followers: userData.edge_followed_by?.count || 0,\n        following: userData.edge_follow?.count || 0,\n        num_posts: userData.edge_owner_to_timeline_media?.count || 0,\n        category_name: userData.category_name || \"\",\n        posts: []\n    };\n\n    const posts = userData.edge_owner_to_timeline_media?.edges || [];\n    for (const post of posts) {\n        const postNode = post.node;\n        const postCaption =\n            postNode.edge_media_to_caption?.edges[0]?.node?.text || \"\";\n        const timestamp = new Date(\n            postNode.taken_at_timestamp * 1000\n        ).toISOString();\n\n        user.posts.push({\n            _id: postNode.id || \"\",\n            type: postNode.__typename || \"\",\n            caption: postCaption,\n            media_url: postNode.video_url || \"\",\n            permalink: `https://www.instagram.com/p/${postNode.shortcode}`,\n            timestamp: timestamp,\n            like_count: postNode.edge_liked_by?.count || 0,\n            comments_count: postNode.edge_media_to_comment?.count || 0,\n            is_video: postNode.is_video || false,\n            has_audio: postNode.has_audio || false\n        });\n    }\n\n    return user;\n}\n\nreturn execute();\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -220,
+          80
+        ],
+        "id": "be2fcb1d-dd74-4a2e-9197-1798f2aad84d",
+        "name": "Code"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -1380,
+          260
+        ],
+        "id": "14f4c15a-bcbc-48ff-9f5c-684f99efad5f",
+        "name": "When clicking ‘Test workflow’"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "0851fe1b-faf0-4c3b-9026-ab5751e34db9",
+                "name": "username",
+                "value": "=marlongomes01",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1000,
+          80
+        ],
+        "id": "8bff691e-8f32-42db-9fa1-cf193b36cb4b",
+        "name": "setUsername"
+      },
+      {
+        "parameters": {
+          "jsCode": "const URL_BASE = \"https://www.instagram.com/api/v1/users/web_profile_info\";\nconst username = $input.all()[0].json.username\nconst headers = {\n    \"User-Agent\":\n        \"Mozilla/5.0 (iPhone; CPU iPhone OS 12_3_1 like Mac OS X) \" +\n        \"AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Instagram 105.0.0.11.118 \" +\n        \"(iPhone11,8; iOS 12_3_1; en_US; en-US; scale=2.00; 828x1792; 165586599)\"\n};\n\ntry {\n    const response = await fetch(`${URL_BASE}?username=${username}`, {\n        method: \"GET\",\n        headers\n    });\n\n    if (!response.ok) {\n        throw new Error(`HTTP error! Status: ${response.status}`);\n    }\n\n    const data = await response.json();\n    return data?.data?.user || {};\n} catch (error) {\n    console.error(\"Error fetching user data:\", error);\n    return {};\n}"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -780,
+          80
+        ],
+        "id": "1fe74fb6-9044-4244-b8c4-3460494307d8",
+        "name": "Code1"
+      }
+    ],
+    "connections": {
+      "Execute Workflow Trigger": {
+        "main": [
+          [
+            {
+              "node": "setUsername",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [
+            {
+              "node": "Lista dados posts",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Analisar imagens posts",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados posts": {
+        "main": [
+          [
+            {
+              "node": "Wait1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados insta": {
+        "main": [
+          [
+            {
+              "node": "Split Out",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Lista dados posts": {
+        "main": [
+          [
+            {
+              "node": "Calcular frequencia e engajamento",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Calcular frequencia e engajamento": {
+        "main": [
+          [
+            {
+              "node": "Dados analise",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Model2": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Analisar instagram",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser1": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Analisar instagram",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados analise": {
+        "main": [
+          [
+            {
+              "node": "Analisar instagram",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Analisar instagram": {
+        "main": [
+          [
+            {
+              "node": "Aggregate3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait1": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Analisar imagens posts": {
+        "main": [
+          [
+            {
+              "node": "Dados posts",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "Dados insta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "setUsername",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "setUsername": {
+        "main": [
+          [
+            {
+              "node": "Code1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code1": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {
+      "Execute Workflow Trigger": [
+        {
+          "json": {
+            "properties": {
+              "id": "call_wypaMbYg1ctOm1RNu2Cme24C",
+              "type": "function",
+              "function": {
+                "name": "analisar_instagram",
+                "arguments": "{\"link\":\"https://www.instagram.com/rotasdoaci/\"}"
+              }
+            },
+            "arguments": {
+              "link": "https://www.instagram.com/rotasdoaci/"
+            },
+            "segmento": "Sorvete"
+          }
+        }
+      ]
+    },
+    "versionId": "c3f3f03b-2982-4bbf-9963-dfd77fafe09f",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
