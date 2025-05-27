@@ -1,0 +1,3375 @@
+{
+  "data": {
+    "createdAt": "2025-01-20T14:49:45.527Z",
+    "updatedAt": "2025-01-20T18:12:38.501Z",
+    "id": "m7GkvARiAWZ1P8Gi",
+    "name": "Teste Prudente - AI - Bitrix",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "0a2c3006-1bb8-4eca-bccb-4a8373adfd85",
+                "name": "message_data",
+                "value": "={{ $json }}",
+                "type": "object"
+              },
+              {
+                "id": "eaf0405e-5ffc-4cbf-b44c-b0f4a6309431",
+                "name": "is_active",
+                "value": true,
+                "type": "boolean"
+              },
+              {
+                "id": "74aaa0db-4bf4-4aa7-9c43-f0edd4c992b4",
+                "name": "assistant_id",
+                "value": "asst_vLaWhhyuQ78UB9LLUdv9t6Tm",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -2920,
+          1460
+        ],
+        "id": "1756bbac-f1cb-4843-8b00-39a6b59e3971",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "002657de-be8a-4470-8406-30326384697d",
+                "name": "=BOT_ID",
+                "value": "={{ $json.message_data.body['data[BOT][2539][BOT_ID]'] }}",
+                "type": "string"
+              },
+              {
+                "id": "157eb297-b714-44ba-97a3-e63193853b6f",
+                "name": "MESSAGE",
+                "value": "Nesse momento estou fora e não vou conseguir te responder. Me desculpe por isso, mas logo estarei de volta 🙂",
+                "type": "string"
+              },
+              {
+                "id": "d7b33900-5491-42f6-8aa0-c101543d25cf",
+                "name": "DIALOG_ID",
+                "value": "={{ $('Webhook').item.json.body[\"data[PARAMS][DIALOG_ID]\"] }}",
+                "type": "string"
+              },
+              {
+                "id": "16ac3da2-5d16-4e18-81f2-baceea60b3dc",
+                "name": "CLIENT_ID",
+                "value": "={{ $('Webhook').item.json.query.CLIENT_ID }}",
+                "type": "string"
+              },
+              {
+                "id": "0bacdd76-c555-4e3b-a09f-33ba9ccd4fb4",
+                "name": "",
+                "value": "",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "bb84baf9-d38d-44af-946b-8b80d9d8da63",
+        "name": "Edit Fields2",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -2080,
+          1480
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "b6d60f97-25ab-4200-84b9-0fe13dc8c7d5",
+                "leftValue": "={{ $json.is_active}}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -2680,
+          1460
+        ],
+        "id": "e6482f5f-93a1-4974-85e0-120143ba0d8c",
+        "name": "Em manutenção?"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/2523/rekhnd6rccbg0i1j/imbot.message.add",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ $json }}",
+          "options": {}
+        },
+        "id": "ad91bb80-99ce-4b80-afef-61ce655c70ec",
+        "name": "Resposta - Em manutenção",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -1880,
+          1480
+        ]
+      },
+      {
+        "parameters": {
+          "collection": "users",
+          "options": {},
+          "query": "={\n  \"user_id\": \"{{ $json.user_id }}\",\n  \"assistant_id\": \"{{ $json.assistant_id }}\"\n}"
+        },
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1.1,
+        "position": [
+          -1860,
+          1220
+        ],
+        "id": "f9090dfd-803c-4fd6-8bf1-0efa0db0c956",
+        "name": "GetUser",
+        "alwaysOutputData": true,
+        "credentials": {
+          "mongoDb": {
+            "id": "3e3uRhVL72wRQ4dG",
+            "name": "Luan Mongo"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f3f1dab5-e738-46f3-a54c-146ed08bc36b",
+                "name": "name",
+                "value": "={{ $json.message_data.body['data[USER][NAME]'] }}",
+                "type": "string"
+              },
+              {
+                "id": "91ed44dc-faeb-4483-9385-002849ba49e9",
+                "name": "user_id",
+                "value": "={{ $json.message_data.body['data[USER][ID]'] }}",
+                "type": "string"
+              },
+              {
+                "id": "9730f160-4fea-4dd4-b122-fd5ecf2a94a3",
+                "name": "assistant_id",
+                "value": "asst_vLaWhhyuQ78UB9LLUdv9t6Tm",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -2080,
+          1220
+        ],
+        "id": "82fc740e-a0a9-4c58-bb36-3070f5c57b13",
+        "name": "setName e setUserid"
+      },
+      {
+        "parameters": {
+          "operation": "findOneAndUpdate",
+          "collection": "users",
+          "updateKey": "user_id",
+          "fields": "name, user_id, thread_id, assistant_id",
+          "upsert": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1.1,
+        "position": [
+          -1000,
+          1440
+        ],
+        "id": "fd1db293-9a6c-43ae-b8ae-f77e2740714e",
+        "name": "Create User",
+        "alwaysOutputData": true,
+        "credentials": {
+          "mongoDb": {
+            "id": "3e3uRhVL72wRQ4dG",
+            "name": "Luan Mongo"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "ef98cef7-696e-4101-b475-e0797e0cf944",
+                "leftValue": "={{ $json.toJsonString().replaceAll(\"{\", \"\").replaceAll(\"}\", \"\").length }}",
+                "rightValue": 0,
+                "operator": {
+                  "type": "number",
+                  "operation": "gt"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -1640,
+          1220
+        ],
+        "id": "cea9ecaa-75e2-42c9-a3be-9725a8fafd0e",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/threads",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "8122670b-9ca7-475d-b177-dacdabf7a867",
+        "name": "Criar Thread",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          -1420,
+          1440
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "8gIG4Uz2T3nfRlHR",
+            "name": "OpenAi - Credito"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/threads",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "b463dcc9-2401-4b52-9558-e81e60fb0e2e",
+        "name": "Atualizar de Thread",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          -2080,
+          1040
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "8gIG4Uz2T3nfRlHR",
+            "name": "OpenAi - Credito"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "16b7a2e8-11cb-4b0f-b77a-580b29cd727c",
+                "name": "name",
+                "value": "={{ $('setName e setUserid').item.json.name }}",
+                "type": "string"
+              },
+              {
+                "id": "8d6e10e9-1174-4fb1-a8b4-5b0d4f92ce93",
+                "name": "user_id",
+                "value": "={{ $('setName e setUserid').item.json.user_id }}",
+                "type": "string"
+              },
+              {
+                "id": "2ed5c6f1-03f5-411b-be51-ff3e90b9c95b",
+                "name": "thread_id",
+                "value": "={{ $json.id }}",
+                "type": "string"
+              },
+              {
+                "id": "87ffc0f3-ffd1-49f4-8971-9a64377fddb1",
+                "name": "assistant_id",
+                "value": "={{ $('setName e setUserid').item.json.assistant_id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1220,
+          1440
+        ],
+        "id": "b45fb3f2-7cf7-4d1f-aafd-3a80372d6b6d",
+        "name": "Edit Fields1"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://api.openai.com/v1/threads/{{ $('setUserData').item.json.thread_id }}/messages",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"role\": \"user\",\n  \"content\": [\n    {\n      \"type\": \"text\",\n      \"text\": \"<MetaInformacao>Data/hora de agora: {{ $now.setZone(\"America/Sao_Paulo\").toISO() }}</MetaInformacao><Pergunta>{{ $('Webhook').item.json.body[\"data[PARAMS][MESSAGE]\"] }}</Pergunta>\"\n    }\n  ]\n}",
+          "options": {}
+        },
+        "id": "c1e8b663-c2fc-4f06-8b02-4b6d7eaa6864",
+        "name": "Criar a Mensagem",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          1080,
+          1200
+        ],
+        "alwaysOutputData": true,
+        "notesInFlow": false,
+        "credentials": {
+          "openAiApi": {
+            "id": "8gIG4Uz2T3nfRlHR",
+            "name": "OpenAi - Credito"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://api.openai.com/v1/threads/{{ $json.thread_id }}/runs",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "assistant_id",
+                "value": "={{ $('setUserData').item.json.assistant_id }}"
+              },
+              {
+                "name": "tool_choice",
+                "value": "auto"
+              },
+              {
+                "name": "parallel_tool_calls",
+                "value": "={{ false }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "ce4370dc-242f-4e0c-a4bd-6c57b8cf33fe",
+        "name": "Run Assistant",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          1320,
+          1200
+        ],
+        "executeOnce": false,
+        "retryOnFail": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "8gIG4Uz2T3nfRlHR",
+            "name": "OpenAi - Credito"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "436c4ccf-f426-4ea7-bcf8-3d59e10698bf",
+                "name": "user_id",
+                "value": "={{ $json.user_id }}",
+                "type": "string"
+              },
+              {
+                "id": "d2ed53e4-ceba-4613-b8c1-3019fef6224e",
+                "name": "assistant_id",
+                "value": "={{ $json.assistant_id }}",
+                "type": "string"
+              },
+              {
+                "id": "b40a906c-7c7d-481c-8f4f-ff41b7e51e48",
+                "name": "name",
+                "value": "={{ $json.name }}",
+                "type": "string"
+              },
+              {
+                "id": "6835ecff-52de-4cbf-88e8-2bbd88ddddfe",
+                "name": "thread_id",
+                "value": "={{ $json.thread_id }}",
+                "type": "string"
+              },
+              {
+                "id": "441fe085-d39e-43f4-9b88-7c483ff60770",
+                "name": "message",
+                "value": "={{ $('Webhook').item.json.body[\"data[PARAMS][MESSAGE]\"] }}",
+                "type": "string"
+              },
+              {
+                "id": "f622e199-c40d-4c38-b27a-9e487e9c8558",
+                "name": "message_date",
+                "value": "={{ $now.toISO() }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -780,
+          1200
+        ],
+        "id": "5aa4c77a-599b-4294-92ca-712113cd60d8",
+        "name": "setUserData"
+      },
+      {
+        "parameters": {
+          "url": "=https://api.openai.com/v1/threads/{{ $json[\"thread_id\"] }}/runs/{{ $json[\"id\"] }}",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 10000
+          }
+        },
+        "id": "6e91c16b-b5f4-4381-8b2b-6f7dce4667d6",
+        "name": "Get Run Status",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          1540,
+          1200
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "8gIG4Uz2T3nfRlHR",
+            "name": "OpenAi - Credito"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "amount": 2,
+          "unit": "seconds"
+        },
+        "id": "2627d1c5-9a49-42a4-b0cd-b8b805f20ef2",
+        "name": "Wait",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1,
+        "position": [
+          2200,
+          1300
+        ],
+        "webhookId": "8811742f-db12-48ec-a589-b4fe235ebc7b"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "98a5af91-f163-4672-9d53-9bee20c97303",
+                "leftValue": "={{ $json.last_error.code }}",
+                "rightValue": "rate_limit_exceeded",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "bb3bea4e-a33a-473b-9215-cb417d47c45d",
+        "name": "Se for rate_limit_exceeded",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          2400,
+          980
+        ]
+      },
+      {
+        "parameters": {
+          "amount": "={{ parseInt($json.last_error.message.match(/(\\d+(\\.\\d+)?)s/)[1]) * 2}}"
+        },
+        "id": "99d6191d-438c-4d05-8082-239d3fa568e5",
+        "name": "Espera o tempo determinado",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          2400,
+          1380
+        ],
+        "webhookId": "89b3350b-829b-4d43-98f4-cfbbfdf7a131"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.status }}",
+                      "rightValue": "queued",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "queued"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "ecd44d0c-b93e-4977-ae74-8c87eae4cf20",
+                      "leftValue": "={{ $json.status }}",
+                      "rightValue": "in_progress",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "in_progress"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "6f6841ae-8845-4659-9e06-06e5bd4843df",
+                      "leftValue": "={{ $json.status }}",
+                      "rightValue": "failed",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "failed"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "6cc26ecf-79af-4d91-bb3f-a617646e3fc8",
+                      "leftValue": "={{ $json.status }}",
+                      "rightValue": "completed",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "completed"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "0f93b1ee-1a9c-4586-86f8-55e0a180ca04",
+                      "leftValue": "={{ $json.status }}",
+                      "rightValue": "expired",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "expired"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "5e7ecc7f-ecee-439c-aa0e-80a7e110726a",
+                      "leftValue": "={{ $json.status }}",
+                      "rightValue": "=requires_action",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "requires_action"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "0941b181-7059-4225-b51f-f8af8e8ef8f3",
+        "name": "Switch",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          1820,
+          1140
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "9be99488-b9db-4adf-bd48-7d7109f34e01",
+                "name": "message",
+                "value": "={{ $('Concatena todas mensagens').item.json.message }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "bd761187-22aa-4817-a9de-6f226f37ba1f",
+        "name": "Coloca novamente a mensagem para re-processar",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          2800,
+          1440
+        ]
+      },
+      {
+        "parameters": {
+          "url": "=https://api.openai.com/v1/threads/{{ $json.thread_id }}/messages?order=desc",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "3236ff0d-5041-4cec-bb8f-9249c3103838",
+        "name": "HTTP Request",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          2800,
+          1220
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "8gIG4Uz2T3nfRlHR",
+            "name": "OpenAi - Credito"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ed3cb56b-bd80-4b34-baf8-0df7a6dee1d6",
+                "name": "BOT_ID",
+                "value": "=1mcqjrfxrrg1tu0y",
+                "type": "string"
+              },
+              {
+                "id": "f5a78dea-ff72-4e62-8b5c-516c720a1dab",
+                "name": "CLIENT_ID",
+                "value": "=5nq001cliuo4uhc67yga3n3o3iyi1plo",
+                "type": "string"
+              },
+              {
+                "id": "a5dfb187-69c1-4915-bddc-72ca18e7e249",
+                "name": "DIALOG_ID",
+                "value": "={{ $('Webhook').item.json.body[\"data[PARAMS][DIALOG_ID]\"] }}",
+                "type": "string"
+              },
+              {
+                "id": "26cb7dd2-8541-488e-8c1e-6a7fa062589f",
+                "name": "MESSAGE",
+                "value": "={{ $json.data }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3240,
+          1220
+        ],
+        "id": "da00c966-b85f-44ff-bdcf-0b2123b2e2d7",
+        "name": "setBitrix24Message"
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "collection": "users",
+          "updateKey": "user_id",
+          "fields": "thread_id",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1.1,
+        "position": [
+          -1640,
+          1040
+        ],
+        "id": "81fbd26a-18a7-4b95-b978-80a2579a05e4",
+        "name": "MongoDB",
+        "credentials": {
+          "mongoDb": {
+            "id": "3e3uRhVL72wRQ4dG",
+            "name": "Luan Mongo"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "06c4c267-17e3-4f78-8ba0-a954d26ce8a8",
+                "name": "thread_id",
+                "value": "={{ $json.id }}",
+                "type": "string"
+              },
+              {
+                "id": "a86cd0db-9ade-42a4-9f50-e89efa9f03cc",
+                "name": "user_id",
+                "value": "={{ $('Webhook').item.json.body[\"data[USER][ID]\"] }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1860,
+          1040
+        ],
+        "id": "3ea30c34-44dd-41a7-b122-838eb6f6c58b",
+        "name": "setNewThreadId"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ed3cb56b-bd80-4b34-baf8-0df7a6dee1d6",
+                "name": "BOT_ID",
+                "value": "={{ $('Webhook').item.json.body[\"data[BOT][2539][BOT_ID]\"] }}",
+                "type": "string"
+              },
+              {
+                "id": "f5a78dea-ff72-4e62-8b5c-516c720a1dab",
+                "name": "CLIENT_ID",
+                "value": "={{ $('Webhook').item.json.query.CLIENT_ID }}",
+                "type": "string"
+              },
+              {
+                "id": "a5dfb187-69c1-4915-bddc-72ca18e7e249",
+                "name": "DIALOG_ID",
+                "value": "={{ $('Webhook').item.json.body[\"data[PARAMS][DIALOG_ID]\"] }}",
+                "type": "string"
+              },
+              {
+                "id": "26cb7dd2-8541-488e-8c1e-6a7fa062589f",
+                "name": "MESSAGE",
+                "value": "=Nova thread pronta para uso!",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1400,
+          1040
+        ],
+        "id": "2713ca47-e3e9-42e0-8269-99513a4da4af",
+        "name": "setBitrix24MessageLimparThread"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "c2b17fc5-7c9d-4177-be42-33691317b721",
+                "leftValue": "={{ $json.message_data.body[\"data[PARAMS][MESSAGE]\"] }}",
+                "rightValue": "limpar_thread",
+                "operator": {
+                  "type": "string",
+                  "operation": "contains"
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -2480,
+          1160
+        ],
+        "id": "34a49cb6-c46d-4c82-aa96-59c4cf3e2b77",
+        "name": "Limpar Thread?"
+      },
+      {
+        "parameters": {
+          "collection": "messages",
+          "options": {},
+          "query": "={\n  \"thread_id\": \"{{ $json.thread_id }}\",\n  \"message_date\": {\"$gte\": \"{{$now.minus(30*1000).toISO()}}\"},\n  \"process_date\": null\n}"
+        },
+        "id": "b6c822cb-7bba-4b4a-9388-82ed62769c08",
+        "name": "Conta as mensagens",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1,
+        "position": [
+          20,
+          1200
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "mongoDb": {
+            "id": "3e3uRhVL72wRQ4dG",
+            "name": "Luan Mongo"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "a481b5b5-85f3-495c-9301-fb5433b0dccc",
+                "leftValue": "={{ $input.all().length }}",
+                "rightValue": 1,
+                "operator": {
+                  "type": "number",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "c0e71eed-d292-43b8-84d9-7de07405d2e8",
+        "name": "Primeira mensagem?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          240,
+          1200
+        ]
+      },
+      {
+        "parameters": {
+          "amount": 3
+        },
+        "id": "0fb5d918-2f99-4ab9-ba4a-48ef60ebf4d8",
+        "name": "Espera chegar mais mensagens",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          480,
+          1180
+        ],
+        "webhookId": "b5cfff18-20eb-4ee8-87d0-4e0c4e24609e"
+      },
+      {
+        "parameters": {
+          "collection": "messages",
+          "options": {
+            "sort": "{\"message_date\": 1}"
+          },
+          "query": "={\n  \"thread_id\": \"{{ $('setUserData').item.json.thread_id }}\",\n  \"process_date\": null\n}"
+        },
+        "id": "6eebbee8-2362-45eb-b4b1-928dae82fd4a",
+        "name": "Busca as mensagens",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1,
+        "position": [
+          -360,
+          1500
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "mongoDb": {
+            "id": "3e3uRhVL72wRQ4dG",
+            "name": "Luan Mongo"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "7234d2d2-f163-40bd-8685-de0c63142838",
+        "name": "Loop Over Items1",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          0,
+          1500
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "beed4a68-7ca4-480d-b203-3f43ca5c2ce5",
+                "name": "process_date",
+                "value": "={{ $now.toISO() }}",
+                "type": "string"
+              },
+              {
+                "id": "ed79557d-a9f1-4938-8639-2b3c86df2ce0",
+                "name": "thread_id",
+                "value": "={{ $('setUserData').item.json.thread_id }}",
+                "type": "string"
+              },
+              {
+                "id": "d5795955-d791-42b4-ad4e-a4c6b08bb79a",
+                "name": "_id",
+                "value": "={{ new String($json._id).toString() }}",
+                "type": "string"
+              },
+              {
+                "id": "cf26097b-c04b-4a9a-99f3-72653fe2b885",
+                "name": "user_id",
+                "value": "={{ $('setUserData').item.json.user_id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "764b2729-99ed-41d3-9fa1-c3aabedc59a2",
+        "name": "Define process_date",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          260,
+          1580
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "collection": "messages",
+          "updateKey": "_id",
+          "fields": "process_date",
+          "options": {}
+        },
+        "id": "e2ff9fa8-fb1e-4516-a14d-f4381d151c94",
+        "name": "Marca para processar",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1,
+        "position": [
+          480,
+          1580
+        ],
+        "credentials": {
+          "mongoDb": {
+            "id": "3e3uRhVL72wRQ4dG",
+            "name": "Luan Mongo"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const messagesArray = $('Busca as mensagens').all();\nlet allMessages = \"\";\n\nmessagesArray.forEach(item => {\n  allMessages += item.json.message + \"  \";\n});\n\nallMessages = allMessages.trim();\nreturn [{\"message\": allMessages}]"
+        },
+        "id": "c4d99596-723a-453b-95ca-7a271a8a9382",
+        "name": "Concatena todas mensagens",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          480,
+          1420
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "insert",
+          "collection": "messages",
+          "fields": "user_id,thread_id,message,message_date,assistant_id",
+          "options": {}
+        },
+        "id": "c92d4a39-5662-4469-9aba-a7a2d77f6bdc",
+        "name": "Insere a mensagem",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1,
+        "position": [
+          -160,
+          1200
+        ],
+        "credentials": {
+          "mongoDb": {
+            "id": "3e3uRhVL72wRQ4dG",
+            "name": "Luan Mongo"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "let alternar = true\n\nconst texto = $input.all()[0].json.data[0].content[0].text.value\nconst resultado = texto.replace(/\\*\\*/g, () => {\n    if (alternar) {\n        alternar = false;\n        return \"[B]\";\n    } else {\n        alternar = true;\n        return \"[/B]\";\n    }\n})\n\nreturn {json: {data:resultado}}"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          3020,
+          1220
+        ],
+        "id": "aa4c6b24-fb74-4b3f-9ca8-ab93bb67eda2",
+        "name": "Code"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "191c1aec-934c-4ba2-b396-3738b50f4d78",
+                "name": "tool_calls",
+                "value": "={{ $json.required_action.submit_tool_outputs.tool_calls }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "bef2c618-0e47-49df-b237-a112c13fcc0d",
+        "name": "Captura Tool Calls",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          2120,
+          2000
+        ]
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "tool_calls",
+          "options": {
+            "destinationFieldName": "properties"
+          }
+        },
+        "id": "a6e2a753-b711-4c78-942c-84dafe005b25",
+        "name": "Split Out",
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          2280,
+          2000
+        ]
+      },
+      {
+        "parameters": {
+          "options": {
+            "reset": "={{ $node[\"Loop Over Items\"].context[\"done\"] }}"
+          }
+        },
+        "id": "91d50d88-048d-4e39-9f62-8d7015fe6af4",
+        "name": "Loop Over Items",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          2460,
+          2000
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f724eaa4-72cc-4bbd-9b1a-b279ec2c8e52",
+                "name": "arguments",
+                "value": "={{ $json.properties.function.arguments }}",
+                "type": "object"
+              },
+              {
+                "id": "56d8cb7d-1784-4d08-aaab-ddb79b9ab4b0",
+                "name": "segmento",
+                "value": "={{ $('Variáveis Globais').item.json.segmento }}",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "id": "50b3c254-47a0-4976-a642-02cd64f1016a",
+        "name": "Separa Arguments",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          2780,
+          2120
+        ]
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "options": {}
+        },
+        "id": "18b616aa-8d2d-4403-b45a-07051a57eff6",
+        "name": "Aggregate",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          2680,
+          1800
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://api.openai.com/v1/threads/{{ $('Get Run Status').item.json[\"thread_id\"] }}/runs/{{ $('Get Run Status').item.json[\"id\"] }}/submit_tool_outputs",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"tool_outputs\":{{ $json.output }}\n}\n",
+          "options": {}
+        },
+        "id": "470c3639-2c63-4609-bb5d-2d0c834a962f",
+        "name": "Insere Output",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          3120,
+          1800
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "8gIG4Uz2T3nfRlHR",
+            "name": "OpenAi - Credito"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "79854708-0135-4a8b-827b-74bcd2ac8fe7",
+                "name": "response",
+                "value": "={{ \"success\" in $json.response.first() ? [\"Nenhum registro encontrado\"] : $json.response }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "fe66d317-db59-45cd-aa29-9ff62624227d",
+        "name": "Response",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          4060,
+          1940
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "raw",
+          "jsonOutput": "={\n\"tool_call_id\":\"{{ $('Separa Arguments').item.json[\"properties\"][\"id\"] }}\",\n\"output\": {{ JSON.stringify(JSON.stringify($json[\"response\"])) }}\n}",
+          "options": {}
+        },
+        "id": "8dfe8520-4783-48c0-8412-edcd5b066b2f",
+        "name": "Tool Call ID",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          4140,
+          2420
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "rA1yJRy1iqLLpIF0",
+          "options": {}
+        },
+        "id": "ed02046b-a1b5-42e5-b1e0-a64ef44a8c8e",
+        "name": "Execute Workflow - chamar_salvador",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          3620,
+          1780
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "uxYgH5bRn37z48nS",
+          "options": {}
+        },
+        "id": "f52a5fa7-63d2-4a1e-a10a-a24053a1f3b7",
+        "name": "Execute Workflow - buscar_lead",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          3440,
+          2340
+        ]
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "response",
+          "options": {}
+        },
+        "id": "6e2c4328-0cab-4139-8ad0-2d45a603697c",
+        "name": "Aggregate1",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          3860,
+          1780
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "a30ac449-65ca-4a00-bdc5-19d2a41d4b34",
+                      "leftValue": "={{ $json.properties.function.name }}",
+                      "rightValue": "chamar_salvador",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "chamar_salvador"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "1ed1667f-793b-4625-b2b6-248671c134bd",
+                      "leftValue": "={{ $json.properties.function.name }}",
+                      "rightValue": "buscar_lead",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "buscar_lead"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "ef8255f3-0134-42be-b91d-8a24020f5a08",
+                      "leftValue": "={{ $json.properties.function.name }}",
+                      "rightValue": "analisar_instagram",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "analisar_instagram"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "7f4d5eca-507c-4d09-9841-ac3a043285b3",
+        "name": "Escolhe a tool que deve ser utilizada",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          3040,
+          2120
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "mGcqKpdFNWvgHMBN",
+          "options": {}
+        },
+        "id": "9155debb-28ba-4b75-85ff-e6d38f80c56e",
+        "name": "Execute Workflow - analisar_instagram",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          3440,
+          2120
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4af2f29b-283d-42ac-91fd-1faef706fba5",
+                "name": "id_agente",
+                "value": "00",
+                "type": "string"
+              },
+              {
+                "id": "6a775885-e6eb-45c9-b657-6fa5f23a0deb",
+                "name": "nome_agente",
+                "value": "={{ $('Variáveis Globais').item.json.nome_agente }}",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "id": "207c4848-35a2-434a-831d-b7c446c20a2b",
+        "name": "Argumentos + Id",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3440,
+          1960
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "c49761c9-bbfa-4a86-8d62-396ebeeebc5d",
+                "name": "output",
+                "value": "={{ $json.data }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "15c41c8c-74ea-463c-9b6f-97e1566de011",
+        "name": "Edit Fields3",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          2900,
+          1800
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/2523/rekhnd6rccbg0i1j/imbot.message.add",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ $json }}",
+          "options": {}
+        },
+        "id": "5fbe3c01-4322-40cb-9e90-45f0c0ce2868",
+        "name": "Resposta simples Prudente",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -1100,
+          1040
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/2523/rekhnd6rccbg0i1j/imbot.message.add",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ $json }}",
+          "options": {}
+        },
+        "id": "b71e5a9c-4bbb-4725-b175-c04c1f5d81b9",
+        "name": "Resposta Completa Prudente",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          3520,
+          1220
+        ]
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "prudentebot",
+          "options": {
+            "rawBody": false
+          }
+        },
+        "id": "59bbcf04-8abe-49bb-9185-013fc1a45f82",
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -3120,
+          1460
+        ],
+        "webhookId": "12968a8c-642c-44fd-83aa-fa908d86378e"
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "documentId": {
+            "__rl": true,
+            "value": "1wuJ4kgbLP7zlou3-A3QnHUttcf_f4931XdfPlXQqRZ0",
+            "mode": "list",
+            "cachedResultName": "PEB records",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wuJ4kgbLP7zlou3-A3QnHUttcf_f4931XdfPlXQqRZ0/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Records",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wuJ4kgbLP7zlou3-A3QnHUttcf_f4931XdfPlXQqRZ0/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "row_number": "={{ $('Webhook').item.json.body.data.content.row }}",
+              "Analise insta": "={{ $json.output }}",
+              "P1": "={{ $('Execute Workflow - analisar_instagram').item.json.response[0].output.segmento_alinhado.esta_relacionado }}",
+              "P2": "={{ $('Execute Workflow - analisar_instagram').item.json.response[0].output.quantidade_publicacoes }}",
+              "P3": "={{ $('Execute Workflow - analisar_instagram').item.json.response[0].output.tempo_sem_postar.dias }}",
+              "P4": "={{ $('Execute Workflow - analisar_instagram').item.json.response[0].output.frequencia_media_postagem.dias }}",
+              "P5": "={{ $('Execute Workflow - analisar_instagram').item.json.response[0].output.frequencia_media_engajamento.valor }}",
+              "P6": "={{ $('Execute Workflow - analisar_instagram').item.json.response[0].output.bio_preenchida.nivel_preenchimento }}",
+              "P7": "={{ $('Execute Workflow - analisar_instagram').item.json.response[0].output.quantidade_seguidores }}",
+              "P8": "={{ $('Execute Workflow - analisar_instagram').item.json.response[0].output.perfil_profissional }}",
+              "P9": "={{ $('Execute Workflow - analisar_instagram').item.json.response[0].output.perfil_novo }}",
+              "P10": "={{ $('Response').item.json.response[0].output.segmento_alinhado.nome }}"
+            },
+            "matchingColumns": [
+              "row_number"
+            ],
+            "schema": [
+              {
+                "id": "nome",
+                "displayName": "nome",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "telefone",
+                "displayName": "telefone",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "cnpj",
+                "displayName": "cnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q1",
+                "displayName": "q1",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q2",
+                "displayName": "q2",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q3",
+                "displayName": "q3",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q4",
+                "displayName": "q4",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q5",
+                "displayName": "q5",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q6",
+                "displayName": "q6",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q7",
+                "displayName": "q7",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q8",
+                "displayName": "q8",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Cenário 1",
+                "displayName": "Cenário 1",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Cenário 2",
+                "displayName": "Cenário 2",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Cenário 3",
+                "displayName": "Cenário 3",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Cenário 4",
+                "displayName": "Cenário 4",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "instagram",
+                "displayName": "instagram",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Resultado C1",
+                "displayName": "Resultado C1",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Resultado C2",
+                "displayName": "Resultado C2",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Resultado C3",
+                "displayName": "Resultado C3",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Resultado C4",
+                "displayName": "Resultado C4",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Data envio",
+                "displayName": "Data envio",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Data resposta",
+                "displayName": "Data resposta",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Analise insta",
+                "displayName": "Analise insta",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Segmento",
+                "displayName": "Segmento",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Equipamento",
+                "displayName": "Equipamento",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Valor do equipamento",
+                "displayName": "Valor do equipamento",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Avaliacao",
+                "displayName": "Avaliacao",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "P1",
+                "displayName": "P1",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "P2",
+                "displayName": "P2",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "P3",
+                "displayName": "P3",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "P4",
+                "displayName": "P4",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "P5",
+                "displayName": "P5",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "P6",
+                "displayName": "P6",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "P7",
+                "displayName": "P7",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "P8",
+                "displayName": "P8",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "P9",
+                "displayName": "P9",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "P10",
+                "displayName": "P10",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Nota My Business",
+                "displayName": "Nota My Business",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Business Comments",
+                "displayName": "Business Comments",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "readOnly": true,
+                "removed": false
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "347a0d21-5e37-4ff5-b332-c802ab66d13a",
+        "name": "Google Sheets",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.4,
+        "position": [
+          4740,
+          1640
+        ],
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "3a9490bc-dac7-4990-8c72-595730164303",
+                "leftValue": "={{ $('Variáveis Globais').item.json.row }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "b38b8ccb-a25d-4d29-af61-d20534d080f2",
+        "name": "tem row number ?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          4340,
+          1800
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Pegar o JSON de entrada\nconst inputJson = $json.response[0].output;\n\n// Construir a saída formatada\nlet formattedOutput = `🚀 **Análise do Perfil do Instagram** 🚀\n\n🔹 **Segmento Alinhado**\n   - Nome (Pressuposto do Prudente): ${inputJson.segmento_alinhado?.nome || \"Não informado\"}\n   - Está Relacionado? ${inputJson.segmento_alinhado?.esta_relacionado ? \"Sim ✅\" : \"Não ❌\"}\n   - Motivo: ${inputJson.segmento_alinhado?.motivo || \"Não informado\"}\n\n🔹 **Atividade no Instagram**\n   - Publicações Totais: ${inputJson.quantidade_publicacoes || \"Não informado\"}\n   - Dias sem Postar: ${inputJson.tempo_sem_postar?.dias || \"Não informado\"} dias (Último Post: ${inputJson.tempo_sem_postar?.data_ultimo_post || \"Não informado\"})\n   - Frequência Média de Postagem: ${inputJson.frequencia_media_postagem?.dias ? `A cada ${inputJson.frequencia_media_postagem.dias} dias` : \"Não informado\"}\n   - Engajamento Médio: ${inputJson.frequencia_media_engajamento?.valor ? inputJson.frequencia_media_engajamento.valor.toFixed(1) : \"Não informado\"}\n\n🔹 **Informações da Bio**\n   - Bio Preenchida? ${inputJson.bio_preenchida?.esta_preenchida ? \"Sim ✅\" : \"Não ❌\"}\n   - Nível de Preenchimento: ${inputJson.bio_preenchida?.nivel_preenchimento || \"Não informado\"}\n   - Análise: ${inputJson.bio_preenchida?.analise || \"Não informado\"}\n\n🔹 **Dados do Perfil**\n   - Seguidores: ${inputJson.quantidade_seguidores ? inputJson.quantidade_seguidores.toLocaleString() : \"Não informado\"}\n   - Tema do Perfil: ${inputJson.tema_perfil || \"Não informado\"}\n   - Perfil Profissional? ${inputJson.perfil_profissional ? \"Sim ✅\" : \"Não ❌\"}\n   - Perfil Novo? ${inputJson.perfil_novo ? \"Sim ✅\" : \"Não ❌\"}\n`;\n\n// Retornar a saída formatada\nreturn [{ json: { output: formattedOutput } }];\n"
+        },
+        "id": "c616dd62-d12e-43d9-afdc-bf17ed5efc2d",
+        "name": "Formata json",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          4560,
+          1640
+        ]
+      },
+      {
+        "parameters": {
+          "url": "https://serpapi.com/search.json?engine=google&api_key=9927e3948b0e26a6429c73e715684af1157b4b56e0ef773d1339906a41e72b55",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "q",
+                "value": "={{ $('Webhook').item.json.body.data.content.company_name }} my business"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "0052e4aa-1be8-4d3a-b891-7d478512fac2",
+        "name": "HTTP Request1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          4460,
+          2200
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "6de0b0d5-5e6e-42b2-b79b-eeed5160992e",
+                "leftValue": "={{ $('HTTP Request1').item.json.knowledge_graph.rating }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "number",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "8887ba37-45eb-4a24-bb5f-489a0e11e8e6",
+        "name": "Tem my business ?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          4620,
+          2200
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "documentId": {
+            "__rl": true,
+            "value": "1wuJ4kgbLP7zlou3-A3QnHUttcf_f4931XdfPlXQqRZ0",
+            "mode": "list",
+            "cachedResultName": "PEB records",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wuJ4kgbLP7zlou3-A3QnHUttcf_f4931XdfPlXQqRZ0/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Records",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wuJ4kgbLP7zlou3-A3QnHUttcf_f4931XdfPlXQqRZ0/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "row_number": "={{ $('Webhook').item.json.body.data.content.row }}",
+              "Analise insta": "={{ $json.output }}",
+              "P1": "={{ $('Execute Workflow - analisar_instagram').item.json.response[0].output.segmento_alinhado.esta_relacionado }}",
+              "P2": "={{ $('Execute Workflow - analisar_instagram').item.json.response[0].output.quantidade_publicacoes }}",
+              "P3": "={{ $('Execute Workflow - analisar_instagram').item.json.response[0].output.tempo_sem_postar.dias }}",
+              "P4": "={{ $('Execute Workflow - analisar_instagram').item.json.response[0].output.frequencia_media_postagem.dias }}",
+              "P5": "={{ $('Execute Workflow - analisar_instagram').item.json.response[0].output.frequencia_media_engajamento.valor }}",
+              "P6": "={{ $('Execute Workflow - analisar_instagram').item.json.response[0].output.bio_preenchida.nivel_preenchimento }}",
+              "P7": "={{ $('Execute Workflow - analisar_instagram').item.json.response[0].output.quantidade_seguidores }}",
+              "P8": "={{ $('Execute Workflow - analisar_instagram').item.json.response[0].output.perfil_profissional }}",
+              "P9": "={{ $('Execute Workflow - analisar_instagram').item.json.response[0].output.perfil_novo }}",
+              "P10": "={{ $('Response').item.json.response[0].output.segmento_alinhado.nome }}",
+              "Nota My Business": "={{ $('HTTP Request1').item.json.knowledge_graph.rating }}",
+              "Business Comments": "=1- {{ $('HTTP Request1').item.json.knowledge_graph.user_reviews[0].summary }}\n2- {{ $('HTTP Request1').item.json.knowledge_graph.user_reviews[1].summary }}\n3- {{ $('HTTP Request1').item.json.knowledge_graph.user_reviews[2].summary }}"
+            },
+            "matchingColumns": [
+              "row_number"
+            ],
+            "schema": [
+              {
+                "id": "nome",
+                "displayName": "nome",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "telefone",
+                "displayName": "telefone",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "cnpj",
+                "displayName": "cnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q1",
+                "displayName": "q1",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q2",
+                "displayName": "q2",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q3",
+                "displayName": "q3",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q4",
+                "displayName": "q4",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q5",
+                "displayName": "q5",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q6",
+                "displayName": "q6",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q7",
+                "displayName": "q7",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q8",
+                "displayName": "q8",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Cenário 1",
+                "displayName": "Cenário 1",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Cenário 2",
+                "displayName": "Cenário 2",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Cenário 3",
+                "displayName": "Cenário 3",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Cenário 4",
+                "displayName": "Cenário 4",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "instagram",
+                "displayName": "instagram",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Resultado C1",
+                "displayName": "Resultado C1",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Resultado C2",
+                "displayName": "Resultado C2",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Resultado C3",
+                "displayName": "Resultado C3",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Resultado C4",
+                "displayName": "Resultado C4",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Data envio",
+                "displayName": "Data envio",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Data resposta",
+                "displayName": "Data resposta",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Analise insta",
+                "displayName": "Analise insta",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Segmento",
+                "displayName": "Segmento",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Equipamento",
+                "displayName": "Equipamento",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Valor do equipamento",
+                "displayName": "Valor do equipamento",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Avaliacao",
+                "displayName": "Avaliacao",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "P1",
+                "displayName": "P1",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "P2",
+                "displayName": "P2",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "P3",
+                "displayName": "P3",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "P4",
+                "displayName": "P4",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "P5",
+                "displayName": "P5",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "P6",
+                "displayName": "P6",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "P7",
+                "displayName": "P7",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "P8",
+                "displayName": "P8",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "P9",
+                "displayName": "P9",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "P10",
+                "displayName": "P10",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Nota My Business",
+                "displayName": "Nota My Business",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Business Comments",
+                "displayName": "Business Comments",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "readOnly": true,
+                "removed": false
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "377981d5-0ef0-4910-8af1-7bb3e4cf0bae",
+        "name": "Google Sheets1",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.4,
+        "position": [
+          4820,
+          2080
+        ],
+        "alwaysOutputData": true
+      }
+    ],
+    "connections": {
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "Em manutenção?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields2": {
+        "main": [
+          [
+            {
+              "node": "Resposta - Em manutenção",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Em manutenção?": {
+        "main": [
+          [
+            {
+              "node": "Limpar Thread?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Edit Fields2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GetUser": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "setName e setUserid": {
+        "main": [
+          [
+            {
+              "node": "GetUser",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Create User": {
+        "main": [
+          [
+            {
+              "node": "setUserData",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "setUserData",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Criar Thread",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Criar Thread": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Atualizar de Thread": {
+        "main": [
+          [
+            {
+              "node": "setNewThreadId",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields1": {
+        "main": [
+          [
+            {
+              "node": "Create User",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Criar a Mensagem": {
+        "main": [
+          [
+            {
+              "node": "Run Assistant",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Run Assistant": {
+        "main": [
+          [
+            {
+              "node": "Get Run Status",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "setUserData": {
+        "main": [
+          [
+            {
+              "node": "Insere a mensagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get Run Status": {
+        "main": [
+          [
+            {
+              "node": "Switch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "Get Run Status",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Se for rate_limit_exceeded": {
+        "main": [
+          [
+            {
+              "node": "Coloca novamente a mensagem para re-processar",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Espera o tempo determinado": {
+        "main": [
+          [
+            {
+              "node": "Get Run Status",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch": {
+        "main": [
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Se for rate_limit_exceeded",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [],
+          [
+            {
+              "node": "Captura Tool Calls",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Coloca novamente a mensagem para re-processar": {
+        "main": [
+          [
+            {
+              "node": "Criar a Mensagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "setBitrix24Message": {
+        "main": [
+          [
+            {
+              "node": "Resposta Completa Prudente",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "MongoDB": {
+        "main": [
+          [
+            {
+              "node": "setBitrix24MessageLimparThread",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "setNewThreadId": {
+        "main": [
+          [
+            {
+              "node": "MongoDB",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "setBitrix24MessageLimparThread": {
+        "main": [
+          [
+            {
+              "node": "Resposta simples Prudente",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Limpar Thread?": {
+        "main": [
+          [
+            {
+              "node": "Atualizar de Thread",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "setName e setUserid",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Conta as mensagens": {
+        "main": [
+          [
+            {
+              "node": "Primeira mensagem?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Primeira mensagem?": {
+        "main": [
+          [
+            {
+              "node": "Espera chegar mais mensagens",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Espera chegar mais mensagens": {
+        "main": [
+          [
+            {
+              "node": "Busca as mensagens",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Busca as mensagens": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items1": {
+        "main": [
+          [
+            {
+              "node": "Concatena todas mensagens",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Define process_date",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Define process_date": {
+        "main": [
+          [
+            {
+              "node": "Marca para processar",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Marca para processar": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Concatena todas mensagens": {
+        "main": [
+          [
+            {
+              "node": "Criar a Mensagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Insere a mensagem": {
+        "main": [
+          [
+            {
+              "node": "Conta as mensagens",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "setBitrix24Message",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Captura Tool Calls": {
+        "main": [
+          [
+            {
+              "node": "Split Out",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [
+            {
+              "node": "Aggregate",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Separa Arguments",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Separa Arguments": {
+        "main": [
+          [
+            {
+              "node": "Escolhe a tool que deve ser utilizada",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aggregate": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Response": {
+        "main": [
+          [
+            {
+              "node": "Tool Call ID",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "tem row number ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tool Call ID": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute Workflow - chamar_salvador": {
+        "main": [
+          [
+            {
+              "node": "Aggregate1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute Workflow - buscar_lead": {
+        "main": [
+          [
+            {
+              "node": "Response",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aggregate1": {
+        "main": [
+          [
+            {
+              "node": "Response",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Escolhe a tool que deve ser utilizada": {
+        "main": [
+          [
+            {
+              "node": "Argumentos + Id",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [],
+          [
+            {
+              "node": "Execute Workflow - analisar_instagram",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute Workflow - analisar_instagram": {
+        "main": [
+          [
+            {
+              "node": "Response",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Argumentos + Id": {
+        "main": [
+          [
+            {
+              "node": "Execute Workflow - chamar_salvador",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields3": {
+        "main": [
+          [
+            {
+              "node": "Insere Output",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "tem row number ?": {
+        "main": [
+          [
+            {
+              "node": "Formata json",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Formata json": {
+        "main": [
+          [
+            {
+              "node": "Google Sheets",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request1": {
+        "main": [
+          [
+            {
+              "node": "Tem my business ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tem my business ?": {
+        "main": [
+          [
+            {
+              "node": "Google Sheets1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {
+      "Webhook": [
+        {
+          "json": {
+            "headers": {
+              "host": "n8n-dev.blips-labs.com",
+              "user-agent": "Bitrix24 Webhook Engine",
+              "content-length": "1547",
+              "accept-encoding": "gzip",
+              "content-type": "application/x-www-form-urlencoded",
+              "x-forwarded-for": "52.29.163.104",
+              "x-forwarded-host": "n8n-dev.blips-labs.com",
+              "x-forwarded-proto": "https",
+              "x-railway-request-id": "m28a6tP1RhuX2fVM649iwA_2621307460",
+              "x-real-ip": "52.29.163.104",
+              "x-request-start": "1737395650043"
+            },
+            "params": {},
+            "query": {
+              "CLIENT_ID": "5nq001cliuo4uhc67yga3n3o3iyi1plo"
+            },
+            "body": {
+              "event": "ONIMBOTMESSAGEADD",
+              "event_handler_id": "441",
+              "data[BOT][2543][BOT_ID]": "2543",
+              "data[BOT][2543][BOT_CODE]": "1mcqjrfxrrg1tu0y",
+              "data[PARAMS][MESSAGE]": "teste",
+              "data[PARAMS][TEMPLATE_ID]": "15303ffd-c090-410a-a065-6d9df476dddc",
+              "data[PARAMS][MESSAGE_TYPE]": "P",
+              "data[PARAMS][FROM_USER_ID]": "2523",
+              "data[PARAMS][DIALOG_ID]": "2523",
+              "data[PARAMS][TO_USER_ID]": "2543",
+              "data[PARAMS][SKIP_URL_INDEX]": "N",
+              "data[PARAMS][SKIP_COUNTER_INCREMENTS]": "N",
+              "data[PARAMS][SKIP_COMMAND]": "N",
+              "data[PARAMS][SKIP_CONNECTOR]": "N",
+              "data[PARAMS][IMPORTANT_CONNECTOR]": "N",
+              "data[PARAMS][SILENT_CONNECTOR]": "N",
+              "data[PARAMS][AUTHOR_ID]": "2523",
+              "data[PARAMS][CHAT_ID]": "15127",
+              "data[PARAMS][COMMAND_CONTEXT]": "TEXTAREA",
+              "data[PARAMS][MESSAGE_ID]": "681693",
+              "data[PARAMS][CHAT_TYPE]": "P",
+              "data[PARAMS][LANGUAGE]": "br",
+              "data[USER][ID]": "2523",
+              "data[USER][NAME]": "Luan Delino Peres",
+              "data[USER][FIRST_NAME]": "Luan",
+              "data[USER][LAST_NAME]": "Delino Peres",
+              "data[USER][WORK_POSITION]": "Desenvolvedor Python",
+              "data[USER][GENDER]": "M",
+              "data[USER][IS_BOT]": "N",
+              "data[USER][IS_CONNECTOR]": "N",
+              "data[USER][IS_NETWORK]": "N",
+              "data[USER][IS_EXTRANET]": "N",
+              "ts": "1737395649",
+              "auth[domain]": "blips.bitrix24.com.br",
+              "auth[client_endpoint]": "https://blips.bitrix24.com.br/rest/",
+              "auth[server_endpoint]": "https://oauth.bitrix.info/rest/",
+              "auth[member_id]": "cc1dbe6157e85937651412909fb01150",
+              "auth[application_token]": "5nq001cliuo4uhc67yga3n3o3iyi1plo"
+            },
+            "webhookUrl": "https://n8n-dev.blips-labs.com/webhook/prudentebot",
+            "executionMode": "production"
+          }
+        }
+      ]
+    },
+    "versionId": "05fa9c62-f424-4982-937a-968ad2a4c554",
+    "triggerCount": 1,
+    "tags": []
+  }
+}
