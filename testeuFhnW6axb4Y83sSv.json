@@ -1,0 +1,20 @@
+{
+  "data": {
+    "createdAt": "2024-05-09T12:41:02.956Z",
+    "updatedAt": "2024-05-09T12:41:02.956Z",
+    "id": "uFhnW6axb4Y83sSv",
+    "name": "POC - Moderador Comentários Redes Sociais",
+    "active": false,
+    "nodes": [],
+    "connections": {},
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {},
+    "versionId": "e9f19b7f-6c2d-40a8-a86d-0b8901e94c03",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
