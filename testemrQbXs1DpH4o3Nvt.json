@@ -1,0 +1,829 @@
+{
+  "data": {
+    "createdAt": "2024-10-07T20:33:44.523Z",
+    "updatedAt": "2025-04-08T13:39:42.627Z",
+    "id": "mrQbXs1DpH4o3Nvt",
+    "name": "Salva PEB",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "operation": "update",
+          "documentId": {
+            "__rl": true,
+            "value": "1wuJ4kgbLP7zlou3-A3QnHUttcf_f4931XdfPlXQqRZ0",
+            "mode": "list",
+            "cachedResultName": "PEB records",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wuJ4kgbLP7zlou3-A3QnHUttcf_f4931XdfPlXQqRZ0/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Records",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wuJ4kgbLP7zlou3-A3QnHUttcf_f4931XdfPlXQqRZ0/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "row_number": "={{ $json.body.row }}",
+              "q1": "={{ $json.body.Q_1 }}",
+              "q2": "={{ $json.body.Q_2 }}",
+              "q3": "={{ $json.body.Q_3 }}",
+              "q4": "={{ $json.body.Q_4 }}",
+              "q5": "={{ $json.body.Q_5 }}",
+              "q6": "={{ $json.body.Q_6 }}",
+              "q7": "={{ $json.body.Q_7 }}",
+              "q8": "={{ $json.body.Q_8 }}",
+              "instagram": "={{ $json.body.instagram }}",
+              "Data resposta": "={{ $now.format('dd/MM/yyyy  HH:mm:ss') }}"
+            },
+            "matchingColumns": [
+              "row_number"
+            ],
+            "schema": [
+              {
+                "id": "nome",
+                "displayName": "nome",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "telefone",
+                "displayName": "telefone",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "cnpj",
+                "displayName": "cnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q1",
+                "displayName": "q1",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q2",
+                "displayName": "q2",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q3",
+                "displayName": "q3",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q4",
+                "displayName": "q4",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q5",
+                "displayName": "q5",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q6",
+                "displayName": "q6",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q7",
+                "displayName": "q7",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q8",
+                "displayName": "q8",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Cenário 1",
+                "displayName": "Cenário 1",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Cenário 2",
+                "displayName": "Cenário 2",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Cenário 3",
+                "displayName": "Cenário 3",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Cenário 4",
+                "displayName": "Cenário 4",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "instagram",
+                "displayName": "instagram",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Resultado C1",
+                "displayName": "Resultado C1",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Resultado C2",
+                "displayName": "Resultado C2",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Resultado C3",
+                "displayName": "Resultado C3",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Resultado C4",
+                "displayName": "Resultado C4",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Data envio",
+                "displayName": "Data envio",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Data resposta",
+                "displayName": "Data resposta",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Analise insta",
+                "displayName": "Analise insta",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Segmento",
+                "displayName": "Segmento",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Equipamento",
+                "displayName": "Equipamento",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Valor do equipamento",
+                "displayName": "Valor do equipamento",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Avaliacao",
+                "displayName": "Avaliacao",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "readOnly": true,
+                "removed": false
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "5b27a6a9-cb80-4127-9216-a757195d650e",
+        "name": "Google Sheets",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          1080,
+          300
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "f53eDeTWUXii9mLz",
+            "name": "Google Sheets Mateus"
+          }
+        },
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "resource": "message",
+          "guildId": {
+            "rl": true,
+            "value": "783328180500299777",
+            "mode": "list",
+            "cachedResultName": "Blips",
+            "cachedResultUrl": "https://discord.com/channels/783328180500299777"
+          },
+          "channelId": {
+            "rl": true,
+            "value": "1266473524126814288",
+            "mode": "list",
+            "cachedResultName": "time-crédito",
+            "cachedResultUrl": "⁠Blips⁠time-crédito"
+          },
+          "content": "=Olá pessoal, novo PEB foi registrado: 📋\n\nNome do cliente: {{ $('Webhook').first().json.body.nome }} 🧑‍💼\nCNPJ: {{ $('Webhook').first().json.body.cnpj }} 🔢\nNumero da linha na planilha PEB Records: {{ $json.row_number }} 📲\n",
+          "options": {}
+        },
+        "id": "3ec47722-157f-4ce0-9ec6-1b8c690fef2b",
+        "name": "Discord",
+        "type": "n8n-nodes-base.discord",
+        "typeVersion": 2,
+        "position": [
+          1260,
+          300
+        ],
+        "webhookId": "89185ed1-385e-4ade-b6b6-632084cd9fbc",
+        "credentials": {
+          "discordBotApi": {
+            "id": "HwwdTQ09UgBU7GNZ",
+            "name": "Discord Bot account"
+          }
+        },
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://n8n-assistants.blips-labs.com/webhook/prudente",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"data\": {\n    \"type\":\"text\",\n    \"content\": {\n      \"text\": \"Prudente analise a rede social desse cliente https://www.instagram.com/{{ $json.body.instagram }}/\",\n      \"row\": \"{{ $('Webhook').item.json.body.row }}\",\n      \"segmento\": \"{{ $('Webhook').item.json.body.segmento }}\",\n      \"company_name\": \"{{ $('Webhook').first().json.body.company_name }}\"\n      }\n    }\n} ",
+          "options": {
+            "timeout": 180000
+          }
+        },
+        "id": "20cd18b3-8dcb-4e1d-972a-8ab437a3be03",
+        "name": "HTTP Request",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2240,
+          300
+        ],
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "de29a744-51d2-401f-b82d-6d144d8ec181",
+                "leftValue": "={{ $('Google Sheets').item.json.instagram.replaceAll(' ','') }}",
+                "rightValue": "-",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              },
+              {
+                "id": "031f4f9e-9549-48cc-9df6-d174d06dbc3b",
+                "leftValue": "={{ $('Google Sheets').item.json.instagram.replaceAll(' ','') }}",
+                "rightValue": "(-)",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "9a35df34-52ab-487e-a19b-1722d64d1656",
+                "leftValue": "={{ $('Google Sheets').item.json.instagram.replaceAll(' ','') }}",
+                "rightValue": "-",
+                "operator": {
+                  "type": "string",
+                  "operation": "startsWith"
+                }
+              },
+              {
+                "id": "cbce7c24-f97a-4e40-937b-d34365b42924",
+                "leftValue": "={{ $('Google Sheets').item.json.instagram.replaceAll(' ','') }}",
+                "rightValue": "(-)",
+                "operator": {
+                  "type": "string",
+                  "operation": "startsWith"
+                }
+              },
+              {
+                "id": "8a98085b-5c80-4109-9927-0686d40d96de",
+                "leftValue": "={{ $('Google Sheets').item.json.instagram.replaceAll(' ','') }}",
+                "rightValue": "_",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "id": "a33e5d4b-8e36-4f0a-ab84-03c8e5bf8d1f",
+        "name": "Insta invalido?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          1440,
+          300
+        ],
+        "executeOnce": true
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "a6b567d0-79da-4741-a715-74a842aa9173",
+                "name": "body.instagram",
+                "value": "={{ $('Webhook').item.json.body.instagram.replaceAll('@','').toLowerCase() }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "2e98f1e1-6eed-41da-9a61-e4037ec997ec",
+        "name": "Edit Fields",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1680,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "salva-peb",
+          "options": {}
+        },
+        "id": "3058a109-7018-468e-8b9d-d038e7dbe30c",
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          820,
+          300
+        ],
+        "webhookId": "35aa6ebc-842f-4a57-adc4-62c68f403f1a"
+      },
+      {
+        "parameters": {
+          "useJson": true,
+          "claimsJson": "={\n  \"iss\": \"blips-bigdata@appspot.gserviceaccount.com\",\n  \"scope\": \"https://www.googleapis.com/auth/cloud-platform\",\n  \"aud\": \"https://oauth2.googleapis.com/token\",\n  \"iat\": {{Math.floor(new Date().getTime() / 1000)}},\n  \"exp\": {{Math.floor(new Date().getTime() / 1000) + 3600}} \n}",
+          "options": {}
+        },
+        "id": "d831d483-6583-41bb-b85c-ce11a4e85e1b",
+        "name": "JWT GOOGLE",
+        "type": "n8n-nodes-base.jwt",
+        "typeVersion": 1,
+        "position": [
+          1680,
+          560
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "jwtAuth": {
+            "id": "qucHFpcTrmVLRJYC",
+            "name": "JWT Auth GOOGLE"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://oauth2.googleapis.com/token",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "googleOAuth2Api",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "grant_type",
+                "value": "urn:ietf:params:oauth:grant-type:jwt-bearer"
+              },
+              {
+                "name": "assertion",
+                "value": "={{ $json.token }}"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "fca71c98-b61d-4161-bdfe-e31326c61952",
+        "name": "GET TOKEN",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1880,
+          560
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "googleOAuth2Api": {
+            "id": "AUpV7k8Hj4mJXlUi",
+            "name": "Google account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "PUT",
+          "url": "=https://blips-credit-backend-dev-685867804490.us-central1.run.app/api/v1/peb_records/n8n/{{$('Webhook').first().json.body.lead_id}}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "={{ \"Bearer \" + $json.access_token}}"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"q1\": \"{{ $('Webhook').first().json.body.Q_1 }}\",\n  \"q2\": \"{{ $('Webhook').first().json.body.Q_2 }}\",\n  \"q3\": \"{{ $('Webhook').first().json.body.Q_3 }}\",\n  \"q4\": \"{{ $('Webhook').first().json.body.Q_4 }}\",\n  \"q5\": \"{{ $('Webhook').first().json.body.Q_5 }}\",\n  \"q6\": \"{{ $('Webhook').first().json.body.Q_6 }}\",\n  \"q7\": \"{{ $('Webhook').first().json.body.Q_7 }}\",\n  \"q8\": \"{{ $('Webhook').first().json.body.Q_8 }}\",\n  \"cenario_1\": \"{{ $('Calcular Score Spicometrico').first().json.pontuacao_total }}\",\n  \"instagram\": \"{{ $('Webhook').first().json.body.instagram }}\",\n  \"resultado_c1\": \"{{ $('Calcular Score Spicometrico').first().json.score_psicometrico }}\",\n  \"data_resposta\": \"{{ $now.toISO() }}\"\n}",
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "48f8fc48-b413-4dd4-9b01-a3a8613d0e0d",
+        "name": "Put PEB",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2100,
+          560
+        ],
+        "retryOnFail": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "language": "python",
+          "pythonCode": "# Pesos por questão (valores exatos da planilha)\npesos = {\n    \"Q1\": 8.495575,\n    \"Q2\": 10.000000,\n    \"Q3\": 6.014422,\n    \"Q4\": 6.234022,\n    \"Q5\": 1.674861,\n    \"Q6\": 0.000000,\n    \"Q7\": 0.727630,\n    \"Q8\": 2.749918\n}\n\n# Faixas usadas na fórmula do score psicométrico\nbanda_superior = 62.33693871\nbanda_inferior = -8.361193051\n\n# Tabela completa com valores por alternativa (baseado na planilha)\nvalores_respostas = {\n    \"Q1\": {\"A\": 0, \"B\": 1, \"C\": 0, \"D\": 0},\n    \"Q2\": {\"A\": 0, \"B\": 0, \"C\": 1, \"D\": 0},\n    \"Q3\": {\"A\": 1, \"B\": 2, \"C\": 3, \"D\": 4},\n    \"Q4\": {\"A\": 1, \"B\": 2, \"C\": 3, \"D\": 4},\n    \"Q5\": {\"A\": -1, \"B\": -2, \"C\": -3, \"D\": -4},\n    \"Q6\": {\"A\": -1, \"B\": -2, \"C\": -3, \"D\": -4},\n    \"Q7\": {\"A\": -1, \"B\": -2, \"C\": -3, \"D\": -4},\n    \"Q8\": {\"A\": -1, \"B\": -2, \"C\": -3, \"D\": -4}\n}\n\n# Respostas do proponente (entrada do n8n)\nrespostas = _input.all()[0].json  # Ex: {\"Q1\": \"A\", \"Q2\": \"C\", ...}\n\npontuacao_total = 0\n\n# Calcular pontuação com base na alternativa marcada\nfor questao, resposta in respostas.items():\n    questao = questao.upper()\n    resposta = resposta.upper()\n    \n    peso = pesos.get(questao)\n    valor = valores_respostas.get(questao, {}).get(resposta)\n\n    if peso is None or valor is None:\n        continue  # ignora se a questão ou alternativa estiver inválida\n\n    pontuacao_total += peso * valor\n\n# Calcular score psicométrico\nnumerador = pontuacao_total - banda_superior\ndenominador = banda_inferior - banda_superior\nraw_score = 1000 - (numerador / denominador) * 1000\nscore = round(max(0, min(1000, raw_score)), 0)\n\n# Resultado final\nreturn [{\n    \"json\": {\n        \"pontuacao_total\": round(pontuacao_total, 2),\n        \"score_psicometrico\": score\n    }\n}]"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1460,
+          560
+        ],
+        "id": "7ca19e4b-195e-40c1-bbd0-e1206a6e9c83",
+        "name": "Calcular Score Spicometrico"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "1e66c32a-4868-4151-b218-a5f6c057e27d",
+                "name": "Q1",
+                "value": "={{ $('Webhook').item.json.body.Q_1 }}",
+                "type": "string"
+              },
+              {
+                "id": "eb61f515-70f1-429a-9018-980bad86c418",
+                "name": "Q2",
+                "value": "={{ $('Webhook').item.json.body.Q_2 }}",
+                "type": "string"
+              },
+              {
+                "id": "998f286a-9554-4cf7-8233-982a5a5f6a3e",
+                "name": "Q3",
+                "value": "={{ $('Webhook').item.json.body.Q_3 }}",
+                "type": "string"
+              },
+              {
+                "id": "efe46c42-367f-47b0-bc18-1c5252d0763a",
+                "name": "Q4",
+                "value": "={{ $('Webhook').item.json.body.Q_4 }}",
+                "type": "string"
+              },
+              {
+                "id": "10b61c80-2240-4965-a690-2e93f8e45941",
+                "name": "Q5",
+                "value": "={{ $('Webhook').item.json.body.Q_5 }}",
+                "type": "string"
+              },
+              {
+                "id": "9cf0cd82-ca80-4c1b-b380-0dd7ba64b8c2",
+                "name": "Q6",
+                "value": "={{ $('Webhook').item.json.body.Q_6 }}",
+                "type": "string"
+              },
+              {
+                "id": "e8c55a94-f6ca-449a-9b6d-cccf388073a9",
+                "name": "Q7",
+                "value": "={{ $('Webhook').item.json.body.Q_7 }}",
+                "type": "string"
+              },
+              {
+                "id": "bf48eda6-010f-485c-981d-5861e575a4c0",
+                "name": "Q8",
+                "value": "={{ $('Webhook').item.json.body.Q_8 }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1260,
+          560
+        ],
+        "id": "75084c77-ceac-4fd4-8c59-4c7580845fd4",
+        "name": "Respostas"
+      }
+    ],
+    "connections": {
+      "Google Sheets": {
+        "main": [
+          [
+            {
+              "node": "Discord",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Respostas",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Discord": {
+        "main": [
+          [
+            {
+              "node": "Insta invalido?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Insta invalido?": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Google Sheets",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "JWT GOOGLE": {
+        "main": [
+          [
+            {
+              "node": "GET TOKEN",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GET TOKEN": {
+        "main": [
+          [
+            {
+              "node": "Put PEB",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Calcular Score Spicometrico": {
+        "main": [
+          [
+            {
+              "node": "JWT GOOGLE",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Respostas": {
+        "main": [
+          [
+            {
+              "node": "Calcular Score Spicometrico",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "America/Sao_Paulo",
+      "saveManualExecutions": true,
+      "callerPolicy": "workflowsFromSameOwner"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Webhook": [
+        {
+          "json": {
+            "headers": {
+              "x-forwarded-for": "177.71.180.7",
+              "x-forwarded-proto": "https",
+              "x-forwarded-port": "443",
+              "host": "motor-credito.blips-labs.com",
+              "x-amzn-trace-id": "Root=1-67ed7dbb-0fef03c473f9790d1f2eccec",
+              "content-length": "360",
+              "accept": "application/json",
+              "content-type": "application/json"
+            },
+            "params": {},
+            "query": {},
+            "body": {
+              "Q_1": "A",
+              "telefone": "87988358303",
+              "Q_3": "B",
+              "Q_2": "C",
+              "Q_5": "A",
+              "Q_4": "D",
+              "Q_7": "D",
+              "valor": "R$ 38889",
+              "Q_6": "D",
+              "nome": "MAURO BENTO DAS NEVES",
+              "Q_8": "D",
+              "cnpj": "19.698.088/0001-95",
+              "instagram": "@Mmnevesuniformes ",
+              "segmento": "Comunicação visual",
+              "equipamento": "Locação-Plotter i1600 Eco Solvente ",
+              "company_name": "MM NEVES UNIFORMES LTDA",
+              "row": "29994"
+            },
+            "webhookUrl": "https://motor-credito.blips-labs.com/webhook/salva-peb",
+            "executionMode": "production"
+          }
+        }
+      ]
+    },
+    "versionId": "3f754a6d-1a5c-4068-a169-35c1902ce4e4",
+    "triggerCount": 1,
+    "tags": []
+  }
+}
