@@ -1,0 +1,359 @@
+{
+  "data": {
+    "createdAt": "2025-03-10T19:32:15.073Z",
+    "updatedAt": "2025-04-10T12:58:33.405Z",
+    "id": "41vSNS8VjHXH1JZ6",
+    "name": "func - termos_contrato - Clara",
+    "active": true,
+    "nodes": [
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT\n  contract_signature.signature_date AS data_assinatura,\n  contract_signature.files.signed AS contrato_assinado\nFROM\n  blips-bigdata.PLATAFORMA.negotiation\nWHERE\n  contract_number = '12401497'",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          200,
+          -140
+        ],
+        "id": "92b3dba5-37f1-4322-a78b-80c608888bcd",
+        "name": "Negotiation",
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "termos_contrato",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -240,
+          0
+        ],
+        "id": "ece3e990-2922-422d-b7db-4073e5174ea3",
+        "name": "Webhook",
+        "webhookId": "62709a21-8f79-414a-ae23-0ddf6c42e666"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "20eb70b3-3eda-4394-abf1-7f1e8bc290c2",
+                "leftValue": "={{ !!$json.body.contrato }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -20,
+          0
+        ],
+        "id": "2b28089f-4820-4816-a81d-92f1b196c484",
+        "name": "Contrato?"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "33b9061c-fd5b-4fde-83f5-6630cdfc6df5",
+                "leftValue": "={{ $json }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "object",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          420,
+          -140
+        ],
+        "id": "3c7bb08d-dad8-4b21-a1bc-731f69055bdd",
+        "name": "Veio link?"
+      },
+      {
+        "parameters": {
+          "url": "={{ $json.contrato_assinado }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          720,
+          -160
+        ],
+        "id": "88bf1023-58c1-4d48-91f3-ea6fd15a3bca",
+        "name": "Baixa contrato",
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "operation": "pdf",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          940,
+          -180
+        ],
+        "id": "f501e07d-fafe-48a7-b6bc-c9c10dbd0521",
+        "name": "Extract from File"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "95840c2c-2677-43b9-ac18-25235ac977bc",
+                "name": "termos_contrato",
+                "value": "={{ $json.text }}",
+                "type": "string"
+              },
+              {
+                "id": "fdf73a10-a4a3-4e73-ac71-166b12d963c4",
+                "name": "data_assinatura",
+                "value": "={{ $('Negotiation').item.json.data_assinatura.toDateTime().format('dd/MM/yyyy') }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1160,
+          -180
+        ],
+        "id": "0c0edba5-7c6e-4737-a4a2-b8ecd60e1792",
+        "name": "Texto Contrato"
+      },
+      {
+        "parameters": {
+          "options": {
+            "responseCode": 200
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          1400,
+          -180
+        ],
+        "id": "edb72c0e-1172-4246-b0ee-8bf4d001fde3",
+        "name": "Contrato"
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "{\n  \"mensagem\": \"Número do contrato faltando\"\n}",
+          "options": {
+            "responseCode": 400
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          200,
+          80
+        ],
+        "id": "82decf4a-c4cc-456a-9bb9-c66eef19d057",
+        "name": "Num Contrato Faltando"
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "{\n  \"mensagem\": \"Não foi possível encontrar os termos\"\n}",
+          "options": {
+            "responseCode": 400
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          940,
+          20
+        ],
+        "id": "af85b85b-c061-44bd-a0e5-1f917f1b1d03",
+        "name": "Sem contrato"
+      }
+    ],
+    "connections": {
+      "Negotiation": {
+        "main": [
+          [
+            {
+              "node": "Veio link?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Contrato?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Contrato?": {
+        "main": [
+          [
+            {
+              "node": "Negotiation",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Num Contrato Faltando",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Veio link?": {
+        "main": [
+          [
+            {
+              "node": "Baixa contrato",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Sem contrato",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Baixa contrato": {
+        "main": [
+          [
+            {
+              "node": "Extract from File",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Sem contrato",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract from File": {
+        "main": [
+          [
+            {
+              "node": "Texto Contrato",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Texto Contrato": {
+        "main": [
+          [
+            {
+              "node": "Contrato",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Webhook": [
+        {
+          "json": {
+            "body": {
+              "contrato": "12401497"
+            }
+          }
+        }
+      ]
+    },
+    "versionId": "ababf570-0d4a-4a6a-b71b-06960dc086d7",
+    "triggerCount": 1,
+    "tags": [
+      {
+        "createdAt": "2024-11-22T13:13:26.514Z",
+        "updatedAt": "2024-11-22T13:13:26.514Z",
+        "id": "owb3cfmzFRbqjP06",
+        "name": "Clara"
+      }
+    ]
+  }
+}
