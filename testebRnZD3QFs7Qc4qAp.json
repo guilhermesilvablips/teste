@@ -1,0 +1,492 @@
+{
+  "data": {
+    "createdAt": "2024-11-27T19:54:49.543Z",
+    "updatedAt": "2025-04-16T19:01:32.515Z",
+    "id": "bRnZD3QFs7Qc4qAp",
+    "name": "Sandbox Mongo",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "2d474285-d2f6-4942-b404-1dec2762f725",
+        "name": "When clicking ‘Test workflow’",
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          820,
+          640
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://new-api.zapsterapi.com/v1/wa/messages",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTc2MTE5MjQsImlzcyI6InphcHN0ZXJhcGkiLCJzdWIiOiJiZDg4ZWI0YS02ZjdkLTRlYzUtYTk5MS1hYWUzMWMxOGMzMDQiLCJqdGkiOiJhNTBiNzdiNC0yNDdmLTQ2ZDEtYTIyOS1jMDZiOWQ1NGI3YjMifQ.Ql1H5JTcgbV48Mgj18IJCfreD8bdxgybNtmW6BOuWS0"
+              },
+              {
+                "name": "accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "instance_id",
+                "value": "=fv7pdcv6iswerr4n6av4w"
+              },
+              {
+                "name": "recipient",
+                "value": "=group:120363370850362938"
+              },
+              {
+                "name": "text",
+                "value": "={{ $json.texto }}"
+              },
+              {
+                "name": "auto_mention",
+                "value": "={{true}}"
+              },
+              {
+                "name": "agente",
+                "value": "Juarez"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "fullResponse": "={{ false }}"
+              }
+            }
+          }
+        },
+        "id": "a7439e1f-90c6-45c2-8a86-427b6e82a6d4",
+        "name": "Envia Whatsapp Grupo",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          1000,
+          -80
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "898b8cec-6f56-4021-b476-f9887f6414bf",
+                "name": "nome",
+                "value": "=nome",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "2c0a5b79-ff97-4d41-9695-bd9caba4508c",
+        "name": "Edit Fields1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1060,
+          640
+        ]
+      },
+      {
+        "parameters": {
+          "url": "https://api.zapsterapi.com/v1/wa/instances/fv7pdcv6iswerr4n6av4w/groups",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTc2MTE5MjQsImlzcyI6InphcHN0ZXJhcGkiLCJzdWIiOiJiZDg4ZWI0YS02ZjdkLTRlYzUtYTk5MS1hYWUzMWMxOGMzMDQiLCJqdGkiOiJhNTBiNzdiNC0yNDdmLTQ2ZDEtYTIyOS1jMDZiOWQ1NGI3YjMifQ.Ql1H5JTcgbV48Mgj18IJCfreD8bdxgybNtmW6BOuWS0"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "neverError": true
+              }
+            }
+          }
+        },
+        "id": "a51ff5ce-6df3-427f-a41e-f0abf33a8044",
+        "name": "Envia Whatsapp Grupo1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          1240,
+          20
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "34cb3bc8-079f-43b5-8f32-78fefbc897dc",
+                "name": "assistant_id",
+                "value": "asst_VDW2A4A5aovctGglkhRfSmHj",
+                "type": "string"
+              },
+              {
+                "id": "b6ff9a48-6fe6-4808-8a40-d6edbb9c2346",
+                "name": "user_id",
+                "value": "={{ $json.body.data.sender.id }}",
+                "type": "string"
+              },
+              {
+                "id": "d7564de9-2206-490b-bef3-3001e57ac8e0",
+                "name": "user_name",
+                "value": "={{ $json.body.data.sender.name }}",
+                "type": "string"
+              },
+              {
+                "id": "7a61cd22-7f0c-4c04-a3ed-6acf9f979424",
+                "name": "message_type",
+                "value": "={{ $json.body.data.type }}",
+                "type": "string"
+              },
+              {
+                "id": "8b78c832-8cf3-430f-83b0-7bbca38e4140",
+                "name": "=message",
+                "value": "={{ $json.body.data.content.text.replace(/@\\d+/g, '').trim() }}",
+                "type": "string"
+              },
+              {
+                "id": "adf11de6-a3ee-4e3e-aed5-5a6a3025202d",
+                "name": "chat",
+                "value": "={{ $json.headers['user-agent'] == 'chat' || $json.headers['user-agent'] != 'Zapsterapi/0.9.1' }}",
+                "type": "boolean"
+              },
+              {
+                "id": "74b31986-b940-4961-94ac-188108032c9c",
+                "name": "media_url",
+                "value": "={{ $json.body.data.content.media.url }}",
+                "type": "string"
+              },
+              {
+                "id": "1b7de11f-c4c8-414e-ab04-a8ac5206bb5b",
+                "name": "type",
+                "value": "={{ $json.body.data.recipient.type }}",
+                "type": "string"
+              },
+              {
+                "id": "1a724457-704f-4873-9f5e-b23b595e16e3",
+                "name": "group_id",
+                "value": "={{ $json.body.data.recipient.id }}",
+                "type": "string"
+              },
+              {
+                "id": "b4f6cfd6-11dc-476b-b717-97a69af57b51",
+                "name": "instance_id",
+                "value": "={{ $json.headers['x-instance-id'] }}",
+                "type": "string"
+              },
+              {
+                "id": "dad28517-e36b-4673-bd96-23b8fd78b190",
+                "name": "foi_marcado",
+                "value": "={{ $json.body.data.content.text.indexOf(\"@551231973351\") >= 0 || $json.body.data.content.quoted.sender.id == \"551231973351\" }}",
+                "type": "boolean"
+              },
+              {
+                "id": "59b01587-dc59-4cb3-9bce-e7daa0f0c6de",
+                "name": "em_manutencao",
+                "value": "={{ false }}",
+                "type": "boolean"
+              },
+              {
+                "id": "4d7aa9a1-40e8-4cd5-8e3b-520281cc2cbe",
+                "name": "nome_agente",
+                "value": "Juarez",
+                "type": "string"
+              },
+              {
+                "id": "776c8b75-0c48-4f08-8dbe-85122312789a",
+                "name": "whatsapp",
+                "value": "={{ $json.body.data.sender.id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": "={{ false }}",
+          "options": {}
+        },
+        "id": "a8390051-fede-4ab1-81bf-351b20d52278",
+        "name": "Variáveis Globais_new",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          800,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "34cb3bc8-079f-43b5-8f32-78fefbc897dc",
+                "name": "assistant_id",
+                "value": "asst_VDW2A4A5aovctGglkhRfSmHj",
+                "type": "string"
+              },
+              {
+                "id": "b6ff9a48-6fe6-4808-8a40-d6edbb9c2346",
+                "name": "user_id",
+                "value": "=34987190906",
+                "type": "string"
+              },
+              {
+                "id": "d7564de9-2206-490b-bef3-3001e57ac8e0",
+                "name": "user_name",
+                "value": "=Pedro",
+                "type": "string"
+              },
+              {
+                "id": "7a61cd22-7f0c-4c04-a3ed-6acf9f979424",
+                "name": "message_type",
+                "value": "=text",
+                "type": "string"
+              },
+              {
+                "id": "8b78c832-8cf3-430f-83b0-7bbca38e4140",
+                "name": "=message",
+                "value": "=Oi",
+                "type": "string"
+              },
+              {
+                "id": "74b31986-b940-4961-94ac-188108032c9c",
+                "name": "media_url",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "1b7de11f-c4c8-414e-ab04-a8ac5206bb5b",
+                "name": "type",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "1a724457-704f-4873-9f5e-b23b595e16e3",
+                "name": "group_id",
+                "value": "={{ $json.body.data.recipient.id }}",
+                "type": "string"
+              },
+              {
+                "id": "b4f6cfd6-11dc-476b-b717-97a69af57b51",
+                "name": "instance_id",
+                "value": "={{ $json.headers['x-instance-id'] }}",
+                "type": "string"
+              },
+              {
+                "id": "dad28517-e36b-4673-bd96-23b8fd78b190",
+                "name": "foi_marcado",
+                "value": "={{ $json.body.data.content.text.indexOf(\"@551231973351\") >= 0 || $json.body.data.content.quoted.sender.id == \"551231973351\" }}",
+                "type": "boolean"
+              },
+              {
+                "id": "59b01587-dc59-4cb3-9bce-e7daa0f0c6de",
+                "name": "em_manutencao",
+                "value": "={{ false }}",
+                "type": "boolean"
+              },
+              {
+                "id": "4d7aa9a1-40e8-4cd5-8e3b-520281cc2cbe",
+                "name": "nome_agente",
+                "value": "Juarez",
+                "type": "string"
+              },
+              {
+                "id": "776c8b75-0c48-4f08-8dbe-85122312789a",
+                "name": "whatsapp",
+                "value": "={{ $json.body.data.sender.id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": "={{ false }}",
+          "options": {}
+        },
+        "id": "7539bd59-3db9-428a-8f41-3ae374263d2f",
+        "name": "Variáveis Globais",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          1240,
+          280
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "898b8cec-6f56-4021-b476-f9887f6414bf",
+                "name": "nome",
+                "value": "Juarez",
+                "type": "string"
+              },
+              {
+                "id": "daf36b4e-bf47-4c83-b0f6-7bb5fa1239b6",
+                "name": "texto",
+                "value": "Olá",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "fa836808-7740-4697-847c-8042260d75cc",
+        "name": "Payload",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1860,
+          140
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "insert",
+          "collection": "Conversas Zap",
+          "fields": "=nome,numero,hora,data,message,message_type,{{ $('Variáveis Globais').item.json.message_url == \"\" ? \"\" : $('Variáveis Globais').item.json.message_url}}",
+          "options": {
+            "dateFields": ""
+          }
+        },
+        "id": "651bc8de-7f15-4bff-ba25-b3f9f6a22912",
+        "name": "MongoDB - Juarez ",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1.1,
+        "position": [
+          1700,
+          240
+        ],
+        "credentials": {
+          "mongoDb": {
+            "id": "lITPy0bTilBgUc70",
+            "name": "MongoDB - Juarez"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{$('Variáveis Globais').item.json.nome_agente}}",
+                      "rightValue": "Juarez",
+                      "operator": {
+                        "type": "string",
+                        "operation": "contains"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "8c012bf1-8e17-4029-a245-0509b9df2c18",
+        "name": "Qual Agente",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.1,
+        "position": [
+          1480,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "toJson",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.convertToFile",
+        "typeVersion": 1.1,
+        "position": [
+          1260,
+          620
+        ],
+        "id": "acab5cfb-74de-47e9-b53c-8ada25dfb008",
+        "name": "Convert to File"
+      }
+    ],
+    "connections": {
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Variáveis Globais": {
+        "main": [
+          [
+            {
+              "node": "Qual Agente",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Qual Agente": {
+        "main": [
+          [
+            {
+              "node": "MongoDB - Juarez ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields1": {
+        "main": [
+          [
+            {
+              "node": "Convert to File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "c1182dba-5503-4b43-b1d0-37e109f627ef",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
