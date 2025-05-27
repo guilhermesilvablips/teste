@@ -1,0 +1,1684 @@
+{
+  "data": {
+    "createdAt": "2024-07-29T11:49:16.041Z",
+    "updatedAt": "2025-05-22T17:46:24.405Z",
+    "id": "9Xlvf9FkIucYDbR7",
+    "name": "Régua de Cobrança - Ativa Hyperflow",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "operation": "insert",
+          "collection": "ativacoes",
+          "fields": "telefone,mensagem,data_hora_envio,ambiente",
+          "options": {}
+        },
+        "id": "92772c51-a75f-4662-9a25-ef34e79307fb",
+        "name": "Salva ativação",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1.1,
+        "position": [
+          -400,
+          0
+        ],
+        "credentials": {
+          "mongoDb": {
+            "id": "k9lgsgmMzavszbtQ",
+            "name": "MongoDB - Cobranca - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "c394a835-516d-43c7-b252-98bac5fd96a1",
+                "name": "ativacao",
+                "value": "={{ $json.mensagem.replaceAll('_', '').replaceAll('\\\\n', '\\n') }}",
+                "type": "string"
+              },
+              {
+                "id": "b4433828-b475-49d3-8bec-b467474dd435",
+                "name": "telefone",
+                "value": "={{ $json.telefone }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "6e0aa5dc-6bab-4a7e-b8c3-a7556d829853",
+        "name": "Ativação",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -180,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b85505bc-dddf-4600-a4e7-758e5b6a9c8d",
+                "name": "telefone",
+                "value": "={{ '34984448484' || $('Set Títulos').first().json.telefone }}",
+                "type": "string"
+              },
+              {
+                "id": "33fb9516-f166-4cfd-885d-d2299724f706",
+                "name": "mensagem",
+                "value": "={{ $json.message }}",
+                "type": "string"
+              },
+              {
+                "id": "7f8c8366-f49c-4285-9d06-f431f4d967a0",
+                "name": "data_hora_envio",
+                "value": "={{ $now.toISO() }}",
+                "type": "string"
+              },
+              {
+                "id": "5a88790d-8407-46c5-904f-ae74b649a25b",
+                "name": "ambiente",
+                "value": "=n8n-dev",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "937f7c0d-7d94-47d2-8b05-684f28ff5306",
+        "name": "Prepara insert",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          -620,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "collection": "regua_cobranca",
+          "options": {
+            "limit": 1
+          },
+          "query": "={\n  \"dias_vencidos\": {{ $json.diasVencido }},\n  \"modalidade\": \"{{ $json.modalidade }}\",\n  \"versao\": \"2\"\n}"
+        },
+        "id": "d6aed978-d3ab-4017-abc0-3920368015cd",
+        "name": "Busca mensagem",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1.1,
+        "position": [
+          -1320,
+          0
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "mongoDb": {
+            "id": "k9lgsgmMzavszbtQ",
+            "name": "MongoDB - Cobranca - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const item = $('Separar dados mensagem').item.json;\nconst template = $input.item.json.mensagem;\n\nconst processTemplate = (template, data) => {\n  return template.replace(/{{\\s*(.*?)\\s*}}/g, (_, variable) => {\n    let value = data[variable.trim()];\n    return value !== undefined ? value : '';\n  });\n};\n\nconsole.log(item);\nitem.message = processTemplate(template, item);\n\n\nreturn item;\n"
+        },
+        "id": "5a39e9b4-50c1-4248-9261-f07175a37f5f",
+        "name": "Code - reaplace de variáveis",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -860,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "f9b62c5a-2848-4851-bf06-0509adb69f8d",
+                "leftValue": "={{ $json.error }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "4580c4d1-c2db-48f9-a6b1-e644efda8045",
+        "name": "Deu erro?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -1560,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "2a7c1fd9-ef2e-4f7c-bccf-8e673cc3237e",
+                "name": "cnpj",
+                "value": "={{$json.body.cnpj}}",
+                "type": "string"
+              },
+              {
+                "id": "97bd871c-436b-41ac-886a-a17c4e2430c7",
+                "name": "Modalidade",
+                "value": "={{ $json.body.EhVenda === 0 ? \"LOCACAO\" : \"VENDA\"}}",
+                "type": "string"
+              },
+              {
+                "id": "10635ae3-018c-41b5-a5ca-4f65cca36909",
+                "name": "linha",
+                "value": "={{$json.body.linha}}",
+                "type": "string"
+              },
+              {
+                "id": "978375db-1f0b-4ffc-9f27-4fc4fbc785f5",
+                "name": "inativo",
+                "value": "={{ $json.body.inativo }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "a9c54ffe-682f-48a1-b5b9-8a7fb7297102",
+        "name": "Separa cnpjs",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -2740,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT\n  nomeparc,\n  telefone,\n  cpf_cnpj,\n  modalidade,\n  inativo,\n  linha_digitavel_array,\n  nufin_array,\n  nufin_array_dt_venc,\n  numcontrato_array,\n  valor_array,\n  max_dias_vencidos,\n  email\nFROM\n  blips-bigdata.IA_E_AUTOMACAO.BASE_FLUXO_COBRANCA\nWHERE\n  cpf_cnpj = '{{ $json.cnpj}}'\n  and modalidade = '{{ $json.Modalidade }}'\n  and inativo = {{ $json.inativo }}",
+          "options": {}
+        },
+        "id": "95f0f253-9ac1-4740-9bfd-46d0626ce3af",
+        "name": "Google BigQuery",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          -2520,
+          -160
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "49df703c-f71a-41d2-a335-6892e618a2f5",
+                "name": "datas",
+                "value": "={{ $json.nufin_array_dt_venc .match(/\\d{4}-\\d{2}-\\d{2}/g).join('|')}}",
+                "type": "string"
+              },
+              {
+                "id": "5c00da9c-79e3-4dfe-9c89-b5ec2123ed19",
+                "name": "contratos",
+                "value": "={{ $json.numcontrato_array }}",
+                "type": "string"
+              },
+              {
+                "id": "0c2b3c78-4a0d-4658-8d16-88decac3cdb6",
+                "name": "nomeparc",
+                "value": "={{ $json.nomeparc.trim() }}",
+                "type": "string"
+              },
+              {
+                "id": "e067bf11-2dba-4754-b3b7-f467d6499db5",
+                "name": "modalidade",
+                "value": "={{ $json.modalidade }}",
+                "type": "string"
+              },
+              {
+                "id": "14080e3c-20a4-44a4-b4aa-a5a47d8c07b2",
+                "name": "cpf_cnpj",
+                "value": "={{ $json.cpf_cnpj }}",
+                "type": "string"
+              },
+              {
+                "id": "cbb85f3a-4c5c-4633-b7f2-9b117fa34c15",
+                "name": "telefone",
+                "value": "={{$json.telefone.length === 10 ? $json.telefone.slice(0, 2) + '9' + $json.telefone.slice(2) : $json.telefone}}",
+                "type": "string"
+              },
+              {
+                "id": "9bb0a847-1af8-4b87-8fe2-5028566a1ea7",
+                "name": "titulos",
+                "value": "={{ $json.nufin_array }}",
+                "type": "string"
+              },
+              {
+                "id": "9a1ded82-2171-40e1-b0ee-ec534a1fde74",
+                "name": "email",
+                "value": "={{ $json.email }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "b38c6783-2e32-4836-84f9-08434358980f",
+        "name": "Set Títulos",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -2020,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const input = items[0].json;\n\nfunction ensureArray(data) {\n  if (typeof data === 'string') {\n    return data.split('|');\n  }\n  return data;\n}\n\nfunction feriado(dias, data){\n  if (data == '15/11/2024'){\n    return '\"FERIADO\"';\n  }\n  else{\n    return dias;\n  }\n}\n\nfunction formatDate(dateStr) {\n  const date = new Date(dateStr);\n  const day = ('0' + date.getDate()).slice(-2);\n  const month = ('0' + (date.getMonth() + 1)).slice(-2); \n  const year = date.getFullYear();\n  return `${day}/${month}/${year}`;\n}\n\nconst datas = ensureArray(input.datas);\nconst contratos = ensureArray(input.contratos);\nconst titulos = ensureArray(input.titulos);\nconst nomeparc = input.nomeparc;\nconst email = input.email;\nconst cpf_cnpj = input.cpf_cnpj;\nconst telefone = input.telefone;\nconst modalidade = input.modalidade;\n\n// **Verificando se há títulos duplicados**\nconst titulosSet = new Set(titulos);\nif (titulosSet.size !== titulos.length) {\n  // Há títulos duplicados, retornar objeto de erro\n  return [{ json: { error: 'Foram encontrados títulos duplicados na entrada. Processamento abortado.' } }];\n}\n\nconst today = new Date();\nconst titlesData = [];\n\nlet maxDiasVencido = -Infinity;\nlet tituloMaisVencido = '';\nlet contratoMaisVencido = '';\nlet dataMaisVencida = '';\n\nlet hasFuturos = false;\nlet hasVencendoHoje = false;\nlet hasVencidos = false;\n\n// Processando cada título\nfor (let i = 0; i < datas.length; i++) {\n  const dataStr = datas[i];\n  const contrato = contratos[i];\n  const titulo = titulos[i];\n\n  const date = new Date(dataStr);\n  const timeDiff = today.getTime() - date.getTime();\n  const diasVencido = Math.floor(timeDiff / (1000 * 3600 * 24));\n\n  // Atualizando o título mais vencido\n  if (diasVencido > maxDiasVencido) {\n    maxDiasVencido = diasVencido;\n    tituloMaisVencido = titulo;\n    contratoMaisVencido = contrato;\n    dataMaisVencida = dataStr;\n  }\n\n  // Definindo flags\n  if (diasVencido > 0) {\n    hasVencidos = true;\n  } else if (diasVencido === 0) {\n    hasVencendoHoje = true;\n  } else {\n    hasFuturos = true;\n  }\n\n  // Armazenando os dados\n  titlesData.push({\n    titulo,\n    contrato,\n    diasVencido,\n  });\n}\n\n// Contagem de títulos em cada categoria\nconst totalTitles = titlesData.length;\nconst countFuturos = titlesData.filter(t => t.diasVencido < 0).length;\nconst countVencendoHoje = titlesData.filter(t => t.diasVencido === 0).length;\nconst countVencidos = titlesData.filter(t => t.diasVencido > 0).length;\n\n// Identificando o cenário\nlet scenario = '';\n\nif (countFuturos === totalTitles) {\n  scenario = 'only_future'; // Cenário 1\n} else if (countVencendoHoje === totalTitles) {\n  scenario = 'only_due_today'; // Cenário 2\n} else if (countVencidos === totalTitles) {\n  scenario = 'only_overdue'; // Cenário 3\n} else if (hasFuturos && hasVencendoHoje && hasVencidos) {\n  scenario = 'future_due_today_overdue'; // Cenário 4\n} else if (hasFuturos && hasVencendoHoje && !hasVencidos) {\n  scenario = 'future_and_due_today'; // Cenário 5\n} else if (!hasFuturos && hasVencendoHoje && hasVencidos) {\n  scenario = 'due_today_and_overdue'; // Cenário 6\n} else if (hasFuturos && !hasVencendoHoje && hasVencidos) {\n  scenario = 'future_and_overdue'; // Cenário 7\n} else {\n  scenario = 'mixed'; // Cenário geral\n}\n\n// Inicializando as variáveis de saída\nlet titulosVencidos = [];\nlet contratosVencidos = [];\n\n// Aplicando as regras de acordo com o cenário\nswitch (scenario) {\n  case 'only_future':\n    // Cenário 1: Somente títulos futuros\n    titulosVencidos = [tituloMaisVencido];\n    contratosVencidos = [{ contrato: contratoMaisVencido, diasVencido: maxDiasVencido }];\n    break;\n\n  case 'only_due_today':\n    // Cenário 2: Somente títulos vencendo hoje\n    titulosVencidos = titlesData.filter(t => t.diasVencido === 0).map(t => t.titulo);\n    contratosVencidos = titlesData.filter(t => t.diasVencido === 0);\n    break;\n\n  case 'only_overdue':\n    // Cenário 3: Somente títulos vencidos\n    titulosVencidos = titlesData.filter(t => t.diasVencido > 0).map(t => t.titulo);\n    contratosVencidos = titlesData.filter(t => t.diasVencido > 0);\n    break;\n\n  case 'future_due_today_overdue':\n    // Cenário 4: Títulos futuros, vencendo hoje e vencidos\n    // Mostrar apenas os títulos vencidos\n    titulosVencidos = titlesData.filter(t => t.diasVencido > 0).map(t => t.titulo);\n    contratosVencidos = titlesData.filter(t => t.diasVencido > 0);\n    break;\n\n  case 'future_and_due_today':\n    // Cenário 5: Títulos futuros e vencendo hoje\n    // Mostrar apenas os títulos que vencem hoje\n    titulosVencidos = titlesData.filter(t => t.diasVencido === 0).map(t => t.titulo);\n    contratosVencidos = titlesData.filter(t => t.diasVencido === 0);\n    break;\n\n  case 'due_today_and_overdue':\n    // Cenário 6: Títulos vencidos e vencendo hoje\n    // Mostrar apenas os títulos vencidos\n    titulosVencidos = titlesData.filter(t => t.diasVencido > 0).map(t => t.titulo);\n    contratosVencidos = titlesData.filter(t => t.diasVencido > 0);\n    break;\n\n  case 'future_and_overdue':\n    // Cenário 7: Títulos futuros e vencidos\n    // Mostrar apenas os títulos vencidos\n    titulosVencidos = titlesData.filter(t => t.diasVencido > 0).map(t => t.titulo);\n    contratosVencidos = titlesData.filter(t => t.diasVencido > 0);\n    break;\n\n  default:\n    // Cenário geral: Mistura de títulos\n    // Mostrar apenas os títulos vencidos\n    titulosVencidos = titlesData.filter(t => t.diasVencido > 0).map(t => t.titulo);\n    contratosVencidos = titlesData.filter(t => t.diasVencido > 0);\n    break;\n}\n\n// Removendo duplicatas em contratosVencidos com mesmo contrato e diasVencido\nconst contratosSet = new Set();\nconst contratosVencidosFinal = [];\n\ncontratosVencidos.forEach(item => {\n  const key = `${item.contrato}-${item.diasVencido}`;\n  if (!contratosSet.has(key)) {\n    contratosSet.add(key);\n    contratosVencidosFinal.push(`${item.contrato} (${item.diasVencido} dias vencidos)`);\n  }\n});\n\n// Caso específico para 'contratosVencidos' no cenário 'only_future' ou se 'contratosVencidos' não foi preenchido\nif (contratosVencidosFinal.length === 0 && contratosVencidos.length > 0) {\n  contratosVencidosFinal.push(`${contratoMaisVencido} (${maxDiasVencido} dias vencidos)`);\n}\n\n// Resultado final\nconst result = {\n  nomeparc: nomeparc,\n  email: email,\n  cpf_cnpj: cpf_cnpj,\n  telefone: telefone,\n  modalidade: modalidade,\n  titulo_mais_vencido: tituloMaisVencido,\n  diasVencido: maxDiasVencido,\n  dt_venc: formatDate(dataMaisVencida),\n  titulosVencidos: titulosVencidos.join(', '),\n  contratos_cobranca: contratosVencidosFinal.join(', '),\n  contrato_mais_vencido: contratoMaisVencido,\n  cenario: scenario\n};\n\nreturn [{ json: result }];"
+        },
+        "id": "ce0b5170-d8d8-4e91-83ef-089e75f50f2b",
+        "name": "Separar dados mensagem",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1780,
+          0
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "5d84eaca-dbca-4797-92b7-458d465afb86",
+        "name": "Execute Workflow Trigger",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          -3000,
+          220
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "documentId": {
+            "__rl": true,
+            "value": "1buF3vypm2gKo8fo61JEbK8v1HtOAXeTc0PqjNjthXt8",
+            "mode": "list",
+            "cachedResultName": "Envios Cobrança - Teste",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1buF3vypm2gKo8fo61JEbK8v1HtOAXeTc0PqjNjthXt8/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Base Blips",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1hBag2re5oTl3u8ZRPm7Oxm6vtGEml8ieV6Uy_rDinls/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "DATA ENVIO": "={{$now.format('dd/MM/y HH:mm') }}",
+              "row_number": "={{ $('Separa cnpjs').item.json.linha }}",
+              "MSG ENVIADA": "ERRO",
+              "LOG ENVIO": "Erro na consulta"
+            },
+            "matchingColumns": [
+              "row_number"
+            ],
+            "schema": [
+              {
+                "id": "NOME",
+                "displayName": "NOME",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "DOCUMENTO",
+                "displayName": "DOCUMENTO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "TELEFONE",
+                "displayName": "TELEFONE",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "EMAIL",
+                "displayName": "EMAIL",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "DIAS VENCIDO",
+                "displayName": "DIAS VENCIDO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "DATA ENVIO",
+                "displayName": "DATA ENVIO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "VALOR",
+                "displayName": "VALOR",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "NUFIN",
+                "displayName": "NUFIN",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "NUM CONTRATO",
+                "displayName": "NUM CONTRATO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "MSG ENVIADA",
+                "displayName": "MSG ENVIADA",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "COD_BOLETO",
+                "displayName": "COD_BOLETO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "É IDEAL",
+                "displayName": "É IDEAL",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "INATIVO",
+                "displayName": "INATIVO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "É FIDC",
+                "displayName": "É FIDC",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "LOG ENVIO",
+                "displayName": "LOG ENVIO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "DATA_INT",
+                "displayName": "DATA_INT",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "ARQUIVO",
+                "displayName": "ARQUIVO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "IMAGEM",
+                "displayName": "IMAGEM",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "SPLIT_VALOR",
+                "displayName": "SPLIT_VALOR",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "EMAIL_ENVIADO",
+                "displayName": "EMAIL_ENVIADO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "readOnly": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "id": "bc4847b0-bfd7-443c-9e39-9aa188f9887f",
+        "name": "Erro na consulta",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.4,
+        "position": [
+          -1320,
+          -320
+        ],
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "4HoAG3ZVDyUYbTpj",
+            "name": "Joao Lucas - Sheets"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "bf2cc43f-7985-4fac-bb77-46e15104c5ca",
+                "leftValue": "={{ $json.isEmpty() }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "6c2044c9-86ed-4cf0-8e40-a2a23cb6a3e2",
+                "leftValue": "={{ \n[-3, 0, 1, 2, 7, 8, 9, 11, 12, 13, 20, 21, 22, 31, 32, 33, 38, 39, 40, 50, 51, 52, 61, 62, 63, 91, 92, 93].includes( \n$('Webhook').first().json.body.dias \n? $('Webhook').first().json.body.dias \n: ( $json.max_dias_vencidos \n? $json.max_dias_vencidos.toNumber() \n: -5)\n)\n}}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "false",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "id": "c211672d-3cc2-4aeb-9453-0ce25e2a5089",
+        "name": "Veio sem títulos da régua?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -2280,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "documentId": {
+            "__rl": true,
+            "value": "1buF3vypm2gKo8fo61JEbK8v1HtOAXeTc0PqjNjthXt8",
+            "mode": "list",
+            "cachedResultName": "Envios Cobrança - Teste",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1buF3vypm2gKo8fo61JEbK8v1HtOAXeTc0PqjNjthXt8/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Base Blips",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1hBag2re5oTl3u8ZRPm7Oxm6vtGEml8ieV6Uy_rDinls/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "MSG ENVIADA": "Deletar",
+              "DATA ENVIO": "={{$now.format('dd/MM/y HH:mm') }}",
+              "row_number": "={{ $('Separa cnpjs').first().json.linha }}"
+            },
+            "matchingColumns": [
+              "row_number"
+            ],
+            "schema": [
+              {
+                "id": "NOME",
+                "displayName": "NOME",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "DOCUMENTO",
+                "displayName": "DOCUMENTO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "TELEFONE",
+                "displayName": "TELEFONE",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "EMAIL",
+                "displayName": "EMAIL",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "DIAS VENCIDO",
+                "displayName": "DIAS VENCIDO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "DATA ENVIO",
+                "displayName": "DATA ENVIO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "VALOR",
+                "displayName": "VALOR",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "NUFIN",
+                "displayName": "NUFIN",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "NUM CONTRATO",
+                "displayName": "NUM CONTRATO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "MSG ENVIADA",
+                "displayName": "MSG ENVIADA",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "COD_BOLETO",
+                "displayName": "COD_BOLETO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "É IDEAL",
+                "displayName": "É IDEAL",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "INATIVO",
+                "displayName": "INATIVO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "É FIDC",
+                "displayName": "É FIDC",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "LOG ENVIO",
+                "displayName": "LOG ENVIO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "DATA_INT",
+                "displayName": "DATA_INT",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "ARQUIVO",
+                "displayName": "ARQUIVO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "IMAGEM",
+                "displayName": "IMAGEM",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "SPLIT_VALOR",
+                "displayName": "SPLIT_VALOR",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "EMAIL_ENVIADO",
+                "displayName": "EMAIL_ENVIADO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "readOnly": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "id": "81b1ca76-71bd-49fa-8cca-e29e9439a36b",
+        "name": "Marcar pra deletar",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.4,
+        "position": [
+          -2020,
+          -180
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "maxTries": 5,
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "4HoAG3ZVDyUYbTpj",
+            "name": "Joao Lucas - Sheets"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const mensagem = $('Ativação').first().json;\nconst dados = $('Separar dados mensagem').first().json;\nconst linha = $('Separa cnpjs').first().json.linha;\n\n\n// Resultado final\nconst result = {\n  linha: linha,\n  mensagem: mensagem,\n  dados: dados,\n};\n\nreturn [{ json: result }];"
+        },
+        "id": "af3354ff-cf0b-4594-9f32-45a2e9793a0e",
+        "name": "Argumentos Email",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          300,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b6742342-e7b1-4f33-82ad-f3df1f7a3f64",
+                "name": "MSG_ENVIADA",
+                "value": "ERRO",
+                "type": "string"
+              },
+              {
+                "id": "09aabd1f-c464-459b-953c-7f4159a78574",
+                "name": "LOG_ENVIO",
+                "value": "Erro na consulta",
+                "type": "string"
+              },
+              {
+                "id": "cb4eabc8-4ea7-472d-a3f1-ecb20053358b",
+                "name": "INDEX_LINHA",
+                "value": "={{ $('Separa cnpjs').first().json.linha }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "fd0c5aa8-b89a-4e6e-873d-cffad0ccfc37",
+        "name": "Argumentos UPDATE",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1100,
+          -320
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "xs3s43TJE49fc4b2",
+            "mode": "list",
+            "cachedResultName": "Atualiza Dados - BQ"
+          },
+          "options": {}
+        },
+        "id": "34d2808f-e8d4-40be-8838-0f7b99ebf025",
+        "name": "Execute UPDATE",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          -860,
+          -320
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://n8n-dev.blips-labs.com/webhook/disparo-email",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ $json }}",
+          "options": {}
+        },
+        "id": "8c4c3ba1-ec55-4181-a781-db984fae8cf1",
+        "name": "Disparo Email",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          520,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "674686ae-6f22-4b08-830b-4cfbeb17cfe6",
+                "leftValue": "={{ $json.isEmpty() === true }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "5601d479-93f6-4e28-a6bd-a74ea83a4760",
+        "name": "Vazio?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -1100,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b6742342-e7b1-4f33-82ad-f3df1f7a3f64",
+                "name": "MSG_ENVIADA",
+                "value": "PAGOU",
+                "type": "string"
+              },
+              {
+                "id": "09aabd1f-c464-459b-953c-7f4159a78574",
+                "name": "LOG_ENVIO",
+                "value": "Cliente já tinha pago esse no dia que mandamos",
+                "type": "string"
+              },
+              {
+                "id": "cb4eabc8-4ea7-472d-a3f1-ecb20053358b",
+                "name": "INDEX_LINHA",
+                "value": "={{ $('Separa cnpjs').first().json.linha }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "758b1356-60e4-4bdf-acdb-e45bf6d61759",
+        "name": "Argumentos UPDATE1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -620,
+          -160
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "xs3s43TJE49fc4b2",
+            "mode": "list",
+            "cachedResultName": "Atualiza Dados - BQ"
+          },
+          "options": {}
+        },
+        "id": "53f4fe83-cfe6-4bc4-8b34-e16d067a2b6d",
+        "name": "Execute UPDATE1",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          -400,
+          -160
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "documentId": {
+            "__rl": true,
+            "value": "1buF3vypm2gKo8fo61JEbK8v1HtOAXeTc0PqjNjthXt8",
+            "mode": "list",
+            "cachedResultName": "Envios Cobrança - Teste",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1buF3vypm2gKo8fo61JEbK8v1HtOAXeTc0PqjNjthXt8/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Base Blips",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1hBag2re5oTl3u8ZRPm7Oxm6vtGEml8ieV6Uy_rDinls/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "DATA ENVIO": "={{$now.format('dd/MM/y HH:mm') }}",
+              "row_number": "={{ $('Separa cnpjs').item.json.linha }}",
+              "MSG ENVIADA": "PAGOU",
+              "LOG ENVIO": "Cliente já tinha pago esse no dia que mandamos"
+            },
+            "matchingColumns": [
+              "row_number"
+            ],
+            "schema": [
+              {
+                "id": "NOME",
+                "displayName": "NOME",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "DOCUMENTO",
+                "displayName": "DOCUMENTO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "TELEFONE",
+                "displayName": "TELEFONE",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "EMAIL",
+                "displayName": "EMAIL",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "DIAS VENCIDO",
+                "displayName": "DIAS VENCIDO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "DATA ENVIO",
+                "displayName": "DATA ENVIO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "VALOR",
+                "displayName": "VALOR",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "NUFIN",
+                "displayName": "NUFIN",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "NUM CONTRATO",
+                "displayName": "NUM CONTRATO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "MSG ENVIADA",
+                "displayName": "MSG ENVIADA",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "COD_BOLETO",
+                "displayName": "COD_BOLETO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "É IDEAL",
+                "displayName": "É IDEAL",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "INATIVO",
+                "displayName": "INATIVO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "É FIDC",
+                "displayName": "É FIDC",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "LOG ENVIO",
+                "displayName": "LOG ENVIO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "DATA_INT",
+                "displayName": "DATA_INT",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "ARQUIVO",
+                "displayName": "ARQUIVO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "IMAGEM",
+                "displayName": "IMAGEM",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "SPLIT_VALOR",
+                "displayName": "SPLIT_VALOR",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "EMAIL_ENVIADO",
+                "displayName": "EMAIL_ENVIADO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "readOnly": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "id": "d7234015-96fd-49b2-8f7a-ef3048a94200",
+        "name": "Log Pagou",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.4,
+        "position": [
+          -860,
+          -160
+        ],
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "4HoAG3ZVDyUYbTpj",
+            "name": "Joao Lucas - Sheets"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "envio-hyper-n8n",
+          "options": {}
+        },
+        "id": "04cb33ab-e3f3-4c9a-8fe4-0fa5bd2fc97b",
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -3000,
+          0
+        ],
+        "webhookId": "71837ff1-74e8-4004-a3ba-f5c3169adb45"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://runtime.hyperflowapis.global/webhook/2c8cVCAvm-ipuQSsDy5",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "client_id",
+                "value": "d65393f4-f062-493a-bfd0-c36aeb5d21b0"
+              },
+              {
+                "name": "accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "text",
+                "value": "={{ $json.ativacao }}"
+              },
+              {
+                "name": "telefone",
+                "value": "={{ $json.telefone }}"
+              },
+              {
+                "name": "dias",
+                "value": "={{ $('Busca mensagem').item.json.dias_vencidos }}"
+              },
+              {
+                "name": "cnpj",
+                "value": "={{ $('Code - reaplace de variáveis').item.json.cpf_cnpj }}"
+              },
+              {
+                "name": "modalidade",
+                "value": "={{ $('Code - reaplace de variáveis').item.json.modalidade }}"
+              },
+              {
+                "name": "firstName",
+                "value": "={{ $('Code - reaplace de variáveis').item.json.nomeparc.toSentenceCase().split(' ').first() }}"
+              },
+              {
+                "name": "titulosVencidos",
+                "value": "={{ $('Code - reaplace de variáveis').item.json.titulosVencidos }}"
+              },
+              {
+                "name": "linha",
+                "value": "={{$('Separa cnpjs').first().json.linha}}"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "neverError": true
+              }
+            }
+          }
+        },
+        "id": "5043deae-0204-4a15-ae09-053f17f02f92",
+        "name": "Hyperflow - Mensagem Ativação",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          60,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "collection": "Consulta",
+          "options": {},
+          "query": "={\n  \"cpf_cnpj\": \"49877365000198\", \n  \"modalidade\": \"VENDA\", \n  \"inativo\": \"0\"\n}"
+        },
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1.1,
+        "position": [
+          -2520,
+          0
+        ],
+        "id": "c97a043f-45b2-4989-96dc-eab32b22c4e5",
+        "name": "Ler",
+        "alwaysOutputData": true,
+        "credentials": {
+          "mongoDb": {
+            "id": "PTGHF1RYrZjKXwmT",
+            "name": "Consulta Cobranca"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Salva ativação": {
+        "main": [
+          [
+            {
+              "node": "Ativação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ativação": {
+        "main": [
+          [
+            {
+              "node": "Hyperflow - Mensagem Ativação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepara insert": {
+        "main": [
+          [
+            {
+              "node": "Salva ativação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Busca mensagem": {
+        "main": [
+          [
+            {
+              "node": "Vazio?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code - reaplace de variáveis": {
+        "main": [
+          [
+            {
+              "node": "Prepara insert",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Deu erro?": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Busca mensagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Separa cnpjs": {
+        "main": [
+          [
+            {
+              "node": "Ler",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Set Títulos": {
+        "main": [
+          [
+            {
+              "node": "Separar dados mensagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Separar dados mensagem": {
+        "main": [
+          [
+            {
+              "node": "Deu erro?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute Workflow Trigger": {
+        "main": [
+          [
+            {
+              "node": "Separa cnpjs",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Erro na consulta": {
+        "main": [
+          [
+            {
+              "node": "Argumentos UPDATE",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Veio sem títulos da régua?": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Set Títulos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Argumentos Email": {
+        "main": [
+          [
+            {
+              "node": "Disparo Email",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Argumentos UPDATE": {
+        "main": [
+          []
+        ]
+      },
+      "Vazio?": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Code - reaplace de variáveis",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Argumentos UPDATE1": {
+        "main": [
+          []
+        ]
+      },
+      "Log Pagou": {
+        "main": [
+          [
+            {
+              "node": "Argumentos UPDATE1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Separa cnpjs",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Hyperflow - Mensagem Ativação": {
+        "main": [
+          []
+        ]
+      },
+      "Ler": {
+        "main": [
+          [
+            {
+              "node": "Veio sem títulos da régua?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "America/Sao_Paulo",
+      "callerPolicy": "workflowsFromSameOwner"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Webhook": [
+        {
+          "json": {
+            "body": {
+              "cnpj": "53257623000100",
+              "EhVenda": 1,
+              "linha": 2,
+              "inativo": 1
+            }
+          }
+        }
+      ]
+    },
+    "versionId": "9b11c413-0d8f-43d3-942d-f0c1ca01e1bf",
+    "triggerCount": 1,
+    "tags": [
+      {
+        "createdAt": "2024-07-09T15:07:56.880Z",
+        "updatedAt": "2024-07-09T15:07:56.880Z",
+        "id": "10AfOz2oKmpgqhM9",
+        "name": "Cobranca"
+      }
+    ]
+  }
+}
