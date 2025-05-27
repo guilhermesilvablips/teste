@@ -1,0 +1,743 @@
+{
+  "data": {
+    "createdAt": "2025-05-14T18:20:54.121Z",
+    "updatedAt": "2025-05-15T14:03:56.667Z",
+    "id": "fvoOKGa0P35A5CFz",
+    "name": "BMP API 6m",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "1501b928-ec20-48b7-a02d-2a00fb5b43c8",
+                "name": "jti",
+                "value": "={{$json[\"jti\"]}}",
+                "type": "string"
+              },
+              {
+                "id": "ee02bb7a-61c2-4955-b6eb-203866a53d58",
+                "name": "sub",
+                "value": "bmp.digital.api.blips_scr",
+                "type": "string"
+              },
+              {
+                "id": "6a244342-d317-4748-be46-fdabbd76fc79",
+                "name": "iat",
+                "value": "={{Math.floor(new Date().getTime() / 1000)}}",
+                "type": "string"
+              },
+              {
+                "id": "607f204b-a95b-486e-8524-54219a12932f",
+                "name": "nbf",
+                "value": "={{Math.floor(new Date().getTime() / 1000)}}",
+                "type": "string"
+              },
+              {
+                "id": "f4b31e6e-dc37-46e2-98ae-11937f42c28a",
+                "name": "exp",
+                "value": "={{Math.floor(new Date().getTime() / 1000) + 60}}",
+                "type": "string"
+              },
+              {
+                "id": "c922305f-3b10-46dd-ae24-d2eebf1db017",
+                "name": "iss",
+                "value": "bmp.digital.api.blips_scr",
+                "type": "string"
+              },
+              {
+                "id": "cebb1674-3204-4480-bf10-182f3bf8ae29",
+                "name": "aud",
+                "value": "https://auth.moneyp.com.br/connect/token",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "f49d4a50-30ba-4312-a074-d4e30bd0e759",
+        "name": "format_JWT",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          200,
+          60
+        ]
+      },
+      {
+        "parameters": {
+          "language": "python",
+          "pythonCode": "import uuid\n\nfor item in _input.all():\n  jti = str(uuid.uuid4())\n  item.json.jti = jti\nreturn _input.all()"
+        },
+        "id": "64b17bcc-d935-4518-afae-47b45432be7a",
+        "name": "UUID",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          0,
+          60
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "function generateObjectId() {\n  const timestamp = Math.floor(Date.now() / 1000).toString(16);\n  const machineIdentifier = Math.random().toString(16).substring(2, 8);\n  const processId = (Math.floor(Math.random() * 0xffff)).toString(16).padStart(4, '0');\n  const counter = (Math.floor(Math.random() * 0xffffff)).toString(16).padStart(6, '0');\n  return `${timestamp}${machineIdentifier}${processId}${counter}`;\n}\n\nfunction validateAndFormatDate(dateString) {\n  try {\n    const date = new Date(dateString);\n    if (isNaN(date)) throw new Error('Invalid date');\n    return date.toISOString();\n  } catch (e) {\n    return new Date().toISOString();\n  }\n}\n\nfunction subtractMonths(date, numMonths) {\n  const newDate = new Date(date);\n  newDate.setMonth(newDate.getMonth() - numMonths);\n\n  // Ajusta para o fim de mês\n  if (newDate.getDate() !== date.getDate()) {\n    newDate.setDate(0);\n  }\n\n  return newDate;\n}\n\nconst today = new Date();\nconst results = [];\n\nfor (const item of items) {\n  for (let i = 2; i <= 7; i++) {\n    const pastDate = subtractMonths(today, i);\n    const newItem = { ...item, json: { ...item.json } };\n\n    newItem.json.date_month = pastDate.getMonth() + 1;\n    newItem.json.date_year = pastDate.getFullYear();\n    newItem.json.date_scr = validateAndFormatDate(item.json.date_scr);\n    newItem.json.IdempotencyKey = generateObjectId();\n    newItem.json.date_label = `${pastDate.getFullYear()}-${String(pastDate.getMonth() + 1).padStart(2, '0')}`;\n\n    results.push(newItem);\n  }\n}\n\nreturn results;"
+        },
+        "id": "cd2c2861-879e-499e-ae7c-d9f562fc1639",
+        "name": "format_date",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          800,
+          60
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "799d5395-5d74-411c-8d98-b88a6ac694ea",
+        "name": "lead",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          -220,
+          60
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "322e58fb-8448-4bd7-8638-1d456bf138b8",
+                "name": "date",
+                "value": "={{ $now.toFormat(\"yyyy-MM-dd HH:mm:ss\") }}",
+                "type": "string"
+              },
+              {
+                "id": "c8fd2836-5505-49be-a343-1f0ea277be2b",
+                "name": "cpf_cnpj",
+                "value": "={{ $('lead').first().json.documento }}",
+                "type": "string"
+              },
+              {
+                "id": "bf8a4ab5-6259-4238-ad7f-08c6d99d2b7f",
+                "name": "bureau",
+                "value": "QueryBMP",
+                "type": "string"
+              },
+              {
+                "id": "31b5beba-a4cf-41d8-9789-448075e5b3bb",
+                "name": "query",
+                "value": "={{ $('lead').first().json.type }}",
+                "type": "string"
+              },
+              {
+                "id": "b9dd4408-55db-41c7-a938-6f51526e1972",
+                "name": "output_payload",
+                "value": "={{ $json.resumoDoCliente }}",
+                "type": "object"
+              },
+              {
+                "id": "e4273d25-c601-493d-b9e9-00c5cf04897a",
+                "name": "input_payload",
+                "value": "={{ {} }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "18c425a3-b9ac-414a-bbae-137a445e116a",
+        "name": "save_cv_QueryBMP_type",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1660,
+          80
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "78403caf-d089-48ef-bdc3-f371f9205d73",
+                "name": "api",
+                "value": "BMP",
+                "type": "string"
+              },
+              {
+                "id": "7ac37d72-6cd0-4dde-b380-900648d0b54c",
+                "name": "func",
+                "value": "={{ $('lead').first().json.type }}",
+                "type": "string"
+              },
+              {
+                "id": "b194be5c-c81e-4da4-ba04-d7c8482516e9",
+                "name": "={{$('save_cv_QueryBMP_type').first().json.bureau + \"_\" + $('save_cv_QueryBMP_type').first().json.query}}",
+                "value": "={{ $('save_cv_QueryBMP_type').first().json.output_payload }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "6591d235-f638-4439-9449-8429e87feacd",
+        "name": "set_bmp",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2100,
+          80
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "79a28870-85b5-4f53-a3db-16a950804f25",
+        "name": "Utils_BMP",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          2360,
+          80
+        ]
+      },
+      {
+        "parameters": {
+          "useJson": true,
+          "claimsJson": "={\n  \"jti\": \"{{ $json.jti }}\",\n  \"sub\": \"bmp.digital.api.blips_scr\",\n  \"iat\": {{Math.floor(new Date().getTime() / 1000)}},\n  \"nbf\": {{Math.floor(new Date().getTime() / 1000)}},\n  \"exp\": {{Math.floor(new Date().getTime() / 1000) + 60}},\n  \"iss\": \"bmp.digital.api.blips_scr\",\n  \"aud\": \"https://auth.moneyp.com.br/connect/token\"\n}\n",
+          "options": {}
+        },
+        "id": "2f316dc2-158c-42ef-8c28-1658b59287ef",
+        "name": "JWT",
+        "type": "n8n-nodes-base.jwt",
+        "typeVersion": 1,
+        "position": [
+          400,
+          60
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "credentials": {
+          "jwtAuth": {
+            "id": "d6sUUqRSrK0RAX4z",
+            "name": "JWT Auth account - New Motor"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://auth.moneyp.com.br/connect/token",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "{\n  \"Content-Type\": \"application/x-www-form-urlencoded\"\n}\n",
+          "sendBody": true,
+          "contentType": "multipart-form-data",
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "grant_type",
+                "value": "client_credentials"
+              },
+              {
+                "name": "client_id",
+                "value": "=bmp.digital.api.blips_scr"
+              },
+              {
+                "name": "scope",
+                "value": "bmp.digital.api.full.access"
+              },
+              {
+                "name": "client_assertion",
+                "value": "={{ $json.token }}"
+              },
+              {
+                "name": "client_assertion_type",
+                "value": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
+              }
+            ]
+          },
+          "options": {
+            "allowUnauthorizedCerts": false,
+            "timeout": 60000
+          }
+        },
+        "id": "507982a2-489e-47be-95e0-3074ee4b646a",
+        "name": "HTTP get_access_token",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          600,
+          60
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.bmpdigital.moneyp.com.br/Bureau/ConsultarSCR",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "IdempotencyKey",
+                "value": "={{ $json.IdempotencyKey }}"
+              },
+              {
+                "name": "Authorization",
+                "value": "={{ \"Bearer \" + $json[\"access_token\"] }}"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Private-Key",
+                "value": "={     \"TOKEN_URL\": \"https://auth.moneyp.com.br/connect/token\",     \"API_URL\": \"https://api.bmpdigital.moneyp.com.br/Bureau/ConsultarSCR\",     \"PRIVATE_PEM\": \"-----BEGIN RSA PRIVATE KEY-----\\nMIIEpAIBAAKCAQEAtrEEAtlz/dbrS18IK4gWODPwn348qxPAveEqUWcFmEZfIu/U\\ngI2NBL29NGBwnxFAqL0ivL9Z5Aw3D6ldBS/j/rWaUt1cDciiQjrT3m5d1zaNvwHa\\n+9+u21oyoix+6FMysp4innx4yOjdftUUlOjcSUqBFreNefoA9n7+KZaPBXlH3JIg\\nNZw4z0vFrjnyUjHCMlisG+C6ah+KYvR8oeznOG/ETaTjYR2kRdgBE2VO7OPgVp++\\nMwivCcK/A8ZBHmqYvp7r9nQMuU+UD4lzqgrTjm4NQWJ0/V0WtJ573ET9QbYRLXsG\\nRiDCRzbjysa83rtLfnwqhSfN6Yo7DI8GG7WR7QIDAQABAoIBAFSXB/1txGhPgCko\\n+nZ1j5w8aHjhEaRBBCinPlnsssl8JAbgN2vCnv4IALhkwyDT8zVuRcxRaYTPJxuI\\nVvrU3uOMIMWnmz0Cnia+aGWAgtDogJ9lc4jWXHdSf0laAvT9uOa9k9gAWEjmkdBt\\nRxdf7se8yKLFIKvO121LBdIp1VU5t39Of4Q1wrx5QIl3g68SZTn/dZw/TSgVPaNW\\nBbya+GXqjKPMFJFkcYBvmTgfVYF2pkj2hpxlBJIUPjbnVcH4VKX/zNWmd3gCm7tC\\nsuc7VAytYkLrRiDSapv4t6PX9HTkb1ZZPCj3tdYo9gpPMv7XbLhpqr8Y3dkdiByf\\nRdQz0uECgYEA3FYdQp0rUBUB2rzRflND7Rd57NFiTck48arGAH78d9NVBoKqtB13\\n6naVr45K3Kw7UZQgcrTTwTAYZ2zw3w2UtZlyFoVbW3OOPTWJ5Ro06HdBSC2KRTXZ\\nyl8FiZahQJB7fDKkjplMgGCYz2hpZ7EzMcfZs0aqG20gioWk1Cq/KNkCgYEA1EMK\\nvP3X3cin6Boyee4W6AY4fNUJJ/h1O1DusFobU0k9YE6g25sSo7lu92FYdNPNp31n\\nyVaTeaXKxNRuTXYydCmmqfuGgcnznzPXZg0fE1+3ER6yj23yx8vsJgp80VzQ481a\\nTlGOxw+NXZehJCma7xpbZ8Yd0aZfM4iDtPhY5TUCgYEApoRqPqK7Th1iNmaGyLqy\\n1ibs3T3s1i6h23odg9h0gzZyxqXPzqmKq+aM/41BJH8BoYiZ8TaZ5iGr/9YEP/5q\\nicf6wexs+7NcJwQkP8HLhHhEHQFVwzKMcvXXIIF3Qm0u9dDsLlzKxSa7tdwJ9PSl\\nZRTNgUCBZJLXifiwdiwMJhkCgYEAxTETRMg+RtgmxMWxpvy9YwiEadQwEWYM4vIp\\nDMRpJlKgJlxlrB7AjkGzCTbySnaKU9N5G97GWvjfC0SexG/OJ4SaRMhbCTBol7o9\\nnZ0LBaCiHdF66Syno12bISwVERs9JKSeBKxYDC4ykoRPO507Rm4iBKJVCXOadfGZ\\nCgK98xECgYB3nwlxYi/1BUzTnS9LaEz+gVi41mwKUVng3QInmx72n2hm0MMbxnrP\\n7I0vtHZGx8t9F1Sv/mVXumVIZfvw2NAGOl0ayN3k/DrxF6Nk0InnzDHYK1v5wQN4\\nqob5mdRSIi4KagfACteyPjpgbe37Fn8phyfro6xxaJjhrOygb5nOCw==\\n-----END RSA PRIVATE KEY-----\" }"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n            \"consulta\": {\n                \"documento\": \"{{$('lead').item.json.documento}}\",\n                \"dataBaseMes\": \"{{ $json.date_month }}\",\n                \"dataBaseAno\": \"{{ $json.date_year }}\",\n                \"dtAceiteCliente\": \"{{ $json.date_scr }}\"\n            }\n        }",
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "ce381d29-777e-47d8-9be2-25f814b41f1e",
+        "name": "HTTP dataset_raw",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1440,
+          80
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "operation": "insert",
+          "projectId": {
+            "__rl": true,
+            "value": "blips-prod-v2",
+            "mode": "list",
+            "cachedResultName": "blips-prod-v2",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-prod-v2"
+          },
+          "datasetId": {
+            "__rl": true,
+            "value": "analise_de_credito",
+            "mode": "list",
+            "cachedResultName": "analise_de_credito"
+          },
+          "tableId": {
+            "__rl": true,
+            "value": "catalogo_variaveis",
+            "mode": "list",
+            "cachedResultName": "catalogo_variaveis"
+          },
+          "options": {}
+        },
+        "id": "4198ddb0-83a4-40b2-a66e-6985d5b0e4dd",
+        "name": "Save CV BMP",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          1880,
+          80
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "options": {
+            "reset": "={{ $('Loop Over Items').context['done'] }}"
+          }
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          1020,
+          60
+        ],
+        "id": "9b1cc62b-e277-425f-a33b-86e252a54508",
+        "name": "Loop Over Items"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.noOp",
+        "typeVersion": 1,
+        "position": [
+          1440,
+          -200
+        ],
+        "id": "01eb579c-c58a-4055-ac83-4795f3e15cd7",
+        "name": "No Operation, do nothing"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          2600,
+          80
+        ],
+        "id": "d3c68851-76b9-4df6-8d95-87e8ff630cf2",
+        "name": "Wait",
+        "webhookId": "9b7457c1-a0b6-4041-b83f-e5e4eab44a47"
+      },
+      {
+        "parameters": {
+          "options": {
+            "reset": "={{ $('Loop Over Items1').context['done'] }}"
+          }
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          1660,
+          -200
+        ],
+        "id": "bb1f65fe-7dc1-4b70-be41-db74c0306a1a",
+        "name": "Loop Over Items1"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.noOp",
+        "typeVersion": 1,
+        "position": [
+          2100,
+          -360
+        ],
+        "id": "d27d8d6b-9a85-425a-9f82-57f9fa132372",
+        "name": "No Operation, do nothing1"
+      },
+      {
+        "parameters": {
+          "jsCode": "const result = {};\n\n$input.all().forEach((item, index) => {\n  result[`mes_${index + 1}`] = item.json;\n});\n\nreturn [\n  {\n    json: result\n  }\n];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2600,
+          -360
+        ],
+        "id": "4918f1a6-5906-42f2-aa25-32a6589284f1",
+        "name": "result"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "9b9219cb-ea49-4737-b457-46e772488319",
+                "name": "api",
+                "value": "BMP",
+                "type": "string"
+              },
+              {
+                "id": "019d1f4b-929f-476e-8f10-d39b57311fea",
+                "name": "func",
+                "value": "sum_debtors_cpf",
+                "type": "string"
+              },
+              {
+                "id": "72fecb19-2b69-43c3-82b9-f6abdb5b7efa",
+                "name": "scr_cpf",
+                "value": "={{ $json }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "acf54187-cba3-4cb3-953c-440b3f1291c7",
+        "name": "sum_debtors_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1880,
+          -180
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "W7TZJTMfuBtih4l1",
+            "mode": "list",
+            "cachedResultName": "Utils"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          2100,
+          -180
+        ],
+        "id": "48e401dd-a9b4-4ee6-bec6-37c23dec6ad1",
+        "name": "Utils_BMP_bacen_cpf"
+      }
+    ],
+    "connections": {
+      "format_JWT": {
+        "main": [
+          [
+            {
+              "node": "JWT",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "UUID": {
+        "main": [
+          [
+            {
+              "node": "format_JWT",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "format_date": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "lead": {
+        "main": [
+          [
+            {
+              "node": "UUID",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "save_cv_QueryBMP_type": {
+        "main": [
+          [
+            {
+              "node": "Save CV BMP",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_bmp": {
+        "main": [
+          [
+            {
+              "node": "Utils_BMP",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "JWT": {
+        "main": [
+          [
+            {
+              "node": "HTTP get_access_token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP get_access_token": {
+        "main": [
+          [
+            {
+              "node": "format_date",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP dataset_raw": {
+        "main": [
+          [
+            {
+              "node": "save_cv_QueryBMP_type",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Save CV BMP": {
+        "main": [
+          [
+            {
+              "node": "set_bmp",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [
+            {
+              "node": "No Operation, do nothing",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "HTTP dataset_raw",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils_BMP": {
+        "main": [
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "No Operation, do nothing": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items1": {
+        "main": [
+          [
+            {
+              "node": "No Operation, do nothing1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "sum_debtors_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "No Operation, do nothing1": {
+        "main": [
+          [
+            {
+              "node": "result",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "sum_debtors_cpf": {
+        "main": [
+          [
+            {
+              "node": "Utils_BMP_bacen_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils_BMP_bacen_cpf": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "lead": [
+        {
+          "json": {
+            "documento": "11925390608",
+            "type": "1"
+          }
+        }
+      ]
+    },
+    "versionId": "da85f579-8c3f-4429-8911-f20c6d3866f5",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-31T16:22:41.803Z",
+        "updatedAt": "2024-07-31T16:22:41.803Z",
+        "id": "mmaXbyiWhptUXaTd",
+        "name": "New Motor"
+      }
+    ]
+  }
+}
