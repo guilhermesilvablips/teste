@@ -1,0 +1,857 @@
+{
+  "data": {
+    "createdAt": "2025-02-11T17:43:12.888Z",
+    "updatedAt": "2025-04-15T20:24:08.700Z",
+    "id": "rQTalbmYg0H7p6L4",
+    "name": "func - buscar_negotation - Clara",
+    "active": true,
+    "nodes": [
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "20eb70b3-3eda-4394-abf1-7f1e8bc290c2",
+                "leftValue": "={{ !!$json.contrato }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          680,
+          900
+        ],
+        "id": "b8984fef-ed10-44ad-839f-f2fff6a451b3",
+        "name": "Contrato?"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "/**\n * Função recursiva que tenta converter qualquer string que contenha um JSON válido\n * para o seu objeto/array correspondente. Se não for possível fazer o parse,\n * retorna a string original.\n *\n * @param {any} data - Valor a ser processado.\n * @returns {any} - Valor convertido (se for possível) ou o valor original.\n */\nfunction deepParse(data) {\n  // Se for uma string, tenta fazer o parse\n  if (typeof data === 'string') {\n    try {\n      // Tenta converter a string em JSON\n      const parsed = JSON.parse(data);\n      // Se o parse retornar um objeto ou array, processa recursivamente\n      return deepParse(parsed);\n    } catch (err) {\n      // Se ocorrer erro no parse, retorna a string original\n      return data;\n    }\n  }\n  \n  // Se for um array, percorre cada item\n  if (Array.isArray(data)) {\n    return data.map(item => deepParse(item));\n  }\n  \n  // Se for um objeto, percorre cada propriedade\n  if (typeof data === 'object' && data !== null) {\n    const newObj = {};\n    for (const key in data) {\n      if (Object.prototype.hasOwnProperty.call(data, key)) {\n        newObj[key] = deepParse(data[key]);\n      }\n    }\n    return newObj;\n  }\n  \n  // Para outros tipos (number, boolean, null, etc.), retorna como está\n  return data;\n}\n\n// Obtém o primeiro item de entrada no n8n\nconst input = $json;\n\n// Converte recursivamente todos os campos que forem strings com JSON válido\nconst output = deepParse(input);\n\n// Retorna o objeto com todos os campos devidamente convertidos\nreturn output;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1580,
+          740
+        ],
+        "id": "0463ff52-8a05-4186-8d3f-76a47b5e9b47",
+        "name": "Parse Json"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Função para formatar uma data no formato \"dd/mm/yyyy\"\nfunction formatDate(dateStr) {\n  if (!dateStr) return null;\n  const date = new Date(dateStr);\n  const day = String(date.getDate()).padStart(2, '0');\n  const month = String(date.getMonth() + 1).padStart(2, '0');\n  const year = date.getFullYear();\n  return `${day}/${month}/${year}`;\n}\n\n// Função para verificar se a data de entrega já passou\nfunction hasDatePassed(dateStr) {\n  if (!dateStr) return null;\n  const today = new Date();\n  today.setHours(0, 0, 0, 0); // Zera as horas para comparar apenas a data\n  const targetDate = new Date(dateStr);\n  targetDate.setHours(0, 0, 0, 0);\n  return targetDate <= today;\n}\n\nconst items = $input.all(); // Pega todos os itens de entrada\n\nconst newItems = items.map(item => {\n  const negotiation = item.json.negotiation;\n  const shipping = negotiation && negotiation.shipping;\n  \n  let dados_envio_equipamento = null;\n  \n  if (shipping) {\n    // Obtém shippingOrderId se existir e tiver pelo menos um valor\n    const shippingOrderId = shipping.shipping_order_id && shipping.shipping_order_id.length > 0\n      ? shipping.shipping_order_id[0]\n      : null;\n\n    // Obtém a data de entrega prevista\n    const estimatedArrivalDate = shipping.shipping_assets && shipping.shipping_assets.estimated_arrival_date\n      ? shipping.shipping_assets.estimated_arrival_date\n      : null;\n    \n    const formattedEstimatedArrivalDate = estimatedArrivalDate ? formatDate(estimatedArrivalDate) : null;\n    const dataJaPassou = estimatedArrivalDate ? hasDatePassed(estimatedArrivalDate) : null;\n\n    // Cria o objeto com os campos, podendo vir nulos\n    const dados = {\n      link_rastreio: shippingOrderId \n        ? `https://status.ondeestameupedido.com/tracking/67316/${shippingOrderId}` \n        : null,\n      status_de_entrega_equipamento:\n    shipping.status && shipping.status !== 'Averiguar falha na entrega'\n      ? shipping.status\n      : null,\n      data_de_entrega_prevista_equipamento: formattedEstimatedArrivalDate,\n      transportadora: shipping.shipping_assets && shipping.shipping_assets.carrier_name\n        ? shipping.shipping_assets.carrier_name\n        : null,\n      codigo_rastreio_transportadora: shipping.tracking_number || null,\n      data_de_entrega_prevista_ja_passou: dataJaPassou\n    };\n\n    // Filtra e retorna apenas as propriedades que não são null\n    dados_envio_equipamento = Object.keys(dados).reduce((acc, key) => {\n      if (dados[key] !== null) {\n        acc[key] = dados[key];\n      }\n      return acc;\n    }, {});\n  }\n  \n  // Retorna o item original com a nova propriedade \"dados_envio_equipamento\"\n  return {\n    json: {\n      ...item.json,\n      dados_envio_equipamento\n    }\n  };\n});\n\nreturn newItems;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2280,
+          760
+        ],
+        "id": "ebd944ed-eff2-421c-bad7-bf22ec246889",
+        "name": "Shipping"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "f7eebc6b-1bef-4b14-89d1-6d04844181b4",
+                "leftValue": "={{ $json }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "object",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1300,
+          760
+        ],
+        "id": "dc10f2ea-c809-4293-8dc5-d9951f0479e9",
+        "name": "Veio certo?"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "20eb70b3-3eda-4394-abf1-7f1e8bc290c2",
+                "leftValue": "={{ !!$json.cnpj }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          900,
+          1040
+        ],
+        "id": "b41a0ab7-8e95-49f1-89d8-9e95090ad4e3",
+        "name": "Cnpj?"
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT TO_JSON_STRING(t) AS negotiation\nFROM (\n  SELECT * \n  FROM PLATAFORMA.negotiation \n  WHERE contractor.document = '{{ $json.cnpj }}'\n) t;\n",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          1140,
+          920
+        ],
+        "id": "abeddbd8-e488-4c4f-aa77-87fef5276ca0",
+        "name": "Negotiation - cnpj",
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT TO_JSON_STRING(t) AS negotiation\nFROM (\n  SELECT * \n  FROM PLATAFORMA.negotiation \n  WHERE contract_number = '{{ $json.contrato }}'\n) t;\n",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          900,
+          760
+        ],
+        "id": "b16c0a14-03ec-43e4-aa7e-ac7f901f1946",
+        "name": "Negotiation - contrato",
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "f7eebc6b-1bef-4b14-89d1-6d04844181b4",
+                "leftValue": "={{ $json }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "object",
+                  "operation": "empty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          2020,
+          740
+        ],
+        "id": "6b372f6d-3b6a-46dd-80da-7796c85ea2dd",
+        "name": "Vazio?"
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "negotiations",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          3160,
+          780
+        ],
+        "id": "7ba0ed17-0a89-4dc9-b063-6a8e43d0ed08",
+        "name": "Aggregate"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "IPI5OpYpRh7itami",
+            "mode": "list",
+            "cachedResultName": "Procurar Deal Bitrix (Contrato + CNPJ)"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "contrato": "={{ $json.numero_contrato }}",
+              "cnpj": "={{ $json.documento }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "contrato",
+                "displayName": "contrato",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "cnpj",
+                "displayName": "cnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          2720,
+          880
+        ],
+        "id": "29bf57b8-495f-4554-9246-4fdbf618fedd",
+        "name": "Execute Workflow"
+      },
+      {
+        "parameters": {
+          "mode": "combine",
+          "combineBy": "combineByPosition",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3,
+        "position": [
+          2940,
+          780
+        ],
+        "id": "da1049af-8400-42b3-87ea-0cbf5fb5302b",
+        "name": "Merge"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "// 1. Destructure principal\nconst {\n  negotiation,\n  dados_envio_equipamento: entrega\n} = $json;\n\nlet {\n  contract_number: numero_contrato,\n  contractor: { document: documento },\n  model_selected: { name: equipamento },\n  phase: { name: phase }\n} = negotiation;\n\n// 2. Busca fase com fallback\nconst fases = negotiation.business_rule?.string_value\n  ?.selected_commercial_definition\n  ?.sequence_of_phases;\nconst faseObj = fases?.find(({ identifier }) => identifier === phase);\nconst fase_negociacao = faseObj?.name ?? null;\n\n// força string nos dois\nnumero_contrato = String(numero_contrato);\ndocumento       = String(documento);\n\n// 3. Monta o objeto base\nconst result = {\n  numero_contrato,\n  documento,\n  equipamento,\n  fase_negociacao\n};\n\n// 4. Frete (só se status ≠ COMPLETED)\nconst shipping = negotiation.payments?.shipping;\nif (shipping?.status !== 'COMPLETED' && negotiation.payments?.shipping) {\n  result.frete = {\n    cliente_tem_que_pagar: true,\n    valor:                 shipping.value\n  };\n}\n\n// 5. Entrega (só para fase SHIPPING_STATUS)\nif (entrega && phase === 'SHIPPING_STATUS') {\n  result.entrega = entrega;\n}\n\nreturn result;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2520,
+          760
+        ],
+        "id": "cb90630c-d801-4b58-ae10-96feaf7f55fa",
+        "name": "Campos"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "807ada74-7046-4e93-9986-0e74f19b0a61",
+                "leftValue": "={{ $json.negotiation.phase.status }}",
+                "rightValue": "CANCELLED",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEquals"
+                }
+              },
+              {
+                "id": "c187d9f5-04ad-47a1-88cb-ee79071863a2",
+                "leftValue": "={{ $json.negotiation.phase.name }}",
+                "rightValue": "CONCLUDED",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEquals"
+                }
+              },
+              {
+                "id": "e0cf6163-f5a8-403d-a2b2-d4fb0a17795e",
+                "leftValue": "={{ $json.negotiation.phase.name }}",
+                "rightValue": "INITIAL_QUESTION",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEquals"
+                }
+              },
+              {
+                "id": "3a9bbe50-087b-4098-aad3-3bf596b68336",
+                "leftValue": "={{ $json.negotiation.phase.name }}",
+                "rightValue": "WAITING_FOR_CREDIT_ANALYSIS",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEquals"
+                }
+              },
+              {
+                "id": "1fc45bf4-341f-4d80-913d-16f6194e5338",
+                "leftValue": "={{ $json.negotiation.phase.name }}",
+                "rightValue": "BUSINESS_QUESTIONS",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEquals"
+                }
+              },
+              {
+                "id": "46c4d41d-1cff-4d35-ad54-4621af1b16ac",
+                "leftValue": "={{ $json.negotiation.phase.name }}",
+                "rightValue": "PAYMENT_SIGNAL",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEquals"
+                }
+              },
+              {
+                "id": "7360c108-1099-424f-b0d7-907a8f2ff108",
+                "leftValue": "={{ $json.negotiation.phase.name }}",
+                "rightValue": "WAITING_BUSINESS_PROPOSAL",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEquals"
+                }
+              },
+              {
+                "id": "0973be5b-f7ef-4c1a-871b-03002c4c4b78",
+                "leftValue": "={{ $json.negotiation.phase.name }}",
+                "rightValue": "AGREED_SIGNAL_TERMS",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEquals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.2,
+        "position": [
+          1800,
+          740
+        ],
+        "id": "c68bd9f3-dcdf-4df4-8a69-7763d104d6a5",
+        "name": "Filtro Cancelados + Concluído",
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "012b2eb4-96b1-44de-8a32-15a2279fbdd5",
+                "name": "contrato",
+                "value": "={{ $json.body.contrato.replaceAll(/\\D/g, '') }}",
+                "type": "string"
+              },
+              {
+                "id": "1d704d46-3c92-4925-ace0-7393970d4bfc",
+                "name": "cnpj",
+                "value": "={{ $json.body.cnpj.replaceAll(/\\D/g, '') }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          480,
+          900
+        ],
+        "id": "17502b63-28f8-4fe2-8727-1469faaf9eb2",
+        "name": "Contrato ou CNPJ1"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7974bf9f-98c4-4c75-8a74-4c77f10a9d33",
+                "name": "resposta",
+                "value": "Não foram encontradas negociações não canceladas ou não concluídas. Transferir para o humano.",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2280,
+          580
+        ],
+        "id": "91025778-861c-4bde-a7d1-b3337c7c389d",
+        "name": "Erro - Sem status válido"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7974bf9f-98c4-4c75-8a74-4c77f10a9d33",
+                "name": "resposta",
+                "value": "Não foram encontradas negociações. Pedir para o cliente confirmar os dados.",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1580,
+          900
+        ],
+        "id": "e7a15460-7ced-41b7-9dcb-a6032850ce25",
+        "name": "Erro - Vazio"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7974bf9f-98c4-4c75-8a74-4c77f10a9d33",
+                "name": "resposta",
+                "value": "Dados de entrada inválidos.",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1580,
+          1060
+        ],
+        "id": "a08e6f45-4d72-42db-8749-0734694daa50",
+        "name": "Erro - Dados inválidos"
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "dados-negoatiation",
+          "responseMode": "lastNode",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          260,
+          900
+        ],
+        "id": "6baff5b8-fa76-4b3e-9994-b5d668a82100",
+        "name": "Webhook",
+        "webhookId": "dded3741-346c-4b5a-a0e0-9a968f3c2925"
+      },
+      {
+        "parameters": {
+          "respondWith": "text",
+          "responseBody": "={{ $json.resposta }}",
+          "options": {
+            "responseCode": 200
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          1800,
+          980
+        ],
+        "id": "acb14f40-c0d6-4a75-b5dc-a9a654bef3ea",
+        "name": "Respond to Webhook2"
+      },
+      {
+        "parameters": {
+          "respondWith": "text",
+          "responseBody": "={{ $json.resposta }}",
+          "options": {
+            "responseCode": 200
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          2520,
+          580
+        ],
+        "id": "eee131cc-05de-4706-9f61-b635fb674d6b",
+        "name": "Respond to Webhook1"
+      },
+      {
+        "parameters": {
+          "respondWith": "text",
+          "responseBody": "={{ $json.resposta }}",
+          "options": {
+            "responseCode": 200
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          3600,
+          780
+        ],
+        "id": "e7794056-c261-4cf5-8686-92680e2b7fa4",
+        "name": "Respond to Webhook"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "c053b268-ed03-47bd-82d5-f30add14d478",
+                "name": "resposta",
+                "value": "={{ $json.negotiations.toJsonString() }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3380,
+          780
+        ],
+        "id": "9bd2002a-1658-4256-9f3b-29431dea1cd0",
+        "name": "Array -> String"
+      }
+    ],
+    "connections": {
+      "Contrato?": {
+        "main": [
+          [
+            {
+              "node": "Negotiation - contrato",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Cnpj?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parse Json": {
+        "main": [
+          [
+            {
+              "node": "Filtro Cancelados + Concluído",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Shipping": {
+        "main": [
+          [
+            {
+              "node": "Campos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Veio certo?": {
+        "main": [
+          [
+            {
+              "node": "Parse Json",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro - Vazio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Cnpj?": {
+        "main": [
+          [
+            {
+              "node": "Negotiation - cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro - Dados inválidos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Negotiation - cnpj": {
+        "main": [
+          [
+            {
+              "node": "Veio certo?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Negotiation - contrato": {
+        "main": [
+          [
+            {
+              "node": "Veio certo?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Vazio?": {
+        "main": [
+          [
+            {
+              "node": "Erro - Sem status válido",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Shipping",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aggregate": {
+        "main": [
+          []
+        ]
+      },
+      "Execute Workflow": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          [
+            {
+              "node": "Aggregate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Campos": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Execute Workflow",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filtro Cancelados + Concluído": {
+        "main": [
+          [
+            {
+              "node": "Vazio?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Contrato ou CNPJ1": {
+        "main": [
+          [
+            {
+              "node": "Contrato?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Contrato ou CNPJ1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Erro - Sem status válido": {
+        "main": [
+          []
+        ]
+      },
+      "Erro - Vazio": {
+        "main": [
+          []
+        ]
+      },
+      "Erro - Dados inválidos": {
+        "main": [
+          []
+        ]
+      },
+      "Array -> String": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Webhook": [
+        {
+          "json": {
+            "body": {
+              "contrato": "12501140"
+            }
+          }
+        }
+      ]
+    },
+    "versionId": "6f193280-af97-4edf-ad22-bef28ba4752a",
+    "triggerCount": 1,
+    "tags": [
+      {
+        "createdAt": "2024-11-22T13:13:26.514Z",
+        "updatedAt": "2024-11-22T13:13:26.514Z",
+        "id": "owb3cfmzFRbqjP06",
+        "name": "Clara"
+      }
+    ]
+  }
+}
