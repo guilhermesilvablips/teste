@@ -1,0 +1,659 @@
+{
+  "data": {
+    "createdAt": "2025-03-18T14:51:27.859Z",
+    "updatedAt": "2025-03-18T17:44:54.590Z",
+    "id": "eRgoQQTPRqwRcuYU",
+    "name": "My workflow 9",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://desk-ext.hyperflowapis.global/graphql",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "={\n  \"authorization\": \"{{ $('setToken').first().json.token }}\",\n  \"content-type\": \"application/json\",\n  \"tenant\": \"642eb86c0cd915bc8137a05d\"\n}",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"operationName\": \"LIST_ALL_CHATS\",\n  \"variables\": {\n    \"sort\": \"-createdAt\",\n    \"search\": \"{{ $('setWebhookTrigger').first().json.phone }}\",\n    \"channelAlias\": [],\n    \"status\": [],\n    \"channel\": \"\",\n    \"department\": [],\n    \"label\": [],\n    \"classification\": [],\n    \"agent\": [],\n    \"startDate\": \"\",\n    \"endDate\": \"\",\n    \"page\": 1,\n    \"limit\": 1000\n  },\n  \"query\": \"query LIST_ALL_CHATS($page: Int, $limit: Int, $offset: Int, $sort: String, $search: String, $channel: String, $startDate: String, $endDate: String, $status: [String], $department: [String], $agent: [String], $label: [String], $classification: [String], $channelAlias: [String], $searchBy: String) {\\n  listAllChats(\\n    query: {search: $search, status: $status, channel: $channel, department: $department, agent: $agent, startDate: $startDate, endDate: $endDate, label: $label, classification: $classification, channelAlias: $channelAlias, searchBy: $searchBy}\\n    page: $page\\n    limit: $limit\\n    offset: $offset\\n    sort: $sort\\n  ) {\\n    docs {\\n      _id\\n      receiver\\n      agent {\\n        _id\\n        picture\\n        email\\n        name\\n        __typename\\n      }\\n      department {\\n        _id\\n        name\\n        __typename\\n      }\\n      channel\\n      channelAlias\\n      contact {\\n        id\\n        phone\\n        name\\n        picture\\n        __typename\\n      }\\n      lastMessage {\\n        type\\n        direction\\n        createdAt\\n        __typename\\n      }\\n      protocol\\n      status\\n      classifications {\\n        _id\\n        name\\n        __typename\\n      }\\n      labels {\\n        _id\\n        color\\n        name\\n        __typename\\n      }\\n      isActive\\n      createdAt\\n      finishedAt\\n      __typename\\n    }\\n    totalPages\\n    totalDocs\\n    nextPage\\n    __typename\\n  }\\n}\"\n}",
+          "options": {}
+        },
+        "id": "cd626b88-5283-460e-a807-9af06ee524b2",
+        "name": "Pesquisar protocolos",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1400,
+          200
+        ],
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://desk-ext.hyperflowapis.global/graphql",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "={\n  \"accept\": \"*/*\",\n  \"accept-language\": \"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7\",\n  \"content-type\": \"application/json\",\n  \"origin\": \"https://desk.hyperflow.global\",\n  \"priority\": \"u=1, i\",\n  \"referer\": \"https://desk.hyperflow.global/\",\n  \"sec-ch-ua\": \"\\\"Not)A;Brand\\\";v=\\\"99\\\", \\\"Google Chrome\\\";v=\\\"127\\\", \\\"Chromium\\\";v=\\\"127\\\"\",\n  \"sec-ch-ua-mobile\": \"?0\",\n  \"sec-ch-ua-platform\": \"\\\"Windows\\\"\",\n  \"sec-fetch-dest\": \"empty\",\n  \"sec-fetch-mode\": \"cors\",\n  \"sec-fetch-site\": \"cross-site\",\n  \"user-agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36\"\n}",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"operationName\": \"SIGN_IN\",\n  \"variables\": {\n    \"username\": \"mateus@blips.com.br\",\n    \"password\": \"Zxc,.;123\"\n  },\n  \"query\": \"mutation SIGN_IN($username: String!, $password: String!) {\\n  login(data: {username: $username, password: $password}) {\\n    token\\n    refreshToken\\n    user {\\n      name\\n      tenants {\\n        name\\n        _id\\n        __typename\\n      }\\n      __typename\\n    }\\n    __typename\\n  }\\n}\\n\"\n}",
+          "options": {}
+        },
+        "id": "c14109fa-eed6-448e-a191-5602715c9ad2",
+        "name": "Renovar token",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          100,
+          200
+        ],
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "55e415bd-1ac9-460a-ac5b-f53e4955a9c1",
+                "leftValue": "={{ $json.errors[0].extensions.exception.status }}",
+                "rightValue": 401,
+                "operator": {
+                  "type": "number",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          300,
+          200
+        ],
+        "id": "fa04d7ab-27a2-4516-afe7-2751af7fb5b4",
+        "name": "401?"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "5ccd43c6-6006-4a45-b65f-39c1d2235343",
+                "leftValue": "={{ $json.errors[0].extensions.response.statusCode }}",
+                "rightValue": 401,
+                "operator": {
+                  "type": "number",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1600,
+          200
+        ],
+        "id": "42c669b0-0fe4-4487-9d31-bc721ac5054f",
+        "name": "401_?"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Recebe a resposta da requisição\nconst items = $('Pesquisar protocolos').first().json.data.listAllChats.docs;\n\nconst result = items\n    .map(item => {\n        let status = item.status;\n        let protocolo = item.protocol;\n        return {\n          protocolo: protocolo,\n          status: status,\n          data_criado: item.createdAt,\n          data_finalizado: item.finishedAt,\n          departamento: item.department.name,\n          contato: item.contact.name,\n          telefone: item.contact.phone\n        };\n    })\n\n// Retorna o resultado processado\nreturn result.map(res => ({ json: res }));\n"
+        },
+        "id": "b51d2a76-0382-4425-9c1f-5c8d6671ff41",
+        "name": "Extrair lista de protocolos",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2060,
+          300
+        ],
+        "alwaysOutputData": false,
+        "notesInFlow": false,
+        "retryOnFail": false
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "3f42598f-2ff5-440f-9f83-4c238de7dd47",
+                "name": "token",
+                "value": "={{ $json.data.login.refreshToken }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          520,
+          280
+        ],
+        "id": "5c5178c3-6397-48c7-a16d-81f16faac6f5",
+        "name": "setToken"
+      },
+      {
+        "parameters": {
+          "content": "## Acessar dados do Hyper",
+          "height": 80,
+          "width": 1420,
+          "color": 2
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          80,
+          -40
+        ],
+        "id": "4d3cebba-3309-47dc-b0f8-d8914bed7d80",
+        "name": "Sticky Note1"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "dbbeb401-8530-40d7-8fd9-8f6ce90de9c6",
+                "name": "contato",
+                "value": "={{ $json.data.listAllChats.docs[0].contact.name }}",
+                "type": "string"
+              },
+              {
+                "id": "596e8085-756f-4de0-ab04-6985a9571ca7",
+                "name": "telefone",
+                "value": "={{ $json.data.listAllChats.docs.first().contact.phone }}",
+                "type": "string"
+              },
+              {
+                "id": "c50e4cb2-c5fa-475c-8cd9-49ce65a914e8",
+                "name": "startDate",
+                "value": "={{ $json.data.listAllChats.docs.first().createdAt }}",
+                "type": "string"
+              },
+              {
+                "id": "20805d03-285e-49a5-84f3-9b47b816a6d7",
+                "name": "endDate",
+                "value": "={{ $json.data.listAllChats.docs.last().finishedAt || $json.data.listAllChats.docs.last().lastMessage.createdAt }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1860,
+          300
+        ],
+        "id": "f9626358-fae5-4aae-9c50-eae57362b9ea",
+        "name": "Info Contato"
+      },
+      {
+        "parameters": {
+          "path": "search_protocols_by_phone",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -1180,
+          220
+        ],
+        "id": "75c9debb-6810-4086-bb69-c1bfd9abd46d",
+        "name": "Webhook",
+        "webhookId": "3b1cede0-4f70-4f32-9e6b-9991c4905e30"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "fc9caa62-c28d-4aaf-9f4b-f8d2561c1b70",
+                "name": "phone",
+                "value": "={{ \n  $json.query.phone.replace(/[^a-zA-Z0-9]/g, '').replace(/^((?!55).*)$/, \"55$1\") || \"\"\n}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -940,
+          220
+        ],
+        "id": "4bd6c642-c810-4c10-8220-974df6125371",
+        "name": "setWebhookTrigger"
+      },
+      {
+        "parameters": {
+          "content": "## Input de Dados",
+          "height": 80,
+          "width": 880
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -1220,
+          100
+        ],
+        "id": "8a0b003e-e09a-4f54-a8c1-8c1683ed21ca",
+        "name": "Sticky Note19"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "d75bfecc-0986-4b62-9d4b-51178cf997b0",
+                "leftValue": "={{ $json.phone }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -740,
+          220
+        ],
+        "id": "9f066a3f-8053-49c9-bfa0-29c3d791571a",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "{\n  \"status\": \"error\",\n  \"data\": [],\n  \"message\": \"phone não pode ser vazio!\"\n}",
+          "options": {
+            "responseCode": 400
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          -480,
+          320
+        ],
+        "id": "99f14428-ca98-4c6d-9134-2007cd3bb043",
+        "name": "Erro de variavel não enviada!"
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "{\n  \"status\": \"error\",\n  \"data\": [],\n  \"message\": \"Não foi possivel buscar o token para continuar!\"\n}",
+          "options": {
+            "responseCode": 500
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          520,
+          120
+        ],
+        "id": "4ec647d5-402a-4ece-a298-773831450587",
+        "name": "Erro de busca de token"
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "{\n  \"status\": \"error\",\n  \"data\": [],\n  \"message\": \"Não foi possivel buscar os protocolos agora.\"\n}",
+          "options": {
+            "responseCode": 500
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          1860,
+          100
+        ],
+        "id": "48fadac4-5371-46fe-af90-3ae1c2325adb",
+        "name": "Erro de busca de protocolos"
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          2280,
+          300
+        ],
+        "id": "840914f0-63cc-435b-bd8d-698f5531d8a3",
+        "name": "Resposta de webhook"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://desk-ext.hyperflowapis.global/graphql",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "={\n    \"content-type\": \"application/json\",\n    \"tenant\": \"642eb86c0cd915bc8137a05d\",\n    \"authorization\": \"{{ $json.token }}\"\n}",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n    \"operationName\": \"LIST_CONTACTS\",\n    \"variables\": {\n      \"search\": \"{{ $('setWebhookTrigger').first().json.phone }}\",\n      \"limit\": 100,\n      \"page\": 1,\n      \"channel\": \"whatsapp\"\n    },\n    \"query\": \"query LIST_CONTACTS($page: Int, $limit: Int, $offset: Int, $sort: String, $search: String, $channel: ChannelTypeEnum, $tags: [String], $property: String, $comparator: ContactFilterComparatorEnum, $value: String) {\\n  listContacts(\\n    page: $page\\n    limit: $limit\\n    offset: $offset\\n    sort: $sort\\n    query: {search: $search, tags: $tags, channel: $channel, property: $property, comparator: $comparator, value: $value}\\n  ) {\\n    docs {\\n      id\\n      channel\\n      name\\n      phone\\n      sender\\n      email\\n      additionalInfo\\n      tags {\\n        _id\\n        name\\n        color\\n        __typename\\n      }\\n      createdAt\\n      updatedAt\\n      __typename\\n    }\\n    totalDocs\\n    totalPages\\n    __typename\\n  }\\n}\\n\"\n  }",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          740,
+          280
+        ],
+        "id": "51b2c0b5-65d1-49c3-b361-bb615827bcb7",
+        "name": "HTTP Request"
+      },
+      {
+        "parameters": {
+          "jsCode": "const docs = $json.data.listContacts.docs\nconst phoneToFind = $('setWebhookTrigger').first().json.phone;\n\nconst matches = docs.filter(item => item.phone === phoneToFind);\n\nreturn [{matches}]\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          960,
+          280
+        ],
+        "id": "24d3ff74-df1d-4033-aca3-9b59c8ed25e0",
+        "name": "Code"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "7c18270d-42de-4eee-83e3-fb5e7184bcf7",
+                "leftValue": "={{ $json }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "object",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1160,
+          280
+        ],
+        "id": "b7a87ff3-b261-4958-9411-d45938ec7892",
+        "name": "If1"
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "={\n  \"status\": \"error\",\n  \"data\": [],\n  \"message\": \"O telefone {{$('setWebhookTrigger').first().json.phone}} não existe em nosso banco, acha que o telefone pode estar errado?\"\n}",
+          "options": {
+            "responseCode": 404
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          1400,
+          420
+        ],
+        "id": "2d3d1d98-e26f-48ad-a3ec-e8d9951a6ed1",
+        "name": "O telefone informado não tem em nossa base"
+      }
+    ],
+    "connections": {
+      "Pesquisar protocolos": {
+        "main": [
+          [
+            {
+              "node": "401_?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Renovar token": {
+        "main": [
+          [
+            {
+              "node": "401?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "401?": {
+        "main": [
+          [
+            {
+              "node": "Erro de busca de token",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "setToken",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "401_?": {
+        "main": [
+          [
+            {
+              "node": "Erro de busca de protocolos",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Info Contato",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extrair lista de protocolos": {
+        "main": [
+          [
+            {
+              "node": "Resposta de webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "setToken": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Info Contato": {
+        "main": [
+          [
+            {
+              "node": "Extrair lista de protocolos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "setWebhookTrigger",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "setWebhookTrigger": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "Renovar token",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro de variavel não enviada!",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "If1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If1": {
+        "main": [
+          [
+            {
+              "node": "Pesquisar protocolos",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "O telefone informado não tem em nossa base",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {
+      "Webhook": [
+        {
+          "json": {
+            "headers": {
+              "x-forwarded-for": "187.32.240.237",
+              "x-forwarded-proto": "https",
+              "x-forwarded-port": "443",
+              "host": "n8n-auditoria.blips-labs.com",
+              "x-amzn-trace-id": "Root=1-67d97f47-6b9180a20980ae3f46777037",
+              "user-agent": "insomnia/10.3.0",
+              "accept": "*/*"
+            },
+            "params": {},
+            "query": {
+              "phone": "21987248805"
+            },
+            "body": {},
+            "webhookUrl": "https://n8n-auditoria.blips-labs.com/webhook/search_protocols_by_phone",
+            "executionMode": "production"
+          }
+        }
+      ]
+    },
+    "versionId": "7742894f-e7dc-49bb-8d79-bcefdb3e12f9",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
