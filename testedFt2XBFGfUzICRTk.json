@@ -1,0 +1,1188 @@
+{
+  "data": {
+    "createdAt": "2025-04-14T17:14:45.719Z",
+    "updatedAt": "2025-05-09T12:32:56.734Z",
+    "id": "dFt2XBFGfUzICRTk",
+    "name": "Conhecimento Clara Dev",
+    "active": true,
+    "nodes": [
+      {
+        "parameters": {
+          "operation": "download",
+          "fileId": {
+            "__rl": true,
+            "value": "={{ $json.id }}",
+            "mode": "id"
+          },
+          "options": {
+            "googleFileConversion": {
+              "conversion": {
+                "docsToFormat": "application/pdf",
+                "drawingsToFormat": "application/pdf",
+                "slidesToFormat": "application/pdf",
+                "sheetsToFormat": "application/pdf"
+              }
+            }
+          }
+        },
+        "type": "n8n-nodes-base.googleDrive",
+        "typeVersion": 3,
+        "position": [
+          -2380,
+          -180
+        ],
+        "id": "68f5d092-e883-45ee-8118-fe41424013f6",
+        "name": "Google Drive",
+        "credentials": {
+          "googleDriveOAuth2Api": {
+            "id": "R1bqxAOxeHcnmU8n",
+            "name": "Drive - João Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "pdf",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          -2160,
+          -180
+        ],
+        "id": "30c91773-2cd7-47ae-ab51-4fc0cdf3a4c6",
+        "name": "Extract from File"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ca8829a0-4a06-4255-8ad3-b92c766db3df",
+                "name": "sections",
+                "value": "={{ $json.text.split('#').map(section => section.trim()).filter(section => section.length > 0) }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1920,
+          -180
+        ],
+        "id": "d78a6730-9daf-4fac-831b-4735d56302e4",
+        "name": "Seções Arquivo"
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "sections",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          -1700,
+          -180
+        ],
+        "id": "d6b05809-ed04-4617-a865-5e83e74466fe",
+        "name": "Split Out"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.section }}",
+          "hasOutputParser": true,
+          "messages": {
+            "messageValues": [
+              {
+                "message": "=# 📌 Classificação de Seção de Atendimento  \n\nVocê é um especialista em **classificação de textos** e deve **determinar a categoria** de uma seção de atendimento com base em seu conteúdo, além de **definir uma subclasse relevante** para ela.  \n\nSua tarefa é **analisar** o texto fornecido e classificá-lo como uma das categorias abaixo, criando também uma subclasse, conforme as diretrizes:\n\n---\n\n## 🏷️ Definições das Classes\n\n### 📖 1. Regras de Atendimento  \nConjunto de diretrizes, protocolos e melhores práticas que **padronizam** o atendimento. Engloba orientações sobre **fluxos de interação, posturas recomendadas** e **procedimentos gerais** a serem seguidos de forma consistente, garantindo uma **experiência uniforme e de qualidade ao cliente**.  \n\n### 🎯 2. Situações Específicas de Atendimento  \nCasos atípicos que **exigem abordagens diferenciadas**, incluindo **exceções às regras gerais**. Abrange cenários especiais, como **condições contratuais específicas, processos de negociação** e outras situações que **demandam flexibilidade** no atendimento.  \n\n### ⚙️ 3. Instalação  \nConjunto de regras, instruções e diretrizes relacionadas à **chegada, instalação e ativação** do equipamento/neurônio. Inclui orientações que garantem a correta preparação do ambiente e operação do equipamento.\n\n### 📄 4. Documentação  \nConjunto de regras, instruções e diretrizes relacionadas à **coleta, envio, validação e aprovação** da documentação necessária para o onboarding dos clientes.\n\n---\n\n## 💡 Definições das Subclasses\n\n### 📖 1. Regras de Atendimento  \nSe o texto for classificado como **Regras de Atendimento**, ele deve ser enquadrado em uma das seguintes subclasses:  \n\n- **Início do Atendimento**  \n  - *Inclui saudação, identificação e contextualização do cliente. O assistente cumprimenta o cliente, apresenta-se e coleta informações essenciais para compreender o contexto da interação.*  \n\n- **Personalidade e Estilo de Comunicação**  \n  - *Define o tom e a abordagem da IA durante a conversa, orientando sobre formalidade, empatia e identidade da empresa.*  \n\n- **Perguntas Frequentes e Procedimentos Padrão**  \n  - *Diretrizes para solucionar dúvidas e problemas comuns, como dúvidas sobre entrega, rastreio, acesso a plataforma, dúvidas sobre os equipamentos além dos protocolos para encaminhamento a um atendente humano, garantindo soluções claras e objetivas.*  \n\n- **Encerramento e Feedback**  \n  - *Instruções sobre a finalização do atendimento, incluindo recapitulação dos pontos principais, agradecimento e coleta de feedback.*  \n\n---\n\n### 🎯 2. Situações Específicas de Atendimento  \nSe o texto for classificado como **Situações Específicas de Atendimento**, ele deve ser enquadrado em uma das seguintes subclasses:  \n\n- **Status ou Fase da Negociação**  \n  - *Refere-se ao estágio atual da negociação na plataforma (ex: \"Em cadastro\", \"Análise de documentos\", \"Concluído\"). A IA deve adaptar a abordagem conforme o status registrado.*  \n\n- **Condições Comerciais e Contratuais**  \n  - *Situações em que o atendimento varia de acordo com regras comerciais ou contratuais específicas.*  \n\n- **Condições Financeiras Específicas**  \n  - *Questões relacionadas a pagamentos, prazos especiais, descontos, parcelamentos ou ajustes financeiros, assegurando que o cliente compreenda corretamente as condições aplicáveis.*  \n\n---\n\n### ⚙️ 3. Instalação  \nSe o texto for classificado como **Instalação**, ele deve ser enquadrado em uma das seguintes subclasses:  \n\n- **Checklist de Instalação**  \n  - *Verificação técnica e confirmação dos requisitos físicos e operacionais no local de instalação.*  \n\n- **Agendamento de Instalação**  \n  - *Orientações sobre como e quando agendar a instalação (remota ou presencial).*  \n\n- **Ativação e Configuração do Equipamento**  \n  - *Procedimentos para ativação dos recursos e configuração inicial (Auto Clean, aquecedores, alinhamento de impressão etc.).*  \n\n- **Suporte Técnico de Instalação**  \n  - *Instruções para o suporte técnico no momento da instalação, incluindo links de tutoriais e suporte remoto.*  \n\n---\n\n### 📄 4. Documentação  \nSe o texto for classificado como **Documentação**, ele deve ser enquadrado em uma das seguintes subclasses:  \n\n- **Solicitação de Documentação**  \n  - *Regras sobre quais documentos o cliente deve enviar e em que momento (RG/CNH, comprovante de residência, etc.).*  \n\n- **Análise e Validação de Documentação**  \n  - *Processo de checagem dos documentos recebidos, identificando pendências ou inconformidades.*  \n\n- **Pendências Documentais e Regularização**  \n  - *Ações relacionadas à correção de documentos pendentes ou reenvio por parte do cliente.*  \n\n- **Confirmação de Documentação Aprovada**  \n  - *Comunicação formal de que a documentação foi aprovada, liberando a próxima etapa do processo.*  \n\n---\n\n## 📌 Instruções para Classificação  \n\n1. **Leia atentamente** o texto fornecido.  \n2. **Compare** seu conteúdo com as definições das classes e subclasses.  \n3. **Classifique** o texto, retornando **apenas uma das opções**:  \n   - `\"Regras de Atendimento\"`  \n   - `\"Situações Específicas de Atendimento\"`  \n   - `\"Instalação\"`  \n   - `\"Documentação\"`  \n4. **Atribua uma subclasse** correspondente ao conteúdo do texto.  \n5. Não forneça justificativas ou explicações adicionais.\n\n⚠️ **Formato da Resposta:**  \nRetorne a resposta em **JSON**, com os campos:  \n- `class`: Categoria do texto  \n- `subclass`: Subclasse mais específica, indicando a natureza exata da seção  \n\n⚠️ **Importante:**  \n- Não forneça justificativas ou explicações adicionais.  \n- A subclasse deve ser **objetiva** e **precisa** para refletir corretamente o conteúdo da seção.  \n\n---\n\n## ✅ Exemplo  \n\n📌 **Texto fornecido:**  \n*\"Após a entrega do equipamento, solicite que o cliente informe duas datas e horários para agendamento da instalação.\"*  \n\n✅ **Resposta esperada:**  \n{\n  \"class\": \"Instalação\",\n  \"subclass\": \"Agendamento de Instalação\"\n}\n\n## 🎯 Objetivo da Classificação  \nEste sistema visa **padronizar a categorização** dos conteúdos de atendimento, garantindo **uniformidade na aplicação das regras** e na **gestão eficiente de exceções**.  "
+              }
+            ]
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.5,
+        "position": [
+          -1240,
+          0
+        ],
+        "id": "20876ff9-2e8e-41cd-b5ff-c1514d03917c",
+        "name": "Basic LLM Chain",
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f9686a54-606a-4bab-b48d-b54390c1de93",
+                "name": "section",
+                "value": "={{ $('Seção').item.json.section.trim() }}",
+                "type": "string"
+              },
+              {
+                "id": "40f5f541-c915-4467-ab39-78315ffde320",
+                "name": "class",
+                "value": "={{ $json.output.class.trim() }}",
+                "type": "string"
+              },
+              {
+                "id": "304ee446-5c29-474d-b742-d1cea453dd08",
+                "name": "subclass",
+                "value": "={{ $json.output.subclass.trim() }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -640,
+          -160
+        ],
+        "id": "b59193b3-bf8d-40bd-9508-dfbab208f60c",
+        "name": "Classificação"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "adc276b8-b51c-400c-8eb0-f4f78e9df1ae",
+                "name": "section",
+                "value": "={{ $json.sections }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1480,
+          -180
+        ],
+        "id": "0fbf0ca4-322c-44cc-9495-a3a386346396",
+        "name": "Seção"
+      },
+      {
+        "parameters": {
+          "schemaType": "manual",
+          "inputSchema": "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"class\": {\n\t\t\t\"type\": \"string\"\n\t\t},\n\t\t\"subclass\": {\n\t\t\t\"type\": \"string\"\n\t\t}\n\t}\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.2,
+        "position": [
+          -1080,
+          140
+        ],
+        "id": "6e961dfc-d891-4263-887d-18c741e9c66d",
+        "name": "Structured Output Parser"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Entrada:\n  - Classe: {{ $json.class }}\n  - Título da seção: {{ $json.subclass }}\n  - Texto a ser estruturado: {{ $json.text }}",
+          "hasOutputParser": true,
+          "messages": {
+            "messageValues": [
+              {
+                "message": "=Você é um modelo de linguagem avançado cuja tarefa é transformar um texto fornecido (descrição de uma subclasse) em um documento Markdown bem estruturado e fiel ao conteúdo original, **sem adicionar, inferir ou inventar qualquer informação**. Em seguida, esse conteúdo deve ser encapsulado em um objeto JSON específico. Siga rigorosamente as diretrizes abaixo.\n\n---\n\n## Diretrizes Gerais\n\n- O conteúdo do Markdown deve ser **exclusivamente baseado no texto fornecido**. **Não adicione, invente ou infira informações**.\n- **Melhore apenas a estrutura e legibilidade** do texto, mantendo total fidelidade ao conteúdo.\n- Se um item da estrutura solicitada não estiver presente no texto original, **omite-o ou deixe-o em branco**, desde que a estrutura geral se mantenha válida.\n\n---\n\n## Requisitos de Output\n\nA saída **deve ser um objeto JSON válido** com exatamente os dois campos abaixo:\n\n- \"class\": string com o nome da subclasse.\n- \"markdown\": string com o conteúdo Markdown formatado.\n\n⚠️ Atenção especial ao campo \"markdown\":\n\n- O conteúdo Markdown deve estar dentro de uma **string JSON válida**, com todos os caracteres especiais devidamente escapados:\n  - Escape apenas `\\` como `\\\\`, **quando necessário** (ex: caminhos de diretório ou caracteres de controle).\n  - Escape aspas duplas como `\\\"`.\n  - Quebras de linha devem ser representadas como `\\n`.\n  - **Não use `\\_`, `\\*` ou qualquer escape de Markdown a menos que seja parte literal do conteúdo original.**\n  - Não transforme sublinhados (`_`) em `\\_` — mantenha nomes de funções e identificadores exatamente como aparecem.\n- **Não envolva o conteúdo Markdown em blocos de código (`markdown`, `json`, etc.).**\n- **Não adicione comentários ou explicações fora do JSON.**\n\n---\n\n## Estrutura do Markdown\n\n### Título Principal\n- Insira um **título de nível 1** (`# NomeDaClasse`) com o nome da classe.\n\n### Organização do Conteúdo\n- Use `##` para seções e `###` para subseções **apenas se forem indicadas no texto original**.\n- Divida em parágrafos curtos (máximo 3–5 frases por parágrafo).\n- Use:\n  - Listas não ordenadas (`-`) para itens soltos.\n  - Listas ordenadas (`1.`, `2.`) para sequências explícitas.\n  - **Negrito** e *itálico* apenas se o texto original sugerir ênfase.\n  - `>` para citações, se presente no conteúdo original.\n\n---\n\n## Exemplo Ilustrativo de Saída (JSON válido)\n\n`json\n{\n  \"class\": \"MinhaSubclasse\",\n  \"markdown\": \"# MinhaSubclasse\\\\nEsta é uma descrição fiel ao texto original.\\\\n\\\\n## Funcionalidades\\\\n- Item 1 presente no conteúdo.\\\\n- Item 2 conforme fornecido.\\\\n\\\\n## Observações\\\\n> Comentário destacado no texto original.\"\n}\n`\n\n---\n\n## Regras de Fidelidade\n\n- **Não reescreva, interprete ou embeleze o conteúdo**: reestruture **sem alterar o significado original**.\n- Se o conteúdo for curto e não contiver seções claras, mantenha em parágrafos simples, sem adicionar seções artificiais.\n\n---\n\n## Finalização\n\n- Gere apenas o JSON final.\n- **Valide a estrutura JSON antes de retornar.**"
+              }
+            ]
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.5,
+        "position": [
+          -200,
+          -160
+        ],
+        "id": "671f3814-d027-4086-b494-af1e22dcb56e",
+        "name": "Basic LLM Chain1",
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "schemaType": "manual",
+          "inputSchema": "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"class\": {\n\t\t\t\"type\": \"string\"\n\t\t},\n\t\t\"markdown\": {\n\t\t\t\"type\": \"string\"\n        }\n\t}\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.2,
+        "position": [
+          -40,
+          60
+        ],
+        "id": "cd0a6ab0-4a53-4ba7-82ec-6672a7bb7288",
+        "name": "Structured Output Parser1"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Acessa todos os itens de entrada\nconst groupedBySubclass = {};\n\n// Agrupa seções por 'subclass' e concatena seus textos\nfor (const item of items) {\n  const className = item.json.class;\n  const subclass = item.json.subclass;\n  const text = item.json.section;\n  \n  if (!groupedBySubclass[subclass]) {\n    // Se a subclasse ainda não existe no agrupamento, inicializa o objeto\n    groupedBySubclass[subclass] = {\n      class: className,\n      subclass: subclass,\n      text: text\n    };\n  } else {\n    // Se já existe, concatena o novo texto (com espaço separador)\n    groupedBySubclass[subclass].text += ' ' + text;\n  }\n}\n\n// Prepara o array de saída com os itens agrupados\nconst output = [];\nfor (const subclass in groupedBySubclass) {\n  output.push({ json: groupedBySubclass[subclass] });\n}\n\n// Retorna o array agrupado\nreturn output;\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -420,
+          -160
+        ],
+        "id": "6890574f-f1cf-40eb-899c-5dbfd8b42baf",
+        "name": "Subclass"
+      },
+      {
+        "parameters": {
+          "jsCode": "const groupedByClass = {};\n\n// Percorre os itens e agrupa os Markdown por classe\nfor (const item of items) {\n  const className = item.json.output.class;\n  const markdown = item.json.output.markdown;\n  \n  if (!groupedByClass[className]) {\n    // Se a classe ainda não existe, inicializa com o título principal\n    groupedByClass[className] = `# ${className}\\n\\n`;\n  }\n  \n  // Concatena os textos de cada subclasse dentro da mesma classe\n  groupedByClass[className] += markdown.replace(`# ${className}`, '').trim() + \"\\n\\n\";\n}\n\n// Converte os resultados para um array de saída\nconst output = Object.keys(groupedByClass).map(className => {\n  return {\n    json: {\n      class: className,\n      markdown: groupedByClass[className].trim()  // Remove espaços extras no final\n    }\n  };\n});\n\nreturn output;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          700,
+          -180
+        ],
+        "id": "ff05684e-6fb7-4770-a509-89aa944e4e51",
+        "name": "Class"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "083cf557-f79e-4697-8721-538379681109",
+                "leftValue": "={{ $json }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "object",
+                  "operation": "empty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -2620,
+          -200
+        ],
+        "id": "a8a2f5a7-6cd2-4d7b-95aa-0fb622dccc11",
+        "name": "Drive vazio?"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "32b2b8ad-960c-4722-9f80-dd1c010a7273",
+                "name": "sucesso",
+                "value": false,
+                "type": "boolean"
+              },
+              {
+                "id": "0634f9fd-6bc6-48cf-8f7a-34c3da727ccc",
+                "name": "erro",
+                "value": "Pasta do drive vazio, conhecimentos atuais foram maentidos",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -2380,
+          -380
+        ],
+        "id": "55019adc-4f5f-4264-8dbb-bc3232e34f37",
+        "name": "Erro"
+      },
+      {
+        "parameters": {
+          "modelName": "models/gemini-2.5-flash-preview-04-17",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+        "typeVersion": 1,
+        "position": [
+          -620,
+          140
+        ],
+        "id": "bf3c4491-41e0-4774-a77f-6fdb24d1b23e",
+        "name": "Google Gemini Chat Model",
+        "credentials": {
+          "googlePalmApi": {
+            "id": "nJiJWVZaDecaeKDp",
+            "name": "Google Gemini(PaLM) Api account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "fileFolder",
+          "limit": 1,
+          "filter": {
+            "folderId": {
+              "__rl": true,
+              "value": "1QcMmyHdgxizrPWiwipBHA9z5PLExy7Qy",
+              "mode": "list",
+              "cachedResultName": "Conhecimentos Clara",
+              "cachedResultUrl": "https://drive.google.com/drive/folders/1QcMmyHdgxizrPWiwipBHA9z5PLExy7Qy"
+            },
+            "whatToSearch": "all"
+          },
+          "options": {
+            "fields": [
+              "id",
+              "name",
+              "mimeType"
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.googleDrive",
+        "typeVersion": 3,
+        "position": [
+          -2840,
+          -200
+        ],
+        "id": "aeecccd8-4a59-491a-bc3a-e2dfb2c97a5c",
+        "name": "Files - Drive",
+        "executeOnce": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleDriveOAuth2Api": {
+            "id": "R1bqxAOxeHcnmU8n",
+            "name": "Drive - João Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "a9f43a41-f403-4281-9d22-3a30ff001cde",
+                "leftValue": "={{ !!$input.all().find(item => !!item.json.error ) }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "false",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          460,
+          -160
+        ],
+        "id": "dc24ddfa-a757-449d-ad04-bf9e029d5462",
+        "name": "Tudo certo?"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.1,
+        "position": [
+          240,
+          -160
+        ],
+        "id": "8b11f367-80ac-4635-a095-47bff8023126",
+        "name": "Merge Saídas"
+      },
+      {
+        "parameters": {
+          "mode": "combine",
+          "combineBy": "combineByPosition",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3,
+        "position": [
+          -860,
+          -160
+        ],
+        "id": "74c64cd8-a759-4d01-a499-ff11e9d8795e",
+        "name": "Combina class e texto"
+      },
+      {
+        "parameters": {
+          "errorMessage": "Erro! Por favor, tente novamente!"
+        },
+        "type": "n8n-nodes-base.stopAndError",
+        "typeVersion": 1,
+        "position": [
+          700,
+          0
+        ],
+        "id": "e1a3f905-3f97-4ab0-98ce-7982314242fb",
+        "name": "Stop and Error"
+      },
+      {
+        "parameters": {
+          "resource": "assistant",
+          "assistantId": {
+            "__rl": true,
+            "value": "asst_gd6faIDCkfx9CcoJs9mUX6nj",
+            "mode": "list",
+            "cachedResultName": "Gerador de Prompt"
+          },
+          "prompt": "define",
+          "text": "={{ $input.all().map(item => item.json.markdown).toJsonString() }}\n\n{{ $('Extrai Prompt').first().json.data }}",
+          "memory": "threadId",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.8,
+        "position": [
+          920,
+          -180
+        ],
+        "id": "cec0e1ba-83b8-4000-98ae-5ac496bae617",
+        "name": "OpenAI1",
+        "executeOnce": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "utH6piS62wyaw3eE",
+            "name": "1Clara - DEV"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "9b76436b-7cb5-413d-ba0d-531d762ee9c5",
+                "name": "prompt",
+                "value": "={{ $json.output }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1360,
+          -180
+        ],
+        "id": "b378c9db-778e-484d-ac4c-075fdc3dc589",
+        "name": "Dados Prompt"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "c903f93a-60dc-43dd-b49d-2099b1cd5808",
+                "leftValue": "={{ $json.body.head_commit.modified.includes('prompts/estrutura 3 em 1/dev.md') }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -3420,
+          0
+        ],
+        "id": "99547c4b-60f2-4655-9c64-a1659983e103",
+        "name": "Atualizar"
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "get",
+          "owner": {
+            "__rl": true,
+            "value": "blips-ai",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "assistant-onboarding",
+            "mode": "list",
+            "cachedResultName": "assistant-onboarding",
+            "cachedResultUrl": "https://github.com/blips-ai/assistant-onboarding"
+          },
+          "filePath": "prompts/estrutura 3 em 1/dev.md",
+          "additionalParameters": {}
+        },
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1.1,
+        "position": [
+          -3280,
+          -200
+        ],
+        "id": "21b2e61d-bb1d-4221-a2c2-4e4a54c701ff",
+        "name": "GitHub",
+        "webhookId": "b639a760-50d8-4bea-afb2-7c862cb38669",
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "text",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          -3080,
+          -200
+        ],
+        "id": "39da9beb-4297-4ec5-ad39-79506a861ad8",
+        "name": "Extrai Prompt"
+      },
+      {
+        "parameters": {
+          "inputSource": "passthrough"
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -3620,
+          -200
+        ],
+        "id": "39ca7e85-9f49-4abe-ad45-ff43a9f94f4b",
+        "name": "Execute"
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "owner": {
+            "__rl": true,
+            "value": "blips-ai",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "assistant-onboarding",
+            "mode": "list",
+            "cachedResultName": "assistant-onboarding",
+            "cachedResultUrl": "https://github.com/blips-ai/assistant-onboarding"
+          },
+          "events": [
+            "push"
+          ],
+          "options": {}
+        },
+        "type": "n8n-nodes-base.githubTrigger",
+        "typeVersion": 1,
+        "position": [
+          -3620,
+          0
+        ],
+        "id": "3ee889b8-4e0e-4bad-b15d-9beadd20a4e8",
+        "name": "Github Trigger",
+        "webhookId": "6c2dfdf4-14b6-4a2e-9b3b-6f32200665fe",
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "edit",
+          "owner": {
+            "__rl": true,
+            "value": "blips-ai",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "assistant-onboarding",
+            "mode": "list",
+            "cachedResultName": "assistant-onboarding",
+            "cachedResultUrl": "https://github.com/blips-ai/assistant-onboarding"
+          },
+          "filePath": "prompts/estrutura 3 em 1/prompt_gerado.md",
+          "fileContent": "={{ $json.instructions }}",
+          "commitMessage": "Atualização prompt gerado por IA"
+        },
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1.1,
+        "position": [
+          1820,
+          -300
+        ],
+        "id": "6f72458d-b5d2-48f0-a0e0-0aaf2d4f430a",
+        "name": "GitHub1",
+        "webhookId": "b899c8ea-b09d-45b2-b763-1ee4dbb02be4",
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "toText",
+          "sourceProperty": "markdown",
+          "options": {
+            "fileName": "={{ $json.class }}.md.txt"
+          }
+        },
+        "type": "n8n-nodes-base.convertToFile",
+        "typeVersion": 1.1,
+        "position": [
+          920,
+          -360
+        ],
+        "id": "35b9d64b-b693-4dc3-a17c-1a0607c2dbe3",
+        "name": "Convert to File"
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "edit",
+          "owner": {
+            "__rl": true,
+            "value": "blips-ai",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "assistant-onboarding",
+            "mode": "name"
+          },
+          "filePath": "=Conhecimentos_Clara/{{ $binary.data.fileName }}",
+          "binaryData": true,
+          "commitMessage": "=Atualização Base Conhecimento - {{ $binary.data.fileName }} - {{ $now.format('dd/MM/yyyy - HH:mm') }}"
+        },
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          1180,
+          -360
+        ],
+        "id": "2e561194-e26b-4f28-975f-197faecf3870",
+        "name": "Sobe pro git",
+        "webhookId": "27770590-e58b-43ac-8d82-3ca30934f955",
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/assistants/asst_IPW6v1xGl5e82OUke4OUqjH0",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "instructions",
+                "value": "={{ $json.prompt }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1600,
+          -300
+        ],
+        "id": "a250bc6d-d1aa-4c55-aef0-c36175a9ddd1",
+        "name": "Att Prompt - Prod",
+        "retryOnFail": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "utH6piS62wyaw3eE",
+            "name": "1Clara - DEV"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/assistants/asst_sBCz7FeoZ25L8PTtzyai7nU6",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "instructions",
+                "value": "={{ $json.prompt }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1600,
+          -100
+        ],
+        "id": "e710cf46-e764-48e2-9f89-d1b48c21d191",
+        "name": "Att Prompt - Dev",
+        "retryOnFail": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "utH6piS62wyaw3eE",
+            "name": "1Clara - DEV"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Google Drive": {
+        "main": [
+          [
+            {
+              "node": "Extract from File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract from File": {
+        "main": [
+          [
+            {
+              "node": "Seções Arquivo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Seções Arquivo": {
+        "main": [
+          [
+            {
+              "node": "Split Out",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out": {
+        "main": [
+          [
+            {
+              "node": "Seção",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Basic LLM Chain": {
+        "main": [
+          [
+            {
+              "node": "Combina class e texto",
+              "type": "main",
+              "index": 1
+            }
+          ],
+          []
+        ]
+      },
+      "Seção": {
+        "main": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Combina class e texto",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Classificação": {
+        "main": [
+          [
+            {
+              "node": "Subclass",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser1": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Basic LLM Chain1",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Basic LLM Chain1": {
+        "main": [
+          [
+            {
+              "node": "Merge Saídas",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Merge Saídas",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Subclass": {
+        "main": [
+          [
+            {
+              "node": "Basic LLM Chain1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Class": {
+        "main": [
+          [
+            {
+              "node": "Convert to File",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "OpenAI1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Drive vazio?": {
+        "main": [
+          [
+            {
+              "node": "Erro",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Google Drive",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Gemini Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "ai_languageModel",
+              "index": 0
+            },
+            {
+              "node": "Basic LLM Chain1",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Files - Drive": {
+        "main": [
+          [
+            {
+              "node": "Drive vazio?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge Saídas": {
+        "main": [
+          [
+            {
+              "node": "Tudo certo?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Combina class e texto": {
+        "main": [
+          [
+            {
+              "node": "Classificação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tudo certo?": {
+        "main": [
+          [
+            {
+              "node": "Class",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Stop and Error",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI1": {
+        "main": [
+          [
+            {
+              "node": "Dados Prompt",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados Prompt": {
+        "main": [
+          [
+            {
+              "node": "Att Prompt - Prod",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Att Prompt - Dev",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Atualizar": {
+        "main": [
+          [
+            {
+              "node": "GitHub",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GitHub": {
+        "main": [
+          [
+            {
+              "node": "Extrai Prompt",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extrai Prompt": {
+        "main": [
+          [
+            {
+              "node": "Files - Drive",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute": {
+        "main": [
+          [
+            {
+              "node": "GitHub",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Github Trigger": {
+        "main": [
+          [
+            {
+              "node": "Atualizar",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Convert to File": {
+        "main": [
+          [
+            {
+              "node": "Sobe pro git",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Att Prompt - Prod": {
+        "main": [
+          [
+            {
+              "node": "GitHub1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "America/Sao_Paulo",
+      "callerPolicy": "workflowsFromSameOwner"
+    },
+    "staticData": {
+      "node:Google Drive Trigger": {
+        "lastTimeChecked": "2025-02-17T18:54:17Z"
+      },
+      "node:Folder Updated": {
+        "lastTimeChecked": "2025-02-17T18:32:07Z"
+      },
+      "node:Arquivo Criado": {
+        "lastTimeChecked": "2025-02-19T20:10:53Z"
+      },
+      "node:Arquivo Atualizado": {
+        "lastTimeChecked": "2025-02-19T20:10:54Z"
+      },
+      "node:Github Trigger": {
+        "webhookId": 545522267,
+        "webhookEvents": [
+          "push"
+        ]
+      }
+    },
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "4d2c7de3-8b43-42e9-8476-bb0b7e2e5edd",
+    "triggerCount": 1,
+    "tags": [
+      {
+        "createdAt": "2024-11-22T13:13:26.514Z",
+        "updatedAt": "2024-11-22T13:13:26.514Z",
+        "id": "owb3cfmzFRbqjP06",
+        "name": "Clara"
+      }
+    ]
+  }
+}
