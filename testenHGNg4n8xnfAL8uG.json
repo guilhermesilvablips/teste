@@ -1,0 +1,199 @@
+{
+  "data": {
+    "createdAt": "2025-02-06T16:57:52.936Z",
+    "updatedAt": "2025-03-13T18:58:27.803Z",
+    "id": "nHGNg4n8xnfAL8uG",
+    "name": "Gatilho - Coleta - Plataforma",
+    "active": true,
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "analise-documentos/endereco-pessoa-fisica",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          260,
+          -160
+        ],
+        "id": "283e2bf9-0961-4ac6-bdee-7b8eac9585a3",
+        "name": "Webhook",
+        "webhookId": "00a98a0b-81bd-43d3-8f48-920f5867090e"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://runtime.hyperflowapis.global/api/dneeXMnM7/clara/formulario-documentos",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "client_id",
+                "value": "d65393f4-f062-493a-bfd0-c36aeb5d21b0"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "contrato",
+                "value": "={{ $('Webhook').first().json.body.negotiation_id }}"
+              },
+              {
+                "name": "telefone",
+                "value": "={{ $('Webhook').first().json.body.cellphone }}"
+              },
+              {
+                "name": "empresa",
+                "value": "=BLIPS"
+              },
+              {
+                "name": "gerente",
+                "value": "Clara"
+              },
+              {
+                "name": "email",
+                "value": "joao.freitas@blips.com.br"
+              },
+              {
+                "name": "id_card",
+                "value": "107367"
+              },
+              {
+                "name": "id_resp",
+                "value": "2175"
+              },
+              {
+                "name": "nome_responsavel",
+                "value": "={{ $('Webhook').first().json.body.responsible_name }}"
+              },
+              {
+                "name": "teste",
+                "value": "SIM"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "0f7317f4-b59e-4d2a-a64a-866196a4f645",
+        "name": "Dispara Hyperflow",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          540,
+          -160
+        ]
+      },
+      {
+        "parameters": {
+          "url": "=https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/user.get.json?filter[ID]={{ $json.result[0].ASSIGNED_BY_ID}}",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {}
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          540,
+          0
+        ],
+        "id": "59eb120c-e18c-407a-98ad-b9550ac745a2",
+        "name": "Dados Responsável"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.deal.list",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n    \"order\": { \"DATE_CREATE\": \"ASC\" },\n    \"filter\": {\n      \"CATEGORY_ID\": 5,\n      \"UF_CRM_1734962332930\": \"{{ $json.body.negotiation_id }}\"\n    },\n    \"select\": [ \"ID\", \"TITLE\", \"STAGE_ID\", \"ASSIGNED_BY_ID\", \"UF_CRM_1734962332930\", \"UF_CRM_1699879903563\", \"UF_CRM_B98C1610\", \"UF_CRM_8B0955C0\" ]\n}",
+          "options": {}
+        },
+        "id": "88b24944-30a3-4520-a0e6-606d980a0ca1",
+        "name": "Buscar deal Bitrix id_neg",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          260,
+          0
+        ]
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Dispara Hyperflow",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Buscar deal Bitrix id_neg": {
+        "main": [
+          [
+            {
+              "node": "Dados Responsável",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados Responsável": {
+        "main": [
+          []
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Webhook": [
+        {
+          "json": {
+            "body": {
+              "negotiation_id": "67b4ef96c6b2ca52d625f858",
+              "responsible_name": "João Lucas Pontes Freitas",
+              "cellphone": "34984448484",
+              "contract_number": "22500202"
+            }
+          }
+        }
+      ]
+    },
+    "versionId": "23e6b991-4669-4e82-8bde-b70594e0ab9f",
+    "triggerCount": 1,
+    "tags": [
+      {
+        "createdAt": "2024-11-22T13:13:26.514Z",
+        "updatedAt": "2024-11-22T13:13:26.514Z",
+        "id": "owb3cfmzFRbqjP06",
+        "name": "Clara"
+      }
+    ]
+  }
+}
