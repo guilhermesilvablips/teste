@@ -1,0 +1,470 @@
+{
+  "data": {
+    "createdAt": "2024-10-25T15:29:49.484Z",
+    "updatedAt": "2025-05-20T17:17:31.257Z",
+    "id": "m5W8ruT52JLwbTDD",
+    "name": "SERASA String",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "84f9c492-aa98-4c68-9cb7-878edbe5ff70",
+                "name": "login",
+                "value": "06613055",
+                "type": "string"
+              },
+              {
+                "id": "e4c57990-d98c-4d6c-9cba-fc1f76068d35",
+                "name": "password",
+                "value": "=B24%23lpcv",
+                "type": "string"
+              },
+              {
+                "id": "84399af4-3bef-40db-97ef-fb84c4a05ad8",
+                "name": "doc",
+                "value": "={{ $json.doc }}",
+                "type": "string"
+              },
+              {
+                "id": "72e469a6-670b-4df2-a6d0-f90912701603",
+                "name": "type",
+                "value": "=F",
+                "type": "string"
+              },
+              {
+                "id": "cc5fcb21-fd99-4ea8-bccc-fb429dc3c775",
+                "name": "request_string",
+                "value": "={{ encodeURIComponent(\"        B49C      0000\" + $json[\"doc\"] + $json[\"type\"] + \"C     CH0000000             00SINIA                                  00000000000 00      000000000000000 C83892A S100        000000000000000 000000000               00                                                                                                0000000000000000                0                                   00                                         P002RE02                     REHM                                                                                  N00100PPBPCBN0N                                   S                                                                N00300000000000000000000000  RXPS                                                                                  T999\" ) }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "86275c96-47f3-417f-8b71-b572cf42e0af",
+        "name": "format_request_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          420,
+          360
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "84f9c492-aa98-4c68-9cb7-878edbe5ff70",
+                "name": "login",
+                "value": "=06613055",
+                "type": "string"
+              },
+              {
+                "id": "e4c57990-d98c-4d6c-9cba-fc1f76068d35",
+                "name": "password",
+                "value": "=B24%23lpcv",
+                "type": "string"
+              },
+              {
+                "id": "84399af4-3bef-40db-97ef-fb84c4a05ad8",
+                "name": "doc",
+                "value": "={{ $json.doc }}",
+                "type": "string"
+              },
+              {
+                "id": "72e469a6-670b-4df2-a6d0-f90912701603",
+                "name": "type",
+                "value": "=J",
+                "type": "string"
+              },
+              {
+                "id": "cc5fcb21-fd99-4ea8-bccc-fb429dc3c775",
+                "name": "request_string",
+                "value": "={{ encodeURIComponent(\"        B49C      0\" + $json[\"doc\"] + $json[\"type\"] + \"C     CH0000000             00SINIA                                  00000000000 00      000000000000000 C83892A S100        000000000000000 000000000               00                                                                                                0000000000000000                0                                   00                                         P002RE02                     REH3                                                                                  N00100PPBPCBN0N                                   S                                                                N00300000000000000000000000  NRC5                                                                                  T999\") }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "ee4a65bd-13eb-46ad-ab1d-f01bea8715e7",
+        "name": "format_request_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          420,
+          600
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "f65ac92d-0af3-4023-b5f8-a4bf2f97e9d1",
+        "name": "lead",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          -100,
+          480
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "322e58fb-8448-4bd7-8638-1d456bf138b8",
+                "name": "date",
+                "value": "={{ $now.toFormat(\"yyyy-MM-dd HH:mm:ss\") }}",
+                "type": "string"
+              },
+              {
+                "id": "c8fd2836-5505-49be-a343-1f0ea277be2b",
+                "name": "cpf_cnpj",
+                "value": "={{ $('lead').first().json.doc }}",
+                "type": "string"
+              },
+              {
+                "id": "bf8a4ab5-6259-4238-ad7f-08c6d99d2b7f",
+                "name": "bureau",
+                "value": "QuerySerasa",
+                "type": "string"
+              },
+              {
+                "id": "31b5beba-a4cf-41d8-9789-448075e5b3bb",
+                "name": "query",
+                "value": "={{ $('lead').first().json.type }}",
+                "type": "string"
+              },
+              {
+                "id": "b9dd4408-55db-41c7-a938-6f51526e1972",
+                "name": "output_payload",
+                "value": "={{ $json }}",
+                "type": "object"
+              },
+              {
+                "id": "1cfb393a-ca38-4b04-9a2e-f0c30b81e033",
+                "name": "input_payload",
+                "value": "={{ {} }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "11e84077-1a9d-4d17-b9b8-21f3389a6c85",
+        "name": "save_cv_QuerySerasa_type",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          940,
+          480
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "78403caf-d089-48ef-bdc3-f371f9205d73",
+                "name": "api",
+                "value": "Serasa",
+                "type": "string"
+              },
+              {
+                "id": "7ac37d72-6cd0-4dde-b380-900648d0b54c",
+                "name": "func",
+                "value": "=format_serasa",
+                "type": "string"
+              },
+              {
+                "id": "b194be5c-c81e-4da4-ba04-d7c8482516e9",
+                "name": "={{ $('save_cv_QuerySerasa_type').first().json.bureau + \"_\" + $('save_cv_QuerySerasa_type').first().json.query}}",
+                "value": "={{ $('save_cv_QuerySerasa_type').first().json.output_payload }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "2ab248fa-b60e-4286-b11b-a478f074f170",
+        "name": "set_serasa",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1380,
+          480
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "9883b825-18fe-4873-a1e0-083ec147f423",
+        "name": "Utils_Serasa",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          1600,
+          480
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.type }}",
+                      "rightValue": "F",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "CPF"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "808b7c24-8835-491a-902c-8119571e2fc0",
+                      "leftValue": "={{ $json.type }}",
+                      "rightValue": "J",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "CNPJ"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "a2426193-6947-4a13-9251-6bc53e0f2774",
+        "name": "Pessoa Física ou Jurídica ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          120,
+          480
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://sitenet43-2.serasa.com.br/Prod/consultahttps?p={{ $json.login + $json.password + $json.request_string }}",
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "99176c87-0ee1-406c-9daa-72238fd908a9",
+        "name": "post_consulta_doc",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          720,
+          480
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "operation": "insert",
+          "projectId": {
+            "__rl": true,
+            "value": "blips-prod-v2",
+            "mode": "list",
+            "cachedResultName": "blips-prod-v2",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-prod-v2"
+          },
+          "datasetId": {
+            "__rl": true,
+            "value": "analise_de_credito",
+            "mode": "list",
+            "cachedResultName": "analise_de_credito"
+          },
+          "tableId": {
+            "__rl": true,
+            "value": "catalogo_variaveis",
+            "mode": "list",
+            "cachedResultName": "catalogo_variaveis"
+          },
+          "options": {}
+        },
+        "id": "f6c81ce7-1e6b-405e-aa0f-851c6ad5a81b",
+        "name": "Save CV Serasa",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          1160,
+          480
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "credentials": {
+          "googleApi": {
+            "id": "KvFeNUBUHv7uR0PF",
+            "name": "Google BigQuery account - New Motor"
+          }
+        },
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      }
+    ],
+    "connections": {
+      "format_request_cpf": {
+        "main": [
+          [
+            {
+              "node": "post_consulta_doc",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "format_request_cnpj": {
+        "main": [
+          [
+            {
+              "node": "post_consulta_doc",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "lead": {
+        "main": [
+          [
+            {
+              "node": "Pessoa Física ou Jurídica ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "save_cv_QuerySerasa_type": {
+        "main": [
+          [
+            {
+              "node": "Save CV Serasa",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_serasa": {
+        "main": [
+          [
+            {
+              "node": "Utils_Serasa",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Pessoa Física ou Jurídica ?": {
+        "main": [
+          [
+            {
+              "node": "format_request_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "format_request_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "post_consulta_doc": {
+        "main": [
+          [
+            {
+              "node": "save_cv_QuerySerasa_type",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Save CV Serasa": {
+        "main": [
+          [
+            {
+              "node": "set_serasa",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "lead": [
+        {
+          "json": {
+            "doc": "57781541000111",
+            "type": "J"
+          }
+        }
+      ]
+    },
+    "versionId": "4857855e-0b68-4a44-8b96-eec8978a3a9a",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-31T16:22:41.803Z",
+        "updatedAt": "2024-07-31T16:22:41.803Z",
+        "id": "mmaXbyiWhptUXaTd",
+        "name": "New Motor"
+      }
+    ]
+  }
+}
