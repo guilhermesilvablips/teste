@@ -1,0 +1,134 @@
+{
+  "data": {
+    "createdAt": "2025-04-01T19:00:34.144Z",
+    "updatedAt": "2025-04-01T19:52:03.189Z",
+    "id": "ShNWhUw6QtImDSDW",
+    "name": "Bitrix Endpoints",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -560,
+          0
+        ],
+        "id": "cf4e4534-e74c-4c64-afe1-324c038a4877",
+        "name": "When clicking ‘Test workflow’"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.deal.get",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "ID",
+                "value": "=115147"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "ccd770be-d76f-4220-b2ea-c9eea183b5b9",
+        "name": "Buscar card",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -20,
+          140
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.deal.fields",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {}
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -40,
+          -80
+        ],
+        "id": "28accf90-57a6-4e35-80f2-4e5ef21981b7",
+        "name": "Pegar campos"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.deal.list",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n    \"order\": { \"DATE_CREATE\": \"ASC\" },\n    \"filter\": {\n      \"CATEGORY_ID\": 5,\n      \"UF_CRM_B98C1610\": \"41962688000178\"\n    },\n    \"select\": [ \"ID\", \"TITLE\", \"STAGE_ID\", \"ASSIGNED_BY_ID\", \"UF_CRM_1734962332930\", \"UF_CRM_1699879903563\", \"UF_CRM_B98C1610\", \"UF_CRM_8B0955C0\" ]\n}",
+          "options": {}
+        },
+        "id": "86d0ad31-fa41-4d28-90f7-8e7444c99931",
+        "name": "Buscar deal Bitrix id_neg",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -340,
+          0
+        ]
+      }
+    ],
+    "connections": {
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "Buscar deal Bitrix id_neg",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {},
+    "versionId": "1871dc4e-ce9f-4c61-809c-5bd35f878626",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
