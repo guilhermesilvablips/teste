@@ -1,0 +1,1606 @@
+{
+  "data": {
+    "createdAt": "2025-01-20T22:29:37.172Z",
+    "updatedAt": "2025-05-23T18:39:30.992Z",
+    "id": "IpUkbgfrYtfnK0as",
+    "name": "Utils Blips API",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "6aad5021-4f0a-4ebb-8572-1c346d847fa6",
+        "name": "lead",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          1060,
+          500
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4b3e81d1-66e8-43c9-9a02-1e23c17dc89a",
+                "name": "score",
+                "value": "={{ $json.QueryBlips_score.score.score.valor_invertido }}",
+                "type": "string"
+              },
+              {
+                "id": "0c4963e5-eb6b-4385-bee0-fe265ad29ac6",
+                "name": "rating",
+                "value": "={{ $json.QueryBlips_score.score.score.rating }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "af2d17b8-0188-4a61-a03d-39446103035f",
+        "name": "format_blips_score",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1780,
+          260
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "8d5c3bed-b8bf-48b0-8b6c-c11f1034cb0a",
+                      "leftValue": "={{ $json.func }}",
+                      "rightValue": "format_blips_score",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "FormatScore"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "9ecc5324-d4fa-4400-a549-90b17ee02d4d",
+                      "leftValue": "={{ $json.func }}",
+                      "rightValue": "format_blips_risco",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "RiscoFinal"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "88de680f-4e33-404f-b460-f75f45a54400",
+                      "leftValue": "={{ $json.func }}",
+                      "rightValue": "format_taxa_scoragem",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "TaxaScoragem"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "14b610a4-8a16-44a9-922b-9956242c434d",
+        "name": "Qual Função ? Blips",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          1320,
+          500
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f5051a06-0346-4746-86fb-bfc47a4d74cb",
+                "name": "prejuizoSCR_peso",
+                "value": 0.2,
+                "type": "number"
+              },
+              {
+                "id": "5d6c1aeb-47df-4cd3-8dc2-5aaab06712fa",
+                "name": "vencidoSCR_peso",
+                "value": 0.15,
+                "type": "number"
+              },
+              {
+                "id": "083bc2fc-722c-4bbb-9fbe-6f29a3edc7df",
+                "name": "aVencerSCR_peso",
+                "value": 0.05,
+                "type": "number"
+              },
+              {
+                "id": "c29a597b-d8ea-4882-94ad-4e34529a2f21",
+                "name": "custoDivida_peso",
+                "value": 0.1,
+                "type": "number"
+              },
+              {
+                "id": "3efbd220-3580-4c31-8444-2d4aa19c483b",
+                "name": "pefin_peso",
+                "value": 0.08,
+                "type": "number"
+              },
+              {
+                "id": "9b24e0d3-0805-4f7e-adad-610919b6967d",
+                "name": "refin_peso",
+                "value": 0.07,
+                "type": "number"
+              },
+              {
+                "id": "a044d703-2f47-4350-9b1b-0fde74690f64",
+                "name": "protesto_peso",
+                "value": 0.1,
+                "type": "number"
+              },
+              {
+                "id": "e4222121-e95a-490b-b834-36b219b98c20",
+                "name": "tempoFundacao_peso",
+                "value": 0.13,
+                "type": "number"
+              },
+              {
+                "id": "56d417a7-fdf4-4770-9a25-a0f42621e6d0",
+                "name": "inadimplenciaMercado_peso",
+                "value": 0.12,
+                "type": "number"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1780,
+          500
+        ],
+        "id": "e84869d9-f520-40e4-b174-71e5ea2f24f5",
+        "name": "pesos"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f5f52647-7b87-478b-bb07-8d72c6deb0b4",
+                "name": "pefin_temporal",
+                "value": "={{ (() => {\n  const dataAtual = new Date(); // Data atual\n  const dataPefin = $json[\"pefin_data\"] ? new Date($json[\"pefin_data\"].split('/').reverse().join('-')) : null;\n\n  if (!dataPefin) return 0; // Retorna 0 se a data não for válida\n\n  // Calcula a diferença em meses\n  const mesesDiferenca = (dataAtual.getFullYear() - dataPefin.getFullYear()) * 12 +\n                         (dataAtual.getMonth() - dataPefin.getMonth());\n\n  // Tabela de ajustes temporais - Birô de Crédito\n  const ajusteTemporalBiroCredito = [\n    { range: [0, 6], fator: 3.0 },\n    { range: [7, 12], fator: 2.0 },\n    { range: [13, 24], fator: 1.5 },\n    { range: [25, Infinity], fator: 1.0 },\n  ];\n\n  // Função para calcular o fator com base na diferença de meses\n  const calcularFator = (meses) => {\n    const ajuste = ajusteTemporalBiroCredito.find(\n      faixa => meses >= faixa.range[0] && meses <= faixa.range[1]\n    );\n    return ajuste ? ajuste.fator : 0; // Retorna 0 se não encontrar ajuste\n  };\n\n  return calcularFator(mesesDiferenca);\n})() }}",
+                "type": "number"
+              },
+              {
+                "id": "36c99507-62b7-49e3-9367-2787e4309394",
+                "name": "refin_temporal",
+                "value": "={{ (() => {\n  const dataAtual = new Date(); // Data atual\n  const dataRefin = $json[\"refin_data\"] ? new Date($json[\"refin_data\"].split('/').reverse().join('-')) : null;\n\n  if (!dataRefin) return 0; // Retorna 0 se a data não for válida\n\n  // Calcula a diferença em meses\n  const mesesDiferenca = (dataAtual.getFullYear() - dataRefin.getFullYear()) * 12 +\n                         (dataAtual.getMonth() - dataRefin.getMonth());\n\n  // Tabela de ajustes temporais - Birô de Crédito\n  const ajusteTemporalBiroCredito = [\n    { range: [0, 6], fator: 3.0 },\n    { range: [7, 12], fator: 2.0 },\n    { range: [13, 24], fator: 1.5 },\n    { range: [25, Infinity], fator: 1.0 },\n  ];\n\n  // Função para calcular o fator com base na diferença de meses\n  const calcularFator = (meses) => {\n    const ajuste = ajusteTemporalBiroCredito.find(\n      faixa => meses >= faixa.range[0] && meses <= faixa.range[1]\n    );\n    return ajuste ? ajuste.fator : 0; // Retorna 0 se não encontrar ajuste\n  };\n\n  return calcularFator(mesesDiferenca);\n})() }}",
+                "type": "number"
+              },
+              {
+                "id": "dfdb5780-73da-4a11-99b8-4b359d744549",
+                "name": "protesto_temporal",
+                "value": "={{ (() => {\n  const dataAtual = new Date(); // Data atual\n  let dataStr = $json[\"protesto_data\"] || null;\n\n  if (!dataStr) return 0;\n\n  // Detecta e converte os dois formatos possíveis\n  let dataProtesto = null;\n  if (dataStr.includes('/')) {\n    // Formato: dd/MM/yyyy\n    dataProtesto = new Date(dataStr.split('/').reverse().join('-'));\n  } else if (dataStr.length === 8) {\n    // Formato: ddMMyyyy\n    const dia = dataStr.slice(0, 2);\n    const mes = dataStr.slice(2, 4);\n    const ano = dataStr.slice(4);\n    dataProtesto = new Date(`${ano}-${mes}-${dia}`);\n  }\n\n  if (!dataProtesto || isNaN(dataProtesto)) return 0;\n\n  // Calcula a diferença em meses\n  const mesesDiferenca = (dataAtual.getFullYear() - dataProtesto.getFullYear()) * 12 +\n                         (dataAtual.getMonth() - dataProtesto.getMonth());\n\n  // Tabela de ajustes temporais - Birô de Crédito\n  const ajusteTemporalBiroCredito = [\n    { range: [0, 6], fator: 3.0 },\n    { range: [7, 12], fator: 2.0 },\n    { range: [13, 24], fator: 1.5 },\n    { range: [25, Infinity], fator: 1.0 },\n  ];\n\n  // Função para calcular o fator com base na diferença de meses\n  const calcularFator = (meses) => {\n    const ajuste = ajusteTemporalBiroCredito.find(\n      faixa => meses >= faixa.range[0] && meses <= faixa.range[1]\n    );\n    return ajuste ? ajuste.fator : 0;\n  };\n\n  return calcularFator(mesesDiferenca);\n})() }}",
+                "type": "number"
+              },
+              {
+                "id": "2f7f2b86-dc68-4516-93f6-6a8f4d71e713",
+                "name": "fundacao_temporal",
+                "value": "={{ (() => {\n  const dataFundacaoMeses = $json.data_fundacao_meses_total || 0;\n  \n  // Tabela de ajustes temporais - Tempo de Fundação\n  const ajusteTemporalTempoFundacao = [\n    { range: [0, 12], fator: 3.0 },\n    { range: [13, 24], fator: 1.5 },\n    { range: [25, 36], fator: 0.5 },\n    { range: [37, 60], fator: 0.0 },\n    { range: [61, Infinity], fator: -1.0 },\n  ];\n\n  // Função para calcular o fator com base nos meses de fundação\n  const calcularFatorTempoFundacao = (meses) => {\n    const ajuste = ajusteTemporalTempoFundacao.find(\n      faixa => meses >= faixa.range[0] && meses <= faixa.range[1]\n    );\n    return ajuste ? ajuste.fator : 0; // Retorna 0 se não encontrar ajuste\n  };\n\n  return calcularFatorTempoFundacao(dataFundacaoMeses);\n})() }}",
+                "type": "number"
+              },
+              {
+                "id": "0f7ea7ac-9b52-4cbe-90c7-8b985db9cb03",
+                "name": "vencido_temporal",
+                "value": "={{ (() => {\n  // Lista de vencimentos extraída do JSON\n  const listaOperacoes = $json[\"scr\"][\"lista_resumo_operacoes\"] || [];\n  \n  // Tabela de fatores para SCR Vencido\n  const ajusteTemporalSCRVencido = {\n    curtoPrazo: 1.0,       // Menos de 30 dias\n    medioPrazo1: 1.2,      // De 31 - 60 dias\n    medioPrazo2: 1.5,      // De 61 - 90 dias\n    longoPrazo1: 2.0,      // De 91 - 180 dias\n    longoPrazo2: 4.0,      // De 181 - 360 dias\n    muitoLongoPrazo: 5.0   // Acima de 360 dias\n  };\n\n  // Códigos de vencidos classificados\n  const codigosVencidos = {\n    curtoPrazo: ['v205', 'v210'],\n    medioPrazo1: ['v220'],\n    medioPrazo2: ['v230'],\n    longoPrazo1: ['v240', 'v245', 'v250'],\n    longoPrazo2: ['v255', 'v260'],\n    muitoLongoPrazo: ['v270', 'v275', 'v280']\n  };\n\n  // Processar o maior peso\n  const maiorPeso = listaOperacoes.reduce((maior, operacao) => {\n    const valores = operacao.listaDeVencimentos || [];\n    const maiorFatorOperacao = valores.reduce((maxFator, vencimento) => {\n      if (codigosVencidos.curtoPrazo.includes(vencimento.codigoVencimento)) {\n        return Math.max(maxFator, ajusteTemporalSCRVencido.curtoPrazo);\n      } else if (codigosVencidos.medioPrazo1.includes(vencimento.codigoVencimento)) {\n        return Math.max(maxFator, ajusteTemporalSCRVencido.medioPrazo1);\n      } else if (codigosVencidos.medioPrazo2.includes(vencimento.codigoVencimento)) {\n        return Math.max(maxFator, ajusteTemporalSCRVencido.medioPrazo2);\n      } else if (codigosVencidos.longoPrazo1.includes(vencimento.codigoVencimento)) {\n        return Math.max(maxFator, ajusteTemporalSCRVencido.longoPrazo1);\n      } else if (codigosVencidos.longoPrazo2.includes(vencimento.codigoVencimento)) {\n        return Math.max(maxFator, ajusteTemporalSCRVencido.longoPrazo2);\n      } else if (codigosVencidos.muitoLongoPrazo.includes(vencimento.codigoVencimento)) {\n        return Math.max(maxFator, ajusteTemporalSCRVencido.muitoLongoPrazo);\n      }\n      return maxFator; // Ignorar códigos fora da lista\n    }, 0);\n    return Math.max(maior, maiorFatorOperacao); // Retorna o maior fator geral\n  }, 0);\n\n  return maiorPeso;\n})() }}",
+                "type": "number"
+              },
+              {
+                "id": "09a1b49c-b6fe-4223-a0bd-f001bfcf74f5",
+                "name": "prejuizo_temporal",
+                "value": "={{ (() => {\n  // Lista de vencimentos extraída do JSON\n  const listaOperacoes = $json[\"scr\"][\"lista_resumo_operacoes\"] || [];\n  \n  // Tabela de fatores para SCR Prejuízo\n  const ajusteTemporalSCRPrejuizo = {\n    curtoPrazo: 5.0, // Códigos de 310 a 340 (até 12 meses)\n    longoPrazo: 3.0  // Códigos de 375 e 390 (acima de 12 meses)\n  };\n\n  // Códigos de prejuízo\n  const codigosPrejuizoCurtoPrazo = ['v310', 'v320', 'v330', 'v340']; // Até 12 meses\n  const codigosPrejuizoLongoPrazo = ['v375', 'v390']; // Acima de 12 meses\n\n  // Processar o maior peso\n  const maiorPeso = listaOperacoes.reduce((maior, operacao) => {\n    const valores = operacao.listaDeVencimentos || [];\n    const maiorFatorOperacao = valores.reduce((maxFator, vencimento) => {\n      if (codigosPrejuizoCurtoPrazo.includes(vencimento.codigoVencimento)) {\n        // Fator de curto prazo\n        return Math.max(maxFator, ajusteTemporalSCRPrejuizo.curtoPrazo);\n      } else if (codigosPrejuizoLongoPrazo.includes(vencimento.codigoVencimento)) {\n        // Fator de longo prazo\n        return Math.max(maxFator, ajusteTemporalSCRPrejuizo.longoPrazo);\n      }\n      return maxFator; // Ignorar códigos fora da lista\n    }, 0);\n    return Math.max(maior, maiorFatorOperacao); // Retorna o maior fator geral\n  }, 0);\n\n  return maiorPeso;\n})() }}",
+                "type": "number"
+              },
+              {
+                "id": "7e3c3ef2-0537-4627-842c-6149e6ac93f3",
+                "name": "a_vencer_temporal",
+                "value": "={{ (() => {\n  // Lista de vencimentos extraída do JSON\n  const listaOperacoes = $json[\"scr\"][\"lista_resumo_operacoes\"] || [];\n  \n  // Tabela de códigos e fatores para AVENCER\n  const codigosAVencer = [\n    { codes: ['v110'], fator: 3.0 },\n    { codes: ['v120'], fator: 2.0 },\n    { codes: ['v130'], fator: 1.5 },\n    { codes: ['v140'], fator: 1.5 },\n    { codes: ['v150'], fator: 1.0 },\n    { codes: ['v160', 'v165', 'v170', 'v175', 'v180', 'v190'], fator: 1.0 },\n    { codes: ['v199'], fator: 0.0 },\n  ];\n\n  // Função para obter o fator baseado no código\n  const obterFator = (codigo) => {\n    const ajuste = codigosAVencer.find(grupo => grupo.codes.includes(codigo));\n    return ajuste ? ajuste.fator : 0; // Retorna 0 se o código não estiver na lista\n  };\n\n  // Processar os pesos\n  const maiorPeso = listaOperacoes.reduce((maior, operacao) => {\n    const valores = operacao.listaDeVencimentos || [];\n    const maiorFatorOperacao = valores.reduce((maxFator, vencimento) => {\n      const fator = obterFator(vencimento.codigoVencimento); // Obtém o fator para o código\n      return Math.max(maxFator, fator); // Retorna o maior fator encontrado\n    }, 0);\n    return Math.max(maior, maiorFatorOperacao); // Retorna o maior fator geral\n  }, 0);\n\n  return maiorPeso; // Retorna o maior peso encontrado\n})() }}",
+                "type": "number"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2020,
+          500
+        ],
+        "id": "d92112c9-854f-4fe1-aa58-0a9185971cf7",
+        "name": "ajuste_temporal"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "61a3ecda-a9f7-4f90-b5eb-6f7294c71712",
+                "name": "carteira_credito",
+                "value": "={{ (() => {\n  // Valores da carteira de crédito extraídos do JSON\n  const aVencer = $json.bacen_a_vencer || 0;\n  const vencido = $json.bacen_vencido || 0;\n  const prejuizo = $json.prej_bacen || 0;\n\n  // Soma total da carteira\n  const totalCarteira = aVencer + vencido + prejuizo;\n\n  // Tabela de fatores para a carteira de crédito\n  const fatoresCarteira = [\n    { range: [0, 10000], fator: 1.0 },\n    { range: [10001, 50000], fator: 0.5 },\n    { range: [50001, 100000], fator: -0.3 },\n    { range: [100001, Infinity], fator: -0.5 }\n  ];\n\n  // Determinar o fator correspondente\n  const fatorCarteira = totalCarteira === 0\n    ? 1.5 // Caso \"Sem SCR\"\n    : fatoresCarteira.find(\n        faixa => totalCarteira >= faixa.range[0] && totalCarteira <= faixa.range[1]\n      )?.fator || 0;\n\n  return fatorCarteira;\n})() }}",
+                "type": "number"
+              },
+              {
+                "id": "d0006ebd-8adf-4242-85d0-5aee402debe4",
+                "name": "indadiplencia_mercado",
+                "value": 4.98,
+                "type": "number"
+              },
+              {
+                "id": "5eb1a208-72de-4198-b0f4-b6e949de3283",
+                "name": "custo_divida_mercado",
+                "value": 0.05,
+                "type": "number"
+              },
+              {
+                "id": "6446bedd-cc11-46b0-ae77-f92d11d64bc1",
+                "name": "bonus",
+                "value": 1,
+                "type": "number"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2260,
+          500
+        ],
+        "id": "488346af-f232-487e-9cb1-5b63ce4b1ca1",
+        "name": "eventos"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "2a74fae4-4339-4a5a-b14f-dba9a68ced63",
+                "name": "impacto_pefin",
+                "value": "={{ $json.pefin_normalizado * $json.pefin_temporal  }}",
+                "type": "number"
+              },
+              {
+                "id": "5c601927-aa76-4052-a02b-b910094a7403",
+                "name": "impacto_refin",
+                "value": "={{ $json.refin_normalizado * $json.refin_temporal  }}",
+                "type": "number"
+              },
+              {
+                "id": "85c6390c-3ff1-4a99-bcde-c00083117001",
+                "name": "impacto_protesto",
+                "value": "={{ $json.protesto_normalizado * $json.protesto_temporal }}",
+                "type": "number"
+              },
+              {
+                "id": "b2d5b2f1-0d68-4416-84d9-c8cc0a163ff1",
+                "name": "impacto_vencido",
+                "value": "={{ $json.vencido_temporal * $json.vencido_normalizado  }}",
+                "type": "number"
+              },
+              {
+                "id": "dfc737eb-a264-48eb-b6af-d1a6f471ab00",
+                "name": "impacto_prejuizo",
+                "value": "={{ $json.prejuizo_temporal * $json.prejuizo_normalizado  }}",
+                "type": "number"
+              },
+              {
+                "id": "b96b6044-47fc-4eaa-af3f-9dcd43597818",
+                "name": "impacto_a_vencer",
+                "value": "={{ 1 * $json.carteira_credito }}",
+                "type": "number"
+              },
+              {
+                "id": "5bb79196-ae3a-455c-b9d2-34bbd48543ae",
+                "name": "penalizacao",
+                "value": "={{ (() => {\n  // Rating extraído do JSON (substitua pelo campo correto)\n  const rating = $json.rating && $json.rating !== \"N/A\" ? $json.rating : \"D\";\n\n  // Tabela de penalizações por rating\n  const penalizacoes = {\n    \"AA\": -0.15,\n    \"A\": -0.10,\n    \"B\": -0.05,\n    \"C\": 0.00,\n    \"D\": 0.10,\n    \"E\": 0.20,\n    \"F\": 0.30,\n    \"G\": 0.40,\n    \"H\": 0.50\n  };\n\n  // Retorna a penalização com base no rating\n  return penalizacoes[rating] !== undefined ? penalizacoes[rating] : 0; // Retorna 0 se o rating não for válido\n})() }}",
+                "type": "number"
+              },
+              {
+                "id": "07a772e0-d542-4b7b-9145-38550f4e09d4",
+                "name": "impacto_inadiplencia",
+                "value": "={{ (() => {\n  // Porcentagem de inadimplência extraída do JSON (substitua pelo campo correto)\n  const inadimplencia = $json.indadiplencia_mercado || 0; // Exemplo: 3.5%\n\n  // Tabela de fatores para inadimplência de mercado\n  const fatoresInadimplencia = [\n    { range: [0, 2], fator: 0.2 },\n    { range: [2.01, 4], fator: 0.5 },\n    { range: [4.01, 6], fator: 0.8 },\n    { range: [6.01, 8], fator: 1.2 },\n    { range: [8.01, Infinity], fator: 1.5 }\n  ];\n\n  // Determinar o fator correspondente\n  const fator = fatoresInadimplencia.find(\n    faixa => inadimplencia >= faixa.range[0] && inadimplencia <= faixa.range[1]\n  )?.fator || 0;\n\n  return fator;\n})() }}",
+                "type": "number"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {
+            "ignoreConversionErrors": true
+          }
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2760,
+          500
+        ],
+        "id": "00462d42-f020-4fc3-941e-65e460d127c3",
+        "name": "impacto_ajustado",
+        "alwaysOutputData": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ce78575b-e276-4cf0-9b58-5557832e222c",
+                "name": "prejuizo_normalizado",
+                "value": "={{ (() => {\n  const valorApontamento = $json.prej_bacen || 0; // Valor do apontamento\n  const valorCredito = $json.equip || 1; // Valor do crédito (evitar divisão por zero)\n\n  if (valorApontamento <= 0 || valorCredito <= 0) {\n    return 0; // Retorna 0 se os valores forem inválidos ou não positivos\n  }\n\n  // Cálculo da relação normalizada\n  const relacaoNormalizada = Math.log(valorApontamento) / Math.log(valorCredito);\n\n  return relacaoNormalizada;\n})() }}",
+                "type": "number"
+              },
+              {
+                "id": "f7de45f4-d7e8-4585-a78b-15adcaf137d6",
+                "name": "vencido_normalizado",
+                "value": "={{ (() => {\n  const valorApontamento = $json.bacen_vencido || 0; // Valor do apontamento\n  const valorCredito = $json.equip || 1; // Valor do crédito (evitar divisão por zero)\n\n  if (valorApontamento <= 0 || valorCredito <= 0) {\n    return 0; // Retorna 0 se os valores forem inválidos ou não positivos\n  }\n\n  // Cálculo da relação normalizada\n  const relacaoNormalizada = Math.log(valorApontamento) / Math.log(valorCredito);\n\n  return relacaoNormalizada;\n})() }}",
+                "type": "number"
+              },
+              {
+                "id": "971fb5ec-2365-4ef4-ab6c-38fefc40c714",
+                "name": "pefin_normalizado",
+                "value": "={{ (() => {\n  const valorApontamento = $json.pefin_valor || 0; // Valor do apontamento (ex.: pefin)\n  const valorCredito = $json.equip || 1; // Valor do crédito (evitar divisão por zero)\n\n  if (valorApontamento <= 0 || valorCredito <= 0) {\n    return 0; // Retorna 0 se os valores forem inválidos ou não positivos\n  }\n\n  // Cálculo da relação normalizada\n  const relacaoNormalizada = Math.log(valorApontamento) / Math.log(valorCredito);\n\n  return relacaoNormalizada;\n})() }}",
+                "type": "number"
+              },
+              {
+                "id": "4b9a8858-b980-4a58-b5f7-a2a60af1b38e",
+                "name": "refin_normalizado",
+                "value": "={{ (() => {\n  const valorApontamento = $json.refin_valor || 0; // Valor do apontamento\n  const valorCredito = $json.equip || 1; // Valor do crédito (evitar divisão por zero)\n\n  if (valorApontamento <= 0 || valorCredito <= 0) {\n    return 0; // Retorna 0 se os valores forem inválidos ou não positivos\n  }\n\n  // Cálculo da relação normalizada\n  const relacaoNormalizada = Math.log(valorApontamento) / Math.log(valorCredito);\n\n  return relacaoNormalizada;\n})() }}",
+                "type": "number"
+              },
+              {
+                "id": "ec8d26ff-1c38-4356-8c38-858ebc90ed3f",
+                "name": "protesto_normalizado",
+                "value": "={{ (() => {\n  const valorApontamento = $json.protesto_valor || 0; // Valor do apontamento\n  const valorCredito = $json.equip || 1; // Valor do crédito (evitar divisão por zero)\n\n  if (valorApontamento <= 0 || valorCredito <= 0) {\n    return 0; // Retorna 0 se os valores forem inválidos ou não positivos\n  }\n\n  // Cálculo da relação normalizada\n  const relacaoNormalizada = Math.log(valorApontamento) / Math.log(valorCredito);\n\n  return relacaoNormalizada;\n})() }}",
+                "type": "number"
+              },
+              {
+                "id": "dad8b10c-ba3e-4b5a-853d-e879e7fb2c0d",
+                "name": "a_vencer_normalizado",
+                "value": "={{ (() => {\n  const valorApontamento = $json.bacen_a_vencer || 0; // Valor do apontamento\n  const valorCredito = $json.equip || 1; // Valor do crédito (evitar divisão por zero)\n\n  if (valorApontamento <= 0 || valorCredito <= 0) {\n    return 0; // Retorna 0 se os valores forem inválidos ou não positivos\n  }\n\n  // Cálculo da relação normalizada\n  const relacaoNormalizada = Math.log(valorApontamento) / Math.log(valorCredito);\n\n  return relacaoNormalizada;\n})() }}",
+                "type": "number"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {
+            "ignoreConversionErrors": true
+          }
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2500,
+          500
+        ],
+        "id": "79ffb4a0-df89-4c0e-8bd5-47cd4e217c69",
+        "name": "valores_normalizados",
+        "alwaysOutputData": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "23b81b44-0659-4056-abe8-80918e121d24",
+                "name": "risco_pefin",
+                "value": "={{ ($json.impacto_pefin * $json.pefin_peso).toFixed(3) }}",
+                "type": "number"
+              },
+              {
+                "id": "7cf6b3b3-a026-4596-97a7-106ba4a6020a",
+                "name": "risco_refin",
+                "value": "={{ ($json.impacto_refin * $json.refin_peso).toFixed(3) }}",
+                "type": "number"
+              },
+              {
+                "id": "993e9e70-115b-4a91-908c-aa5f0d7f5d00",
+                "name": "risco_protesto",
+                "value": "={{ ($json.impacto_protesto * $json.protesto_peso).toFixed(3) }}",
+                "type": "number"
+              },
+              {
+                "id": "da7d8179-5620-47a1-a89b-fce1dc58333d",
+                "name": "risco_vencido",
+                "value": "={{ ($json.impacto_vencido * $json.vencidoSCR_peso).toFixed(3) }}",
+                "type": "number"
+              },
+              {
+                "id": "5316cef3-6f8f-4736-a929-c81210853891",
+                "name": "risco_prejuizo",
+                "value": "={{ ($json.impacto_prejuizo * $json.prejuizoSCR_peso).toFixed(3) }}",
+                "type": "number"
+              },
+              {
+                "id": "6e229979-29f4-4c8b-a513-30398541731e",
+                "name": "risco_a_vencer",
+                "value": "={{ ($json.impacto_a_vencer * $json.aVencerSCR_peso).toFixed(3) }}",
+                "type": "number"
+              },
+              {
+                "id": "d4f2cb82-6042-4bb1-96de-3e10ea0de6b8",
+                "name": "ajuste_rating",
+                "value": "={{ $json.penalizacao.toFixed(3) }}",
+                "type": "number"
+              },
+              {
+                "id": "e3961085-189e-4442-872c-36756a71b21b",
+                "name": "risco_inadiplencia",
+                "value": "={{ ($json.impacto_inadiplencia * $json.inadimplenciaMercado_peso).toFixed(3) }}",
+                "type": "number"
+              },
+              {
+                "id": "6dc7078c-9fbc-4edc-bb06-6503f9f2c65a",
+                "name": "risco_fundacao",
+                "value": "={{ $('ajuste_temporal').item.json.fundacao_temporal * 0.13 }}",
+                "type": "number"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3000,
+          500
+        ],
+        "id": "8603de35-741f-442b-9a9d-9dc5dc1ee982",
+        "name": "risco"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "8759d6fc-dd93-45c1-a92c-2c74f1c95f52",
+                "name": "score_ajustado",
+                "value": "={{ Number( $('risco').first().json.risco_pefin + $('risco').first().json.risco_refin + $('risco').first().json.risco_protesto + $('risco').first().json.risco_vencido + $('risco').first().json.risco_prejuizo + $('risco').first().json.risco_a_vencer + $('risco').first().json.ajuste_rating + $('risco').first().json.risco_inadiplencia + $json.custo_divida + $('risco').first().json.risco_fundacao ).toFixed(4)}}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3940,
+          500
+        ],
+        "id": "bab72ab6-5d98-4d01-a156-f81a4b423e50",
+        "name": "risco_final"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f999b3f8-d450-4a34-9a4b-2573728e3184",
+                "name": "matriz",
+                "value": "={{ (() => {\n  // Valor de risco final extraído do JSON\n  const riscoFinal = $json.score_ajustado || 0;\n\n  // Matriz de classificação de risco\n  const classificacaoRisco = [\n    { class: \"Baixo\", range: [-Infinity, 0.2099] }, // Inclui valores negativos\n    { class: \"Moderado Baixo\", range: [0.21, 0.4099] },\n    { class: \"Moderado\", range: [0.41, 0.6099] },\n    { class: \"Moderado Alto\", range: [0.61, 0.8099] },\n    { class: \"Alto\", range: [0.81, 1.0099] },\n    { class: \"Muito Alto\", range: [1.01, Infinity] }\n  ];\n\n  // Determinar a classificação com base no risco final\n  const classificacao = classificacaoRisco.find(\n    faixa => riscoFinal >= faixa.range[0] && riscoFinal <= faixa.range[1]\n  );\n\n  return classificacao ? classificacao.class : \"Não Classificado\"; // Garante uma saída válida\n})() }}",
+                "type": "string"
+              },
+              {
+                "id": "48149757-e8d3-4370-b0f3-71d3c48f1418",
+                "name": "rating",
+                "value": "={{ $('impacto_ajustado').first().json.rating !== 'N/A' ? $('impacto_ajustado').first().json.rating : 'D' }}",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          4180,
+          500
+        ],
+        "id": "e5149878-ea6e-4198-aa06-4c80508ddfcb",
+        "name": "matriz_classificação"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "2f56223d-d1d0-4577-a547-e397e16c0d04",
+                "name": "matriz_planos",
+                "value": "={{ (() => {\n  // Rating e classificação extraídos do JSON\n  const rating = $json.rating || \"C\"; // Exemplo: \"A\", \"B\", \"C\", etc.\n  const classificacaoRisco = $json.matriz || \"Moderado\"; // Exemplo: \"Moderado\", \"Alto\", etc.\n\n  // Matriz de aprovações e planos\n  const matrizAprovacoes = {\n    \"AA\": {\n      \"Baixo\": \"Autom.\",\n      \"Moderado Baixo\": \"Autom.\",\n      \"Moderado\": \"Autom.\",\n      \"Moderado Alto\": \"Autom.\",\n      \"Alto\": \"Autom.\",\n      \"Muito Alto\": \"Autom.\"\n    },\n    \"A | B\": {\n      \"Baixo\": \"Autom.\",\n      \"Moderado Baixo\": \"Autom.\",\n      \"Moderado\": \"Autom.\",\n      \"Moderado Alto\": 10,\n      \"Alto\": 15,\n      \"Muito Alto\": 20\n    },\n    \"C | D\": {\n      \"Baixo\": \"Autom.\",\n      \"Moderado Baixo\": \"Autom.\",\n      \"Moderado\": 10,\n      \"Moderado Alto\": 15,\n      \"Alto\": 20,\n      \"Muito Alto\": 25\n    },\n    \"E | F\": {\n      \"Baixo\": \"Autom.\",\n      \"Moderado Baixo\": \"Autom.\",\n      \"Moderado\": 15,\n      \"Moderado Alto\": 25,\n      \"Alto\": 30,\n      \"Muito Alto\": 40\n    },\n    \"G | H\": {\n      \"Baixo\": \"Autom.\",\n      \"Moderado Baixo\": \"Autom.\",\n      \"Moderado\": 25,\n      \"Moderado Alto\": 30,\n      \"Alto\": 40,\n      \"Muito Alto\": 50\n    }\n  };\n\n  // Função para obter a linha correspondente ao rating\n  const obterLinhaRating = (rating) => {\n    if ([\"AA\"].includes(rating)) return matrizAprovacoes[\"AA\"];\n    if ([\"A\", \"B\"].includes(rating)) return matrizAprovacoes[\"A | B\"];\n    if ([\"C\", \"D\"].includes(rating)) return matrizAprovacoes[\"C | D\"];\n    if ([\"E\", \"F\"].includes(rating)) return matrizAprovacoes[\"E | F\"];\n    if ([\"G\", \"H\"].includes(rating)) return matrizAprovacoes[\"G | H\"];\n    return null;\n  };\n\n  // Obter a linha correspondente ao rating\n  const linhaRating = obterLinhaRating(rating);\n  if (!linhaRating) return \"Rating não encontrado\";\n\n  // Obter o resultado com base na classificação de risco\n  const resultado = linhaRating[classificacaoRisco];\n\n  // Converter os valores conforme necessário:\n  // - \"Autom.\" -> 0\n  // - Números inteiros (ex: 10) -> Convertidos para float (ex: 0.1)\n  return resultado === \"Autom.\" ? 0 : (resultado ? resultado / 100 : \"Classificação de risco não encontrada\");\n})() }}",
+                "type": "number"
+              },
+              {
+                "id": "7de39b38-1152-452c-8805-b9207f50b5e8",
+                "name": "score_ajustado",
+                "value": "={{ $json.score_ajustado }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          4420,
+          500
+        ],
+        "id": "53a50942-49b1-48e1-a3b6-fbc232a7c8a5",
+        "name": "matriz_aprovação"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Obtenha o JSON de risco e a lista de modalidades do BigQuery\nconst risco = $('risco').first().json.scr || {};\nconst modalidades = $input.all(); // Obtenha todos os itens do BigQuery como um array\n\n// Verifique a existência da lista de operações\nconst listaOperacoes = risco.lista_resumo_operacoes || [];\n\n// Variáveis para somar os valores ponderados e totais\nlet sumWeighted = 0;\nlet sumValues = 0;\n\n// Tabela de códigos \"A VENCER\"\nconst codigosAVencer = [\n  'v110', 'v120', 'v130', 'v140',\n  'v150', 'v160', 'v165', 'v170',\n  'v175', 'v180', 'v190', 'v199'\n];\n\n// Função para garantir que o número é válido\nconst safeNumber = (value) => (typeof value === 'number' && !isNaN(value) ? value : 0);\n\n// Função para converter taxa (string -> número)\nconst parseTaxa = (taxaString) => {\n  const taxa = parseFloat(taxaString);\n  return isNaN(taxa) || taxa <= 0 ? 0 : taxa;\n};\n\n// Função para buscar a taxa por modalidade no BigQuery\nconst buscarTaxa = (modalidade) => {\n  // Procure na lista de modalidades do BigQuery\n  for (const item of modalidades) {\n    const modalidadeData = item.json; // Cada item é um JSON com os dados de modalidade\n    if (modalidadeData.modalidade === modalidade) {\n      return parseTaxa(modalidadeData.taxa_a_m); // Converta a taxa para número\n    }\n  }\n  return 0; // Retorna 0 se a modalidade não for encontrada\n};\n\n// Processar todas as operações e calcular os somatórios\nlistaOperacoes.forEach((operacao) => {\n  const modalidade = operacao.modalidade || ''; // Modalidade da operação\n  const listaVencimentos = operacao.listaDeVencimentos || []; // Lista de vencimentos\n\n  listaVencimentos.forEach((vencimento) => {\n    // Filtrar apenas os códigos \"A VENCER\"\n    if (codigosAVencer.includes(vencimento.codigoVencimento)) {\n      const valor = safeNumber(vencimento.valorVencimento); // Valor do vencimento\n      const taxa = buscarTaxa(modalidade); // Taxa da modalidade\n      sumWeighted += valor * taxa; // Soma ponderada\n      sumValues += valor; // Soma total dos valores\n    }\n  });\n});\n\n// Cálculo do custo médio ponderado\nconst custoDivida = sumValues > 0 ? (sumWeighted / sumValues) * 100 : 0;\n\n// Retornar o resultado consolidado\nreturn [{ json: { custo_divida: custoDivida.toFixed(2) } }];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          3460,
+          500
+        ],
+        "id": "64319908-2f22-4481-9dfe-ce53f73ab6f0",
+        "name": "custo_da_divida"
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "projectId": {
+            "__rl": true,
+            "value": "blips-prod-v2",
+            "mode": "list",
+            "cachedResultName": "blips-prod-v2",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-prod-v2"
+          },
+          "sqlQuery": "SELECT * FROM `blips-prod-v2.analise_de_credito.scr_modalidades` LIMIT 100",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          3220,
+          500
+        ],
+        "id": "9ec1d962-63aa-4b77-b83c-1cbf6590c221",
+        "name": "Modalidades",
+        "credentials": {
+          "googleApi": {
+            "id": "KvFeNUBUHv7uR0PF",
+            "name": "Google BigQuery account - New Motor"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "41677958-7732-4750-be95-ff5ae667a984",
+                "name": "custo_divida",
+                "value": "={{ (() => {\n  // Custo da Dívida SCR do proponente (média ponderada já calculada anteriormente)\n  const custoDividaSCRProponente = $json.custo_divida.toNumber() / 100 || 0; // Substitua com o campo correto\n\n  // Custo da Dívida de Mercado (valor de benchmarking fornecido pelo Bacen)\n  const custoDividaMercado = $('eventos').first().json.custo_divida_mercado || 0; // Substitua com o campo correto\n\n  // Garantir que não haja divisão por zero\n  if (custoDividaMercado === 0) {\n    return { fator: null, mensagem: \"Custo da Dívida Mercado não pode ser zero\" };\n  }\n\n  // Calcular o fator (relação entre SCR e Mercado)\n  const fatorDivida = custoDividaSCRProponente / custoDividaMercado;\n\n  // Definir o fator ajustado com base nas faixas\n  let fatorAjustado = 0;\n  if (fatorDivida <= 0.5) {\n    fatorAjustado = -0.5;\n  } else if (fatorDivida > 0.5 && fatorDivida <= 0.85) {\n    fatorAjustado = -0.3;\n  } else if (fatorDivida > 0.85 && fatorDivida <= 1.0) {\n    fatorAjustado = 0.0;\n  } else if (fatorDivida > 1.0 && fatorDivida <= 1.25) {\n    fatorAjustado = 0.2;\n  } else if (fatorDivida > 1.25 && fatorDivida <= 1.5) {\n    fatorAjustado = 0.5;\n  } else if (fatorDivida > 1.5 && fatorDivida <= 2.0) {\n    fatorAjustado = 1.0;\n  } else if (fatorDivida > 2.0) {\n    fatorAjustado = 1.5;\n  }\n\n  // Retornar o fator calculado e ajustado\n  return (fatorAjustado.toFixed(2) * $('pesos').first().json.custoDivida_peso.toFixed(2)).toFixed(3);\n})() }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3700,
+          500
+        ],
+        "id": "a7ecf22a-6cab-44a8-9515-65d8df885b08",
+        "name": "custo_divida_fator"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "85e54f79-4a8b-4298-a1fa-d017a627fe22",
+                "name": "taxa_final",
+                "value": "={{ (() => {\n  // Dados necessários\n  const scoreRaw = $json.score || \"0\"; // Substitua pelo campo correto no JSON\n  const taxaMin = $json.tx_min || 0; // Substitua pelo campo correto no JSON\n  const taxaMax = $json.tx_max || 0; // Substitua pelo campo correto no JSON\n\n  // Verificar se o score é \"Não Classificado\"\n  if (scoreRaw === \"Não Classificado\") {\n    return \"5.0000\"; // Retorna juros de 5% com 4 casas decimais\n  }\n\n  // Transformar o score para número\n  const score = parseFloat(scoreRaw);\n\n  // Garantir que o score é numérico e está no intervalo permitido\n  if (isNaN(score) || score < 0 || score > 1000) {\n    return { erro: \"Score fora do intervalo permitido (0 a 1000)\" };\n  }\n\n  // Calcular a Taxa Final\n  const taxaFinal = taxaMin + ((1000 - score) * (taxaMax - taxaMin) / 1000);\n\n  // Retornar o resultado\n  return taxaFinal.toFixed(4); // Retorna com 4 casas decimais\n})() }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2820,
+          1380
+        ],
+        "id": "c6dc3c21-6279-49d6-ba75-dbf36757a0fc",
+        "name": "taxa_final"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "c4ac5167-c9b9-4a92-a467-57bbc735ed87",
+                      "leftValue": "={{ $json.segment }}",
+                      "rightValue": "FEIRA",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Feira"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "8ce3e8ba-797b-4396-b583-83807f6ba7bf",
+                      "leftValue": "={{ $json.segment == '637f91facd9338cdf74d1fe3' || $json.segment == 'Estética'  }}",
+                      "rightValue": "=",
+                      "operator": {
+                        "type": "boolean",
+                        "operation": "true",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Estética"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "079d8216-a920-455a-a800-31514517f619",
+                      "leftValue": "={{ $json.segment == '658c859d9b32a07e5ac04b23' || $json.segment == 'Sorvete'  }}",
+                      "rightValue": "658c859d9b32a07e5ac04b23",
+                      "operator": {
+                        "type": "boolean",
+                        "operation": "true",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Sorvete"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "076a9709-9aad-4903-a1e5-63e5c54e57ba",
+                      "leftValue": "={{ $json.segment == '6617e3f46c820dd9d7fac410' || $json.segment == 'Fitness'  }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "boolean",
+                        "operation": "true",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Fitness"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "8b318562-533e-4665-b6e1-e381456bdbc7",
+                      "leftValue": "={{ $json.segment == '6258261a133743e4deadee8d' || $json.segment == 'Comunicação visual'  }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "boolean",
+                        "operation": "true",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Comunicação Visual"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "87d813f3-484c-40bd-89d8-47fc1ac521b2",
+                      "leftValue": "={{ $json.segment == '6658920c5b90e9398b1f5b0d' || $json.segment == 'Confecção'  }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "boolean",
+                        "operation": "true",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Confecção"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "6f68401a-8e45-434b-99c4-445a124324b3",
+                      "leftValue": "={{ $json.segment == '662a68b3214ac40ce1cac3a9' || $json.segment == 'Construção'  }}",
+                      "rightValue": "662a68b3214ac40ce1cac3a9",
+                      "operator": {
+                        "type": "boolean",
+                        "operation": "true",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Construção"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "118e1994-0310-4327-be20-d811170a95ee",
+                      "leftValue": "={{ $json.segment == '682e187be7994e95d9e66e4a' || $json.segment == 'Food'  }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "boolean",
+                        "operation": "true",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Food"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "5451df09-8bb8-4cb0-a686-02348d14d04d",
+                      "leftValue": "={{ $json.segment == '682e1857e7994e95d9e66e40' || $json.segment == 'Pizza'  }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "boolean",
+                        "operation": "true",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Pizza"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "ce0ea5d3-530c-4af8-a894-b715f8b4c72f",
+        "name": "Switch",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          1760,
+          1460
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "30ce29fa-9fb0-4b04-89bc-c586f5e5e62c",
+                "name": "tx_min",
+                "value": 3.9999,
+                "type": "number"
+              },
+              {
+                "id": "1c556421-b5e4-4ded-91a5-6706e5e24744",
+                "name": "tx_max",
+                "value": 6.9999,
+                "type": "number"
+              },
+              {
+                "id": "658b06f7-bccc-43f1-afcb-c64b43a4ae6c",
+                "name": "score",
+                "value": "={{ $json.score !== 'Não Classificado' ? $json.score : 650 }}",
+                "type": "number"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2260,
+          740
+        ],
+        "id": "8143e3d0-8987-492f-966b-adb836d33958",
+        "name": "taxa_scoragem_feira"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "30ce29fa-9fb0-4b04-89bc-c586f5e5e62c",
+                "name": "tx_min",
+                "value": 2.9999,
+                "type": "number"
+              },
+              {
+                "id": "1c556421-b5e4-4ded-91a5-6706e5e24744",
+                "name": "tx_max",
+                "value": 6.9999,
+                "type": "number"
+              },
+              {
+                "id": "658b06f7-bccc-43f1-afcb-c64b43a4ae6c",
+                "name": "score",
+                "value": "={{ $json.score !== 'Não Classificado' ? $json.score : 650 }}",
+                "type": "number"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2260,
+          940
+        ],
+        "id": "eaf8823f-f75e-47d5-9d47-8016a43c9a32",
+        "name": "taxa_scoragem_estetica"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "30ce29fa-9fb0-4b04-89bc-c586f5e5e62c",
+                "name": "tx_min",
+                "value": 3.9999,
+                "type": "number"
+              },
+              {
+                "id": "1c556421-b5e4-4ded-91a5-6706e5e24744",
+                "name": "tx_max",
+                "value": 7.9999,
+                "type": "number"
+              },
+              {
+                "id": "658b06f7-bccc-43f1-afcb-c64b43a4ae6c",
+                "name": "score",
+                "value": "={{ $json.score !== 'Não Classificado' ? $json.score : 650 }}",
+                "type": "number"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2260,
+          1160
+        ],
+        "id": "479b589d-129d-4967-a86e-96eb7f2953c9",
+        "name": "taxa_scoragem_sorvete"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "30ce29fa-9fb0-4b04-89bc-c586f5e5e62c",
+                "name": "tx_min",
+                "value": 3.4999,
+                "type": "number"
+              },
+              {
+                "id": "1c556421-b5e4-4ded-91a5-6706e5e24744",
+                "name": "tx_max",
+                "value": 7.4999,
+                "type": "number"
+              },
+              {
+                "id": "658b06f7-bccc-43f1-afcb-c64b43a4ae6c",
+                "name": "score",
+                "value": "={{ $json.score !== 'Não Classificado' ? $json.score : 650 }}",
+                "type": "number"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2260,
+          1380
+        ],
+        "id": "05e5e9b6-19bd-4cf7-b260-1f50800198e6",
+        "name": "taxa_scoragem_fitness"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "30ce29fa-9fb0-4b04-89bc-c586f5e5e62c",
+                "name": "tx_min",
+                "value": 2.9999,
+                "type": "number"
+              },
+              {
+                "id": "1c556421-b5e4-4ded-91a5-6706e5e24744",
+                "name": "tx_max",
+                "value": 7.9999,
+                "type": "number"
+              },
+              {
+                "id": "658b06f7-bccc-43f1-afcb-c64b43a4ae6c",
+                "name": "score",
+                "value": "={{ $json.score !== 'Não Classificado' ? $json.score : 650 }}",
+                "type": "number"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2260,
+          1580
+        ],
+        "id": "65ef4581-3150-428e-a7b6-2f7765b2adc6",
+        "name": "taxa_scoragem_comunicacao"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "30ce29fa-9fb0-4b04-89bc-c586f5e5e62c",
+                "name": "tx_min",
+                "value": 3.9999,
+                "type": "number"
+              },
+              {
+                "id": "1c556421-b5e4-4ded-91a5-6706e5e24744",
+                "name": "tx_max",
+                "value": 7.4999,
+                "type": "number"
+              },
+              {
+                "id": "658b06f7-bccc-43f1-afcb-c64b43a4ae6c",
+                "name": "score",
+                "value": "={{ $json.score !== 'Não Classificado' ? $json.score : 650 }}",
+                "type": "number"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2260,
+          1800
+        ],
+        "id": "fe3a7d46-271d-4b04-be68-3ab0e63cdf25",
+        "name": "taxa_scoragem_confeccao"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "30ce29fa-9fb0-4b04-89bc-c586f5e5e62c",
+                "name": "tx_min",
+                "value": 3.4999,
+                "type": "number"
+              },
+              {
+                "id": "1c556421-b5e4-4ded-91a5-6706e5e24744",
+                "name": "tx_max",
+                "value": 6.4999,
+                "type": "number"
+              },
+              {
+                "id": "658b06f7-bccc-43f1-afcb-c64b43a4ae6c",
+                "name": "score",
+                "value": "={{ $json.score !== 'Não Classificado' ? $json.score : 650 }}",
+                "type": "number"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2260,
+          2020
+        ],
+        "id": "6d0d3f95-587a-4cac-97c3-f98937c98040",
+        "name": "taxa_scoragem_construcao"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "30ce29fa-9fb0-4b04-89bc-c586f5e5e62c",
+                "name": "tx_min",
+                "value": 3.9999,
+                "type": "number"
+              },
+              {
+                "id": "1c556421-b5e4-4ded-91a5-6706e5e24744",
+                "name": "tx_max",
+                "value": 7.9999,
+                "type": "number"
+              },
+              {
+                "id": "658b06f7-bccc-43f1-afcb-c64b43a4ae6c",
+                "name": "score",
+                "value": "={{ $json.score !== 'Não Classificado' ? $json.score : 650 }}",
+                "type": "number"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2260,
+          2240
+        ],
+        "id": "5022aed6-d956-4f41-9b5c-a93e016b58d8",
+        "name": "taxa_scoragem_food"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "30ce29fa-9fb0-4b04-89bc-c586f5e5e62c",
+                "name": "tx_min",
+                "value": 3.9999,
+                "type": "number"
+              },
+              {
+                "id": "1c556421-b5e4-4ded-91a5-6706e5e24744",
+                "name": "tx_max",
+                "value": 7.9999,
+                "type": "number"
+              },
+              {
+                "id": "658b06f7-bccc-43f1-afcb-c64b43a4ae6c",
+                "name": "score",
+                "value": "={{ $json.score !== 'Não Classificado' ? $json.score : 650 }}",
+                "type": "number"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2260,
+          2460
+        ],
+        "id": "96bddd36-a350-4491-88af-fd82a1ad3ee4",
+        "name": "taxa_scoragem_pizza"
+      }
+    ],
+    "connections": {
+      "lead": {
+        "main": [
+          [
+            {
+              "node": "Qual Função ? Blips",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Qual Função ? Blips": {
+        "main": [
+          [
+            {
+              "node": "format_blips_score",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "pesos",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Switch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "pesos": {
+        "main": [
+          [
+            {
+              "node": "ajuste_temporal",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "ajuste_temporal": {
+        "main": [
+          [
+            {
+              "node": "eventos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "eventos": {
+        "main": [
+          [
+            {
+              "node": "valores_normalizados",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "impacto_ajustado": {
+        "main": [
+          [
+            {
+              "node": "risco",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "valores_normalizados": {
+        "main": [
+          [
+            {
+              "node": "impacto_ajustado",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "risco": {
+        "main": [
+          [
+            {
+              "node": "Modalidades",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "risco_final": {
+        "main": [
+          [
+            {
+              "node": "matriz_classificação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "matriz_classificação": {
+        "main": [
+          [
+            {
+              "node": "matriz_aprovação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "custo_da_divida": {
+        "main": [
+          [
+            {
+              "node": "custo_divida_fator",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Modalidades": {
+        "main": [
+          [
+            {
+              "node": "custo_da_divida",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "custo_divida_fator": {
+        "main": [
+          [
+            {
+              "node": "risco_final",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch": {
+        "main": [
+          [
+            {
+              "node": "taxa_scoragem_feira",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "taxa_scoragem_estetica",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "taxa_scoragem_sorvete",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "taxa_scoragem_fitness",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "taxa_scoragem_comunicacao",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "taxa_scoragem_confeccao",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "taxa_scoragem_construcao",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "taxa_scoragem_food",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "taxa_scoragem_pizza",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "taxa_scoragem_feira": {
+        "main": [
+          [
+            {
+              "node": "taxa_final",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "taxa_scoragem_estetica": {
+        "main": [
+          [
+            {
+              "node": "taxa_final",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "taxa_scoragem_sorvete": {
+        "main": [
+          [
+            {
+              "node": "taxa_final",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "taxa_scoragem_fitness": {
+        "main": [
+          [
+            {
+              "node": "taxa_final",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "taxa_scoragem_comunicacao": {
+        "main": [
+          [
+            {
+              "node": "taxa_final",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "taxa_scoragem_confeccao": {
+        "main": [
+          [
+            {
+              "node": "taxa_final",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "taxa_scoragem_construcao": {
+        "main": [
+          [
+            {
+              "node": "taxa_final",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "taxa_scoragem_food": {
+        "main": [
+          [
+            {
+              "node": "taxa_final",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "taxa_scoragem_pizza": {
+        "main": [
+          [
+            {
+              "node": "taxa_final",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "lead": [
+        {
+          "json": {
+            "score": "240.14",
+            "rating": "G",
+            "func": "format_taxa_scoragem",
+            "segment": "Comunicação visual"
+          }
+        }
+      ]
+    },
+    "versionId": "5ec40da6-74b5-4cd2-9edf-5375b06ff45e",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-31T16:22:41.803Z",
+        "updatedAt": "2024-07-31T16:22:41.803Z",
+        "id": "mmaXbyiWhptUXaTd",
+        "name": "New Motor"
+      }
+    ]
+  }
+}
