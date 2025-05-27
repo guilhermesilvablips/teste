@@ -1,0 +1,59 @@
+{
+  "data": {
+    "createdAt": "2025-01-27T15:01:47.205Z",
+    "updatedAt": "2025-01-27T15:08:16.850Z",
+    "id": "lCGXjncgBQyyFJv7",
+    "name": "My workflow 6",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "6281a1fc-d4cf-4781-a191-716cd28ca24d",
+        "name": "When clicking ‘Test workflow’"
+      },
+      {
+        "parameters": {
+          "jsCode": "const fetch = require('node-fetch');\n\n(async () => {\n  try {\n    const url = new URL('https://api.github.com/users/github');\n    url.searchParams.append('username', 'marlongomes01');\n\n    const response = await fetch(url, {\n      headers: {\n        'User-Agent': \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36\"\n      }\n    });\n\n    // Verifica se a resposta foi bem-sucedida\n    if (!response.ok) {\n      throw new Error(`Erro na requisição: ${response.status} - ${response.statusText}`);\n    }\n\n    const data = await response.json();\n    console.log(data);\n\n    return { json: { data } };\n  } catch (error) {\n    console.error('Erro ao realizar o fetch:', error.message);\n    return { json: { error: error.message } };\n  }\n})();\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          220,
+          0
+        ],
+        "id": "a57e31bb-f079-4931-849c-661ea95ff379",
+        "name": "Code"
+      }
+    ],
+    "connections": {
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "86de61b6-846c-4c60-b2dc-b5bf09477ae1",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
