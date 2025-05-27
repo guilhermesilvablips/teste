@@ -1,0 +1,96 @@
+{
+  "data": {
+    "createdAt": "2025-05-02T12:25:08.214Z",
+    "updatedAt": "2025-05-02T12:29:00.791Z",
+    "id": "D2ZUDuaoJ15jA52v",
+    "name": "Assistente Cobrança - func - liberacao_confianca",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "url": "https://us-central1-blips-bigdata.cloudfunctions.net/api-liberacao-confianca",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "=cnpj",
+                "value": "={{$json.cnpj.replace(/[^0-9]/g,'')}}"
+              },
+              {
+                "name": "numero_serie",
+                "value": "={{ $json.numero_serie }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "e847e997-ebbb-4a73-9454-1ff2a016508e",
+        "name": "Liberação Confiança",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          240,
+          0
+        ],
+        "alwaysOutputData": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "cnpj"
+              },
+              {
+                "name": "numero_serie"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "cf2d2e17-afc3-4e90-a5dd-a954d553849f",
+        "name": "Execute"
+      }
+    ],
+    "connections": {
+      "Liberação Confiança": {
+        "main": [
+          []
+        ]
+      },
+      "Execute": {
+        "main": [
+          [
+            {
+              "node": "Liberação Confiança",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {},
+    "versionId": "b31bbbca-2151-47f2-89a7-ab1d9f00f12f",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-09T15:07:56.880Z",
+        "updatedAt": "2024-07-09T15:07:56.880Z",
+        "id": "10AfOz2oKmpgqhM9",
+        "name": "Cobranca"
+      }
+    ]
+  }
+}
