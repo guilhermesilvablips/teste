@@ -1,0 +1,98 @@
+{
+  "data": {
+    "createdAt": "2025-02-19T12:13:58.560Z",
+    "updatedAt": "2025-02-19T13:43:41.440Z",
+    "id": "JkYGHSxx1PaTprUJ",
+    "name": "Playground Código",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "1e6d30a2-6f30-442e-bf37-a5d771d51f2b",
+        "name": "When clicking ‘Test workflow’"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "bb28f854-ba74-4f6a-a486-e24e8279801a",
+                "name": "text",
+                "value": "oi",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          280,
+          -160
+        ],
+        "id": "781b69f5-1acf-4bf6-a8fe-72cbf83e3c2e",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "jsCode": "const blips_educa = [\"educa\", \"blipseduca\", \"cursos.blips\"];\nconst bitrix = \"bitrix\";\nconst youtube = \"youtube\"\nconst text = $input.first().json.text;\nlet obs = \"\";\n\nfor (let element of blips_educa) {\n  if (text.includes(element)) {\n    obs += \"Blips Educa\";\n    break; // Sai do loop se a condição for satisfeita\n  }\n}\n\nif(text.includes(youtube)){\n  if(obs == \"\") obs+= \"YouTube\"\n    else  obs+= \", Bitrix\";\n}\n\nif(text.includes(bitrix)){\n  if(obs == \"\") obs+= \"Bitrix\"\n    else  obs+= \", Bitrix\";\n}\n\n\nreturn {obs}"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          460,
+          -160
+        ],
+        "id": "5c43c284-fd6d-46cd-a3f8-0abb82dbe158",
+        "name": "Code"
+      }
+    ],
+    "connections": {
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          []
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "a3fe8e1c-a7ca-4410-9d1d-c0de5348e4b4",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
