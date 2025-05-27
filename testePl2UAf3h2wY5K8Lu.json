@@ -1,0 +1,67 @@
+{
+  "data": {
+    "createdAt": "2025-04-09T13:42:58.524Z",
+    "updatedAt": "2025-04-09T14:08:00.147Z",
+    "id": "Pl2UAf3h2wY5K8Lu",
+    "name": "Scraping botconversa",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "bb57bd86-504f-4659-9443-495da68a7093",
+        "name": "When clicking ‘Test workflow’"
+      },
+      {
+        "parameters": {
+          "url": "https://app.botconversa.com.br/35380/live-chat/all/d5d3f6fad7b6301e39316ac9c9ac7f95",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ0MjA3NTc3LCJpYXQiOjE3NDQyMDU3NzcsImp0aSI6IjQ0MDM3ZDU5M2U1YjRmMzE5MWM3NTUyMTU0ZmM3NGI0IiwidXNlcl9pZCI6MjE3NjQ5MiwiZmlyc3RfbmFtZSI6IlBlZHJvIiwibGFzdF9uYW1lIjoiIiwiaXNfaW50ZXJjb21fZW5hYmxlZCI6ZmFsc2V9.TWFeztr5uDzxpNEOIixGnsxs_D5TpUjw7Vvn2ooenDI"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          220,
+          0
+        ],
+        "id": "fc63b93b-eff7-4c26-8931-c362d1b3518b",
+        "name": "HTTP Request"
+      }
+    ],
+    "connections": {
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {},
+    "versionId": "29724bee-ab78-48e0-88f0-0b08d7ba4497",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
