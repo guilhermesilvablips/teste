@@ -1,0 +1,2079 @@
+{
+  "data": {
+    "createdAt": "2024-10-25T15:33:05.418Z",
+    "updatedAt": "2025-04-29T17:27:42.593Z",
+    "id": "tE7UhUer9bMyMPOq",
+    "name": "Chama PEB",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "041c8b05-3dcd-4174-8e56-874ae9385145",
+                "name": "empresa",
+                "value": "Ideal",
+                "type": "string"
+              },
+              {
+                "id": "2a550d86-1acf-4d99-bed6-f685f8429cdd",
+                "name": "cel_sup",
+                "value": "553497139961",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "ad01c8c4-7efd-4899-bbd6-99dd21def52d",
+        "name": "Set Ideal",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3360,
+          2120
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "041c8b05-3dcd-4174-8e56-874ae9385145",
+                "name": "empresa",
+                "value": "Blips",
+                "type": "string"
+              },
+              {
+                "id": "1c6b7ea7-4c77-4513-a74e-62a40537c96a",
+                "name": "cel_sup",
+                "value": "553497073763",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "c09ec677-97de-4931-8a04-7448afd3d8be",
+        "name": "Set Bips",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3360,
+          2300
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "041c8b05-3dcd-4174-8e56-874ae9385145",
+                "name": "cel_sup",
+                "value": "553498342836",
+                "type": "string"
+              },
+              {
+                "id": "e08cea6b-f24a-47bb-8ecc-86bca9df7b6f",
+                "name": "empresa",
+                "value": "Blips",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "caad5f2b-3013-46fc-b982-3a8d4c5eb4a6",
+        "name": "Set Tel Estetica",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3140,
+          1580
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "041c8b05-3dcd-4174-8e56-874ae9385145",
+                "name": "cel_sup",
+                "value": "553497090823",
+                "type": "string"
+              },
+              {
+                "id": "2cc35a20-78a8-4033-bb4d-df7c93298a58",
+                "name": "empresa",
+                "value": "Blips",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "617a2df7-a13b-4944-a3ff-d30f0324353c",
+        "name": "Set Tel Sorvete",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3140,
+          1740
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "041c8b05-3dcd-4174-8e56-874ae9385145",
+                "name": "cel_sup",
+                "value": "553499428357",
+                "type": "string"
+              },
+              {
+                "id": "c249c362-334e-48ea-928d-0661f8d211b9",
+                "name": "empresa",
+                "value": "Blips",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "8ad0e8b1-22d6-43e9-ba61-14225fb533cf",
+        "name": "Set Tel Fitness",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3140,
+          1900
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "041c8b05-3dcd-4174-8e56-874ae9385145",
+                "name": "cel_sup",
+                "value": "553497266305",
+                "type": "string"
+              },
+              {
+                "id": "5ab50acc-575e-485c-a469-04277f58d782",
+                "name": "empresa",
+                "value": "Blips",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "5d8be5f6-8cd3-4e40-af93-62e5f7ab7407",
+        "name": "Set Tel Construção",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3140,
+          2060
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "041c8b05-3dcd-4174-8e56-874ae9385145",
+                "name": "cel_sup",
+                "value": "={{ $json.cel_sup }}",
+                "type": "string"
+              },
+              {
+                "id": "1569aafd-be9b-438e-90de-7f1c008c976b",
+                "name": "empresa",
+                "value": "={{ $json.empresa }}",
+                "type": "string"
+              },
+              {
+                "id": "29056d44-e449-4f22-8d15-3b7c0fd00683",
+                "name": "segmento",
+                "value": "={{ $('Trigger PEB').item.json.lead.segments[0].name }}",
+                "type": "string"
+              },
+              {
+                "id": "d4f5bdf0-b653-47e2-9b29-2d9722b8fc15",
+                "name": "equipamento",
+                "value": "={{ $('Trigger PEB').item.json.lead.machine_type }}",
+                "type": "string"
+              },
+              {
+                "id": "2fd558c7-1e6d-48d2-a7d3-1a19fbc35f77",
+                "name": "valor",
+                "value": "=R$ {{ $('Trigger PEB').item.json.lead.equipment_value }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "9dfad17f-a641-4d03-a24a-8ed258b0c33f",
+        "name": "Set global",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3620,
+          1900
+        ]
+      },
+      {
+        "parameters": {
+          "amount": 1,
+          "unit": "minutes"
+        },
+        "id": "b655ec97-2974-452a-a834-a330df1f0ae8",
+        "name": "Wait",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          2680,
+          1340
+        ],
+        "webhookId": "170e5e3a-0bf1-4527-867c-1bec6077d0ee"
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "1wuJ4kgbLP7zlou3-A3QnHUttcf_f4931XdfPlXQqRZ0",
+            "mode": "list",
+            "cachedResultName": "PEB records",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wuJ4kgbLP7zlou3-A3QnHUttcf_f4931XdfPlXQqRZ0/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Records",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wuJ4kgbLP7zlou3-A3QnHUttcf_f4931XdfPlXQqRZ0/edit#gid=0"
+          },
+          "filtersUI": {
+            "values": [
+              {
+                "lookupColumn": "cnpj",
+                "lookupValue": "={{ $json.cnpj }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "870a62a2-b8df-4e81-bb4b-fe17b86e69fb",
+        "name": "Google Sheets1",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          4060,
+          1780
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "f53eDeTWUXii9mLz",
+            "name": "Google Sheets Mateus"
+          }
+        },
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT\n  id, cellphone, machine_id, personal_document, document, name, last_name\nFROM\n  blips-bigdata.PLATAFORMA.leads\nWHERE id = '{{ $('Trigger PEB').first().json.lead.id }}'\nLIMIT 1",
+          "options": {
+            "timeoutMs": 60000
+          }
+        },
+        "id": "537c9a2f-10c4-4219-b046-e1cc3384ee62",
+        "name": "get_cellphone",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          2260,
+          1560
+        ],
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleApi": {
+            "id": "KvFeNUBUHv7uR0PF",
+            "name": "Google BigQuery account - New Motor"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Obtém os dados das entradas (linhas das abas da planilha) fornecidos pelo nó Google Sheets\nconst items = $input.all();\n\n// Inicializa uma variável para armazenar a última linha\nlet lastRow = null;\n\n// Itera sobre os itens (linhas) para encontrar a última linha\nfor (const sheetData of items) {\n    // Verifica se 'sheetData.json' contém dados da linha\n    if (sheetData.json) {\n        lastRow = sheetData.json; // Atualiza a última linha com a linha atual\n    }\n}\n\n// Retorna a última linha encontrada\nreturn lastRow ? [{ json: lastRow }] : []; // Retorna a última linha como objeto JSON ou um array vazio\n"
+        },
+        "id": "94eaca7d-34c0-4723-adbd-531e52e5cc3c",
+        "name": "Code",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          4240,
+          1780
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "41f495d3-7d4a-4e83-86fa-8a1077ce1254",
+                "name": "=id",
+                "value": "={{ $('Trigger PEB').first().json.lead.id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "95beacb4-dd57-4817-8af1-d3ba92e8cc2f",
+        "name": "ID",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2040,
+          1560
+        ],
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "1e420f6b-c815-41a6-9d2e-92494a34da52",
+                "leftValue": "={{ $json.cellphone }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notExists",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "ee90afe4-d5d3-438a-91b6-84418236a96e",
+                "leftValue": "={{ $json.cellphone }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "empty",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "7c282d2a-0e6d-407c-b3d1-56dbf12b452c",
+                "leftValue": "={{ $json.name === \"undefined\" }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "51b34ba0-a384-465f-90a4-78c8464be8ae",
+                "leftValue": "={{ $json.name }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "empty",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "de1e49c6-239e-421d-9f95-83f8a5a746b3",
+                "leftValue": "={{ $json.last_name === \"undefined\" }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "id": "9d6116d6-baba-457d-8899-c36f6d3f2277",
+        "name": "Existe celular?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          2020,
+          1920
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('Trigger PEB').item.json.lead.segments[0].id }}",
+                      "rightValue": "637f91facd9338cdf74d1fe3",
+                      "operator": {
+                        "type": "string",
+                        "operation": "contains"
+                      },
+                      "id": "bc83dc76-ed0a-48c2-87a6-f699fc2ff49e"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Estética"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "47e68051-db14-4ce6-82c2-759cc12bbc45",
+                      "leftValue": "={{ $('Trigger PEB').item.json.lead.segments[0].id }}",
+                      "rightValue": "658c859d9b32a07e5ac04b23",
+                      "operator": {
+                        "type": "string",
+                        "operation": "contains"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Sorvete"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "05c09aaa-49a9-4d14-9eb5-2b05446eb90f",
+                      "leftValue": "={{ $('Trigger PEB').item.json.lead.segments[0].id }}",
+                      "rightValue": "6617e3f46c820dd9d7fac410",
+                      "operator": {
+                        "type": "string",
+                        "operation": "contains"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Fitness"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "2a02434f-9788-457b-8c5e-dcea77422a5d",
+                      "leftValue": "={{ $('Trigger PEB').item.json.lead.segments[0].id }}",
+                      "rightValue": "662a68b3214ac40ce1cac3a9",
+                      "operator": {
+                        "type": "string",
+                        "operation": "contains"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Construção"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "4b3aa037-84b0-4a6a-8e2e-3adb591335ee",
+                      "leftValue": "={{ $('Trigger PEB').item.json.lead.segments[0].id }}",
+                      "rightValue": "6258261a133743e4deadee8d",
+                      "operator": {
+                        "type": "string",
+                        "operation": "contains"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Comunicação"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "c7f35307-c333-4f52-9f47-ecc266a1d541",
+                      "leftValue": "={{ $('Trigger PEB').item.json.lead.segments[0].id }}",
+                      "rightValue": "6658920c5b90e9398b1f5b0d",
+                      "operator": {
+                        "type": "string",
+                        "operation": "contains"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Confecção"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "778a206a-c2b8-43f4-b250-8128d0b10fcf",
+        "name": "Switch",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.1,
+        "position": [
+          2620,
+          1920
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "b5cd73fe-1e49-41a3-a1fd-4c8c54a58e39",
+                "leftValue": "={{ $json.lead.business_rule_type }}",
+                "rightValue": "VENDA",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "1d7a54e8-5754-4998-bd21-219a66d6061f",
+        "name": "Venda ou Locação?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          3140,
+          2220
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "1e420f6b-c815-41a6-9d2e-92494a34da52",
+                "leftValue": "={{ $json.cellphone }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notExists",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "ee90afe4-d5d3-438a-91b6-84418236a96e",
+                "leftValue": "={{ $json.cellphone }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "empty",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "7c282d2a-0e6d-407c-b3d1-56dbf12b452c",
+                "leftValue": "={{ $json.name === \"undefined\" }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "51b34ba0-a384-465f-90a4-78c8464be8ae",
+                "leftValue": "={{ $json.name }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "empty",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "de1e49c6-239e-421d-9f95-83f8a5a746b3",
+                "leftValue": "={{ $json.last_name === \"undefined\" }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "id": "78582410-482b-42ca-8c4b-9a06d3153992",
+        "name": "Existe celular?1",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          2480,
+          1560
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "9ec2c692-56af-4109-a026-71692d07a0e7",
+                "leftValue": "={{ $json.transferir }}",
+                "rightValue": "=true",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "c081fa90-55f9-4e37-9eb8-e362c69bec6e",
+        "name": "If",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          1580,
+          1920
+        ],
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://runtime.hyperflowapis.global/api/dneeXMnM7/ativa_user_peb",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "client_id",
+                "value": "4afb1cd8-80e4-4778-a988-54f96be57ac2"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n    \"telefone\": \"55{{ $json.telefone }}\",\n    \"nome_cliente\": \"{{ $json.nome }}\",\n    \"cnpj\": \"{{ $json.cnpj }}\",\n    \"empresa\": \"{{ $('Set global').first().json.empresa }}\",\n    \"cel_sup\": \"{{ $('Set global').first().json.cel_sup }}\",\n    \"row\": \"{{ $json.row_number }}\",\n    \"segmento\": \"{{ $('Set global').first().json.segmento }}\",\n    \"equipamento\": \"{{ $('Set global').first().json.equipamento }}\",\n    \"valor\": \"{{ $('Set global').first().json.valor }}\"\n}",
+          "options": {
+            "timeout": 10000
+          }
+        },
+        "id": "4e50f943-ab6b-4e9e-8e0e-db625fed6ab3",
+        "name": "HTTP Request",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          4420,
+          1780
+        ],
+        "retryOnFail": true,
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1wuJ4kgbLP7zlou3-A3QnHUttcf_f4931XdfPlXQqRZ0",
+            "mode": "list",
+            "cachedResultName": "PEB records",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wuJ4kgbLP7zlou3-A3QnHUttcf_f4931XdfPlXQqRZ0/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Records",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wuJ4kgbLP7zlou3-A3QnHUttcf_f4931XdfPlXQqRZ0/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "nome": "={{ $('get_cellphone').isExecuted ? $('get_cellphone').first().json.name + \" \" + $('get_cellphone').first().json.last_name : $('Trigger PEB').first().json.name }}",
+              "telefone": "={{ $('get_cellphone').isExecuted ? $('get_cellphone').first().json.cellphone : $('Trigger PEB').first().json.cellphone }}",
+              "cnpj": "={{ $('Trigger PEB').item.json.lead.document }}",
+              "Data envio": "={{ $now.format('dd/MM/yyyy  HH:mm:ss') }}",
+              "Avaliacao": "={{ $('Trigger PEB').item.json.avaliacaoFinal || 'INCONCLUSIVO' }}",
+              "Segmento": "={{ $json.segmento }}",
+              "Equipamento": "={{ $json.equipamento }}",
+              "Valor do equipamento": "={{ $json.valor }}"
+            },
+            "matchingColumns": [
+              "cnpj"
+            ],
+            "schema": [
+              {
+                "id": "nome",
+                "displayName": "nome",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "telefone",
+                "displayName": "telefone",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "cnpj",
+                "displayName": "cnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "q1",
+                "displayName": "q1",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q2",
+                "displayName": "q2",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q3",
+                "displayName": "q3",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q4",
+                "displayName": "q4",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q5",
+                "displayName": "q5",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q6",
+                "displayName": "q6",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q7",
+                "displayName": "q7",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "q8",
+                "displayName": "q8",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Cenário 1",
+                "displayName": "Cenário 1",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Cenário 2",
+                "displayName": "Cenário 2",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Cenário 3",
+                "displayName": "Cenário 3",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Cenário 4",
+                "displayName": "Cenário 4",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "instagram",
+                "displayName": "instagram",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Resultado C1",
+                "displayName": "Resultado C1",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Resultado C2",
+                "displayName": "Resultado C2",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Resultado C3",
+                "displayName": "Resultado C3",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Resultado C4",
+                "displayName": "Resultado C4",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Data envio",
+                "displayName": "Data envio",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Data resposta",
+                "displayName": "Data resposta",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Analise insta",
+                "displayName": "Analise insta",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Segmento",
+                "displayName": "Segmento",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Equipamento",
+                "displayName": "Equipamento",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Valor do equipamento",
+                "displayName": "Valor do equipamento",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Avaliacao",
+                "displayName": "Avaliacao",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "f9ed0c32-b8e2-4873-b7bc-d1cb6929576a",
+        "name": "Google Sheets",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          3860,
+          1780
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "f53eDeTWUXii9mLz",
+            "name": "Google Sheets Mateus"
+          }
+        },
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "const randomNumber = Math.floor(Math.random() * 100);\n\n// Verifica se o número está entre 0 e 49 (50% de chance)\nconsole.log(randomNumber + 'numero aleatorio');\nif (randomNumber < 50) {\n    return { \"transferir\": \"true\" };\n} else {\n    return { \"transferir\": \"false\" };\n}"
+        },
+        "id": "1f5df98f-0e19-4d95-8ea0-5b08d3476691",
+        "name": "Code1",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1320,
+          1920
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "0ee626e6-df6e-45bc-b121-4823ab1f33d6",
+        "name": "Trigger PEB",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          880,
+          2280
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.avaliacaoFinal }}",
+                      "rightValue": "APROVADO",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "APROVADO"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "b4549457-57b3-49aa-8b86-940af6dab523",
+                      "leftValue": "={{ $json.avaliacaoFinal }}",
+                      "rightValue": "REPROVADO",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "REPROVADO"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "98d87d34-d619-4e2d-bd42-672ea59f753b",
+                      "leftValue": "={{ $json.avaliacaoFinal }}",
+                      "rightValue": "INCONCLUSIVO",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "INCONCLUSIVO"
+              }
+            ]
+          },
+          "options": {
+            "fallbackOutput": 2
+          }
+        },
+        "id": "f8e560b1-ef5d-415f-b9ba-f3f933f8659f",
+        "name": "Switch1",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.1,
+        "position": [
+          1140,
+          2280
+        ]
+      },
+      {
+        "parameters": {
+          "useJson": true,
+          "claimsJson": "={\n  \"iss\": \"blips-bigdata@appspot.gserviceaccount.com\",\n  \"scope\": \"https://www.googleapis.com/auth/cloud-platform\",\n  \"aud\": \"https://oauth2.googleapis.com/token\",\n  \"iat\": {{Math.floor(new Date().getTime() / 1000)}},\n  \"exp\": {{Math.floor(new Date().getTime() / 1000) + 3600}} \n}",
+          "options": {}
+        },
+        "id": "7d4a3f16-16e0-4158-8eea-a6be4f5f7ddc",
+        "name": "JWT GOOGLE",
+        "type": "n8n-nodes-base.jwt",
+        "typeVersion": 1,
+        "position": [
+          3860,
+          2040
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "jwtAuth": {
+            "id": "qucHFpcTrmVLRJYC",
+            "name": "JWT Auth GOOGLE"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://oauth2.googleapis.com/token",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "googleOAuth2Api",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "grant_type",
+                "value": "urn:ietf:params:oauth:grant-type:jwt-bearer"
+              },
+              {
+                "name": "assertion",
+                "value": "={{ $json.token }}"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "926b4101-fe3a-4ccf-8cee-d13199005d76",
+        "name": "GET TOKEN",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          4060,
+          2040
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "googleOAuth2Api": {
+            "id": "AUpV7k8Hj4mJXlUi",
+            "name": "Google account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips-credit-backend-dev-685867804490.us-central1.run.app/api/v1/peb_records/",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "={{ \"Bearer \" + $json.access_token}}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"lead_id\": \"{{ $('Trigger PEB').first().json.lead.id }}\",\n  \"nome\": \"{{ $('get_cellphone').isExecuted ? $('get_cellphone').first().json.name + \" \" + $('get_cellphone').first().json.last_name : $('Trigger PEB').first().json.name }}\",\n  \"telefone\": \"{{ $('get_cellphone').isExecuted ? $('get_cellphone').first().json.cellphone : $('Trigger PEB').first().json.cellphone }}\",\n  \"cnpj\": \"{{ $('Trigger PEB').item.json.lead.document }}\",\n  \"segmento\": \"{{ $('Trigger PEB').item.json.lead.segments[0].name }}\",\n  \"equipamento\": \"{{ $('Trigger PEB').item.json.lead.machine_type }}\",\n  \"valor_equipamento\": {{ $('Trigger PEB').item.json.lead.equipment_value }},\n  \"avaliacao\": \"{{ $('Trigger PEB').item.json.avaliacaoFinal }}\",\n  \"data_envio\": \"{{ $now.toISO() }}\"\n}\n",
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "f837ab6b-ae00-4a47-bba5-f21e34245476",
+        "name": "Post PEB",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          4240,
+          2040
+        ],
+        "retryOnFail": true,
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "l7mT5nLSsQaGhKZC",
+            "mode": "list",
+            "cachedResultName": "Google Meu Negocio API"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          4640,
+          2040
+        ],
+        "id": "c72f2845-d3c1-4d0d-b67b-0c5d94d696dc",
+        "name": "Google Meu Negocio API",
+        "alwaysOutputData": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "3afb936f-6664-46ec-8a6f-18bc392e81b2",
+                "name": "nome",
+                "value": "={{ $('Trigger PEB').first().json.resultado.resultado_cnpj.basic_data_CNPJ.basic_data.name }}",
+                "type": "string"
+              },
+              {
+                "id": "b1cf496b-7e7e-496c-ac56-aed0e59620ba",
+                "name": "cnpj",
+                "value": "={{ $('Trigger PEB').first().json.lead.document }}",
+                "type": "string"
+              },
+              {
+                "id": "8d6c8c17-dc62-4dd9-89a1-5e43ad647372",
+                "name": "segmento",
+                "value": "={{ $('Trigger PEB').first().json.lead.segments[0].name }}",
+                "type": "string"
+              },
+              {
+                "id": "0e3dbac4-0dfb-4f34-9207-94bf70aff59e",
+                "name": "lead_id",
+                "value": "={{ $('Trigger PEB').first().json.lead.id }}",
+                "type": "string"
+              },
+              {
+                "id": "d9db8e1b-5be9-48d7-b616-a467c602cbe5",
+                "name": "access_token",
+                "value": "={{ $('GET TOKEN').first().json.access_token }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          4420,
+          2040
+        ],
+        "id": "7d559eeb-dff9-4646-a735-1d79632141d8",
+        "name": "set_google_business"
+      }
+    ],
+    "connections": {
+      "Set Ideal": {
+        "main": [
+          [
+            {
+              "node": "Set global",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Set Bips": {
+        "main": [
+          [
+            {
+              "node": "Set global",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Set Tel Estetica": {
+        "main": [
+          [
+            {
+              "node": "Set global",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Set Tel Sorvete": {
+        "main": [
+          [
+            {
+              "node": "Set global",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Set Tel Fitness": {
+        "main": [
+          [
+            {
+              "node": "Set global",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Set Tel Construção": {
+        "main": [
+          [
+            {
+              "node": "Set global",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "ID",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Sheets1": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "get_cellphone": {
+        "main": [
+          [
+            {
+              "node": "Existe celular?1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "ID": {
+        "main": [
+          [
+            {
+              "node": "get_cellphone",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Existe celular?": {
+        "main": [
+          [
+            {
+              "node": "get_cellphone",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Switch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch": {
+        "main": [
+          [
+            {
+              "node": "Set Tel Estetica",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Set Tel Sorvete",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Set Tel Fitness",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Set Tel Construção",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Venda ou Locação?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Venda ou Locação?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Venda ou Locação?": {
+        "main": [
+          [
+            {
+              "node": "Set Ideal",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Set Bips",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Existe celular?1": {
+        "main": [
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Switch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "Existe celular?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Sheets": {
+        "main": [
+          [
+            {
+              "node": "Google Sheets1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code1": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Trigger PEB": {
+        "main": [
+          [
+            {
+              "node": "Switch1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch1": {
+        "main": [
+          [
+            {
+              "node": "Code1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Code1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Existe celular?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Set global": {
+        "main": [
+          [
+            {
+              "node": "Google Sheets",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "JWT GOOGLE",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request": {
+        "main": [
+          []
+        ]
+      },
+      "JWT GOOGLE": {
+        "main": [
+          [
+            {
+              "node": "GET TOKEN",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GET TOKEN": {
+        "main": [
+          [
+            {
+              "node": "Post PEB",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Post PEB": {
+        "main": [
+          [
+            {
+              "node": "set_google_business",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_google_business": {
+        "main": [
+          [
+            {
+              "node": "Google Meu Negocio API",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "saveManualExecutions": true,
+      "callerPolicy": "workflowsFromSameOwner",
+      "executionTimeout": 180,
+      "timezone": "America/Sao_Paulo"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Trigger PEB": [
+        {
+          "json": {
+            "lead": {
+              "integration": "CREDIT_ANALYSIS_BQ_N8N",
+              "url_webhook": "https://blips-backend-prod-yc62attz3a-uc.a.run.app/v2/leads/credit-query-gcp/webhook",
+              "id": "6810f297e93e8e5f36e050bd",
+              "segments": [
+                {
+                  "id": "6617e3f46c820dd9d7fac410",
+                  "disabled": false,
+                  "name": "Fitness",
+                  "description": "Segmento que compreende esteira e escadas",
+                  "create_user": {
+                    "id": "64764e4f1a6fd855267a12e2",
+                    "name": "Haquila"
+                  },
+                  "historical": [
+                    {
+                      "id": "6617e3f46c820dd9d7fac40f",
+                      "date": "2024-04-11T13:21:56.23Z",
+                      "type": "SYSTEM",
+                      "description": "Criação de um novo segmento. Nome: Fitness",
+                      "justification": "",
+                      "backoffice_user": {
+                        "id": "6571be503c7bf37cdebcfc89",
+                        "name": "Rayanne Dias Gonçalves"
+                      }
+                    },
+                    {
+                      "id": "674b5951b616cda61fe9ff3e",
+                      "date": "2024-11-30T18:28:33.18Z",
+                      "type": "SYSTEM",
+                      "description": "Atualização de segmento - nome: Fitness e descrição: Segmento que compreende esteira e escadas",
+                      "justification": "",
+                      "backoffice_user": {
+                        "id": "64764e4f1a6fd855267a12e2",
+                        "name": "Haquila"
+                      }
+                    }
+                  ],
+                  "niches": [],
+                  "created_at": "2024-04-11T13:21:56.00Z",
+                  "updated_at": "2024-04-11T13:21:56.00Z"
+                }
+              ],
+              "type_all": false,
+              "personal_document": "31334279896",
+              "document": "20434227000152",
+              "responsible_id": "67bf1bbb165d4a585b3f1a5a",
+              "responsible_name": "Dyonatan Barbosa",
+              "responsible_type": "SELLER",
+              "business_rule_type": "LOCACAO",
+              "equipment_value": 23830,
+              "is_with_sale": false,
+              "machine_type": "Esteira Led ONTRACK- Pré Venda",
+              "organization_ref": "Blips",
+              "address_final": {
+                "zip_code": "68555360",
+                "city": "Xinguara",
+                "complement": "",
+                "neighborhood": "Centro",
+                "st_ave": "Rua Amazonas",
+                "state": "PA"
+              },
+              "origin": "Meta",
+              "monthly_earnings": "",
+              "number_employees": "",
+              "created_at": "2025-04-29T16:47:56.55Z"
+            },
+            "name": "AGROZOO COMERCIO E REPRESENTACAO DE PRODUTOS AGROPECUARIOS LTDA",
+            "cellphone": "94991651017",
+            "avaliacaoFinal": "APROVADO",
+            "resultado": {
+              "resultadoAprovacaoAutoCPF": "SIM",
+              "resultado_cpf": {
+                "obsAprovacao": {
+                  "avaliacao_cpf": {
+                    "strMotivoAprovCPF": {
+                      "SEM CPF": "SIM"
+                    },
+                    "resultadoAprovacaoAutoCPF": "NÃO"
+                  }
+                }
+              },
+              "resultado_cnpj": {
+                "resultadoAprovacaoAutoCNPJ": "SIM",
+                "data_fundacao_anos": "11",
+                "data_fundacao_meses": "-2",
+                "data_fundacao_meses_total": "130",
+                "basic_data_CNPJ": {
+                  "basic_data": {
+                    "activities": "[{\"Activity\":\"COMERCIO ATACADISTA DE DEFENSIVOS AGRICOLAS, ADUBOS, FERTILIZANTES E CORRETIVOS DO SOLO\",\"Code\":\"4683400\",\"IsMain\":true},{\"Activity\":\"COMERCIO ATACADISTA DE ALIMENTOS PARA ANIMAIS\",\"Code\":\"4623109\",\"IsMain\":false},{\"Activity\":\"COMERCIO ATACADISTA DE MERCADORIAS EM GERAL, COM PREDOMINANCIA DE INSUMOS AGROPECUARIOS\",\"Code\":\"4692300\",\"IsMain\":false},{\"Activity\":\"COMERCIO VAREJISTA DE PLANTAS E FLORES NATURAIS\",\"Code\":\"4789002\",\"IsMain\":false},{\"Activity\":\"DEPOSITOS DE MERCADORIAS PARA TERCEIROS, EXCETO ARMAZENS GERAIS E GUARDA-MOVEIS\",\"Code\":\"5211799\",\"IsMain\":false},{\"Activity\":\"REPRESENTANTES COMERCIAIS E AGENTES DO COMERCIO DE MERCADORIAS EM GERAL NAO ESPECIALIZADO\",\"Code\":\"4619200\",\"IsMain\":false},{\"Activity\":\"SERVICOS DE AGRONOMIA E DE CONSULTORIA AS ATIVIDADES AGRICOLAS E PECUARIAS\",\"Code\":\"7490103\",\"IsMain\":false},{\"Activity\":\"COMERCIO ATACADISTA DE SEMENTES, FLORES, PLANTAS E GRAMAS\",\"Code\":\"4623106\",\"IsMain\":false}]",
+                    "age": "10",
+                    "company_type": "DEMAIS",
+                    "created_at": "2014-06-11T00:00:00Z",
+                    "state": "PA",
+                    "legal_nature": {
+                      "Activity": "SOCIEDADE EMPRESARIA LIMITADA",
+                      "Code": "2062"
+                    },
+                    "name": "DJ AGROZOO COMERCIO E REPRESENTACAO DE PRODUTOS AGROPECUARIOS LTDA",
+                    "origin_data": "Receita Federal",
+                    "regime": [
+                      {
+                        "StartDate": "2023-01-01T00:00:00Z",
+                        "Value": "LUCRO REAL"
+                      },
+                      {
+                        "EndDate": "2023-01-01T00:00:00Z",
+                        "StartDate": "2014-06-11T00:00:00Z",
+                        "Value": "LTDA"
+                      }
+                    ],
+                    "founded_date": "2014-06-11T00:00:00Z",
+                    "country": "Brazil",
+                    "status": "ATIVA"
+                  }
+                },
+                "serasa_cnpj": {
+                  "chq_data": "N/A",
+                  "chq_qtd": 0,
+                  "pefin_valor": 0,
+                  "pefin_data": "N/A",
+                  "refin_valor": 0,
+                  "refin_data": "N/A",
+                  "protesto_valor": 0,
+                  "protesto_data": "N/A",
+                  "serasa_score": 385
+                },
+                "serasa_chq_cnpj": {
+                  "chqDataCnpj": "N/A",
+                  "chqQtdCnpj": 0,
+                  "mesesChequeCnpj": 0,
+                  "data_fundacao_anos": 11,
+                  "data_fundacao_meses": -2
+                },
+                "bacen": {
+                  "bacen_vencido_cnpj": 0,
+                  "prej_bacen_cnpj": 0,
+                  "bacen_limite_utilizado_cnpj": 0,
+                  "bacen_limite_cnpj": 20000,
+                  "bacen_a_vencer_cnpj": 0
+                },
+                "protesto": {
+                  "protesto_valor_cnpj": 0,
+                  "bacen_limite_cnpj": 20000,
+                  "bacen_limite_utilizado_cnpj": 0,
+                  "bacen_vencido_cnpj": 0,
+                  "base_cred_bacen_prots": 26000,
+                  "protesto_data_cnpj": "N/A",
+                  "valor_equipamento": 23830,
+                  "base_cred_bacen_cnpj": 26000
+                },
+                "obsAprovacao": {
+                  "avaliacao_cnpj": {
+                    "strMotivoAprovCNPJ": {
+                      "Pefin + Refin > 1000?": "NÃO",
+                      "Cheques Sem Fundo > 3 em 24m?": "NÃO",
+                      "PROTESTO > 1000?": "NÃO",
+                      "avaliacaoPefin": "SIM",
+                      "avaliacaoChequeSemFundo": "SIM",
+                      "avaliacaoProtesto": "SIM",
+                      "temLimiteBacen": "SIM",
+                      "fundacaoMaior24M": "SIM",
+                      "Processos": "NÃO",
+                      "KYC": "NÃO",
+                      "Plano Balão > Permitido?": "NÃO"
+                    },
+                    "strMotivoCNPJ": {
+                      "PERFIL EMPRESA NOVA": "NÃO",
+                      "EMPRESA < 12 MESES": "NÃO",
+                      "PERFIL EMPRESA INVISIVEL": "NÃO",
+                      "PERFIL EMPRESA C/ PEFIN": "NÃO"
+                    },
+                    "resultadoAprovacaoAutoCNPJ": "SIM"
+                  }
+                },
+                "blips_cnpj": {
+                  "blips_score_cnpj": {
+                    "score": "554.02",
+                    "rating": "D"
+                  }
+                },
+                "processos": {
+                  "processos": [
+                    {
+                      "tipo": "Cível",
+                      "papel": "Autor",
+                      "decisão": "Arquivado",
+                      "resumo": "O lead, FRANCISCO GILSON DUARTE KUMAMOTO SEGUNDO, moveu uma ação de cobrança, que foi suspensa temporariamente e posteriormente arquivada."
+                    },
+                    {
+                      "tipo": "Cível",
+                      "papel": "Autor",
+                      "decisão": "Arquivado",
+                      "resumo": "O lead, FLAVIA OLIVEIRA DO ROSARIO, moveu uma ação de cumprimento de sentença relacionada a pagamento. A citação do réu foi por edital e o processo foi arquivado."
+                    },
+                    {
+                      "tipo": "Cível",
+                      "papel": "Autor",
+                      "decisão": "Transitado em Julgado",
+                      "resumo": "O lead, ANA CAROLINA BARBOSA PEREIRA, moveu uma ação de cumprimento de sentença relacionada a pagamento. A citação do réu foi por edital e o processo transitou em julgado."
+                    },
+                    {
+                      "tipo": "Cível",
+                      "papel": "Autor",
+                      "decisão": "Arquivado",
+                      "resumo": "O lead, FLAVIA OLIVEIRA DO ROSARIO, moveu uma ação de cumprimento de sentença relacionada a pagamento. A citação do réu foi por edital e o processo foi arquivado."
+                    },
+                    {
+                      "tipo": "Cível",
+                      "papel": "Autor",
+                      "decisão": "Arquivado",
+                      "resumo": "O lead, LEANDRO VICENZO SILVA CONSENTINO, moveu uma ação relacionada à obrigação de fazer/não fazer. O processo foi arquivado."
+                    },
+                    {
+                      "tipo": "Cível",
+                      "papel": "Autor",
+                      "decisão": "Transitado em Julgado",
+                      "resumo": "O lead, CESAR LEANDRO PINTO MACHADO, moveu uma ação de liquidação/cumprimento/execução. Foi deferida consulta devido à certidão negativa do oficial de justiça e o processo transitou em julgado e foi encaminhado para arquivo."
+                    },
+                    {
+                      "tipo": "Cível",
+                      "papel": "Autor",
+                      "decisão": "Arquivado",
+                      "resumo": "O lead, FLAVIA OLIVEIRA DO ROSARIO, moveu uma ação de procedimento sumário relacionada à liquidação/cumprimento/execução. O processo foi arquivado."
+                    },
+                    {
+                      "tipo": "Cível",
+                      "papel": "Autor",
+                      "decisão": "Arquivado",
+                      "resumo": "O lead, LEANDRO VICENZO SILVA CONSENTINO, moveu uma ação de procedimento sumário relacionada à liquidação/cumprimento/execução. O pedido foi julgado procedente, declarando a inexistência de um débito e o cancelamento de um protesto."
+                    },
+                    {
+                      "tipo": "Cível",
+                      "papel": "Réu",
+                      "decisão": "Arquivado",
+                      "resumo": "O lead, DJ AGROZOO COMERCIO E REPRESENTACAO DE PRODUTOS AGROPECUARIOS LTDA, foi executado extrajudicialmente devido a juros e correção monetária. Houve um acordo homologado e o processo foi arquivado."
+                    },
+                    {
+                      "tipo": "Cível",
+                      "papel": "Réu",
+                      "decisão": "Em Andamento",
+                      "resumo": "O lead, DJ AGROZOO COMERCIO E REPRESENTACAO DE PRODUTOS AGROPECUARIOS LTDA, está sendo executado extrajudicialmente devido a duplicata e correção monetária. O processo está em andamento."
+                    },
+                    {
+                      "tipo": "Cível",
+                      "papel": "Advogado",
+                      "decisão": "Transitado em Julgado",
+                      "resumo": "O lead, DEUSDEDITE SEPTIMIO RAMOS NETO, atuou como advogado em um cumprimento de sentença relacionado a cheque. Foi deferida a consulta de endereço pelo sistema e o processo transitou em julgado."
+                    },
+                    {
+                      "tipo": "Cível",
+                      "papel": "Advogado",
+                      "decisão": "Arquivado",
+                      "resumo": "O lead, DEUSDEDITE SEPTIMIO RAMOS NETO, atuou como advogado em um procedimento comum relacionado a duplicata. O processo foi extinto com resolução de mérito e arquivado."
+                    },
+                    {
+                      "tipo": "Cível",
+                      "papel": "Advogado",
+                      "decisão": "Julgado",
+                      "resumo": "O lead, DEUSDEDITE SEPTIMIO RAMOS NETO, atuou como advogado em uma ação monitória relacionada à correção monetária. O processo foi julgado."
+                    },
+                    {
+                      "tipo": "Cível",
+                      "papel": "Advogado",
+                      "decisão": "Arquivado",
+                      "resumo": "O lead, DEUSDEDITE SEPTIMIO RAMOS NETO, atuou como advogado em uma execução de título extrajudicial relacionada à correção monetária. O processo foi arquivado."
+                    },
+                    {
+                      "tipo": "Cível",
+                      "papel": "Advogado",
+                      "decisão": "Transitado em Julgado",
+                      "resumo": "O lead, DJARLEY SOUZA RAMOS, atuou como advogado em um cumprimento de sentença relacionado a duplicata. O processo transitou em julgado."
+                    },
+                    {
+                      "tipo": "Cível",
+                      "papel": "Advogado",
+                      "decisão": "Arquivado",
+                      "resumo": "O lead, DEUSDEDITE SEPTIMIO RAMOS NETO, atuou como advogado em uma ação monitória relacionada a duplicata. O processo foi arquivado."
+                    },
+                    {
+                      "tipo": "Cível",
+                      "papel": "Advogado",
+                      "decisão": "Em Andamento",
+                      "resumo": "O lead, DJARLEY SOUZA RAMOS, atuou como advogado em uma execução de título extrajudicial relacionada a duplicata. O processo está em andamento."
+                    },
+                    {
+                      "tipo": "Cível",
+                      "papel": "Advogado",
+                      "decisão": "Indefinido",
+                      "resumo": "O lead, DEUSDEDITE SEPTIMIO RAMOS NETO, atuou como advogado em um procedimento comum relacionado à correção monetária e perdas e danos. O status do processo é indefinido."
+                    },
+                    {
+                      "tipo": "Cível",
+                      "papel": "Réu",
+                      "decisão": "Arquivado",
+                      "resumo": "O lead, DJ AGROZOO COMERCIO E REPRESENTACOES DE PRODUTOS AGROPECUARIOS LTDA, foi alvo de uma carta precatória cível para citação. O processo foi arquivado."
+                    },
+                    {
+                      "tipo": "Cível",
+                      "papel": "Advogado",
+                      "decisão": "Em Andamento",
+                      "resumo": "O lead, DEUSDEDITE SEPTIMIO RAMOS NETO, atuou como advogado em uma execução de título extrajudicial relacionada à correção monetária e duplicata. O processo está em andamento."
+                    },
+                    {
+                      "tipo": "Cível",
+                      "papel": "Autor",
+                      "decisão": "Redistribuído",
+                      "resumo": "O lead, CLAUDIA LONGOBARDI CAMPANA, moveu uma execução de título extrajudicial relacionada a espécies de contratos. A sentença foi reconsiderada e o processo foi redistribuído."
+                    },
+                    {
+                      "tipo": "Cível",
+                      "papel": "Autor",
+                      "decisão": "Extinto",
+                      "resumo": "O lead, RICARDO HOFFMANN, moveu uma execução de título extrajudicial relacionada à confissão/composição de dívida. Houve substituição processual e o processo foi extinto."
+                    },
+                    {
+                      "tipo": "Cível",
+                      "papel": "Advogado",
+                      "decisão": "Arquivado",
+                      "resumo": "O lead, ROBERTA BORTOT CESAR, atuou como advogado em uma execução de título extrajudicial relacionada a duplicata. O processo foi arquivado."
+                    }
+                  ]
+                },
+                "kyc": {
+                  "sansao": {},
+                  "pep": false,
+                  "sansao_ativa": false,
+                  "ja_sansionada": false
+                },
+                "matriz_planos": "0",
+                "score_ajustado": 0.091,
+                "taxa_final": 5.2838,
+                "motivoReprov": "Aprovado plano balão 0% de entrada."
+              },
+              "avaliacaoFinal": "APROVADO"
+            }
+          }
+        }
+      ]
+    },
+    "versionId": "0de841fd-fcf8-4739-9670-2bd34a339d76",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-31T16:22:41.803Z",
+        "updatedAt": "2024-07-31T16:22:41.803Z",
+        "id": "mmaXbyiWhptUXaTd",
+        "name": "New Motor"
+      }
+    ]
+  }
+}
