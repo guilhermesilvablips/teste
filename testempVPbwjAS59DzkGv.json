@@ -1,0 +1,603 @@
+{
+  "data": {
+    "createdAt": "2025-04-01T17:58:48.901Z",
+    "updatedAt": "2025-04-01T18:17:13.776Z",
+    "id": "mpVPbwjAS59DzkGv",
+    "name": "Validar Inscrição Estadual",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "verificar_IE",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -2340,
+          0
+        ],
+        "id": "0678ed4a-f118-4198-8eb5-1680316a5bff",
+        "name": "Webhook",
+        "webhookId": "9a7a3fff-effa-4776-8bdb-a86c27bf368c"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://plataforma.bigdatacorp.com.br/ondemand",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "AccessToken",
+                "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1bmlxdWVfbmFtZSI6ImluZnJhZXN0cnV0dXJhQGJsaXBzLmNvbS5iciIsIm5iZiI6MTY3MzU0NTc2NSwiZXhwIjoxOTg4NTQ1NzY1LCJpYXQiOjE2NzM1NDU3NjUsImlzcyI6IkJpZyBEYXRhIENvcnAuIiwicHJvZHVjdHMiOlsiQklHQk9PU1QiXSwiZG9tYWluIjoiQkxJUFMifQ.Ep_mYbFOiyLl7EMJ-jmFgEoOPO8_VuO3JZelc_GZGh0"
+              },
+              {
+                "name": "TokenId",
+                "value": "63c048250bc50d00081e581c"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "q",
+                "value": "=doc[{{ $('Dados Bitrix').first().json.cnpj }}]"
+              },
+              {
+                "name": "Datasets",
+                "value": "ondemand_sintegra_company"
+              },
+              {
+                "name": "UF",
+                "value": "MG"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -940,
+          0
+        ],
+        "id": "ec6246d0-be6b-4db1-860a-320a0d241ecf",
+        "name": "Api BDC",
+        "executeOnce": false,
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "maxTries": 5
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "bca066c9-d496-4957-bb75-2c16affe1f84",
+                "name": "Status",
+                "value": "={{ $json.Result[0].OnlineQuery[0].QueryResultData.Status }}",
+                "type": "string"
+              },
+              {
+                "id": "1df5ecd5-2266-4a29-acb6-13be15e0fe7b",
+                "name": "StateRegistration",
+                "value": "={{ $json.Result[0].OnlineQuery[0].QueryResultData.StateRegistration }}",
+                "type": "string"
+              },
+              {
+                "id": "0aee9bdc-7803-4ae8-8f9d-faeee334f153",
+                "name": "State",
+                "value": "={{ $json.Result[0].OnlineQuery[0].QueryResultData.State }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -700,
+          0
+        ],
+        "id": "c99a2f6e-77fc-4986-bf6b-1fd4df3998fe",
+        "name": "status",
+        "executeOnce": false
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.deal.get",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "ID",
+                "value": "={{ $json.query.id_card}}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "6a7315e1-820d-445a-a240-ecc46aa7f1f8",
+        "name": "Buscar card",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -2100,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "1ece2110-3181-4e74-afef-82d6704440bc",
+                "leftValue": "={{ $json.StateRegistration }}",
+                "rightValue": "NOT REGISTERED",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEquals"
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -480,
+          0
+        ],
+        "id": "7492d613-b57d-4c98-8ea3-5fe2e6a888aa",
+        "name": "Tem registro?"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "d3ade588-6d93-4fc1-8c89-f9e4d3128b33",
+                "leftValue": "={{ $json.Status }}",
+                "rightValue": "Habilitado",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -220,
+          -20
+        ],
+        "id": "13b0d933-eb38-460d-a5c5-8d488b1288e6",
+        "name": "Habilitado?"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/tasks.task.add.json",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"fields\": {\n    \"TITLE\": \"Inscrição Estadual - Não habilitado\",\n    \"RESPONSIBLE_ID\": {{ $('Dados Bitrix').first().json.resp }},\n    \"DESCRIPTION\": \"O cliente {{ $('Dados Bitrix').first().json.nome }} CNPJ: {{ $('Dados Bitrix').first().json.cnpj }}, não está habilitado na inscrição estadual, não sendo possível o faturamento do equipamento da negociação {{ $('Dados Bitrix').first().json.neg }}.\\n\\nResultado da Consulta Sintegra:\\n- Estado: {{ $('status').item.json.State }}\\n- Inscrição Estadual: {{ $('status').item.json.StateRegistration }}\\n- Status: {{ $('status').item.json.Status }}\\n\\nTime de onboarding favor contactar o cliente para a regularização. Houve tentativa de contato com o cliente via Hyperflow.\",\n    \"PRIORITY\": 2,\n    \"DEADLINE\": \"{{ $now.plus(1, 'hour').toString() }}\",\n    \"TAGS\": [\"inscricao_estadual\"],\n    \"UF_CRM_TASK\": [\n      \"D_{{ $('Dados Bitrix').first().json.id_deal }}\"\n    ]\n  }\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          40,
+          0
+        ],
+        "id": "9bd30f50-2eb9-4f63-861c-fb83ad8c2269",
+        "name": "Criar Tarefa Bitrix"
+      },
+      {
+        "parameters": {
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.contact.get.json",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "ID",
+                "value": "={{ $('Buscar card').first().json.result.CONTACT_ID }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -1840,
+          0
+        ],
+        "id": "e415caaa-d428-492b-9bc5-4450d30f18f6",
+        "name": "Dados cliente"
+      },
+      {
+        "parameters": {
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/user.get.json",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "ID",
+                "value": "={{ $('Buscar card').first().json.result.ASSIGNED_BY_ID }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -1620,
+          0
+        ],
+        "id": "db7663a6-f1c5-4a7d-969e-7fdf5b9c212f",
+        "name": "Dados Resp"
+      },
+      {
+        "parameters": {
+          "jsCode": "const equipamentos = [\n    { ID: \"321\", VALUE: \"Plotter XP600\" },\n    { ID: \"323\", VALUE: \"Plotter XP600 Sub\" },\n    { ID: \"325\", VALUE: \"Plotter XP600 60cm\" },\n    { ID: \"327\", VALUE: \"Plotter i3200\" },\n    { ID: \"329\", VALUE: \"Plotter i1600\" },\n    { ID: \"1055\", VALUE: \"Plotter i1600 Sub\" },\n    { ID: \"331\", VALUE: \"CNC 1060\" },\n    { ID: \"333\", VALUE: \"CNC 9060\" },\n    { ID: \"335\", VALUE: \"CNC 6040\" },\n    { ID: \"337\", VALUE: \"CNC 4040\" },\n    { ID: \"339\", VALUE: \"Recorte 35cm\" },\n    { ID: \"341\", VALUE: \"Recorte 120\" },\n    { ID: \"343\", VALUE: \"Fiber 30W\" },\n    { ID: \"345\", VALUE: \"Fiber 50W\" },\n    { ID: \"347\", VALUE: \"Laminadora\" },\n    { ID: \"349\", VALUE: \"DTF\" },\n    { ID: \"351\", VALUE: \"DTF-UV\" },\n    { ID: \"1719\", VALUE: \"FlatBed UV 90\" },\n    { ID: \"353\", VALUE: \"Bioset MaxiShape Cryo Station\" },\n    { ID: \"355\", VALUE: \"Bioset MaxiFlash G2\" },\n    { ID: \"357\", VALUE: \"Bioset KryoPlatten\" },\n    { ID: \"359\", VALUE: \"KLD Artix\" },\n    { ID: \"361\", VALUE: \"KLD Manthus\" },\n    { ID: \"363\", VALUE: \"KLD Start Clinic\" },\n    { ID: \"365\", VALUE: \"KLD Ascua\" },\n    { ID: \"367\", VALUE: \"KLD Hertix Smart\" },\n    { ID: \"369\", VALUE: \"KLD Hygiadermo Vacuo\" },\n    { ID: \"371\", VALUE: \"KLD Kavys\" },\n    { ID: \"373\", VALUE: \"KLD Endophoton Esthetic\" },\n    { ID: \"375\", VALUE: \"KLD Hygiaplasma\" },\n    { ID: \"377\", VALUE: \"HTM Stimulus Face\" },\n    { ID: \"379\", VALUE: \"HTM Stimulus R\" },\n    { ID: \"381\", VALUE: \"HTM Light Pulse\" },\n    { ID: \"383\", VALUE: \"HTM Effect\" },\n    { ID: \"385\", VALUE: \"Plotter Sublimática\" },\n    { ID: \"387\", VALUE: \"Plotter Eco-Solvente\" },\n    { ID: \"389\", VALUE: \"CNC 9060 Laser\" },\n    { ID: \"391\", VALUE: \"CNC 1060 Laser\" },\n    { ID: \"1039\", VALUE: \"Vuze Artic Vert 38L\" },\n    { ID: \"1041\", VALUE: \"Vuze Artic Vert 62L Touch\" },\n    { ID: \"1043\", VALUE: \"Vuze Artic Banc 28L\" },\n    { ID: \"1045\", VALUE: \"Vuze Artic Banc 28L Touch\" },\n    { ID: \"1725\", VALUE: \"Esteira ONTRACK\" },\n    { ID: \"1727\", VALUE: \"Esteira ONTRACK S\" },\n    { ID: \"1729\", VALUE: \"Escada TOP STEP\" },\n    { ID: \"1747\", VALUE: \"Miniescavadeira X15-10\" },\n    { ID: \"1749\", VALUE: \"Miniescavadeira X15-10S\" },\n    { ID: \"1751\", VALUE: \"Miniescavadeira X15-20S\" },\n    { ID: \"1767\", VALUE: \"Fiber Desktop 30W\" },\n    { ID: \"1769\", VALUE: \"Fiber Desktop 50W + Esteira e CCD\" },\n    { ID: \"1771\", VALUE: \"Mini Fiber 20W\" },\n    { ID: \"1773\", VALUE: \"Fiber UV 5W\" },\n    { ID: \"1775\", VALUE: \"Fiber 1500W 3 em 1\" },\n    { ID: \"1777\", VALUE: \"Fiber Desktop 50W\" },\n    { ID: \"2419\", VALUE: \"Omini Light\" },\n    { ID: \"2431\", VALUE: \"MaxiFlash e Higyaplasma\" },\n    { ID: \"2433\", VALUE: \"Manthus + Plasma Skin\" },\n    { ID: \"2435\", VALUE: \"Krioplatten SE + Manthus\" },\n    { ID: \"2447\", VALUE: \"Sonora Beauty Face\" },\n    { ID: \"2469\", VALUE: \"DTF 60cm\" },\n    { ID: \"2471\", VALUE: \"Bioset Plasmaskin\" },\n    { ID: \"2473\", VALUE: \"Bioset LedShape\" },\n    { ID: \"2475\", VALUE: \"FlatBed UV 90 3XP600\" }\n];\n\n// Função que traduz o ID para o nome do equipamento\nfunction traduzirEquipamentoPorID(id) {\n    const equipamento = equipamentos.find(item => item.ID === id);\n    if (equipamento) {\n        return equipamento.VALUE;\n    } else {\n        return \"Equipamento não encontrado.\";\n    }\n}\n\nconst equipamento = traduzirEquipamentoPorID($('Buscar card').first().json.result.UF_CRM_A293565A);\n  \nreturn {equipamento};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1400,
+          0
+        ],
+        "id": "c1340b98-2969-4578-8078-7cfa33fc4d86",
+        "name": "Equipamento"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "94a1175e-235c-44e5-8f68-9fffa2b00481",
+                "name": "id_deal",
+                "value": "={{ $('Buscar card').first().json.result.ID }}",
+                "type": "string"
+              },
+              {
+                "id": "58cdb39e-2f3e-4611-a589-007a02cb3a47",
+                "name": "cnpj",
+                "value": "={{ $('Buscar card').first().json.result.UF_CRM_B98C1610 }}",
+                "type": "string"
+              },
+              {
+                "id": "295f08d8-5128-4cfd-9f8d-799587caecb3",
+                "name": "nome",
+                "value": "={{ \n  (\n    $('Dados cliente').first().json.result.NAME || '' \n    + ' ' \n    + $('Dados cliente').first().json.result.LAST_NAME || ''\n    \n  ).trim() \n}}",
+                "type": "string"
+              },
+              {
+                "id": "5f2c1cfe-1728-4762-9d69-6548d846cfcb",
+                "name": "resp",
+                "value": "={{ $('Buscar card').first().json.result.ASSIGNED_BY_ID }}",
+                "type": "string"
+              },
+              {
+                "id": "27017855-d369-463f-956a-2115ddd2b9c9",
+                "name": "neg",
+                "value": "={{ $('Buscar card').first().json.result.UF_CRM_1699879903563 }}",
+                "type": "string"
+              },
+              {
+                "id": "2dd1f8c7-a54f-4a14-ae03-f963259c34d0",
+                "name": "telefone",
+                "value": "={{ $('Dados cliente').first().json.result.PHONE[0].VALUE.toNumber() || $('Buscar card').first().json.result.UF_CRM_1698533997322 }}",
+                "type": "string"
+              },
+              {
+                "id": "8e70ed21-041c-4bee-896e-ddadfd424a29",
+                "name": "equipamento",
+                "value": "={{ $('Equipamento').first().json.equipamento }}",
+                "type": "string"
+              },
+              {
+                "id": "bd9d1864-7388-4c5e-97b5-c0537a65ef75",
+                "name": "email_resp",
+                "value": "={{ $('Dados Resp').first().json.result[0].EMAIL }}",
+                "type": "string"
+              },
+              {
+                "id": "e5b25b42-8845-4c14-b367-6f4e61d742ce",
+                "name": "empresa",
+                "value": "={{ $('Buscar card').item.json.result.UF_CRM_8B0955C0 === '397' ? 'IDEAL' : 'BLIPS' }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1180,
+          0
+        ],
+        "id": "374595a9-f572-4756-bd12-5243274d8d37",
+        "name": "Dados Bitrix",
+        "executeOnce": true
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://runtime.hyperflowapis.global/api/dneeXMnM7/situacao-ie",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "client_id",
+                "value": "d65393f4-f062-493a-bfd0-c36aeb5d21b0"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"id_deal\": \"{{ $('Dados Bitrix').first().json.id_deal }}\",\n  \"telefone\": \"{{ $('Dados Bitrix').first().json.telefone }}\",\n  \"nome\": \"{{ $('Dados Bitrix').first().json.nome }}\",\n  \"contrato\": \"{{ $('Dados Bitrix').first().json.neg }}\",\n  \"empresa\": \"{{ $('Dados Bitrix').first().json.empresa }}\",\n  \"cnpj\": \"{{ $('Dados Bitrix').first().json.cnpj }}\",\n  \"equipamento\": \"{{ $('Dados Bitrix').first().json.equipamento }}\",\n  \"gerente\": \"{{ $('Dados Bitrix').first().json.email_resp }}\"\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          280,
+          0
+        ],
+        "id": "39fbadd9-fea9-4188-9f68-a2c0cebcc304",
+        "name": "Ativar Hyper"
+      },
+      {
+        "parameters": {
+          "resource": "message",
+          "guildId": {
+            "__rl": true,
+            "value": "1258059672171319316",
+            "mode": "list",
+            "cachedResultName": "Bot Teste",
+            "cachedResultUrl": "https://discord.com/channels/1258059672171319316"
+          },
+          "channelId": {
+            "__rl": true,
+            "value": "1278683051869863936",
+            "mode": "list",
+            "cachedResultName": "log",
+            "cachedResultUrl": "https://discord.com/channels/1258059672171319316/1278683051869863936"
+          },
+          "content": "=Tentativa de contato inscrição estadual - {{ $now.format('dd/MM/yyyy - HH:mm') }}\n- Telefone: {{ $('Dados Bitrix').item.json.telefone }}\n- Deal: https://blips.bitrix24.com.br/crm/deal/details/{{ $('Dados Bitrix').first().json.id_deal }}/",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.discord",
+        "typeVersion": 2,
+        "position": [
+          500,
+          0
+        ],
+        "id": "ef8c082c-2146-47f1-8e56-bc54acfd547d",
+        "name": "Discord",
+        "webhookId": "15a452e8-4526-4e78-9c3c-8bec4f952f2b",
+        "credentials": {
+          "discordBotApi": {
+            "id": "HwwdTQ09UgBU7GNZ",
+            "name": "Discord Bot account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Buscar card",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Api BDC": {
+        "main": [
+          [
+            {
+              "node": "status",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "status": {
+        "main": [
+          [
+            {
+              "node": "Tem registro?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Buscar card": {
+        "main": [
+          [
+            {
+              "node": "Dados cliente",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tem registro?": {
+        "main": [
+          [
+            {
+              "node": "Habilitado?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Habilitado?": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Criar Tarefa Bitrix",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Criar Tarefa Bitrix": {
+        "main": [
+          [
+            {
+              "node": "Ativar Hyper",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados cliente": {
+        "main": [
+          [
+            {
+              "node": "Dados Resp",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados Resp": {
+        "main": [
+          [
+            {
+              "node": "Equipamento",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Equipamento": {
+        "main": [
+          [
+            {
+              "node": "Dados Bitrix",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados Bitrix": {
+        "main": [
+          [
+            {
+              "node": "Api BDC",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ativar Hyper": {
+        "main": [
+          [
+            {
+              "node": "Discord",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Webhook": [
+        {
+          "json": {
+            "headers": {
+              "x-forwarded-for": "3.217.33.54",
+              "x-forwarded-proto": "https",
+              "x-forwarded-port": "443",
+              "host": "automacao.blips-labs.com",
+              "x-amzn-trace-id": "Root=1-67d1cfd8-395df2972df592a91704b7fd",
+              "content-length": "321",
+              "content-type": "application/x-www-form-urlencoded",
+              "user-agent": "Bitrix24 Webhook Engine",
+              "accept-encoding": "gzip"
+            },
+            "params": {},
+            "query": {
+              "id_card": "115171"
+            },
+            "body": {
+              "document_id[0]": "crm",
+              "document_id[1]": "CCrmDocumentDeal",
+              "document_id[2]": "DEAL_115171",
+              "auth[domain]": "blips.bitrix24.com.br",
+              "auth[client_endpoint]": "https://blips.bitrix24.com.br/rest/",
+              "auth[server_endpoint]": "https://oauth.bitrix.info/rest/",
+              "auth[member_id]": "cc1dbe6157e85937651412909fb01150"
+            },
+            "webhookUrl": "https://automacao.blips-labs.com/webhook/verificar_IE",
+            "executionMode": "production"
+          }
+        }
+      ]
+    },
+    "versionId": "adc85cdb-dae8-4435-bd18-1a36284eb440",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
