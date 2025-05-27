@@ -1,0 +1,837 @@
+{
+  "data": {
+    "createdAt": "2025-04-23T18:27:29.932Z",
+    "updatedAt": "2025-05-08T16:00:19.359Z",
+    "id": "kGdiV623f24UZF3S",
+    "name": "[COBRANÇA] Gerar Lista de Envio (BQ -> Planilha)",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 8
+              }
+            ]
+          }
+        },
+        "id": "238e63d0-3cfe-4c62-a163-c403b1f7d381",
+        "name": "Schedule Trigger",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          -2080,
+          260
+        ]
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "options": {}
+        },
+        "id": "1c142df1-dcf8-4916-8b37-b26961b21744",
+        "name": "Aggregate",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          -1420,
+          20
+        ]
+      },
+      {
+        "parameters": {
+          "amount": 3
+        },
+        "id": "a931895d-0813-4298-ad1f-9dabea337fa2",
+        "name": "Delay Api",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          -980,
+          260
+        ],
+        "webhookId": "932ec5cd-cd59-4a31-bbb1-38c5e25e2378"
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT *\nFROM blips-bigdata.IA_E_AUTOMACAO.BASE_FLUXO_COBRANCA\nWHERE telefone IS NOT NULL\n  AND (\n    (max_dias_vencidos IN (50, 91) AND modalidade = 'VENDA') OR\n    (max_dias_vencidos IN (-3, 20, 38) AND modalidade = 'LOCACAO') OR\n    max_dias_vencidos IN (0, 7, 11, 31, 61)\n  )\n  AND cpf_cnpj != '40397096000198'\n  AND numcontrato_array not like '%12402988%'\norder by(max_dias_vencidos)",
+          "options": {}
+        },
+        "id": "2f7c4a18-6c40-462f-874b-cef42f099486",
+        "name": "Base Fluxo Cobrança",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          -1860,
+          260
+        ],
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "5b597a0c-8506-4de5-9876-3da0d1757845",
+        "name": "1 linha de cada vez",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          -1640,
+          260
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1buF3vypm2gKo8fo61JEbK8v1HtOAXeTc0PqjNjthXt8",
+            "mode": "list",
+            "cachedResultName": "Envios Cobrança - Teste",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1buF3vypm2gKo8fo61JEbK8v1HtOAXeTc0PqjNjthXt8/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Base Blips",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1hBag2re5oTl3u8ZRPm7Oxm6vtGEml8ieV6Uy_rDinls/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "NOME": "={{ $json.NOMEPARC }}",
+              "DOCUMENTO": "={{ $json.CPF_CNPJ }}",
+              "TELEFONE": "={{ $json.TELEFONE }}",
+              "EMAIL": "={{ $json.EMAIL }}",
+              "DIAS VENCIDO": "={{ $json.MAX_DIAS_VENCIDOS }}",
+              "VALOR": "={{ $json.VALOR_ARRAY }}",
+              "NUFIN": "={{ $json.NUFIN_ARRAY }}",
+              "NUM CONTRATO": "={{ $json.NUMCONTRATO_ARRAY }}",
+              "COD_BOLETO": "={{ $json.LINHA_DIGITAVEL_ARRAY }}",
+              "É IDEAL": "={{ $json.MODALIDADE === 'VENDA' ? 1 : 0 }}",
+              "INATIVO": "={{ $json.INATIVO }}",
+              "É FIDC": "={{ $json.IS_FIDC }}",
+              "MSG ENVIADA": "NÃO"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "NOME",
+                "displayName": "NOME",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "DOCUMENTO",
+                "displayName": "DOCUMENTO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "TELEFONE",
+                "displayName": "TELEFONE",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "EMAIL",
+                "displayName": "EMAIL",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "DIAS VENCIDO",
+                "displayName": "DIAS VENCIDO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "DATA ENVIO",
+                "displayName": "DATA ENVIO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "VALOR",
+                "displayName": "VALOR",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "NUFIN",
+                "displayName": "NUFIN",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "NUM CONTRATO",
+                "displayName": "NUM CONTRATO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "MSG ENVIADA",
+                "displayName": "MSG ENVIADA",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "COD_BOLETO",
+                "displayName": "COD_BOLETO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "É IDEAL",
+                "displayName": "É IDEAL",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "INATIVO",
+                "displayName": "INATIVO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "É FIDC",
+                "displayName": "É FIDC",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "LOG ENVIO",
+                "displayName": "LOG ENVIO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "DATA_INT",
+                "displayName": "DATA_INT",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "ARQUIVO",
+                "displayName": "ARQUIVO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "IMAGEM",
+                "displayName": "IMAGEM",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "SPLIT_VALOR",
+                "displayName": "SPLIT_VALOR",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "EMAIL_ENVIADO",
+                "displayName": "EMAIL_ENVIADO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "id": "74318d19-f57e-47ea-a0f4-03f89d82c77c",
+        "name": "Google Sheets - Insere linha",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.4,
+        "position": [
+          -1200,
+          260
+        ],
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 2000,
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "4HoAG3ZVDyUYbTpj",
+            "name": "Joao Lucas - Sheets"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "c01a2986-cc0d-4441-83ba-3f8f2ebcf0c6",
+                "leftValue": "={{ ['segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira'].includes($now.format('EEEE', { locale: 'pt-BR' })) }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "94ecc334-65f6-40fc-a742-0f18462fd567",
+        "name": "Dia de semana?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -780,
+          20
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "5159870b-db06-400b-ac14-101cc9831438",
+                "leftValue": "={{ (['sábado', 'domingo'].includes($now.format('EEEE', { locale: 'pt-BR' }))) }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "184dcf61-a94e-468f-a040-44692f33cefd",
+                "leftValue": "={{ ($json.MAX_DIAS_VENCIDOS === '-3') }}",
+                "rightValue": "-3",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "bbbf01cb-6e4e-4f9d-870c-ff2ab947332d",
+        "name": "É pra excluir?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -1420,
+          260
+        ]
+      },
+      {
+        "parameters": {
+          "url": "https://feriados-brasileiros1.p.rapidapi.com/read",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "cidade",
+                "value": "uberlandia"
+              },
+              {
+                "name": "estado",
+                "value": "MG"
+              },
+              {
+                "name": "ano",
+                "value": "2025"
+              }
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "x-rapidapi-host",
+                "value": "feriados-brasileiros1.p.rapidapi.com"
+              },
+              {
+                "name": "x-rapidapi-key",
+                "value": "fa9dd972acmsh9c4a2e7145e8b66p19a858jsne3dc14458d46"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "b537e4bf-915a-42c0-82de-67d9dab28caf",
+        "name": "GET Feriados",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -540,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "31727883-9c00-4dcb-aa6e-9625f8201535",
+                "leftValue": "={{ $json.tipo }}",
+                "rightValue": "facultativo",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEquals"
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "id": "562a2be0-1700-48fe-9381-c25a0dfd82bd",
+        "name": "Filter",
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2,
+        "position": [
+          -340,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "fieldsToAggregate": {
+            "fieldToAggregate": [
+              {
+                "fieldToAggregate": "data"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "2923482c-f624-4a13-ae3c-dafac3d88624",
+        "name": "Junta",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          -140,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "return $('Base Fluxo Cobrança').all();"
+        },
+        "id": "55dbc8e7-7e17-4d86-9d36-27574af8c441",
+        "name": "Code",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1200,
+          20
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "nFERdKUcxO4iTmNq",
+            "mode": "list",
+            "cachedResultName": "Insere Dados - BQ"
+          },
+          "options": {}
+        },
+        "id": "34b56697-fb0e-42fa-bfe2-a4fb7c2e5f87",
+        "name": "Insere dados BQ",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          -980,
+          20
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "8227687c-70d3-4281-8eb0-ad7519514926",
+                "leftValue": "={{ $json.data.includes($now.format('dd/MM/yyyy')) }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "14fe060f-0dae-43cf-ada7-91c22f0b43df",
+        "name": "Hoje é feriado?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          60,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://n8n-dev.blips-labs.com/webhook/iniciar_disparo",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "numero",
+                "value": "3"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          480,
+          100
+        ],
+        "id": "94512a79-0d9f-4d58-9f12-c519c5414976",
+        "name": "Ativa Disparo"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "kp1CGeWIh5nBqHtC",
+            "mode": "list",
+            "cachedResultName": "Consulta do Dia - Mongo"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          260,
+          100
+        ],
+        "id": "1dbac739-b0ba-46a5-92b8-c6cbcb727b7f",
+        "name": "Consulta Mongo"
+      }
+    ],
+    "connections": {
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Base Fluxo Cobrança",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aggregate": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Delay Api": {
+        "main": [
+          [
+            {
+              "node": "1 linha de cada vez",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Base Fluxo Cobrança": {
+        "main": [
+          [
+            {
+              "node": "1 linha de cada vez",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "1 linha de cada vez": {
+        "main": [
+          [
+            {
+              "node": "Aggregate",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "É pra excluir?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Sheets - Insere linha": {
+        "main": [
+          [
+            {
+              "node": "Delay Api",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dia de semana?": {
+        "main": [
+          [
+            {
+              "node": "GET Feriados",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "É pra excluir?": {
+        "main": [
+          [
+            {
+              "node": "1 linha de cada vez",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Google Sheets - Insere linha",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GET Feriados": {
+        "main": [
+          [
+            {
+              "node": "Filter",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter": {
+        "main": [
+          [
+            {
+              "node": "Junta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Junta": {
+        "main": [
+          [
+            {
+              "node": "Hoje é feriado?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "Insere dados BQ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Insere dados BQ": {
+        "main": [
+          [
+            {
+              "node": "Dia de semana?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Hoje é feriado?": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Consulta Mongo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Consulta Mongo": {
+        "main": [
+          [
+            {
+              "node": "Ativa Disparo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "617ddc86-cfa3-4971-b96e-6d0ee6be2f30",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-09T15:07:56.880Z",
+        "updatedAt": "2024-07-09T15:07:56.880Z",
+        "id": "10AfOz2oKmpgqhM9",
+        "name": "Cobranca"
+      }
+    ]
+  }
+}
