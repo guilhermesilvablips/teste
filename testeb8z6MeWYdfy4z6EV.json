@@ -1,0 +1,3094 @@
+{
+  "data": {
+    "createdAt": "2025-01-08T11:21:36.525Z",
+    "updatedAt": "2025-01-17T16:25:49.502Z",
+    "id": "b8z6MeWYdfy4z6EV",
+    "name": "Teste Salvador AI - Bitrix24",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "salvadorbot",
+          "options": {
+            "rawBody": false
+          }
+        },
+        "id": "57ead07b-86fb-4fa7-b267-782c1a57aa77",
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -1880,
+          -2500
+        ],
+        "webhookId": "12968a8c-642c-44fd-83aa-fa908d86378e"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/2523/2ukd6fa1rmccbtq9/imbot.message.add",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ $json }}",
+          "options": {}
+        },
+        "id": "b47fc595-2e23-4790-9785-6dc2502711f7",
+        "name": "Resposta simples Salvador",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          5000,
+          -2740
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "0a2c3006-1bb8-4eca-bccb-4a8373adfd85",
+                "name": "message_data",
+                "value": "={{ $json }}",
+                "type": "object"
+              },
+              {
+                "id": "eaf0405e-5ffc-4cbf-b44c-b0f4a6309431",
+                "name": "is_active",
+                "value": true,
+                "type": "boolean"
+              },
+              {
+                "id": "74aaa0db-4bf4-4aa7-9c43-f0edd4c992b4",
+                "name": "assistant_id",
+                "value": "asst_P6yR0qcdsLQyTOF0jJv88Qqe",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1660,
+          -2500
+        ],
+        "id": "85967787-ebea-4751-bb97-3ad53f13b858",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "002657de-be8a-4470-8406-30326384697d",
+                "name": "=BOT_ID",
+                "value": "={{ $json.message_data.body['data[BOT][2539][BOT_ID]'] }}",
+                "type": "string"
+              },
+              {
+                "id": "157eb297-b714-44ba-97a3-e63193853b6f",
+                "name": "MESSAGE",
+                "value": "Nesse momento estou fora e não vou conseguir te responder. Me desculpe por isso, mas logo estarei de volta 🙂",
+                "type": "string"
+              },
+              {
+                "id": "d7b33900-5491-42f6-8aa0-c101543d25cf",
+                "name": "DIALOG_ID",
+                "value": "={{ $('Webhook').item.json.body[\"data[PARAMS][DIALOG_ID]\"] }}",
+                "type": "string"
+              },
+              {
+                "id": "16ac3da2-5d16-4e18-81f2-baceea60b3dc",
+                "name": "CLIENT_ID",
+                "value": "={{ $('Webhook').item.json.query.CLIENT_ID }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "0bce9f16-53b4-45b8-86b2-7e874cf43b6f",
+        "name": "Edit Fields2",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -840,
+          -2480
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "b6d60f97-25ab-4200-84b9-0fe13dc8c7d5",
+                "leftValue": "={{ $json.is_active}}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -1440,
+          -2500
+        ],
+        "id": "27c7e68d-541f-4e5c-9e86-750ae569b49b",
+        "name": "Em manutenção?"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/2523/2ukd6fa1rmccbtq9/imbot.message.add",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ $json }}",
+          "options": {}
+        },
+        "id": "06601375-1f9b-47a6-b1b2-57538f1d55a6",
+        "name": "Resposta - Em manutenção",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -640,
+          -2480
+        ]
+      },
+      {
+        "parameters": {
+          "collection": "users",
+          "options": {},
+          "query": "={\n  \"user_id\": \"{{ $json.user_id }}\"\n}"
+        },
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1.1,
+        "position": [
+          -620,
+          -2740
+        ],
+        "id": "c5d6355c-6822-4fd0-9248-a9a99b66ceaf",
+        "name": "GetUser",
+        "alwaysOutputData": true,
+        "credentials": {
+          "mongoDb": {
+            "id": "3e3uRhVL72wRQ4dG",
+            "name": "Luan Mongo"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f3f1dab5-e738-46f3-a54c-146ed08bc36b",
+                "name": "name",
+                "value": "={{ $json.message_data.body['data[USER][NAME]'] }}",
+                "type": "string"
+              },
+              {
+                "id": "91ed44dc-faeb-4483-9385-002849ba49e9",
+                "name": "user_id",
+                "value": "={{ $json.message_data.body['data[USER][ID]'] }}",
+                "type": "string"
+              },
+              {
+                "id": "9730f160-4fea-4dd4-b122-fd5ecf2a94a3",
+                "name": "assistant_id",
+                "value": "asst_P6yR0qcdsLQyTOF0jJv88Qqe",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -840,
+          -2740
+        ],
+        "id": "8c9d1bb5-3447-44a6-b513-c7ade9e2472b",
+        "name": "setName e setUserid"
+      },
+      {
+        "parameters": {
+          "operation": "findOneAndUpdate",
+          "collection": "users",
+          "updateKey": "user_id",
+          "fields": "name, user_id, thread_id, assistant_id",
+          "upsert": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1.1,
+        "position": [
+          240,
+          -2520
+        ],
+        "id": "22c37e13-1adc-4073-a3b5-d8923b465163",
+        "name": "Create User",
+        "alwaysOutputData": true,
+        "credentials": {
+          "mongoDb": {
+            "id": "3e3uRhVL72wRQ4dG",
+            "name": "Luan Mongo"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "ef98cef7-696e-4101-b475-e0797e0cf944",
+                "leftValue": "={{ $json.toJsonString().replaceAll(\"{\", \"\").replaceAll(\"}\", \"\").length }}",
+                "rightValue": 0,
+                "operator": {
+                  "type": "number",
+                  "operation": "gt"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -400,
+          -2740
+        ],
+        "id": "27082ac8-63c0-4c01-9b07-20b2dec11f35",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/threads",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d98a74b8-a83e-47f2-a301-636d779ccea8",
+        "name": "Criar Thread",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          -220,
+          -2520
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "trONZBLzM3mWPjKv",
+            "name": "OpenAi - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/threads",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "cc8e6943-7bac-4ea9-8022-73b586dcfa62",
+        "name": "Atualizar de Thread",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          -840,
+          -2920
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "RaLpTRjDIkklvekH",
+            "name": "OpenAi account - Cadu"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "16b7a2e8-11cb-4b0f-b77a-580b29cd727c",
+                "name": "name",
+                "value": "={{ $('setName e setUserid').item.json.name }}",
+                "type": "string"
+              },
+              {
+                "id": "8d6e10e9-1174-4fb1-a8b4-5b0d4f92ce93",
+                "name": "user_id",
+                "value": "={{ $('setName e setUserid').item.json.user_id }}",
+                "type": "string"
+              },
+              {
+                "id": "2ed5c6f1-03f5-411b-be51-ff3e90b9c95b",
+                "name": "thread_id",
+                "value": "={{ $json.id }}",
+                "type": "string"
+              },
+              {
+                "id": "87ffc0f3-ffd1-49f4-8971-9a64377fddb1",
+                "name": "assistant_id",
+                "value": "={{ $('setName e setUserid').item.json.assistant_id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          20,
+          -2520
+        ],
+        "id": "c5efb32b-3b34-4b30-9339-2d0b7780e160",
+        "name": "Edit Fields1"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://api.openai.com/v1/threads/{{ $('setUserData').item.json.thread_id }}/messages",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"role\": \"user\",\n  \"content\": [\n    {\n      \"type\": \"text\",\n      \"text\": \"<MetaInformacao>Data/hora de agora: {{ $now.setZone(\"America/Sao_Paulo\").toISO() }}</MetaInformacao><Pergunta>{{ $('Webhook').item.json.body[\"data[PARAMS][MESSAGE]\"] }}</Pergunta>\"\n    }\n  ]\n}",
+          "options": {}
+        },
+        "id": "dce2b6b8-4351-4aa0-8900-2be55dfcc7d0",
+        "name": "Criar a Mensagem",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          2320,
+          -2760
+        ],
+        "alwaysOutputData": true,
+        "notesInFlow": false,
+        "credentials": {
+          "openAiApi": {
+            "id": "trONZBLzM3mWPjKv",
+            "name": "OpenAi - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://api.openai.com/v1/threads/{{ $json.thread_id }}/runs",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "assistant_id",
+                "value": "={{ $('setUserData').item.json.assistant_id }}"
+              },
+              {
+                "name": "tool_choice",
+                "value": "auto"
+              },
+              {
+                "name": "parallel_tool_calls",
+                "value": "={{ false }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "e3570df8-3067-4828-b120-41cbb146609c",
+        "name": "Run Assistant",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          2560,
+          -2760
+        ],
+        "executeOnce": false,
+        "retryOnFail": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "trONZBLzM3mWPjKv",
+            "name": "OpenAi - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "436c4ccf-f426-4ea7-bcf8-3d59e10698bf",
+                "name": "user_id",
+                "value": "={{ $json.user_id }}",
+                "type": "string"
+              },
+              {
+                "id": "d2ed53e4-ceba-4613-b8c1-3019fef6224e",
+                "name": "assistant_id",
+                "value": "={{ $json.assistant_id }}",
+                "type": "string"
+              },
+              {
+                "id": "b40a906c-7c7d-481c-8f4f-ff41b7e51e48",
+                "name": "name",
+                "value": "={{ $json.name }}",
+                "type": "string"
+              },
+              {
+                "id": "6835ecff-52de-4cbf-88e8-2bbd88ddddfe",
+                "name": "thread_id",
+                "value": "={{ $json.thread_id }}",
+                "type": "string"
+              },
+              {
+                "id": "441fe085-d39e-43f4-9b88-7c483ff60770",
+                "name": "message",
+                "value": "={{ $('Webhook').item.json.body[\"data[PARAMS][MESSAGE]\"] }}",
+                "type": "string"
+              },
+              {
+                "id": "f622e199-c40d-4c38-b27a-9e487e9c8558",
+                "name": "message_date",
+                "value": "={{ $now.toISO() }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          460,
+          -2760
+        ],
+        "id": "a42882c3-3630-42c9-8e2d-05d90f888f7c",
+        "name": "setUserData"
+      },
+      {
+        "parameters": {
+          "url": "=https://api.openai.com/v1/threads/{{ $json[\"thread_id\"] }}/runs/{{ $json[\"id\"] }}",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 10000
+          }
+        },
+        "id": "cc09ec3c-ff0b-42df-8060-856b64914d56",
+        "name": "Get Run Status",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          2780,
+          -2760
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "trONZBLzM3mWPjKv",
+            "name": "OpenAi - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "amount": 2,
+          "unit": "seconds"
+        },
+        "id": "32a44fe6-8287-46a8-9916-f957c7f1a8c5",
+        "name": "Wait",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1,
+        "position": [
+          3440,
+          -2660
+        ],
+        "webhookId": "8811742f-db12-48ec-a589-b4fe235ebc7b"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "98a5af91-f163-4672-9d53-9bee20c97303",
+                "leftValue": "={{ $json.last_error.code }}",
+                "rightValue": "rate_limit_exceeded",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "78ba405d-4702-4457-afee-b8f41446d9ba",
+        "name": "Se for rate_limit_exceeded",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          3700,
+          -2860
+        ]
+      },
+      {
+        "parameters": {
+          "amount": "={{ parseInt($json.last_error.message.match(/(\\d+(\\.\\d+)?)s/)[1]) * 2}}"
+        },
+        "id": "207bd22b-4148-4a9f-bc24-aa440c53693e",
+        "name": "Espera o tempo determinado",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          3640,
+          -2580
+        ],
+        "webhookId": "89b3350b-829b-4d43-98f4-cfbbfdf7a131",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.status }}",
+                      "rightValue": "queued",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "queued"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "ecd44d0c-b93e-4977-ae74-8c87eae4cf20",
+                      "leftValue": "={{ $json.status }}",
+                      "rightValue": "in_progress",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "in_progress"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "6f6841ae-8845-4659-9e06-06e5bd4843df",
+                      "leftValue": "={{ $json.status }}",
+                      "rightValue": "failed",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "failed"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "6cc26ecf-79af-4d91-bb3f-a617646e3fc8",
+                      "leftValue": "={{ $json.status }}",
+                      "rightValue": "completed",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "completed"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "0f93b1ee-1a9c-4586-86f8-55e0a180ca04",
+                      "leftValue": "={{ $json.status }}",
+                      "rightValue": "expired",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "expired"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "5e7ecc7f-ecee-439c-aa0e-80a7e110726a",
+                      "leftValue": "={{ $json.status }}",
+                      "rightValue": "=requires_action",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "requires_action"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "63b90e54-8394-472c-b392-9d6ec1b8caee",
+        "name": "Switch",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          3060,
+          -2820
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "9be99488-b9db-4adf-bd48-7d7109f34e01",
+                "name": "message",
+                "value": "={{ $('Concatena todas mensagens').item.json.message }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "0f278a61-4b91-41d2-8f3b-491d3c122206",
+        "name": "Coloca novamente a mensagem para re-processar",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          4040,
+          -2520
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "191c1aec-934c-4ba2-b396-3738b50f4d78",
+                "name": "tool_calls",
+                "value": "={{ $json.required_action.submit_tool_outputs.tool_calls }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "e402bccd-fe44-4d21-93cb-6a7934c6a792",
+        "name": "Captura Tool Calls",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          3360,
+          -1960
+        ]
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "tool_calls",
+          "options": {
+            "destinationFieldName": "properties"
+          }
+        },
+        "id": "9fd0d63a-2273-4328-ba8e-623fb2131686",
+        "name": "Split Out",
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          3600,
+          -1960
+        ]
+      },
+      {
+        "parameters": {
+          "options": {
+            "reset": "={{ $node[\"Loop Over Items\"].context[\"done\"] }}"
+          }
+        },
+        "id": "a1299753-564f-4b3c-8ca1-b53bf3ffe48a",
+        "name": "Loop Over Items",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          3820,
+          -1960
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f724eaa4-72cc-4bbd-9b1a-b279ec2c8e52",
+                "name": "arguments",
+                "value": "={{ $json.properties.function.arguments }}",
+                "type": "object"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "id": "d0b9d809-8efa-4072-ba86-fb324eaa8115",
+        "name": "Separa Arguments",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          4100,
+          -1920
+        ]
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "options": {}
+        },
+        "id": "e4e20326-8ab7-497c-b484-35a916594769",
+        "name": "Aggregate",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          4040,
+          -2280
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://api.openai.com/v1/threads/{{ $('Get Run Status').item.json[\"thread_id\"] }}/runs/{{ $('Get Run Status').item.json[\"id\"] }}/submit_tool_outputs",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"tool_outputs\":{{ $json.output }}\n}\n",
+          "options": {
+            "timeout": 20000
+          }
+        },
+        "id": "be265e55-28e1-46be-ba31-58970205485a",
+        "name": "Insere Output",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          4480,
+          -2280
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "trONZBLzM3mWPjKv",
+            "name": "OpenAi - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "a30ac449-65ca-4a00-bdc5-19d2a41d4b34",
+                      "leftValue": "={{ $json.properties.function.name }}",
+                      "rightValue": "buscar_contrato",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "buscar_contrato"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "1ed1667f-793b-4625-b2b6-248671c134bd",
+                      "leftValue": "={{ $json.properties.function.name }}",
+                      "rightValue": "buscar_bloqueio",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "buscar_bloqueio"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "a86e4e8e-c899-47be-870a-d507c49eb104",
+                      "leftValue": "={{ $json.properties.function.name }}",
+                      "rightValue": "buscar_financeiro_cliente",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "buscar_financeiro_cliente"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "3a6ad548-1418-45f9-9013-469514193f4d",
+                      "leftValue": "={{ $json.properties.function.name }}",
+                      "rightValue": "buscar_ultima_conexao",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "buscar_ultima_conexao"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "bf2fd5b3-e277-4c9c-8f2a-a0613ce78365",
+                      "leftValue": "={{ $json.properties.function.name }}",
+                      "rightValue": "buscar_desbloqueio",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "buscar_desbloqueio"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "6ded196b-9b7a-4740-9503-fa548fa5d830",
+                      "leftValue": "={{ $json.properties.function.name }}",
+                      "rightValue": "buscar_cliente_modulo",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "buscar_cliente_modulo"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "f4984eac-131e-4cf7-8252-f916f1f7c88c",
+                      "leftValue": "={{ $json.properties.function.name }}",
+                      "rightValue": "buscar_liberacao_confianca",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "buscar_liberacao_confianca"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "0a2a3ca0-deb6-4e18-b81b-174a0c2f60e7",
+                      "leftValue": "={{ $json.properties.function.name }}",
+                      "rightValue": "buscar_telemetria_uso",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "buscar_telemetria_uso"
+              }
+            ]
+          },
+          "options": {
+            "fallbackOutput": "extra",
+            "renameFallbackOutput": "else"
+          }
+        },
+        "id": "e69aa399-c77e-4313-b9d7-c368fdf46941",
+        "name": "Escolhe a tool que deve ser utilizada",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          4440,
+          -2040
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "c49761c9-bbfa-4a86-8d62-396ebeeebc5d",
+                "name": "output",
+                "value": "={{ $json.data }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "a149948d-c170-4304-88db-83546f87eca4",
+        "name": "Edit Fields3",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          4260,
+          -2280
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "79854708-0135-4a8b-827b-74bcd2ac8fe7",
+                "name": "response",
+                "value": "={{ \"success\" in $json.response.first() ? [\"Nenhum registro encontrado\"] : $json.response }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "a60ba231-b212-4023-8e11-1f47a11d82ac",
+        "name": "Response",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          5980,
+          -1700
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "voeDIWwr4i59X9wb",
+          "options": {}
+        },
+        "id": "a53d5e3d-f7fe-4b82-9374-b99368d737a8",
+        "name": "Execute Workflow - buscar_contratos",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          5160,
+          -2480
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "5HQMC1PAswB0IGmH",
+          "options": {}
+        },
+        "id": "a373b1f6-8232-4486-850a-946a7a03888a",
+        "name": "Execute Workflow - buscar_bloqueio",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          5160,
+          -2240
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "raw",
+          "jsonOutput": "={\n\"tool_call_id\":\"{{ $('Separa Arguments').item.json[\"properties\"][\"id\"] }}\",\n\"output\": {{ JSON.stringify(JSON.stringify($json[\"response\"])) }}\n}",
+          "options": {}
+        },
+        "id": "46abcffc-6648-47a4-9cc4-18387d4a5014",
+        "name": "Tool Call ID",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          6220,
+          -1340
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "LMPk2IwulK3VCzwr",
+          "options": {}
+        },
+        "id": "71e61336-2a89-4044-8887-15fdd34f474b",
+        "name": "Execute Workflow - buscar_financeiro_cliente",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          5160,
+          -2000
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "BcOK1G1NutmDyqmn",
+          "options": {}
+        },
+        "id": "3ac970e1-839c-4547-bb1f-0c64733e82d7",
+        "name": "Execute Workflow - buscar_ultima_conexao",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          5160,
+          -1740
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "Ec5vAJh1q66aJryo",
+          "options": {}
+        },
+        "id": "8542c216-e381-4aec-9f0f-ab0e6aca2e0e",
+        "name": "Execute Workflow - buscar_desbloqueio",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          5160,
+          -1500
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "uxYgH5bRn37z48nS",
+          "options": {}
+        },
+        "id": "befd59f2-4161-4bbe-9932-80e3e0f9dc0b",
+        "name": "Execute Workflow - buscar_cliente_modulo",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          5160,
+          -1260
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "JK083mnyz0StWaWK",
+          "options": {}
+        },
+        "id": "5f9e95e1-8403-472c-949a-764199931305",
+        "name": "Execute Workflow - buscar_liberacao_confianca",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          5160,
+          -980
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "P1LdH8fGJDAXVyio",
+          "options": {}
+        },
+        "id": "59fbf7d5-1f2c-49d3-a1ca-82227c6773c1",
+        "name": "Execute Workflow - buscar_telemetria_uso",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          5160,
+          -700
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "56aa5c99-0a89-4ca8-b891-9d7cde7d56f9",
+                "name": "response",
+                "value": "=Você entendeu que deve ser chamada a tool '{{ $json.properties.function.name }}' mas ela não existe na relação de tools conhecidas por você. Avalie as tools que você conhece e use a função correta, provavelmente você só pegou o nome errado, use a de nome certo",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "b4948c40-c68c-41a3-aeec-acf07d9856e4",
+        "name": "Tool Errada",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          5160,
+          -440
+        ]
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "response",
+          "options": {}
+        },
+        "id": "3ab26038-654b-43ab-8fda-b45a9d7c7163",
+        "name": "Aggregate1",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          5500,
+          -440
+        ]
+      },
+      {
+        "parameters": {
+          "url": "=https://api.openai.com/v1/threads/{{ $json.thread_id }}/messages?order=desc",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "eb6eb2d6-e499-452a-b286-ed16a8aba25f",
+        "name": "HTTP Request",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          4280,
+          -2740
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "trONZBLzM3mWPjKv",
+            "name": "OpenAi - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ed3cb56b-bd80-4b34-baf8-0df7a6dee1d6",
+                "name": "BOT_ID",
+                "value": "={{ $('Webhook').item.json.body[\"data[BOT][2539][BOT_ID]\"] }}",
+                "type": "string"
+              },
+              {
+                "id": "f5a78dea-ff72-4e62-8b5c-516c720a1dab",
+                "name": "CLIENT_ID",
+                "value": "={{ $('Webhook').item.json.query.CLIENT_ID }}",
+                "type": "string"
+              },
+              {
+                "id": "a5dfb187-69c1-4915-bddc-72ca18e7e249",
+                "name": "DIALOG_ID",
+                "value": "={{ $('Webhook').item.json.body[\"data[PARAMS][DIALOG_ID]\"] }}",
+                "type": "string"
+              },
+              {
+                "id": "26cb7dd2-8541-488e-8c1e-6a7fa062589f",
+                "name": "MESSAGE",
+                "value": "={{ $json.data }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          4720,
+          -2740
+        ],
+        "id": "38f187d4-7835-4520-97a3-d76c82735228",
+        "name": "setBitrix24Message"
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "collection": "users",
+          "updateKey": "user_id",
+          "fields": "thread_id",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1.1,
+        "position": [
+          -400,
+          -2920
+        ],
+        "id": "aa7d9ecb-0b59-42eb-a2f8-9bd92a0a8120",
+        "name": "MongoDB",
+        "credentials": {
+          "mongoDb": {
+            "id": "jgLY33sWojEA1rzs",
+            "name": "NascimentoDB"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "06c4c267-17e3-4f78-8ba0-a954d26ce8a8",
+                "name": "thread_id",
+                "value": "={{ $json.id }}",
+                "type": "string"
+              },
+              {
+                "id": "a86cd0db-9ade-42a4-9f50-e89efa9f03cc",
+                "name": "user_id",
+                "value": "={{ $('Webhook').item.json.body[\"data[USER][ID]\"] }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -620,
+          -2920
+        ],
+        "id": "20ba3f14-8747-4353-b202-10eb02f072a7",
+        "name": "setNewThreadId"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/2523/2ukd6fa1rmccbtq9/imbot.message.add",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ $json }}",
+          "options": {}
+        },
+        "id": "d85ce97d-2385-49e2-9907-b458e7bd322e",
+        "name": "Resposta simples Salvador1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          100,
+          -2920
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ed3cb56b-bd80-4b34-baf8-0df7a6dee1d6",
+                "name": "BOT_ID",
+                "value": "={{ $('Webhook').item.json.body[\"data[BOT][2539][BOT_ID]\"] }}",
+                "type": "string"
+              },
+              {
+                "id": "f5a78dea-ff72-4e62-8b5c-516c720a1dab",
+                "name": "CLIENT_ID",
+                "value": "={{ $('Webhook').item.json.query.CLIENT_ID }}",
+                "type": "string"
+              },
+              {
+                "id": "a5dfb187-69c1-4915-bddc-72ca18e7e249",
+                "name": "DIALOG_ID",
+                "value": "={{ $('Webhook').item.json.body[\"data[PARAMS][DIALOG_ID]\"] }}",
+                "type": "string"
+              },
+              {
+                "id": "26cb7dd2-8541-488e-8c1e-6a7fa062589f",
+                "name": "MESSAGE",
+                "value": "=Nova thread pronta para uso!",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -160,
+          -2920
+        ],
+        "id": "20ae99f7-8dd7-4217-bfe8-cb330c34da38",
+        "name": "setBitrix24MessageLimparThread"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "c2b17fc5-7c9d-4177-be42-33691317b721",
+                "leftValue": "={{ $json.message_data.body[\"data[PARAMS][MESSAGE]\"] }}",
+                "rightValue": "limpar_thread",
+                "operator": {
+                  "type": "string",
+                  "operation": "contains"
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -1240,
+          -2800
+        ],
+        "id": "1b31fc2f-4d4b-48b4-87dd-53e7f4aab598",
+        "name": "Limpar Thread?"
+      },
+      {
+        "parameters": {
+          "collection": "messages",
+          "options": {},
+          "query": "={\n  \"thread_id\": \"{{ $json.thread_id }}\",\n  \"message_date\": {\"$gte\": \"{{$now.minus(30*1000).toISO()}}\"},\n  \"process_date\": null\n}"
+        },
+        "id": "41dd414b-bdaa-4b44-bdc6-7ef61a15ed09",
+        "name": "Conta as mensagens",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1,
+        "position": [
+          1260,
+          -2760
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "mongoDb": {
+            "id": "3e3uRhVL72wRQ4dG",
+            "name": "Luan Mongo"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "a481b5b5-85f3-495c-9301-fb5433b0dccc",
+                "leftValue": "={{ $input.all().length }}",
+                "rightValue": 1,
+                "operator": {
+                  "type": "number",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "2cdd01df-4ad1-49c0-a297-02d6c80f619e",
+        "name": "Primeira mensagem?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          1480,
+          -2760
+        ]
+      },
+      {
+        "parameters": {
+          "amount": 3
+        },
+        "id": "e35103bd-0bb7-495f-9cca-6412255a3df7",
+        "name": "Espera chegar mais mensagens",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          1720,
+          -2780
+        ],
+        "webhookId": "b5cfff18-20eb-4ee8-87d0-4e0c4e24609e"
+      },
+      {
+        "parameters": {
+          "collection": "messages",
+          "options": {
+            "sort": "{\"message_date\": 1}"
+          },
+          "query": "={\n  \"thread_id\": \"{{ $('setUserData').item.json.thread_id }}\",\n  \"process_date\": null\n}"
+        },
+        "id": "b3cac10a-090a-4775-a7bf-2538de442834",
+        "name": "Busca as mensagens",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1,
+        "position": [
+          880,
+          -2460
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "mongoDb": {
+            "id": "3e3uRhVL72wRQ4dG",
+            "name": "Luan Mongo"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "d126cd6a-c6e7-4b08-a08a-b277477129f9",
+        "name": "Loop Over Items1",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          1240,
+          -2460
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "beed4a68-7ca4-480d-b203-3f43ca5c2ce5",
+                "name": "process_date",
+                "value": "={{ $now.toISO() }}",
+                "type": "string"
+              },
+              {
+                "id": "ed79557d-a9f1-4938-8639-2b3c86df2ce0",
+                "name": "thread_id",
+                "value": "={{ $('setUserData').item.json.thread_id }}",
+                "type": "string"
+              },
+              {
+                "id": "d5795955-d791-42b4-ad4e-a4c6b08bb79a",
+                "name": "_id",
+                "value": "={{ new String($json._id).toString() }}",
+                "type": "string"
+              },
+              {
+                "id": "cf26097b-c04b-4a9a-99f3-72653fe2b885",
+                "name": "user_id",
+                "value": "={{ $('setUserData').item.json.user_id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "a8b6b49c-6a65-4b9b-8cd9-5e42f6ed13e8",
+        "name": "Define process_date",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          1500,
+          -2380
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "collection": "messages",
+          "updateKey": "_id",
+          "fields": "process_date",
+          "options": {}
+        },
+        "id": "8eda443a-7fdb-4130-9436-0453713adfa3",
+        "name": "Marca para processar",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1,
+        "position": [
+          1720,
+          -2380
+        ],
+        "credentials": {
+          "mongoDb": {
+            "id": "3e3uRhVL72wRQ4dG",
+            "name": "Luan Mongo"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const messagesArray = $('Busca as mensagens').all();\nlet allMessages = \"\";\n\nmessagesArray.forEach(item => {\n  allMessages += item.json.message + \"  \";\n});\n\nallMessages = allMessages.trim();\nreturn [{\"message\": allMessages}]"
+        },
+        "id": "2cfef570-5632-4fc8-beee-0a71fb9fe9e3",
+        "name": "Concatena todas mensagens",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1720,
+          -2540
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "insert",
+          "collection": "messages",
+          "fields": "user_id,thread_id,message,message_date,assistant_id",
+          "options": {}
+        },
+        "id": "7761a60b-8d39-4b98-b573-e6430254e1b1",
+        "name": "Insere a mensagem",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1,
+        "position": [
+          1080,
+          -2760
+        ],
+        "credentials": {
+          "mongoDb": {
+            "id": "3e3uRhVL72wRQ4dG",
+            "name": "Luan Mongo"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "let alternar = true\n\nconst texto = $input.all()[0].json.data[0].content[0].text.value\nconst resultado = texto.replace(/\\*\\*/g, () => {\n    if (alternar) {\n        alternar = false;\n        return \"[B]\";\n    } else {\n        alternar = true;\n        return \"[/B]\";\n    }\n})\n\nreturn {json: {data:resultado}}"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          4500,
+          -2740
+        ],
+        "id": "98c1eec4-8746-444c-8ed6-0ab953b97c09",
+        "name": "Code"
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Resposta simples Salvador": {
+        "main": [
+          []
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "Em manutenção?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields2": {
+        "main": [
+          [
+            {
+              "node": "Resposta - Em manutenção",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Em manutenção?": {
+        "main": [
+          [
+            {
+              "node": "Limpar Thread?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Edit Fields2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "setName e setUserid": {
+        "main": [
+          [
+            {
+              "node": "GetUser",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GetUser": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          []
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "setUserData",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Criar Thread",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Create User": {
+        "main": [
+          [
+            {
+              "node": "setUserData",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields1": {
+        "main": [
+          [
+            {
+              "node": "Create User",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Criar Thread": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Criar a Mensagem": {
+        "main": [
+          [
+            {
+              "node": "Run Assistant",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Run Assistant": {
+        "main": [
+          [
+            {
+              "node": "Get Run Status",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "setUserData": {
+        "main": [
+          [
+            {
+              "node": "Insere a mensagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get Run Status": {
+        "main": [
+          [
+            {
+              "node": "Switch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch": {
+        "main": [
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Se for rate_limit_exceeded",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [],
+          [
+            {
+              "node": "Captura Tool Calls",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Se for rate_limit_exceeded": {
+        "main": [
+          [
+            {
+              "node": "Coloca novamente a mensagem para re-processar",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Coloca novamente a mensagem para re-processar": {
+        "main": [
+          [
+            {
+              "node": "Criar a Mensagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Espera o tempo determinado": {
+        "main": [
+          [
+            {
+              "node": "Get Run Status",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Captura Tool Calls": {
+        "main": [
+          [
+            {
+              "node": "Split Out",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [
+            {
+              "node": "Aggregate",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Separa Arguments",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Separa Arguments": {
+        "main": [
+          [
+            {
+              "node": "Escolhe a tool que deve ser utilizada",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aggregate": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields3": {
+        "main": [
+          [
+            {
+              "node": "Insere Output",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "Get Run Status",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Insere Output": {
+        "main": [
+          [
+            {
+              "node": "Get Run Status",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Response": {
+        "main": [
+          [
+            {
+              "node": "Tool Call ID",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute Workflow - buscar_contratos": {
+        "main": [
+          [
+            {
+              "node": "Response",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute Workflow - buscar_bloqueio": {
+        "main": [
+          [
+            {
+              "node": "Response",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute Workflow - buscar_financeiro_cliente": {
+        "main": [
+          [
+            {
+              "node": "Response",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute Workflow - buscar_ultima_conexao": {
+        "main": [
+          [
+            {
+              "node": "Response",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute Workflow - buscar_desbloqueio": {
+        "main": [
+          [
+            {
+              "node": "Response",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute Workflow - buscar_cliente_modulo": {
+        "main": [
+          [
+            {
+              "node": "Response",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute Workflow - buscar_liberacao_confianca": {
+        "main": [
+          [
+            {
+              "node": "Response",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute Workflow - buscar_telemetria_uso": {
+        "main": [
+          [
+            {
+              "node": "Response",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tool Errada": {
+        "main": [
+          [
+            {
+              "node": "Aggregate1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aggregate1": {
+        "main": [
+          [
+            {
+              "node": "Response",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Escolhe a tool que deve ser utilizada": {
+        "main": [
+          [
+            {
+              "node": "Execute Workflow - buscar_contratos",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Execute Workflow - buscar_bloqueio",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Execute Workflow - buscar_financeiro_cliente",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Execute Workflow - buscar_ultima_conexao",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Execute Workflow - buscar_desbloqueio",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Execute Workflow - buscar_cliente_modulo",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Execute Workflow - buscar_liberacao_confianca",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Execute Workflow - buscar_telemetria_uso",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Tool Errada",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tool Call ID": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "setBitrix24Message": {
+        "main": [
+          [
+            {
+              "node": "Resposta simples Salvador",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Atualizar de Thread": {
+        "main": [
+          [
+            {
+              "node": "setNewThreadId",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "setNewThreadId": {
+        "main": [
+          [
+            {
+              "node": "MongoDB",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "MongoDB": {
+        "main": [
+          [
+            {
+              "node": "setBitrix24MessageLimparThread",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "setBitrix24MessageLimparThread": {
+        "main": [
+          [
+            {
+              "node": "Resposta simples Salvador1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Limpar Thread?": {
+        "main": [
+          [
+            {
+              "node": "Atualizar de Thread",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "setName e setUserid",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Conta as mensagens": {
+        "main": [
+          [
+            {
+              "node": "Primeira mensagem?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Primeira mensagem?": {
+        "main": [
+          [
+            {
+              "node": "Espera chegar mais mensagens",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Espera chegar mais mensagens": {
+        "main": [
+          [
+            {
+              "node": "Busca as mensagens",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Busca as mensagens": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items1": {
+        "main": [
+          [
+            {
+              "node": "Concatena todas mensagens",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Define process_date",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Define process_date": {
+        "main": [
+          [
+            {
+              "node": "Marca para processar",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Marca para processar": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Concatena todas mensagens": {
+        "main": [
+          [
+            {
+              "node": "Criar a Mensagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Insere a mensagem": {
+        "main": [
+          [
+            {
+              "node": "Conta as mensagens",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "setBitrix24Message",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "America/Sao_Paulo",
+      "callerPolicy": "workflowsFromSameOwner"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Webhook": [
+        {
+          "json": {
+            "headers": {
+              "host": "n8n-dev.blips-labs.com",
+              "user-agent": "Bitrix24 Webhook Engine",
+              "content-length": "1948",
+              "accept-encoding": "gzip",
+              "content-type": "application/x-www-form-urlencoded",
+              "x-forwarded-for": "52.29.163.104",
+              "x-forwarded-host": "n8n-dev.blips-labs.com",
+              "x-forwarded-proto": "https",
+              "x-railway-request-id": "mMP99YdnQd2NhuF3l_YuHw_274150231",
+              "x-real-ip": "52.29.163.104",
+              "x-request-start": "1737035315261"
+            },
+            "params": {},
+            "query": {
+              "CLIENT_ID": "czuzq1bflsucim813g1kslldmblc09d6"
+            },
+            "body": {
+              "event": "ONIMBOTMESSAGEADD",
+              "event_handler_id": "411",
+              "data[BOT][2539][BOT_ID]": "2539",
+              "data[BOT][2539][BOT_CODE]": "4v4whvwmy0nztf7b",
+              "data[PARAMS][MESSAGE]": "Me fale somente o modelo/nome do equipamento associado ao contrato 12403520 do cnpj 07056127754. cnpj: 07056127754",
+              "data[PARAMS][TEMPLATE_ID]": "e70246b0-134e-409c-90b3-4de29acaaa9f",
+              "data[PARAMS][MESSAGE_TYPE]": "C",
+              "data[PARAMS][FROM_USER_ID]": "2523",
+              "data[PARAMS][DIALOG_ID]": "chat15037",
+              "data[PARAMS][TO_CHAT_ID]": "15037",
+              "data[PARAMS][SKIP_URL_INDEX]": "N",
+              "data[PARAMS][SKIP_COUNTER_INCREMENTS]": "N",
+              "data[PARAMS][SKIP_COMMAND]": "N",
+              "data[PARAMS][SKIP_CONNECTOR]": "N",
+              "data[PARAMS][IMPORTANT_CONNECTOR]": "N",
+              "data[PARAMS][SILENT_CONNECTOR]": "N",
+              "data[PARAMS][AUTHOR_ID]": "2523",
+              "data[PARAMS][CHAT_ID]": "15037",
+              "data[PARAMS][CHAT_AUTHOR_ID]": "2523",
+              "data[PARAMS][COMMAND_CONTEXT]": "TEXTAREA",
+              "data[PARAMS][MESSAGE_ORIGINAL]": "[USER=2539]Salvador - IA[/USER] Me fale somente o modelo/nome do equipamento associado ao contrato 12403520 do cnpj 07056127754. cnpj: 07056127754",
+              "data[PARAMS][TO_USER_ID]": "2539",
+              "data[PARAMS][MESSAGE_ID]": "675675",
+              "data[PARAMS][CHAT_TYPE]": "C",
+              "data[PARAMS][LANGUAGE]": "br",
+              "data[USER][ID]": "2523",
+              "data[USER][NAME]": "Luan Delino Peres",
+              "data[USER][FIRST_NAME]": "Luan",
+              "data[USER][LAST_NAME]": "Delino Peres",
+              "data[USER][WORK_POSITION]": "Desenvolvedor Python",
+              "data[USER][GENDER]": "M",
+              "data[USER][IS_BOT]": "N",
+              "data[USER][IS_CONNECTOR]": "N",
+              "data[USER][IS_NETWORK]": "N",
+              "data[USER][IS_EXTRANET]": "N",
+              "ts": "1737035314",
+              "auth[domain]": "blips.bitrix24.com.br",
+              "auth[client_endpoint]": "https://blips.bitrix24.com.br/rest/",
+              "auth[server_endpoint]": "https://oauth.bitrix.info/rest/",
+              "auth[member_id]": "cc1dbe6157e85937651412909fb01150",
+              "auth[application_token]": "czuzq1bflsucim813g1kslldmblc09d6"
+            },
+            "webhookUrl": "https://n8n-dev.blips-labs.com/webhook/salvadorbot",
+            "executionMode": "production"
+          }
+        }
+      ],
+      "HTTP Request": [
+        {
+          "json": {
+            "object": "list",
+            "data": [
+              {
+                "id": "msg_d2XvxW1um1qGbnwPNR5TFk8c",
+                "object": "thread.message",
+                "created_at": 1737035333,
+                "assistant_id": "asst_P6yR0qcdsLQyTOF0jJv88Qqe",
+                "thread_id": "thread_ejDDuosTgRBzaD4fBEFy0ZYf",
+                "run_id": "run_AbIz6UBoqORFGnwtJxeRyVUS",
+                "role": "assistant",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "value": "O equipamento associado ao contrato **12403520** do CNPJ **07056127754** é:\n\n- **Modelo/Nome do Equipamento**: Hygiadermo Vacuo\n\nSe precisar de mais informações, é só avisar! 😊",
+                      "annotations": []
+                    }
+                  }
+                ],
+                "attachments": [],
+                "metadata": {}
+              },
+              {
+                "id": "msg_Nno77eKhjvDCbNpbJBRVZTyI",
+                "object": "thread.message",
+                "created_at": 1737035329,
+                "assistant_id": null,
+                "thread_id": "thread_ejDDuosTgRBzaD4fBEFy0ZYf",
+                "run_id": null,
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "value": "<MetaInformacao>Data/hora de agora: 2025-01-16T10:48:48.215-03:00</MetaInformacao><Pergunta>Me fale somente o modelo/nome do equipamento associado ao contrato 12403520 do cnpj 07056127754. cnpj: 07056127754</Pergunta>",
+                      "annotations": []
+                    }
+                  }
+                ],
+                "attachments": [],
+                "metadata": {}
+              },
+              {
+                "id": "msg_CNKDa9JibFRciNKwADdzHqRG",
+                "object": "thread.message",
+                "created_at": 1737035207,
+                "assistant_id": "asst_P6yR0qcdsLQyTOF0jJv88Qqe",
+                "thread_id": "thread_ejDDuosTgRBzaD4fBEFy0ZYf",
+                "run_id": "run_A8HzU7U2936FTYxR7bgf2l4a",
+                "role": "assistant",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "value": "O equipamento associado ao contrato **12403520** do CNPJ **07056127754** é:\n\n- **Modelo/Nome do Equipamento**: Hygiadermo Vacuo\n\nSe precisar de mais informações, é só avisar! 😊",
+                      "annotations": []
+                    }
+                  }
+                ],
+                "attachments": [],
+                "metadata": {}
+              },
+              {
+                "id": "msg_yD0xrHe6S7iG59nsxEDECVKU",
+                "object": "thread.message",
+                "created_at": 1737035202,
+                "assistant_id": null,
+                "thread_id": "thread_ejDDuosTgRBzaD4fBEFy0ZYf",
+                "run_id": null,
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "value": "<MetaInformacao>Data/hora de agora: 2025-01-16T10:46:41.331-03:00</MetaInformacao><Pergunta>Me fale somente o modelo/nome do equipamento associado ao contrato 12403520 do cnpj 07056127754. cnpj: 07056127754</Pergunta>",
+                      "annotations": []
+                    }
+                  }
+                ],
+                "attachments": [],
+                "metadata": {}
+              },
+              {
+                "id": "msg_pLZ99Gd9HYT395v9ivvMbVbf",
+                "object": "thread.message",
+                "created_at": 1737035129,
+                "assistant_id": "asst_P6yR0qcdsLQyTOF0jJv88Qqe",
+                "thread_id": "thread_ejDDuosTgRBzaD4fBEFy0ZYf",
+                "run_id": "run_LoeqorLMBMmBBq6oPMdR2Q3e",
+                "role": "assistant",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "value": "O equipamento associado ao contrato **12403520** do CNPJ **07056127754** é:\n\n- **Modelo/Nome do Equipamento**: Hygiadermo Vacuo\n\nSe precisar de mais informações, é só avisar! 😊",
+                      "annotations": []
+                    }
+                  }
+                ],
+                "attachments": [],
+                "metadata": {}
+              },
+              {
+                "id": "msg_690zLebdMpt88dw9lbSPjsZK",
+                "object": "thread.message",
+                "created_at": 1737035111,
+                "assistant_id": null,
+                "thread_id": "thread_ejDDuosTgRBzaD4fBEFy0ZYf",
+                "run_id": null,
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "value": "<MetaInformacao>Data/hora de agora: 2025-01-16T10:45:11.589-03:00</MetaInformacao><Pergunta>Me fale somente o modelo/nome do equipamento associado ao contrato 12403520 do cnpj 07056127754. cnpj: 07056127754</Pergunta>",
+                      "annotations": []
+                    }
+                  }
+                ],
+                "attachments": [],
+                "metadata": {}
+              },
+              {
+                "id": "msg_wQrxGOmKbwvQLBdH5xxxHZO9",
+                "object": "thread.message",
+                "created_at": 1737034567,
+                "assistant_id": "asst_P6yR0qcdsLQyTOF0jJv88Qqe",
+                "thread_id": "thread_ejDDuosTgRBzaD4fBEFy0ZYf",
+                "run_id": "run_lan2WN6nOaUnVA9TRL0T0yds",
+                "role": "assistant",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "value": "Aqui está a lista com os números de contratos, os equipamentos e status do cliente com CNPJ **37624790000196**:\n\n### Lista de Contratos\n1. **Número do Contrato**: 12405552\n   - **Equipamento**: Esteira Led ONTRACK - Pré Venda\n   - **Status**: Ativo\n   - **Conectada**: Não disponível\n   - **Desbloqueada**: Não disponível\n   - **Créditos**: 29 minutos\n   - **Última Conexão**: 04/12/2024 às 08:52:00\n\n2. **Número do Contrato**: 12405551\n   - **Equipamento**: Esteira Led ONTRACK - Pré Venda\n   - **Status**: Ativo\n   - **Conectada**: Sim\n   - **Desbloqueada**: Sim\n   - **Créditos**: 1440 minutos\n   - **Última Conexão**: 16/01/2025 às 10:35:04\n\nSe precisar de mais informações ou detalhes sobre algum contrato específico, é só avisar! 😊",
+                      "annotations": []
+                    }
+                  }
+                ],
+                "attachments": [],
+                "metadata": {}
+              },
+              {
+                "id": "msg_WPg01ftjGIykDbKG885Itnfw",
+                "object": "thread.message",
+                "created_at": 1737034543,
+                "assistant_id": null,
+                "thread_id": "thread_ejDDuosTgRBzaD4fBEFy0ZYf",
+                "run_id": null,
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "value": "<MetaInformacao>Data/hora de agora: 2025-01-16T10:35:43.360-03:00</MetaInformacao><Pergunta>me de uma lista somente com os seguintes campos: com os número de contratos, os equipamentos (tipo/modelo/nome) e status (se elas estão conectadas e desbloqueadas) do cliente com cnpj 37624790000196 cnpj: 37624790000196</Pergunta>",
+                      "annotations": []
+                    }
+                  }
+                ],
+                "attachments": [],
+                "metadata": {}
+              },
+              {
+                "id": "msg_wEkklFPA1cUH3cUiKPVjkrAD",
+                "object": "thread.message",
+                "created_at": 1737034311,
+                "assistant_id": "asst_P6yR0qcdsLQyTOF0jJv88Qqe",
+                "thread_id": "thread_ejDDuosTgRBzaD4fBEFy0ZYf",
+                "run_id": "run_qrZPl1dtFWcyT9As6QaHHbTH",
+                "role": "assistant",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "value": "Aqui está a lista com os números de contratos, os equipamentos e status do cliente com CNPJ **37624790000196**:\n\n### Lista de Contratos\n1. **Número do Contrato**: 12405552\n   - **Equipamento**: Esteira Led ONTRACK - Pré Venda\n   - **Status**: Ativo\n   - **Conectada**: Não disponível\n   - **Desbloqueada**: Não disponível\n   - **Créditos**: 29 minutos\n   - **Última Conexão**: 04/12/2024 às 08:52:00\n\n2. **Número do Contrato**: 12405551\n   - **Equipamento**: Esteira Led ONTRACK - Pré Venda\n   - **Status**: Ativo\n   - **Conectada**: Sim\n   - **Desbloqueada**: Sim\n   - **Créditos**: 20 minutos\n   - **Última Conexão**: 16/01/2025 às 10:21:47\n\nSe precisar de mais informações ou detalhes sobre algum contrato específico, é só avisar! 😊",
+                      "annotations": []
+                    }
+                  }
+                ],
+                "attachments": [],
+                "metadata": {}
+              },
+              {
+                "id": "msg_BzVQKUYOef6O2aArAyBgAmEp",
+                "object": "thread.message",
+                "created_at": 1737034287,
+                "assistant_id": null,
+                "thread_id": "thread_ejDDuosTgRBzaD4fBEFy0ZYf",
+                "run_id": null,
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "value": "<MetaInformacao>Data/hora de agora: 2025-01-16T10:31:27.266-03:00</MetaInformacao><Pergunta>me de uma lista somente com os seguintes campos: com os número de contratos, os equipamentos (tipo/modelo/nome) e status (se elas estão conectadas e desbloqueadas) do cliente com cnpj 37624790000196 cnpj: 37624790000196</Pergunta>",
+                      "annotations": []
+                    }
+                  }
+                ],
+                "attachments": [],
+                "metadata": {}
+              },
+              {
+                "id": "msg_14bTCTviptmU6EhYWycXRtOE",
+                "object": "thread.message",
+                "created_at": 1737033880,
+                "assistant_id": "asst_P6yR0qcdsLQyTOF0jJv88Qqe",
+                "thread_id": "thread_ejDDuosTgRBzaD4fBEFy0ZYf",
+                "run_id": "run_HiRh2SWreSz9QeWVYOtkPxpb",
+                "role": "assistant",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "value": "Aqui está a lista com os números de contratos, os equipamentos e status do cliente com CNPJ **37624790000196**:\n\n### Lista de Contratos\n1. **Número do Contrato**: 12405552\n   - **Equipamento**: Esteira Led ONTRACK - Pré Venda\n   - **Status**: Ativo\n   - **Conectada**: Não disponível\n   - **Desbloqueada**: Não disponível\n   - **Créditos**: 29 minutos\n   - **Última Conexão**: 04/12/2024 às 08:52:00\n\n2. **Número do Contrato**: 12405551\n   - **Equipamento**: Esteira Led ONTRACK - Pré Venda\n   - **Status**: Ativo\n   - **Conectada**: Sim\n   - **Desbloqueada**: Sim\n   - **Créditos**: 1190 minutos\n   - **Última Conexão**: 16/01/2025 às 09:50:01\n\nSe precisar de mais informações ou detalhes sobre algum contrato específico, é só avisar! 😊",
+                      "annotations": []
+                    }
+                  }
+                ],
+                "attachments": [],
+                "metadata": {}
+              },
+              {
+                "id": "msg_AjzVobA3S3aPvYkBGNrzWCJI",
+                "object": "thread.message",
+                "created_at": 1737033850,
+                "assistant_id": null,
+                "thread_id": "thread_ejDDuosTgRBzaD4fBEFy0ZYf",
+                "run_id": null,
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "value": "<MetaInformacao>Data/hora de agora: 2025-01-16T10:24:10.592-03:00</MetaInformacao><Pergunta>me de uma lista somente com os seguintes campos: com os número de contratos, os equipamentos (tipo/modelo/nome) e status (se elas estão conectadas e desbloqueadas) do cliente com cnpj 37624790000196 cnpj: 37624790000196</Pergunta>",
+                      "annotations": []
+                    }
+                  }
+                ],
+                "attachments": [],
+                "metadata": {}
+              },
+              {
+                "id": "msg_fQew2xbzJreA8SfUO2nHetAN",
+                "object": "thread.message",
+                "created_at": 1737033230,
+                "assistant_id": "asst_P6yR0qcdsLQyTOF0jJv88Qqe",
+                "thread_id": "thread_ejDDuosTgRBzaD4fBEFy0ZYf",
+                "run_id": "run_Df9KHgpwuwSb7Dyl7xBuGveC",
+                "role": "assistant",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "value": "Olá! 😊 Parece que você está testando novamente. Se precisar de alguma informação ou tiver uma pergunta específica sobre a Blips ou o Neurônio, estou aqui para ajudar!",
+                      "annotations": []
+                    }
+                  }
+                ],
+                "attachments": [],
+                "metadata": {}
+              },
+              {
+                "id": "msg_PEXnQT4yXQfZTAIeyYuLyNxO",
+                "object": "thread.message",
+                "created_at": 1737033225,
+                "assistant_id": null,
+                "thread_id": "thread_ejDDuosTgRBzaD4fBEFy0ZYf",
+                "run_id": null,
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "value": "<MetaInformacao>Data/hora de agora: 2025-01-16T10:13:45.302-03:00</MetaInformacao><Pergunta>Teste teste</Pergunta>",
+                      "annotations": []
+                    }
+                  }
+                ],
+                "attachments": [],
+                "metadata": {}
+              },
+              {
+                "id": "msg_xF4GUzajq0XCzZtCIhDNCNS2",
+                "object": "thread.message",
+                "created_at": 1737033089,
+                "assistant_id": "asst_P6yR0qcdsLQyTOF0jJv88Qqe",
+                "thread_id": "thread_ejDDuosTgRBzaD4fBEFy0ZYf",
+                "run_id": "run_5XRdfgTjI0tfjqaS2YWaTj4R",
+                "role": "assistant",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "value": "Aqui está a lista com os números de contratos, os equipamentos e status do cliente com CNPJ **37624790000196**:\n\n### Lista de Contratos\n1. **Número do Contrato**: 12405552\n   - **Equipamento**: Esteira Led ONTRACK - Pré Venda\n   - **Status**: Ativo\n   - **Conectada**: Sim\n   - **Desbloqueada**: Sim\n   - **Créditos**: 29 minutos\n   - **Última Conexão**: 04/12/2024 às 08:52:00\n\n2. **Número do Contrato**: 12405551\n   - **Equipamento**: Esteira Led ONTRACK - Pré Venda\n   - **Status**: Ativo\n   - **Conectada**: Sim\n   - **Desbloqueada**: Sim\n   - **Créditos**: 1190 minutos\n   - **Última Conexão**: 16/01/2025 às 09:50:01\n\nSe precisar de mais informações ou detalhes sobre algum contrato específico, é só avisar! 😊",
+                      "annotations": []
+                    }
+                  }
+                ],
+                "attachments": [],
+                "metadata": {}
+              },
+              {
+                "id": "msg_HFy4vAoVIbEZiBag4yuUk38E",
+                "object": "thread.message",
+                "created_at": 1737033065,
+                "assistant_id": null,
+                "thread_id": "thread_ejDDuosTgRBzaD4fBEFy0ZYf",
+                "run_id": null,
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "value": "<MetaInformacao>Data/hora de agora: 2025-01-16T10:11:05.216-03:00</MetaInformacao><Pergunta>me de uma lista somente com os seguintes campos: com os número de contratos, os equipamentos (tipo/modelo/nome) e status (se elas estão conectadas e desbloqueadas) do cliente com cnpj 37624790000196 cnpj: 37624790000196</Pergunta>",
+                      "annotations": []
+                    }
+                  }
+                ],
+                "attachments": [],
+                "metadata": {}
+              },
+              {
+                "id": "msg_xZ0Ilpr7SJ2jQStF5LFaPAQ5",
+                "object": "thread.message",
+                "created_at": 1737032983,
+                "assistant_id": "asst_P6yR0qcdsLQyTOF0jJv88Qqe",
+                "thread_id": "thread_ejDDuosTgRBzaD4fBEFy0ZYf",
+                "run_id": "run_NTllwXF3TOGwwRdQGqbSREIg",
+                "role": "assistant",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "value": "Aqui está a lista com os números de contratos, os equipamentos e status do cliente com CNPJ **30483039000178**:\n\n### Lista de Contratos\n1. **Número do Contrato**: 12406628\n   - **Equipamento**: Locação - Plotter Eco-Solvente XP600\n   - **Status**: Ativo\n   - **Conectada**: Não disponível\n   - **Desbloqueada**: Não disponível\n\n2. **Número do Contrato**: 12408459\n   - **Equipamento**: Locação - CNC Laser 6040\n   - **Status**: Ativo\n   - **Conectada**: Sim\n   - **Desbloqueada**: Sim\n   - **Créditos**: 1340 minutos\n   - **Última Conexão**: 15/01/2025 às 11:09:01\n\n3. **Número do Contrato**: 12408371\n   - **Equipamento**: Locação - CNC Laser 6040\n   - **Status**: Cancelado\n   - **Conectada**: Não disponível\n   - **Desbloqueada**: Não disponível\n\n4. **Número do Contrato**: 12408458\n   - **Equipamento**: Locação - CNC Laser 6040\n   - **Status**: Cancelado\n   - **Conectada**: Não disponível\n   - **Desbloqueada**: Não disponível\n\n5. **Número do Contrato**: 12408407\n   - **Equipamento**: Locação - CNC Laser 6040\n   - **Status**: Cancelado\n   - **Conectada**: Não disponível\n   - **Desbloqueada**: Não disponível\n\n6. **Número do Contrato**: 12408420\n   - **Equipamento**: Locação - CNC Laser 6040\n   - **Status**: Cancelado\n   - **Conectada**: Não disponível\n   - **Desbloqueada**: Não disponível\n\n7. **Número do Contrato**: 12408404\n   - **Equipamento**: Locação - CNC Laser 6040\n   - **Status**: Cancelado\n   - **Conectada**: Não disponível\n   - **Desbloqueada**: Não disponível\n\nSe precisar de mais informações ou detalhes sobre algum contrato específico, é só avisar! 😊",
+                      "annotations": []
+                    }
+                  }
+                ],
+                "attachments": [],
+                "metadata": {}
+              },
+              {
+                "id": "msg_qX3SOJcMPoEc5ahrxT8JW83k",
+                "object": "thread.message",
+                "created_at": 1737032946,
+                "assistant_id": null,
+                "thread_id": "thread_ejDDuosTgRBzaD4fBEFy0ZYf",
+                "run_id": null,
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "value": "<MetaInformacao>Data/hora de agora: 2025-01-16T10:09:06.335-03:00</MetaInformacao><Pergunta>Me de uma lista somente com os seguintes campos: números de contratos, os equipamentos (tipo/modelo/nome) e status (se eles estão conectados e desbloqueados) do cliente com cnpj cnpj: 30483039000178</Pergunta>",
+                      "annotations": []
+                    }
+                  }
+                ],
+                "attachments": [],
+                "metadata": {}
+              },
+              {
+                "id": "msg_rsGsZUprejMQbXNieZ2qpRLh",
+                "object": "thread.message",
+                "created_at": 1737032909,
+                "assistant_id": "asst_P6yR0qcdsLQyTOF0jJv88Qqe",
+                "thread_id": "thread_ejDDuosTgRBzaD4fBEFy0ZYf",
+                "run_id": "run_pyckZu2RcITLtLjWqDEcXbLY",
+                "role": "assistant",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "value": "Aqui estão os equipamentos associados ao CNPJ **24147561000186**:\n\n### Lista de Equipamentos\n1. **Número do Contrato**: 12409102\n   - **Equipamento**: Locação - Plotter Recorte 120\n   - **Status**: Aguardando Entrega\n   - **Número de Série**: blips_6D8A92\n\n2. **Número do Contrato**: 2301111004\n   - **Equipamento**: Plotter Eco-Solvente\n   - **Status**: Cancelado\n\n3. **Número do Contrato**: 12409085\n   - **Equipamento**: Locação - Plotter i1600 Eco Solvente\n   - **Status**: Ativo\n   - **Número de Série**: 12409085\n\n4. **Número do Contrato**: 2301091001\n   - **Equipamento**: Plotter Eco-Solvente\n   - **Status**: Cancelado\n\nSe precisar de mais informações ou detalhes sobre algum contrato específico, é só avisar! 😊",
+                      "annotations": []
+                    }
+                  }
+                ],
+                "attachments": [],
+                "metadata": {}
+              },
+              {
+                "id": "msg_k441rQhqjAcGRhACperoGNE2",
+                "object": "thread.message",
+                "created_at": 1737032897,
+                "assistant_id": null,
+                "thread_id": "thread_ejDDuosTgRBzaD4fBEFy0ZYf",
+                "run_id": null,
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "value": "<MetaInformacao>Data/hora de agora: 2025-01-16T10:08:17.170-03:00</MetaInformacao><Pergunta>Quais são os equipamentos associados a este CNPJ? cnpj: 24147561000186</Pergunta>",
+                      "annotations": []
+                    }
+                  }
+                ],
+                "attachments": [],
+                "metadata": {}
+              }
+            ],
+            "first_id": "msg_d2XvxW1um1qGbnwPNR5TFk8c",
+            "last_id": "msg_k441rQhqjAcGRhACperoGNE2",
+            "has_more": true
+          }
+        }
+      ]
+    },
+    "versionId": "912b3975-18fa-44d2-8cf8-71bfb6b45e10",
+    "triggerCount": 1,
+    "tags": []
+  }
+}
