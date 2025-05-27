@@ -1,0 +1,262 @@
+{
+  "data": {
+    "createdAt": "2025-05-02T14:01:15.205Z",
+    "updatedAt": "2025-05-13T13:13:12.366Z",
+    "id": "xK3ALnRlTx1hZeOY",
+    "name": "Assistente Cobrança - consulta_titulos_bloqueio",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT\n  tbi.CGC_CPF as DOCUMENTO,\n  neg.PHASE.name,\n  tbi.NUFIN,\n  tbi.CODEMP as EMPRESA,\n  CASE\n    WHEN tbi.NUMCONTRATO = '0' THEN NULL\n    ELSE tbi.NUMCONTRATO\nEND\n  AS NUMCONTRATO,\n  PARSE_DATETIME('%d%m%Y %H:%M:%S', tbi.DTVENC) AS DTVENC,\n  DATETIME_DIFF(CURRENT_DATETIME(), PARSE_DATETIME('%d%m%Y %H:%M:%S', tbi.DTVENC), DAY) AS dias_vencido,\n  tbi.VLRDESDOB AS VALOR,\n  CASE\n    WHEN tbi.DHBAIXA IS NOT NULL THEN 'PAGO'\n    WHEN tbi.DHBAIXA IS NULL\n  AND PARSE_DATE('%d%m%Y', LEFT(tbi.DTVENC, 8)) = CURRENT_DATE() THEN 'VENCE HOJE'\n    WHEN tbi.DHBAIXA IS NULL AND PARSE_DATETIME('%d%m%Y %H:%M:%S', tbi.DTVENC) < CURRENT_DATETIME() THEN 'VENCIDO'\n    ELSE 'NAO VENCIDO'\nEND\n  AS ESTA_VENCIDO,\n  'PARCELA EQUIPAMENTO' AS tipo\nFROM\n  SANKHYA.TitulosBlipsIdeal tbi\nLEFT JOIN\n  blips-bigdata.PLATAFORMA.negotiation neg\nON\n  neg.contract_number = tbi.NUMCONTRATO\n  AND neg.contract_number <>'0'\nWHERE\n  tbi.CGC_CPF = '{{ $('Execute').first().json.cnpj }}'\n  AND tbi.DHBAIXA IS NULL\n  AND DATETIME_DIFF(CURRENT_DATETIME(), PARSE_DATETIME('%d%m%Y %H:%M:%S', tbi.DTVENC), DAY) > 7\n  AND ( neg.phase.name IS NULL\n    OR neg.phase.name =\"CONCLUDED\" )\nORDER BY\n  PARSE_DATETIME('%d%m%Y %H:%M:%S', tbi.DTVENC)",
+          "options": {}
+        },
+        "id": "ba885579-72f4-4426-9c9d-2f7a90cac14f",
+        "name": "Títulos Equipamentos",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          -60,
+          -60
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT\n  tbi.CGC_CPF AS DOCUMENTO,\n  tbi.NUFIN,\n  tbi.EMPRESA,\n  PARSE_DATETIME('%d%m%Y %H:%M:%S', tbi.DTVENC) AS DTVENC,\n  DATETIME_DIFF(CURRENT_DATETIME(), PARSE_DATETIME('%d%m%Y %H:%M:%S', tbi.DTVENC), DAY) AS dias_vencido,\n  tbi.VALOR,\n  'SUPRIMENTO' AS tipo,\nIF\n  (PARSE_DATETIME('%d%m%Y %H:%M:%S', tbi.DTVENC) < CURRENT_DATETIME(), 'VENCIDO', 'NAO VENCIDO') AS ESTA_VENCIDO\nFROM\n  SANKHYA.TitulosVencidosVendaSuprimentos tbi\nWHERE\n  tbi.CGC_CPF = '{{ $('Execute').first().json.cnpj }}'\n  AND DATETIME_DIFF(CURRENT_DATETIME(), PARSE_DATETIME('%d%m%Y %H:%M:%S', tbi.DTVENC), DAY) > 30\nORDER BY\n  PARSE_DATETIME('%d%m%Y %H:%M:%S', tbi.DTVENC)",
+          "options": {}
+        },
+        "id": "0ec62bfe-3787-49d8-a20c-ac44521eb82d",
+        "name": "Títulos Suprimentos",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          380,
+          -60
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "w04wIisrxzPl22Vr",
+            "mode": "list",
+            "cachedResultName": "Atualizar dados plataforma"
+          },
+          "options": {}
+        },
+        "id": "dd09e240-e33b-492a-b147-ee38dba34d4c",
+        "name": "Dados Plataforma Sup",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          600,
+          -60
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "w04wIisrxzPl22Vr",
+            "mode": "list",
+            "cachedResultName": "Atualizar dados plataforma"
+          },
+          "options": {}
+        },
+        "id": "30901df1-2557-4362-8a30-8acf46d9c0a0",
+        "name": "Dados Plataforma Eqp",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          160,
+          -60
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "010e7d6a-7900-47ab-9b74-0c62a29e6d2e",
+                "name": "Títulos Equipamentos",
+                "value": "={{ $('Dados Plataforma Eqp').item.json.response }}",
+                "type": "array"
+              },
+              {
+                "id": "2f29c31e-7a9c-4e2e-9e50-f94650894188",
+                "name": "Títulos Suprimentos",
+                "value": "={{ $('Dados Plataforma Sup').item.json.response }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "ca39eec6-0408-4bd4-b85a-c2446fe47173",
+        "name": "Return Títulos Bloqueio",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          820,
+          -60
+        ]
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "response",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          1040,
+          -60
+        ],
+        "id": "f0a96ead-e76e-4b81-abc3-5cca9fe0175c",
+        "name": "Aggregate"
+      },
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "cnpj"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -280,
+          -60
+        ],
+        "id": "b9b7646b-8eb7-4a91-8749-d084b7409c63",
+        "name": "Execute"
+      }
+    ],
+    "connections": {
+      "Títulos Equipamentos": {
+        "main": [
+          [
+            {
+              "node": "Dados Plataforma Eqp",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Títulos Suprimentos": {
+        "main": [
+          [
+            {
+              "node": "Dados Plataforma Sup",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados Plataforma Sup": {
+        "main": [
+          [
+            {
+              "node": "Return Títulos Bloqueio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados Plataforma Eqp": {
+        "main": [
+          [
+            {
+              "node": "Títulos Suprimentos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Return Títulos Bloqueio": {
+        "main": [
+          [
+            {
+              "node": "Aggregate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute": {
+        "main": [
+          [
+            {
+              "node": "Títulos Equipamentos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Execute": [
+        {
+          "json": {
+            "cnpj": "51148977000191"
+          }
+        }
+      ]
+    },
+    "versionId": "2499d80f-727e-48f4-9274-45a544616b65",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-09T15:07:56.880Z",
+        "updatedAt": "2024-07-09T15:07:56.880Z",
+        "id": "10AfOz2oKmpgqhM9",
+        "name": "Cobranca"
+      }
+    ]
+  }
+}
