@@ -1,0 +1,1258 @@
+{
+  "data": {
+    "createdAt": "2025-04-04T18:11:08.789Z",
+    "updatedAt": "2025-05-26T13:38:36.200Z",
+    "id": "Kl6b9aJxZ5O8bUi1",
+    "name": "Destrava Ai API",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.destrava.ai/api/v1/company",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "accept",
+                "value": "application/json"
+              },
+              {
+                "name": "content-type",
+                "value": "application/json"
+              },
+              {
+                "name": "authorization",
+                "value": "=Bearer {{ $json.access_token }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "companyName",
+                "value": "={{ $('lead').first().json.company_name }}"
+              },
+              {
+                "name": "nickname",
+                "value": "={{ $('lead').first().json.nick_name }}"
+              },
+              {
+                "name": "companyTaxId",
+                "value": "={{ $('lead').first().json.documento }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          740,
+          -640
+        ],
+        "id": "912d4f88-dc36-481d-844d-204ccf34c13a",
+        "name": "Criar Empresa"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.destrava.ai/api/v1/opt",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "accept",
+                "value": "application/json"
+              },
+              {
+                "name": "content-type",
+                "value": "application/json"
+              },
+              {
+                "name": "authorization",
+                "value": "=Bearer {{ $('Get Token PROD').first().json.access_token }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "companyTaxId",
+                "value": "={{ $json.companyTaxId }}"
+              },
+              {
+                "name": "endDate",
+                "value": "={{ DateTime.now().plus({ days: 30 }).toFormat('yyyy-MM-dd') }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          740,
+          40
+        ],
+        "id": "d20e8789-49a6-43c0-9517-0462f97b4521",
+        "name": "OPT",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "url": "=https://api.destrava.ai/api/v1/receivable/collateral-management",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "companyTaxId",
+                "value": "={{ $('lead').first().json.documento }}"
+              },
+              {
+                "name": "startDate",
+                "value": "={{ DateTime.now().plus({ days: 0 }).toFormat('yyyy-MM-dd') }}"
+              },
+              {
+                "name": "endDate",
+                "value": "={{ DateTime.now().plus({ days: +365 }).toFormat('yyyy-MM-dd') }}"
+              },
+              {
+                "name": "limit",
+                "value": "1000"
+              }
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "accept",
+                "value": "application/json"
+              },
+              {
+                "name": "content-type",
+                "value": "application/json"
+              },
+              {
+                "name": "authorization",
+                "value": "=Bearer {{ $('Get Token PROD').first().json.access_token }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          980,
+          -320
+        ],
+        "id": "fea45140-0dcb-429f-a833-4436da082aab",
+        "name": "GET Recebíveis",
+        "retryOnFail": false,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {},
+        "id": "f2cf7c5e-916b-4a91-801f-c0be0f0f6f24",
+        "name": "lead",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          -320
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "322e58fb-8448-4bd7-8638-1d456bf138b8",
+                "name": "date",
+                "value": "={{ $now.toFormat(\"yyyy-MM-dd HH:mm:ss\") }}",
+                "type": "string"
+              },
+              {
+                "id": "c8fd2836-5505-49be-a343-1f0ea277be2b",
+                "name": "cpf_cnpj",
+                "value": "={{ $('lead').first().json.documento }}",
+                "type": "string"
+              },
+              {
+                "id": "bf8a4ab5-6259-4238-ad7f-08c6d99d2b7f",
+                "name": "bureau",
+                "value": "QueryDestravaAi",
+                "type": "string"
+              },
+              {
+                "id": "31b5beba-a4cf-41d8-9789-448075e5b3bb",
+                "name": "query",
+                "value": "=receivable",
+                "type": "string"
+              },
+              {
+                "id": "b9dd4408-55db-41c7-a938-6f51526e1972",
+                "name": "output_payload",
+                "value": "={{ $json }}",
+                "type": "object"
+              },
+              {
+                "id": "e4273d25-c601-493d-b9e9-00c5cf04897a",
+                "name": "input_payload",
+                "value": "={{ {} }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "6574777e-31d2-4117-9c3c-6725fb6d3c51",
+        "name": "save_cv_QueryDestravaAi_type",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1700,
+          -80
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "insert",
+          "projectId": {
+            "__rl": true,
+            "value": "blips-prod-v2",
+            "mode": "list",
+            "cachedResultName": "blips-prod-v2",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-prod-v2"
+          },
+          "datasetId": {
+            "__rl": true,
+            "value": "analise_de_credito",
+            "mode": "list",
+            "cachedResultName": "analise_de_credito"
+          },
+          "tableId": {
+            "__rl": true,
+            "value": "catalogo_variaveis",
+            "mode": "list",
+            "cachedResultName": "catalogo_variaveis"
+          },
+          "options": {}
+        },
+        "id": "41fd7ef6-525e-491b-8272-8ec8d0c09b8a",
+        "name": "Save CV DestravaAi",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          1940,
+          -80
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "78403caf-d089-48ef-bdc3-f371f9205d73",
+                "name": "api",
+                "value": "DestravaAi",
+                "type": "string"
+              },
+              {
+                "id": "7ac37d72-6cd0-4dde-b380-900648d0b54c",
+                "name": "func",
+                "value": "=format_receivable",
+                "type": "string"
+              },
+              {
+                "id": "b194be5c-c81e-4da4-ba04-d7c8482516e9",
+                "name": "={{$('save_cv_QueryDestravaAi_type').first().json.bureau + \"_\" + $('save_cv_QueryDestravaAi_type').first().json.query}}",
+                "value": "={{ $('save_cv_QueryDestravaAi_type').first().json.output_payload }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "eded5e1a-e046-45ce-beec-9004c9e1602a",
+        "name": "set_destravaai",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2180,
+          -80
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "423245b1-8bbf-4ad8-96ef-7d3af9b44125",
+        "name": "Utils_DestravaAi",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          2420,
+          -80
+        ],
+        "alwaysOutputData": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "a4e197ae-9880-445a-adde-0d137de7be7c",
+                "leftValue": "={{ $json.data[0].optStatus }}",
+                "rightValue": "ACTIVE",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          180,
+          -700
+        ],
+        "id": "ae21e9c4-dd7e-4aff-ada0-c355000140ae",
+        "name": "Optin Cadastrado ?",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "url": "=https://api.stg.destrava.ai/api/v1/company?companyTaxIds={{ $('lead').first().json.documento }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "accept",
+                "value": "application/json"
+              },
+              {
+                "name": "content-type",
+                "value": "application/json"
+              },
+              {
+                "name": "authorization",
+                "value": "=Bearer {{ $('Get Token PROD').first().json.access_token }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -20,
+          -700
+        ],
+        "id": "b9cfc410-e16d-4ac0-b487-af0d70567141",
+        "name": "GET Empresa",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "f6e83a71-188c-47fe-a2a3-f62ef92bb8b3",
+                "leftValue": "={{ $json.meta.nextItem }}",
+                "rightValue": "=",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1240,
+          -100
+        ],
+        "id": "47744da7-9058-4134-b2f7-0b491c06fd86",
+        "name": "Next Item ?"
+      },
+      {
+        "parameters": {
+          "url": "=https://api.stg.destrava.ai/api/v1/receivable/collateral-management",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "companyTaxId",
+                "value": "={{ $('lead').first().json.documento }}"
+              },
+              {
+                "name": "startDate",
+                "value": "={{ DateTime.now().plus({ days: 0 }).toFormat('yyyy-MM-dd') }}"
+              },
+              {
+                "name": "endDate",
+                "value": "={{ DateTime.now().plus({ days: +365 }).toFormat('yyyy-MM-dd') }}"
+              },
+              {
+                "name": "limit",
+                "value": "1000"
+              },
+              {
+                "name": "risk",
+                "value": "=HIGH_RISK"
+              }
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "accept",
+                "value": "application/json"
+              },
+              {
+                "name": "content-type",
+                "value": "application/json"
+              },
+              {
+                "name": "authorization",
+                "value": "=Bearer {{ $('Get Token PROD').first().json.access_token }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          420,
+          -700
+        ],
+        "id": "2488a7c4-cc43-4768-87fa-92e6beec5994",
+        "name": "GET Recebíveis HRISK",
+        "retryOnFail": false,
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "url": "=https://api.stg.destrava.ai/api/v1/receivable/collateral-management",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "companyTaxId",
+                "value": "={{ $('lead').first().json.documento }}"
+              },
+              {
+                "name": "startDate",
+                "value": "={{ DateTime.now().plus({ days: 0 }).toFormat('yyyy-MM-dd') }}"
+              },
+              {
+                "name": "endDate",
+                "value": "={{ DateTime.now().plus({ days: +365 }).toFormat('yyyy-MM-dd') }}"
+              },
+              {
+                "name": "limit",
+                "value": "100"
+              },
+              {
+                "name": "lastItem",
+                "value": "={{ $json.meta.nextItem }}"
+              }
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "accept",
+                "value": "application/json"
+              },
+              {
+                "name": "content-type",
+                "value": "application/json"
+              },
+              {
+                "name": "authorization",
+                "value": "=Bearer {{ $('Get Token PROD').first().json.access_token }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2020,
+          -440
+        ],
+        "id": "77c8277c-d12c-4b09-a664-89f57eae782b",
+        "name": "GET Recebíveis Pagination",
+        "retryOnFail": false,
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "options": {
+            "reset": "={{ $json.meta.nextItem != null }}"
+          }
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          1700,
+          -460
+        ],
+        "id": "250b3a3f-d0b4-4544-9961-ea0351bc486e",
+        "name": "Loop Over Items",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "amount": 1
+        },
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          2320,
+          -440
+        ],
+        "id": "d9c4c0a2-8829-40b5-92b7-ffd3f9b651c6",
+        "name": "Wait",
+        "webhookId": "4aa03932-c94b-44e3-a44b-41f7cee3c2f6",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.stg.destrava.ai/oauth2/token",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ]
+          },
+          "sendBody": true,
+          "contentType": "form-urlencoded",
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "grant_type",
+                "value": "client_credentials"
+              },
+              {
+                "name": "client_id",
+                "value": "5481bc88-d6e9-4b48-92a6-d3ec70b4f94e"
+              },
+              {
+                "name": "client_secret",
+                "value": "B!etn#v2+5amf==xEQGyx$kuk&*guRvxa=7XjDt@"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -300,
+          -700
+        ],
+        "id": "cc668dbe-c1b1-4a4b-8a36-3e067d36f1c9",
+        "name": "Get Token DEV",
+        "retryOnFail": false,
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1qw5AtscNYJEWrM-p-OUNUr9KBfxBPddeLKTq8COoGbc",
+            "mode": "list",
+            "cachedResultName": "Lista de Consultas - Destrava.Ai",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qw5AtscNYJEWrM-p-OUNUr9KBfxBPddeLKTq8COoGbc/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Página1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qw5AtscNYJEWrM-p-OUNUr9KBfxBPddeLKTq8COoGbc/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "autoMapInputData",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "LISTA DE CONSULTA DESTRAVA.AI",
+                "displayName": "LISTA DE CONSULTA DESTRAVA.AI",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Valor Performado - Período",
+                "displayName": "Valor Performado - Período",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          2680,
+          -80
+        ],
+        "id": "10ea01a2-cb92-4703-af3b-8ace25b4d148",
+        "name": "Google Sheets",
+        "credentials": {
+          "googleApi": {
+            "id": "KvFeNUBUHv7uR0PF",
+            "name": "Google BigQuery account - New Motor"
+          }
+        },
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "322e58fb-8448-4bd7-8638-1d456bf138b8",
+                "name": "date",
+                "value": "={{ $now.toFormat(\"yyyy-MM-dd HH:mm:ss\") }}",
+                "type": "string"
+              },
+              {
+                "id": "c8fd2836-5505-49be-a343-1f0ea277be2b",
+                "name": "cpf_cnpj",
+                "value": "={{ $('lead').first().json.documento }}",
+                "type": "string"
+              },
+              {
+                "id": "bf8a4ab5-6259-4238-ad7f-08c6d99d2b7f",
+                "name": "bureau",
+                "value": "QueryDestravaAi",
+                "type": "string"
+              },
+              {
+                "id": "31b5beba-a4cf-41d8-9789-448075e5b3bb",
+                "name": "query",
+                "value": "={{ $('lead').first().json.type }}",
+                "type": "string"
+              },
+              {
+                "id": "b9dd4408-55db-41c7-a938-6f51526e1972",
+                "name": "output_payload",
+                "value": "={{ $json }}",
+                "type": "object"
+              },
+              {
+                "id": "e4273d25-c601-493d-b9e9-00c5cf04897a",
+                "name": "input_payload",
+                "value": "={{ {} }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "bfceec7b-83be-472c-93e8-cfad5d22c698",
+        "name": "save_cv_QueryDestravaAi_type1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2520,
+          -680
+        ],
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "78403caf-d089-48ef-bdc3-f371f9205d73",
+                "name": "api",
+                "value": "DestravaAi",
+                "type": "string"
+              },
+              {
+                "id": "7ac37d72-6cd0-4dde-b380-900648d0b54c",
+                "name": "func",
+                "value": "=format_receivable",
+                "type": "string"
+              },
+              {
+                "id": "b194be5c-c81e-4da4-ba04-d7c8482516e9",
+                "name": "={{$('save_cv_QueryDestravaAi_type1').first().json.bureau + \"_\" + $('save_cv_QueryDestravaAi_type1').first().json.query}}",
+                "value": "={{ $('save_cv_QueryDestravaAi_type1').first().json.output_payload }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "544813d5-50bf-4c56-85fb-d57ed0d4c78e",
+        "name": "set_destravaai1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2760,
+          -680
+        ],
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "11008105-fa0f-44f9-9432-d858d53449e9",
+        "name": "Utils_DestravaAi1",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          3020,
+          -680
+        ],
+        "disabled": true
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.noOp",
+        "typeVersion": 1,
+        "position": [
+          2020,
+          -700
+        ],
+        "id": "457d3902-04cf-4b06-ad8d-9a397972de58",
+        "name": "No Operation, do nothing",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          2240,
+          -700
+        ],
+        "id": "ee4c21d2-7fb3-4738-ab88-800e1c025eec",
+        "name": "Loop Over Items1",
+        "disabled": true
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.noOp",
+        "typeVersion": 1,
+        "position": [
+          2520,
+          -860
+        ],
+        "id": "846dd492-b47e-497b-a441-6b425e766438",
+        "name": "No Operation, do nothing1",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "724e6ad3-ba52-44a9-b2dd-d9e062fb7ca7",
+                "name": "paginacao",
+                "value": false,
+                "type": "boolean"
+              },
+              {
+                "id": "b08241a5-d894-457e-ba22-1dfaec5e042c",
+                "name": "documento",
+                "value": "={{ $('lead').first().json.documento }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1440,
+          -460
+        ],
+        "id": "70338888-df64-4d30-8c9a-090476cca7c9",
+        "name": "Paginação"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.destrava.ai/oauth2/token",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ]
+          },
+          "sendBody": true,
+          "contentType": "form-urlencoded",
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "grant_type",
+                "value": "client_credentials"
+              },
+              {
+                "name": "client_id",
+                "value": "5481bc88-d6e9-4b48-92a6-d3ec70b4f94e"
+              },
+              {
+                "name": "client_secret",
+                "value": "hsD@dPEeHazktq!uF3qR#tKpJCAmx7rWfwpW8EVx"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          20,
+          -320
+        ],
+        "id": "6779b864-6bc7-4f5d-93a1-db8e8be6414b",
+        "name": "Get Token PROD",
+        "retryOnFail": false
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('lead').first().json.endpoint }}",
+                      "rightValue": "criar_empresa",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "2a443377-cce4-4a2b-a184-6d9891efccdd"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Criar Empresa"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "0a46dce2-347a-4f7e-a983-3571be747baf",
+                      "leftValue": "={{ $('lead').first().json.endpoint }}",
+                      "rightValue": "get_recebiveis",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Recebiveis"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "d381861e-c62f-43f3-b85f-10587d6efdc2",
+                      "leftValue": "={{ $('lead').first().json.endpoint }}",
+                      "rightValue": "optin",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Att Optin"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          420,
+          -320
+        ],
+        "id": "508e509b-b349-44e8-ad94-b70f33a7baa2",
+        "name": "Switch"
+      }
+    ],
+    "connections": {
+      "Criar Empresa": {
+        "main": [
+          []
+        ]
+      },
+      "OPT": {
+        "main": [
+          []
+        ]
+      },
+      "GET Recebíveis": {
+        "main": [
+          [
+            {
+              "node": "Next Item ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "lead": {
+        "main": [
+          [
+            {
+              "node": "Get Token PROD",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "save_cv_QueryDestravaAi_type": {
+        "main": [
+          [
+            {
+              "node": "Save CV DestravaAi",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Save CV DestravaAi": {
+        "main": [
+          [
+            {
+              "node": "set_destravaai",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_destravaai": {
+        "main": [
+          [
+            {
+              "node": "Utils_DestravaAi",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Optin Cadastrado ?": {
+        "main": [
+          [],
+          []
+        ]
+      },
+      "GET Empresa": {
+        "main": [
+          [
+            {
+              "node": "Optin Cadastrado ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Next Item ?": {
+        "main": [
+          [
+            {
+              "node": "Paginação",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "save_cv_QueryDestravaAi_type",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GET Recebíveis HRISK": {
+        "main": [
+          []
+        ]
+      },
+      "GET Recebíveis Pagination": {
+        "main": [
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [
+            {
+              "node": "No Operation, do nothing",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "GET Recebíveis Pagination",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils_DestravaAi": {
+        "main": [
+          []
+        ]
+      },
+      "set_destravaai1": {
+        "main": [
+          [
+            {
+              "node": "Utils_DestravaAi1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "save_cv_QueryDestravaAi_type1": {
+        "main": [
+          [
+            {
+              "node": "set_destravaai1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils_DestravaAi1": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "No Operation, do nothing": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items1": {
+        "main": [
+          [
+            {
+              "node": "No Operation, do nothing1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "save_cv_QueryDestravaAi_type1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get Token PROD": {
+        "main": [
+          [
+            {
+              "node": "Switch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch": {
+        "main": [
+          [
+            {
+              "node": "Criar Empresa",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "GET Recebíveis",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "OPT",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "lead": [
+        {
+          "json": {
+            "documento": "59284895000186",
+            "company_name": null,
+            "nick_name": null,
+            "endpoint": "get_recebiveis"
+          }
+        }
+      ]
+    },
+    "versionId": "47be7739-8c74-44d3-b812-8c5a1cb2a17e",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-31T16:22:41.803Z",
+        "updatedAt": "2024-07-31T16:22:41.803Z",
+        "id": "mmaXbyiWhptUXaTd",
+        "name": "New Motor"
+      }
+    ]
+  }
+}
