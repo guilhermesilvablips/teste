@@ -1,0 +1,870 @@
+{
+  "data": {
+    "createdAt": "2025-05-16T14:32:29.091Z",
+    "updatedAt": "2025-05-26T15:45:52.970Z",
+    "id": "BuOLmrUMTBpeuJSw",
+    "name": "Salvar Dados Destrava AI",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          40,
+          0
+        ],
+        "id": "b5f9b7ec-4c5d-4416-84e6-fe21689e2ac8",
+        "name": "When clicking ‘Test workflow’"
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-prod-v2",
+            "mode": "list",
+            "cachedResultName": "blips-prod-v2",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-prod-v2"
+          },
+          "sqlQuery": "WITH leads_filtrados AS (\n  SELECT\n    cnpjCliente,\n    nomeClienteCnpj,\n    PARSE_DATETIME('%d/%m/%Y %H:%M:%S', dataProcessamento) AS data_processada,\n    ROW_NUMBER() OVER (\n      PARTITION BY cnpjCliente\n      ORDER BY PARSE_DATETIME('%d/%m/%Y %H:%M:%S', dataProcessamento) DESC\n    ) AS rn\n  FROM\n    `blips-prod-v2.analise_de_credito.motor_analise_credito_n8n`\n  WHERE\n    -- Filtra por intervalo de data\n    PARSE_DATETIME('%d/%m/%Y %H:%M:%S', dataProcessamento) BETWEEN DATETIME('2025-05-01') AND CURRENT_DATETIME()\n    -- Garante nome válido\n    AND nomeClienteCnpj IS NOT NULL\n    AND TRIM(nomeClienteCnpj) != ''\n)\n\nSELECT\n  cnpjCliente,\n  nomeClienteCnpj,\n  data_processada\nFROM\n  leads_filtrados\nWHERE\n  rn = 1\nORDER BY\n  data_processada DESC\nLIMIT 1000;",
+          "options": {
+            "maxResults": 1,
+            "timeoutMs": 60000
+          }
+        },
+        "id": "5de5ff5a-ae26-4fdc-a33b-ca63ed344608",
+        "name": "motor_analise_credito",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          320,
+          -240
+        ],
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "options": {
+            "reset": "={{ $('Loop Over Items').context['done'] }}"
+          }
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          640,
+          0
+        ],
+        "id": "a2ac0b2d-adb8-46fe-a75e-43a5c7283dbc",
+        "name": "Loop Over Items"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "a584fe2b-784a-45ff-afa1-112ba17179a8",
+                "name": "documento",
+                "value": "={{ $json.cnpjCliente ? $json.cnpjCliente : $json.CNPJ }}",
+                "type": "string"
+              },
+              {
+                "id": "f9699f6c-a3e1-49bd-8a6a-7100edacb252",
+                "name": "company_name",
+                "value": "={{ $json.nomeClienteCnpj }}",
+                "type": "string"
+              },
+              {
+                "id": "ab3dcbb6-471b-41a4-b347-24487ffebf3d",
+                "name": "nick_name",
+                "value": "={{ $json.nomeClienteCnpj.split(' ')[0] }}",
+                "type": "string"
+              },
+              {
+                "id": "585a1837-61ba-48ab-a619-91e2e0434eaa",
+                "name": "endpoint",
+                "value": "get_recebiveis",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          960,
+          20
+        ],
+        "id": "f90cb0d7-7277-47d1-87ff-d330bbc591a7",
+        "name": "set_receivable"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "Kl6b9aJxZ5O8bUi1",
+            "mode": "list",
+            "cachedResultName": "Destrava Ai API"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          1220,
+          20
+        ],
+        "id": "27d26957-5465-47e7-be3e-4ec17e2e86f6",
+        "name": "Destrava AI",
+        "alwaysOutputData": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.noOp",
+        "typeVersion": 1,
+        "position": [
+          960,
+          -220
+        ],
+        "id": "2025646b-6b1d-4129-aef1-4cc36494c20b",
+        "name": "No Operation, do nothing"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          3000,
+          60
+        ],
+        "id": "5527766a-0366-442e-a41e-c91331f908eb",
+        "name": "Wait",
+        "webhookId": "f8592027-2061-4bfa-bae5-1c463760a0a1"
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1qw5AtscNYJEWrM-p-OUNUr9KBfxBPddeLKTq8COoGbc",
+            "mode": "list",
+            "cachedResultName": "Lista de Consultas - Destrava.Ai",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qw5AtscNYJEWrM-p-OUNUr9KBfxBPddeLKTq8COoGbc/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Página1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qw5AtscNYJEWrM-p-OUNUr9KBfxBPddeLKTq8COoGbc/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "autoMapInputData",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "LISTA DE CONSULTA DESTRAVA.AI",
+                "displayName": "LISTA DE CONSULTA DESTRAVA.AI",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Valor Performado - Período",
+                "displayName": "Valor Performado - Período",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          2600,
+          60
+        ],
+        "id": "509d2b41-222f-4ad8-8bdc-ace12ee0aa64",
+        "name": "Google Sheets",
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleApi": {
+            "id": "KvFeNUBUHv7uR0PF",
+            "name": "Google BigQuery account - New Motor"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "31a262fb-ad3e-4d4d-9712-9b90ced4a263",
+                "leftValue": "={{ $json.paginacao }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          2260,
+          40
+        ],
+        "id": "ebf75730-80bd-4be1-aecc-02c8d0806288",
+        "name": "Paginação ?"
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1gE6CHzlKr3ReuEtFgaMaDPgI3E15TPkEk9HY9sF6k2U",
+            "mode": "list",
+            "cachedResultName": "Leads com Paginação Destrava Ai",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gE6CHzlKr3ReuEtFgaMaDPgI3E15TPkEk9HY9sF6k2U/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Página1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gE6CHzlKr3ReuEtFgaMaDPgI3E15TPkEk9HY9sF6k2U/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "cnpj": "={{ $('Loop Over Items').first().json.cnpjCliente }}"
+            },
+            "matchingColumns": [
+              "cnpj"
+            ],
+            "schema": [
+              {
+                "id": "cnpj",
+                "displayName": "cnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          2740,
+          -240
+        ],
+        "id": "3c326413-1122-4bc2-a9be-ab0df3162574",
+        "name": "Google Sheets1",
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleApi": {
+            "id": "KvFeNUBUHv7uR0PF",
+            "name": "Google BigQuery account - New Motor"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          3000,
+          -240
+        ],
+        "id": "1ab1b9ff-e184-4428-bfd4-0c9a43d7b51d",
+        "name": "Wait1",
+        "webhookId": "f8592027-2061-4bfa-bae5-1c463760a0a1"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('set_receivable').first().json.endpoint }}",
+                      "rightValue": "criar_empresa",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "0fd96f78-cd7c-48c5-8fdb-96102c3bbdb3"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Criar empresa"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "db80187f-b83c-40d3-bce9-453be213ebbe",
+                      "leftValue": "={{ $('set_receivable').first().json.endpoint }}",
+                      "rightValue": "get_recebiveis",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Recebiveis"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          1520,
+          20
+        ],
+        "id": "c14c0aa5-ff92-4a10-8e43-ff3431a22644",
+        "name": "Qual Endpoint ?"
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1QqmPXa8OsqR8TPwKlEq2kvX4kSbtR3lcuYIGkUPzxio",
+            "mode": "list",
+            "cachedResultName": "Criar empresa Destrava AI",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QqmPXa8OsqR8TPwKlEq2kvX4kSbtR3lcuYIGkUPzxio/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Página1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gE6CHzlKr3ReuEtFgaMaDPgI3E15TPkEk9HY9sF6k2U/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "CNPJ": "={{ $json.companyTaxId }}",
+              "Data": "={{ \n  (() => {\n    const d = new Date();\n    return `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getFullYear()} ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;\n  })() \n}}",
+              "Carga": "={{    (() => {     const d = new Date(new Date().getTime() + 2 * 60 * 60 * 1000);     return `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getFullYear()} ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;   })()  }}"
+            },
+            "matchingColumns": [
+              "cnpj"
+            ],
+            "schema": [
+              {
+                "id": "CNPJ",
+                "displayName": "CNPJ",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Optin",
+                "displayName": "Optin",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Data",
+                "displayName": "Data",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Carga",
+                "displayName": "Carga",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Consultado",
+                "displayName": "Consultado",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          1760,
+          0
+        ],
+        "id": "b858dad6-6129-4c52-952f-55ba3708ea8b",
+        "name": "Google Sheets2",
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleApi": {
+            "id": "KvFeNUBUHv7uR0PF",
+            "name": "Google BigQuery account - New Motor"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          2020,
+          0
+        ],
+        "id": "2e2f700a-d29a-41cf-8e68-5c9ac2468406",
+        "name": "Wait2",
+        "webhookId": "f8592027-2061-4bfa-bae5-1c463760a0a1"
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "documentId": {
+            "__rl": true,
+            "value": "1QqmPXa8OsqR8TPwKlEq2kvX4kSbtR3lcuYIGkUPzxio",
+            "mode": "list",
+            "cachedResultName": "Criar empresa Destrava AI",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QqmPXa8OsqR8TPwKlEq2kvX4kSbtR3lcuYIGkUPzxio/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Página1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QqmPXa8OsqR8TPwKlEq2kvX4kSbtR3lcuYIGkUPzxio/edit#gid=0"
+          },
+          "filtersUI": {
+            "values": [
+              {
+                "lookupColumn": "Consultado"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          320,
+          0
+        ],
+        "id": "7a3ca497-4552-4f1c-b92d-22f45515433b",
+        "name": "Google Sheets3",
+        "credentials": {
+          "googleApi": {
+            "id": "KvFeNUBUHv7uR0PF",
+            "name": "Google BigQuery account - New Motor"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "operation": "update",
+          "documentId": {
+            "__rl": true,
+            "value": "1QqmPXa8OsqR8TPwKlEq2kvX4kSbtR3lcuYIGkUPzxio",
+            "mode": "list",
+            "cachedResultName": "Criar empresa Destrava AI",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QqmPXa8OsqR8TPwKlEq2kvX4kSbtR3lcuYIGkUPzxio/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Página1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QqmPXa8OsqR8TPwKlEq2kvX4kSbtR3lcuYIGkUPzxio/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "Consultado": "SIM",
+              "row_number": "={{ $('Loop Over Items').item.json.row_number }}"
+            },
+            "matchingColumns": [
+              "row_number"
+            ],
+            "schema": [
+              {
+                "id": "CNPJ",
+                "displayName": "CNPJ",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Optin",
+                "displayName": "Optin",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Data",
+                "displayName": "Data",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Carga",
+                "displayName": "Carga",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Consultado",
+                "displayName": "Consultado",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "readOnly": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          2800,
+          60
+        ],
+        "id": "496fb668-6119-4497-b819-acbd8a40001a",
+        "name": "Google Sheets4",
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleApi": {
+            "id": "KvFeNUBUHv7uR0PF",
+            "name": "Google BigQuery account - New Motor"
+          }
+        },
+        "onError": "continueRegularOutput"
+      }
+    ],
+    "connections": {
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "Google Sheets3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "motor_analise_credito": {
+        "main": [
+          []
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [
+            {
+              "node": "No Operation, do nothing",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "set_receivable",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_receivable": {
+        "main": [
+          [
+            {
+              "node": "Destrava AI",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Destrava AI": {
+        "main": [
+          [
+            {
+              "node": "Qual Endpoint ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Sheets": {
+        "main": [
+          [
+            {
+              "node": "Google Sheets4",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Paginação ?": {
+        "main": [
+          [
+            {
+              "node": "Google Sheets1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Google Sheets",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Sheets1": {
+        "main": [
+          [
+            {
+              "node": "Wait1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait1": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Qual Endpoint ?": {
+        "main": [
+          [
+            {
+              "node": "Google Sheets2",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Paginação ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Sheets2": {
+        "main": [
+          [
+            {
+              "node": "Wait2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait2": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Sheets3": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Sheets4": {
+        "main": [
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "9da0d2e7-5de8-4dae-ab34-932f25d90ede",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-31T16:22:41.803Z",
+        "updatedAt": "2024-07-31T16:22:41.803Z",
+        "id": "mmaXbyiWhptUXaTd",
+        "name": "New Motor"
+      }
+    ]
+  }
+}
