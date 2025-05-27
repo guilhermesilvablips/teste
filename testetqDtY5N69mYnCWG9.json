@@ -1,0 +1,2653 @@
+{
+  "data": {
+    "createdAt": "2025-04-08T14:10:12.154Z",
+    "updatedAt": "2025-05-07T14:39:03.679Z",
+    "id": "tqDtY5N69mYnCWG9",
+    "name": "Lista filtrada Pipe Comercial",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -1920,
+          -100
+        ],
+        "id": "9bb2a8fc-7a84-42e6-b7f3-4ff1239028ee",
+        "name": "When clicking ‘Test workflow’"
+      },
+      {
+        "parameters": {
+          "operation": "getAll",
+          "resolveProperties": true,
+          "limit": 1,
+          "filters": {
+            "filter_id": "={{ $('CONSTS').item.json.pipeFilter }}"
+          }
+        },
+        "type": "n8n-nodes-base.pipedrive",
+        "typeVersion": 1,
+        "position": [
+          -1120,
+          -100
+        ],
+        "id": "733c7bc9-33ca-46b1-8d73-ee85678e46e4",
+        "name": "Pipedrive",
+        "credentials": {
+          "pipedriveApi": {
+            "id": "6OXvSBSLEYwmYiBv",
+            "name": "Pipedrive account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "34e20058-2dcc-403f-a80b-37d0dfe81243",
+                "leftValue": "={{ $json['Pessoa de contato'].phone[0].value }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -500,
+          -100
+        ],
+        "id": "bd89e6c4-97f8-4e56-8600-165225893749",
+        "name": "tem telefone?"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "fe919cc4-8ed8-4878-a5c1-8a4be5adfd12",
+                "name": "lista_numbers",
+                "value": "={{ \n$json.phone.replace(/\\D/g, '').startsWith('55') ? $json.phone.replace(/\\D/g, '') : '55' + $json.phone.replace(/\\D/g, '') }}",
+                "type": "string"
+              },
+              {
+                "id": "1284880a-7855-4c09-9601-e43c4028ead0",
+                "name": "segmento",
+                "value": "={{ $json.segmento }}",
+                "type": "number"
+              },
+              {
+                "id": "e3880f3b-86fb-40b8-9803-fa5c87a150f7",
+                "name": "ID",
+                "value": "={{ $json.ID }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {
+            "dotNotation": false
+          }
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          760,
+          -80
+        ],
+        "id": "aca0d6c7-5734-46a2-9495-4eed41437246",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "fieldsToAggregate": {
+            "fieldToAggregate": [
+              {
+                "fieldToAggregate": "number",
+                "renameField": true,
+                "outputFieldName": "={{ $json.segmento }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          2360,
+          -500
+        ],
+        "id": "35e343de-c9b2-417f-886b-eb594d0c004d",
+        "name": "Aggregate"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "function formatPhoneNumber(phoneNumber) {\n  let cleaned = phoneNumber.replace(/\\D/g, '');\n\n  if (!cleaned.startsWith('55')) {\n    cleaned = '55' + cleaned;\n  }\n\n  return cleaned;\n} let lista = []\n\nfunction mergeAndFormatContacts(contactList) {\n  // Mapeia e formata os números\n  const postfix = \"@s\\.whatsapp\\.net\"\n  const formattedContacts = contactList.map(contact => {\n    const key = Object.keys(contact)[0];\n    //const value = contact[key];\n    const formattedKey = formatPhoneNumber(key);\n    lista.push(formattedKey)\n  });\n\n  // Junta os objetos em um único\n  const mergedObject = $json.data.reduce((acc, curr) => {\n    return { ...acc, ...curr };\n  }, {});\n\n  return {\"lista\" : [mergedObject]};\n}\n\nreturn{\"Lista\": mergeAndFormatContacts($json.data)}\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1440,
+          -540
+        ],
+        "id": "fc2f725f-d70e-4278-8865-886ca0ca3ca3",
+        "name": "Code"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "loose",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "ff7c0413-8ed7-43af-a1ec-4f3c5ac76156",
+                "leftValue": "={{ $json.segmento }}",
+                "rightValue": "=Ideal Suprimentos",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "looseTypeValidation": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1860,
+          120
+        ],
+        "id": "6e4aebc0-994d-41cc-8fe4-cefd3500f197",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('reassembly').item.json.segmento }}",
+                      "rightValue": "=CV",
+                      "operator": {
+                        "type": "string",
+                        "operation": "contains"
+                      },
+                      "id": "c28e7f61-c146-4dc5-8a71-2cbd4a805515"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Blips CV"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "f3e2503c-f657-46aa-8aea-d173cafde7cb",
+                      "leftValue": "={{ $('reassembly').item.json.segmento }}",
+                      "rightValue": "Confeccao",
+                      "operator": {
+                        "type": "string",
+                        "operation": "contains"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Blips Confeccao"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "c8f7e7ac-8300-4e58-992c-b9cf49596fe9",
+                      "leftValue": "={{ $('reassembly').item.json.segmento }}",
+                      "rightValue": "Estetica",
+                      "operator": {
+                        "type": "string",
+                        "operation": "contains"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Blips Estetica"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "522c2447-def5-4f01-9b1f-eac8edd4ba22",
+                      "leftValue": "={{ $('reassembly').item.json.segmento }}",
+                      "rightValue": "Sorvete",
+                      "operator": {
+                        "type": "string",
+                        "operation": "contains"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Blips Sorvete"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "f942738c-bdc0-4112-adc7-0cb9ac025225",
+                      "leftValue": "={{ $('reassembly').item.json.segmento }}",
+                      "rightValue": "Fitness",
+                      "operator": {
+                        "type": "string",
+                        "operation": "contains"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Blips Fitness"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "5a3af62d-b500-4cb4-ab1f-a476ced605e7",
+                      "leftValue": "={{ $('reassembly').item.json.segmento }}",
+                      "rightValue": "Construcao",
+                      "operator": {
+                        "type": "string",
+                        "operation": "contains"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Blips Construcao"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "7af71623-881d-4d3e-8a51-2c8c470d9925",
+                      "leftValue": "={{ $('reassembly').item.json.segmento }}",
+                      "rightValue": "Mkt",
+                      "operator": {
+                        "type": "string",
+                        "operation": "contains"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Ideal Mkt"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "5a0681d0-d4b2-481b-a2f9-ce2f25235403",
+                      "leftValue": "={{ $('reassembly').item.json.segmento }}",
+                      "rightValue": "Suprimentos",
+                      "operator": {
+                        "type": "string",
+                        "operation": "contains"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Ideal - Suprimentos"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          2480,
+          -180
+        ],
+        "id": "0139b2d5-bd04-454e-8b4d-01f5f9cb94bd",
+        "name": "Segmento"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const phone = $json.lista_numbers\n\nconst segments = {\n    1:  { name: \"Blips CV\",         bot_id: \"29542\" },\n    21: { name: \"Blips Confeccao\",  bot_id: \"29542\" },\n    10: { name: \"Blips Estetica\",   bot_id: \"36328\" },\n    18: { name: \"Blips Sorvete\",    bot_id: \"83149\" },\n    19: { name: \"Blips Fitness\",    bot_id: \"\" },\n    20: { name: \"Blips Construcao\", bot_id: \"109961\" },\n    4:  { name: \"Ideal Mkt\",  bot_id: \"29542\" },\n    9:  { name: \"Ideal Suprimentos\", bot_id: \"97680\" }\n};\n\nfunction fixPhoneFormat(phone) {\n    const phoneLen = phone.length;\n    if (phoneLen === 13) {\n        return phone.slice(0, 4) + phone.slice(5);\n    } else {\n        return phone.slice(0, 4) + '9' + phone.slice(4);\n    }\n}\n\nreturn {\"ID\" : $json.ID,\n        \"phone\": phone, alt_phone: fixPhoneFormat(phone),\n        \"segmento\": segments[$json.segmento].name, \"bot_id\": segments[$json.segmento].bot_id}\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          960,
+          -80
+        ],
+        "id": "af8393c9-5ec0-4859-ba9e-9a5da5dca3af",
+        "name": "segment_decode"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $('CONSTS').item.json.API_AUTH_URL }}",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "={\n  \"content-type\": \"application/json\",\n  \"accept\": \"application/json, text/plain, */*\",\n  \"origin\": \"https://app.botconversa.com.br\",\n  \"referer\": \"https://app.botconversa.com.br/\",\n  \"user-agent\": \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36\"\n}",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\"email\": \"{{ $('CONSTS').item.json.email}}\",\n\"password\": \"{{ $('CONSTS').item.json.psswd }}\"}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -1540,
+          -100
+        ],
+        "id": "4ec1231e-668e-4de1-b5c7-03ac9ab59e8d",
+        "name": "jwt_token"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62f72a33-b470-41d4-8cb3-3deb37857fe1",
+                "name": "PIPELINE_URL",
+                "value": "https://backend.botconversa.com.br/api/v1/pipelines/user_card/0/",
+                "type": "string"
+              },
+              {
+                "id": "9aa11ae3-d8c3-4a41-b64f-d8715d2e3eda",
+                "name": "API_AUTH_URL",
+                "value": "https://backend.botconversa.com.br/api/v1/auth/jwt/create/",
+                "type": "string"
+              },
+              {
+                "id": "c4bee814-99ce-4177-b6ad-0d38438e88de",
+                "name": "email",
+                "value": "pedro.alves@blips.com.br",
+                "type": "string"
+              },
+              {
+                "id": "7a865867-5d9f-42b0-9197-dbb36b77c311",
+                "name": "psswd",
+                "value": "Acesso1pedro!",
+                "type": "string"
+              },
+              {
+                "id": "9fffee0e-250b-448f-906e-984b68082429",
+                "name": "gainSheetID",
+                "value": "17gx4-pXR-f02CxioRytPZzXyWhieUeZl0TZ720u3q48",
+                "type": "string"
+              },
+              {
+                "id": "37902170-4fc7-47b7-9ab1-aa43cf8d0914",
+                "name": "loseSheetID",
+                "value": "1uZMLN4pnQIZRwSO_XnZlLQHPbkT72VFtQ_UXcdoj_xs",
+                "type": "string"
+              },
+              {
+                "id": "edc731b0-5940-41be-811e-1e217f0bc1c6",
+                "name": "pipeFilter",
+                "value": "3632",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1720,
+          -100
+        ],
+        "id": "e1c9ac74-4ae8-4510-942b-802677abdb9f",
+        "name": "CONSTS"
+      },
+      {
+        "parameters": {
+          "url": "={{ $('CONSTS').item.json.PIPELINE_URL }}",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "bot_id",
+                "value": "={{ $json.bot_id }}"
+              },
+              {
+                "name": "jid",
+                "value": "={{ $json.phone }}@s.whatsapp.net"
+              }
+            ]
+          },
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "={\n                \"authorization\": \"Bearer {{ $('Token').item.json.access }}\",\n                \"content-type\": \"application/json\",\n                \"accept\": \"application/json, text/plain, */*\",\n                \"origin\": \"https://app.botconversa.com.br\",\n                \"referer\": \"https://app.botconversa.com.br/\",\n                \"user-agent\": \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36\"\n\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1180,
+          -80
+        ],
+        "id": "4fdbbba7-d2d1-4f0e-afcd-709997a3fd1b",
+        "name": "pipe_id",
+        "executeOnce": false,
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7a865867-5d9f-42b0-9197-dbb36b77c311",
+                "name": "access",
+                "value": "={{$json.access}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1340,
+          -100
+        ],
+        "id": "ea9434eb-d2f1-46d9-a2ad-baa05b1f4abf",
+        "name": "Token"
+      },
+      {
+        "parameters": {
+          "url": "={{ $('CONSTS').item.json.PIPELINE_URL }}",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "bot_id",
+                "value": "={{ $json.bot_id }}"
+              },
+              {
+                "name": "jid",
+                "value": "={{ $json.alt_phone }}@s.whatsapp.net"
+              }
+            ]
+          },
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "={\n                \"authorization\": \"Bearer {{ $('Token').item.json.access }}\",\n                \"content-type\": \"application/json\",\n                \"accept\": \"application/json, text/plain, */*\",\n                \"origin\": \"https://app.botconversa.com.br\",\n                \"referer\": \"https://app.botconversa.com.br/\",\n                \"user-agent\": \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36\"\n\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1600,
+          -20
+        ],
+        "id": "adfac7eb-5364-445d-8cbd-43bb01bcc7a5",
+        "name": "pipe_id1",
+        "executeOnce": false,
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "loose",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "afff63a0-831c-4035-a588-df63d437da8f",
+                "leftValue": "={{ $json.value}}",
+                "rightValue": "={{ $('segment_decode').item.json.ID }}",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "efdbd186-34f2-43f9-af82-a339724be70c",
+                "leftValue": "={{ $json.value}}",
+                "rightValue": "null",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEquals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "looseTypeValidation": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1860,
+          -300
+        ],
+        "id": "41cc361e-931d-456e-b82b-76f932bdfe6c",
+        "name": "If1"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "65b782f6-888f-4176-895c-22317b8f95f3",
+                "name": "number",
+                "value": "={{ $json.phone.replace(/\\W/,\"\") }}",
+                "type": "string"
+              },
+              {
+                "id": "1284880a-7855-4c09-9601-e43c4028ead0",
+                "name": "segmento",
+                "value": "={{ $('segment_decode').item.json.segmento == \"Blips CV\" || $('segment_decode').item.json.segmento == \"Blips Confeccao\" ? \"Ideal Mkt\" : $('segment_decode').item.json.segmento}}",
+                "type": "string"
+              },
+              {
+                "id": "f4299f4a-f36d-4482-8088-377e7a352114",
+                "name": "ID",
+                "value": "={{ $('segment_decode').item.json.ID }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {
+            "dotNotation": false
+          }
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2080,
+          -80
+        ],
+        "id": "eb37b4c4-b0e0-4320-b4aa-25f72a27937a",
+        "name": "reassembly"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.1,
+        "position": [
+          1860,
+          -80
+        ],
+        "id": "733e4621-8e71-4439-8614-ca6f51c4e1f4",
+        "name": "Merge"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "910a7c17-4116-4afc-814a-b593dcf234cf",
+                      "leftValue": "={{ $json.error.status }}",
+                      "rightValue": 404,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "404"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.error.status }}",
+                      "rightValue": 401,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      },
+                      "id": "c3bb1c7a-06cc-46cb-984f-a4e52bf7316f"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "401"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          1360,
+          0
+        ],
+        "id": "7cb5ef5e-b63a-43da-b0f8-69ecee4d6ae2",
+        "name": "Erro"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const var_list = $json.variable_set;\n\nfor (const item of var_list) {\n  if (item.type && typeof item.type.key !== \"undefined\") {\n    if (item.type.key === \"Deal_ID_Pipe\") {\n      return {\"value\": item.value};\n    }\n  }\n}\n\n// Caso não encontre nada, retorna null ou outro valor padrão\nreturn {\"value\" : \"null\"};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1660,
+          -300
+        ],
+        "id": "805a1eef-513b-4620-a7e2-c641a340bd64",
+        "name": "get_deal",
+        "executeOnce": false
+      },
+      {
+        "parameters": {
+          "fieldsToAggregate": {
+            "fieldToAggregate": [
+              {
+                "fieldToAggregate": "Telefone",
+                "renameField": true,
+                "outputFieldName": "={{ $('reassembly').item.json.segmento }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          3040,
+          -80
+        ],
+        "id": "fc017654-d129-4817-81fe-0ba1f146b43e",
+        "name": "Aggregate5"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "65b782f6-888f-4176-895c-22317b8f95f3",
+                "name": "list",
+                "value": "={{ $json['Ideal - Pipeline'] }}",
+                "type": "array"
+              },
+              {
+                "id": "1284880a-7855-4c09-9601-e43c4028ead0",
+                "name": "seg",
+                "value": "=",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {
+            "dotNotation": false
+          }
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3400,
+          -280
+        ],
+        "id": "41df16ca-daa5-4f24-90c1-755017877561",
+        "name": "list",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "operation": "appendOrUpdate",
+          "documentId": {
+            "__rl": true,
+            "value": "1uZMLN4pnQIZRwSO_XnZlLQHPbkT72VFtQ_UXcdoj_xs",
+            "mode": "list",
+            "cachedResultName": "Negociações Perdidas",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1uZMLN4pnQIZRwSO_XnZlLQHPbkT72VFtQ_UXcdoj_xs/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Ideal Mkt",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1uZMLN4pnQIZRwSO_XnZlLQHPbkT72VFtQ_UXcdoj_xs/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "ID Pipe": "={{ $json.ID }}",
+              "Telefone": "={{ $json.number }}"
+            },
+            "matchingColumns": [
+              "Telefone"
+            ],
+            "schema": [
+              {
+                "id": "ID Pipe",
+                "displayName": "ID Pipe",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Telefone",
+                "displayName": "Telefone",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Status",
+                "displayName": "Status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Produto",
+                "displayName": "Produto",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Primeira mensagem",
+                "displayName": "Primeira mensagem",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Última mensagem",
+                "displayName": "Última mensagem",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Último remetente",
+                "displayName": "Último remetente",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Intervalo entre mensagens",
+                "displayName": "Intervalo entre mensagens",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Dias desde última resposta",
+                "displayName": "Dias desde última resposta",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Análise",
+                "displayName": "Análise",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "readOnly": true,
+                "removed": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          2600,
+          -560
+        ],
+        "id": "af12ad96-33fb-4955-9117-b6195ef3be94",
+        "name": "Google Sheets",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "0RLOIXG0sHPHB1xe",
+            "name": "IA - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "owner": {
+            "__rl": true,
+            "value": "blips-ai",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "assistant-comercial-dalila",
+            "mode": "name"
+          },
+          "filePath": "=copiloto/botconversa/{{ $('reassembly').item.json.segmento }}",
+          "fileContent": "={{ $json.$('reassembly').item.json.segmento }}",
+          "commitMessage": "Create"
+        },
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1.1,
+        "position": [
+          3380,
+          -500
+        ],
+        "id": "016d9678-456d-4b24-8cdf-75043b67867d",
+        "name": "GitHub",
+        "webhookId": "8d060aec-77e9-46fa-8250-201093acfc09",
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7a865867-5d9f-42b0-9197-dbb36b77c311",
+                "name": "id",
+                "value": "={{ $json.status == 'lost' ? $('CONSTS').item.json.loseSheetID : $json.status == 'won' ?  $('CONSTS').item.json.gainSheetID : \"\"}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -920,
+          -100
+        ],
+        "id": "890a9bef-6468-466d-b7ef-3b888bfabd11",
+        "name": "sheetSelector"
+      },
+      {
+        "parameters": {
+          "operation": "getAll",
+          "resolveProperties": true,
+          "returnAll": true,
+          "filters": {
+            "filter_id": "={{ $('CONSTS').item.json.pipeFilter }}"
+          }
+        },
+        "type": "n8n-nodes-base.pipedrive",
+        "typeVersion": 1,
+        "position": [
+          -720,
+          -100
+        ],
+        "id": "370419e4-d002-40e2-9f39-051b54d1e520",
+        "name": "Pipedrive2",
+        "executeOnce": false,
+        "credentials": {
+          "pipedriveApi": {
+            "id": "6OXvSBSLEYwmYiBv",
+            "name": "Pipedrive account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "a5b69340-43d6-4277-94d2-b80129d233b9",
+                "name": "phone",
+                "value": "={{ $('tem telefone?1').isExecuted ? $json.phone : \"\" }}{{ $('Edit Fields1').item.json.phone }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {
+            "dotNotation": false
+          }
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          180,
+          -560
+        ],
+        "id": "2bc562d6-d9b0-4fb0-930c-cbe34bb4a66f",
+        "name": "Join"
+      },
+      {
+        "parameters": {
+          "url": "https://blipsativos.pipedrive.com/api/v2/persons/search",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "pipedriveApi",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "term",
+                "value": "={{ $('tem telefone?').item.json['Pessoa de contato'].name.replaceAll(/\\b\\d\\b/g,\"\") }}"
+              }
+            ]
+          },
+          "options": {
+            "batching": {
+              "batch": {
+                "batchSize": 10,
+                "batchInterval": 2000
+              }
+            }
+          }
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          140,
+          100
+        ],
+        "id": "9b174827-ca9f-4868-b1d3-75100725c12e",
+        "name": "HTTP Request",
+        "credentials": {
+          "pipedriveApi": {
+            "id": "6OXvSBSLEYwmYiBv",
+            "name": "Pipedrive account"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "a44bf81c-ad13-41da-82f1-fe8fd57de37a",
+                "name": "phone",
+                "value": "={{($json['Título']  || $json['Pessoa de contato'].name).match(/\\b\\d{9,13}\\b/g)[0] || \"\"}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -280,
+          0
+        ],
+        "id": "9779b195-91fd-4602-b594-42b427496310",
+        "name": "Edit Fields1"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "34e20058-2dcc-403f-a80b-37d0dfe81243",
+                "leftValue": "={{ $json.phone }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -80,
+          0
+        ],
+        "id": "a849ece3-7bd7-4bbd-babe-06573661526d",
+        "name": "tem telefone?1"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "34e20058-2dcc-403f-a80b-37d0dfe81243",
+                "leftValue": "={{ $json.phone }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -620,
+          360
+        ],
+        "id": "f8abda13-b1bf-4e82-9dee-8e59de175f0e",
+        "name": "tem telefone?2"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "34e20058-2dcc-403f-a80b-37d0dfe81243",
+                "leftValue": "={{ $json.data.items[0].item.phones }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "array",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          400,
+          80
+        ],
+        "id": "a114aea7-8058-450c-9fc4-e96e3228fb42",
+        "name": "tem telefone?3"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "a5b69340-43d6-4277-94d2-b80129d233b9",
+                "name": "ID",
+                "value": "={{ $json.ID }}",
+                "type": "string"
+              },
+              {
+                "id": "7a365a52-9e86-4098-9cf1-4a1b8a11409b",
+                "name": "phone",
+                "value": "={{ $json['Pessoa de contato'].phone[0].value }}",
+                "type": "string"
+              },
+              {
+                "id": "20f19b3b-1e23-40bb-9874-a7773389a599",
+                "name": "segmento",
+                "value": "={{ $json.pipeline_id }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {
+            "dotNotation": false
+          }
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          0,
+          -240
+        ],
+        "id": "509858a9-6edf-4fb8-a182-188ff0e34f50",
+        "name": "comPhone"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "a5b69340-43d6-4277-94d2-b80129d233b9",
+                "name": "ID",
+                "value": "={{ $('Pipedrive2').item.json.ID }}",
+                "type": "string"
+              },
+              {
+                "id": "7a365a52-9e86-4098-9cf1-4a1b8a11409b",
+                "name": "phone",
+                "value": "={{ $('Edit Fields1').item.json.phone }}",
+                "type": "string"
+              },
+              {
+                "id": "20f19b3b-1e23-40bb-9874-a7773389a599",
+                "name": "segmento",
+                "value": "={{ $('Pipedrive2').item.json.pipeline_id }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {
+            "dotNotation": false
+          }
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          140,
+          -60
+        ],
+        "id": "531eb4bf-d3a2-4581-bf3d-499138d53a9b",
+        "name": "phoneForcado"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.1,
+        "position": [
+          560,
+          -80
+        ],
+        "id": "a36716b5-6d30-4b7a-b81f-39e5cb9a3b20",
+        "name": "Merge1"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "b3d25aca-8cf1-42dd-b69d-2fba74837d1c",
+                "leftValue": "={{$json.number.length }}",
+                "rightValue": 11,
+                "operator": {
+                  "type": "number",
+                  "operation": "gt"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.2,
+        "position": [
+          2280,
+          -80
+        ],
+        "id": "64c887e6-6294-4f7a-802a-4388a95c1601",
+        "name": "Filter"
+      },
+      {
+        "parameters": {
+          "fieldsToAggregate": {
+            "fieldToAggregate": [
+              {
+                "fieldToAggregate": "Telefone",
+                "renameField": true,
+                "outputFieldName": "={{ $('reassembly').item.json.segmento }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          3560,
+          60
+        ],
+        "id": "5a7b1911-59eb-4483-8734-3bad4b8dfc76",
+        "name": "Aggregate6"
+      },
+      {
+        "parameters": {
+          "operation": "appendOrUpdate",
+          "documentId": {
+            "__rl": true,
+            "value": "={{ $('sheetSelector').item.json.id }}",
+            "mode": "id"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "={{ $json.segmento }}",
+            "mode": "name"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "ID Pipe": "={{ $json.ID }}",
+              "Telefone": "={{ $json.number }}"
+            },
+            "matchingColumns": [
+              "ID Pipe"
+            ],
+            "schema": [
+              {
+                "id": "ID Pipe",
+                "displayName": "ID Pipe",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Telefone",
+                "displayName": "Telefone",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Status",
+                "displayName": "Status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Produto",
+                "displayName": "Produto",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Primeira mensagem",
+                "displayName": "Primeira mensagem",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Última mensagem",
+                "displayName": "Última mensagem",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Último remetente",
+                "displayName": "Último remetente",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Intervalo entre mensagens",
+                "displayName": "Intervalo entre mensagens",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Dias desde última resposta",
+                "displayName": "Dias desde última resposta",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Análise",
+                "displayName": "Análise",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          2760,
+          -400
+        ],
+        "id": "971c6ad3-a286-4c45-904d-f97e7d459ecc",
+        "name": "Google Sheets7",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "0RLOIXG0sHPHB1xe",
+            "name": "IA - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "appendOrUpdate",
+          "documentId": {
+            "__rl": true,
+            "value": "={{ $('sheetSelector').item.json.id }}",
+            "mode": "id"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "={{ $json.segmento }}",
+            "mode": "name"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "ID Pipe": "={{ $json.ID }}",
+              "Telefone": "={{ $json.number }}"
+            },
+            "matchingColumns": [
+              "ID Pipe"
+            ],
+            "schema": [
+              {
+                "id": "ID Pipe",
+                "displayName": "ID Pipe",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Telefone",
+                "displayName": "Telefone",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Status",
+                "displayName": "Status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Produto",
+                "displayName": "Produto",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Primeira mensagem",
+                "displayName": "Primeira mensagem",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Última mensagem",
+                "displayName": "Última mensagem",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Último remetente",
+                "displayName": "Último remetente",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Intervalo entre mensagens",
+                "displayName": "Intervalo entre mensagens",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Dias desde última resposta",
+                "displayName": "Dias desde última resposta",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Análise",
+                "displayName": "Análise",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          2760,
+          -240
+        ],
+        "id": "ac6a889a-d0ce-4605-aff8-10d65263522e",
+        "name": "Google Sheets8",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "0RLOIXG0sHPHB1xe",
+            "name": "IA - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "appendOrUpdate",
+          "documentId": {
+            "__rl": true,
+            "value": "={{ $('sheetSelector').item.json.id }}",
+            "mode": "id"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "={{ $json.segmento }}",
+            "mode": "name"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "ID Pipe": "={{ $json.ID }}",
+              "Telefone": "={{ $json.number }}"
+            },
+            "matchingColumns": [
+              "ID Pipe"
+            ],
+            "schema": [
+              {
+                "id": "ID Pipe",
+                "displayName": "ID Pipe",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Telefone",
+                "displayName": "Telefone",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Status",
+                "displayName": "Status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Produto",
+                "displayName": "Produto",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Primeira mensagem",
+                "displayName": "Primeira mensagem",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Última mensagem",
+                "displayName": "Última mensagem",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Último remetente",
+                "displayName": "Último remetente",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Intervalo entre mensagens",
+                "displayName": "Intervalo entre mensagens",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Dias desde última resposta",
+                "displayName": "Dias desde última resposta",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Análise",
+                "displayName": "Análise",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          2760,
+          -80
+        ],
+        "id": "43610d6a-b2a0-4dc1-a00a-f122a3dc3394",
+        "name": "Google Sheets9",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "0RLOIXG0sHPHB1xe",
+            "name": "IA - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "appendOrUpdate",
+          "documentId": {
+            "__rl": true,
+            "value": "={{ $('sheetSelector').item.json.id }}",
+            "mode": "id"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "={{ $json.segmento }}",
+            "mode": "name"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "ID Pipe": "={{ $json.ID }}",
+              "Telefone": "={{ $json.number }}"
+            },
+            "matchingColumns": [
+              "ID Pipe"
+            ],
+            "schema": [
+              {
+                "id": "ID Pipe",
+                "displayName": "ID Pipe",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Telefone",
+                "displayName": "Telefone",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Produto",
+                "displayName": "Produto",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Vendedor",
+                "displayName": "Vendedor",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Nota Atendimento",
+                "displayName": "Nota Atendimento",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Tom",
+                "displayName": "Tom",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Tempo total",
+                "displayName": "Tempo total",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Tempo médio resposta",
+                "displayName": "Tempo médio resposta",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Tempo fechamento",
+                "displayName": "Tempo fechamento",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Demorou mais responder",
+                "displayName": "Demorou mais responder",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Enviou mais mensagens",
+                "displayName": "Enviou mais mensagens",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Enviou mídias",
+                "displayName": "Enviou mídias",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Taxa envio audios",
+                "displayName": "Taxa envio audios",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Taxa envio imagens",
+                "displayName": "Taxa envio imagens",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Taxa envio videos",
+                "displayName": "Taxa envio videos",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Taxa envio emojis",
+                "displayName": "Taxa envio emojis",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Passou da recepção",
+                "displayName": "Passou da recepção",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Continuou por fora",
+                "displayName": "Continuou por fora",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Citou Blips Educa",
+                "displayName": "Citou Blips Educa",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Técnicas Usadas",
+                "displayName": "Técnicas Usadas",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Argumentos Chave",
+                "displayName": "Argumentos Chave",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          2760,
+          100
+        ],
+        "id": "6db7b5e1-a693-45ad-ae41-21912f0d6b26",
+        "name": "Google Sheets10",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "0RLOIXG0sHPHB1xe",
+            "name": "IA - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "appendOrUpdate",
+          "documentId": {
+            "__rl": true,
+            "value": "={{ $('sheetSelector').item.json.id }}",
+            "mode": "id"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "={{ $json.segmento }}",
+            "mode": "name"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "ID Pipe": "={{ $json.ID }}",
+              "Telefone": "={{ $json.number }}"
+            },
+            "matchingColumns": [
+              "ID Pipe"
+            ],
+            "schema": [
+              {
+                "id": "ID Pipe",
+                "displayName": "ID Pipe",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Telefone",
+                "displayName": "Telefone",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Status",
+                "displayName": "Status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Produto",
+                "displayName": "Produto",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Primeira mensagem",
+                "displayName": "Primeira mensagem",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Última mensagem",
+                "displayName": "Última mensagem",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Último remetente",
+                "displayName": "Último remetente",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Intervalo entre mensagens",
+                "displayName": "Intervalo entre mensagens",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Dias desde última resposta",
+                "displayName": "Dias desde última resposta",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Análise",
+                "displayName": "Análise",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          2760,
+          280
+        ],
+        "id": "403cff56-55e4-463c-8909-782b448a3b57",
+        "name": "Google Sheets11",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "0RLOIXG0sHPHB1xe",
+            "name": "IA - Blips"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "CONSTS",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Pipedrive": {
+        "main": [
+          [
+            {
+              "node": "sheetSelector",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "tem telefone?": {
+        "main": [
+          [
+            {
+              "node": "comPhone",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Edit Fields1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "segment_decode",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aggregate": {
+        "main": [
+          []
+        ]
+      },
+      "Code": {
+        "main": [
+          []
+        ]
+      },
+      "Segmento": {
+        "main": [
+          [],
+          [],
+          [
+            {
+              "node": "Google Sheets7",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Google Sheets8",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [],
+          [
+            {
+              "node": "Google Sheets9",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Google Sheets10",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Google Sheets11",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "segment_decode": {
+        "main": [
+          [
+            {
+              "node": "pipe_id",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "CONSTS": {
+        "main": [
+          [
+            {
+              "node": "jwt_token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "pipe_id": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          []
+        ]
+      },
+      "jwt_token": {
+        "main": [
+          [
+            {
+              "node": "Token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Token": {
+        "main": [
+          [
+            {
+              "node": "Pipedrive",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "pipe_id1": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            }
+          ],
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If1": {
+        "main": [
+          [
+            {
+              "node": "reassembly",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "reassembly",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "reassembly": {
+        "main": [
+          [
+            {
+              "node": "Filter",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          [
+            {
+              "node": "reassembly",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Erro": {
+        "main": [
+          [
+            {
+              "node": "pipe_id1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "get_deal": {
+        "main": [
+          [
+            {
+              "node": "If1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aggregate5": {
+        "main": [
+          []
+        ]
+      },
+      "sheetSelector": {
+        "main": [
+          [
+            {
+              "node": "Pipedrive2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Pipedrive2": {
+        "main": [
+          [
+            {
+              "node": "tem telefone?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Join": {
+        "main": [
+          []
+        ]
+      },
+      "HTTP Request": {
+        "main": [
+          [
+            {
+              "node": "tem telefone?3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields1": {
+        "main": [
+          [
+            {
+              "node": "tem telefone?1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "tem telefone?1": {
+        "main": [
+          [
+            {
+              "node": "phoneForcado",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "comPhone": {
+        "main": [
+          [
+            {
+              "node": "Merge1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "phoneForcado": {
+        "main": [
+          [
+            {
+              "node": "Merge1",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Merge1": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter": {
+        "main": [
+          [
+            {
+              "node": "Segmento",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Sheets7": {
+        "main": [
+          [
+            {
+              "node": "Aggregate5",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Sheets8": {
+        "main": [
+          [
+            {
+              "node": "Aggregate5",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Sheets9": {
+        "main": [
+          [
+            {
+              "node": "Aggregate5",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Sheets10": {
+        "main": [
+          [
+            {
+              "node": "Aggregate5",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Sheets11": {
+        "main": [
+          [
+            {
+              "node": "Aggregate5",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "When clicking ‘Test workflow’": [
+        {
+          "json": {
+            "5543991061290@s.whatsapp.net": 5,
+            "5573988456101@s.whatsapp.net": 5
+          }
+        }
+      ]
+    },
+    "versionId": "43c54a3d-e3b6-4bc2-b1b0-e010a19da126",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-08-08T16:17:37.968Z",
+        "updatedAt": "2024-08-08T16:17:37.968Z",
+        "id": "tv6Ov4En3lT5oHhf",
+        "name": "pedro"
+      },
+      {
+        "createdAt": "2025-05-02T16:59:13.854Z",
+        "updatedAt": "2025-05-02T16:59:13.854Z",
+        "id": "phHlMydB0RL59Svj",
+        "name": "dalila"
+      }
+    ]
+  }
+}
