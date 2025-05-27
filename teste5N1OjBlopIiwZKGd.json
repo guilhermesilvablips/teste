@@ -1,0 +1,181 @@
+{
+  "data": {
+    "createdAt": "2025-02-28T19:29:35.583Z",
+    "updatedAt": "2025-03-25T13:26:04.809Z",
+    "id": "5N1OjBlopIiwZKGd",
+    "name": "Sandbox LLM",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -60,
+          220
+        ],
+        "id": "6c7f978a-f9b6-4255-9dec-0ff1b306d41e",
+        "name": "When clicking ‘Test workflow’"
+      },
+      {
+        "parameters": {
+          "resource": "assistant",
+          "operation": "update",
+          "assistantId": {
+            "__rl": true,
+            "value": "asst_aemG7XExBAmfxSCAsrxbV5Nw",
+            "mode": "list",
+            "cachedResultName": "Teste de prompt"
+          },
+          "options": {
+            "instructions": "Muda o teste"
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.8,
+        "position": [
+          280,
+          -240
+        ],
+        "id": "c49ee3b2-18e8-43a9-8fdf-e17ef9476a9b",
+        "name": "OpenAI1",
+        "credentials": {
+          "openAiApi": {
+            "id": "tuJNruAgnnM96by3",
+            "name": "Open AI - Suporte Técnico"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "url": "https://github.com/blips-ai/assistant-n1-socorro/commit/8f75bcd82dff46c2751d7a24e272d6b397124b56",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          520,
+          -240
+        ],
+        "id": "2771c941-547f-4ee1-8485-2b32a0da05c0",
+        "name": "HTTP Request"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ba5f3157-e230-445c-9c17-cf804aa80187",
+                "name": "array",
+                "value": "[\"A configuração CMYK + Branco é usada para impressão, onde além das cores Ciano, Magenta, Amarelo e Preto (CMYK), é adicionada a tinta branca.\",         \"Isso é comum em impressoras UV que desejam imprimir em materiais escuros ou transparentes para garantir que as cores principais se destaquem.\",         \"Caso queira adquirir essas tintas, entre em contato com o departamento comercial da Ideal pelo WhatsApp 5534997139961.\"]",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          360,
+          -20
+        ],
+        "id": "3fe2c101-8e03-4d4d-9e5c-e359fd0e64ac",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.executionData",
+        "typeVersion": 1,
+        "position": [
+          840,
+          -140
+        ],
+        "id": "a664836c-351d-41c8-ba68-335abbe00f69",
+        "name": "Execution Data"
+      },
+      {
+        "parameters": {
+          "resource": "assistant",
+          "assistantId": {
+            "__rl": true,
+            "value": "asst_eqxo3tFOUrAgU6Q7O9di0Wpy",
+            "mode": "list",
+            "cachedResultName": "Juarez Dev"
+          },
+          "prompt": "define",
+          "text": "={{ $json.array }}",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.8,
+        "position": [
+          -80,
+          -400
+        ],
+        "id": "e5081548-19e5-4f14-aced-35427e5dafe1",
+        "name": "OpenAI",
+        "credentials": {
+          "openAiApi": {
+            "id": "tuJNruAgnnM96by3",
+            "name": "Open AI - Suporte Técnico"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "function myfunc() {\n  const obj = {}; // Cria um objeto vazio\n\n  for (let i = 0; i < 30; i++) {\n    obj[`item${i}`] = `valor${i}`; // Preenche o objeto com 30 chaves\n  }\n\n  return obj; // Retorna o objeto com 30 itens\n}\n\nmyfunc();"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          160,
+          220
+        ],
+        "id": "7f6409bb-5519-4733-be17-d01b83059f5a",
+        "name": "Code"
+      }
+    ],
+    "connections": {
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request": {
+        "main": [
+          []
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          []
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "f29b0d6e-d694-4e0f-9fc2-4f19756283f8",
+    "triggerCount": 1,
+    "tags": [
+      {
+        "createdAt": "2024-08-08T16:17:37.968Z",
+        "updatedAt": "2024-08-08T16:17:37.968Z",
+        "id": "tv6Ov4En3lT5oHhf",
+        "name": "pedro"
+      }
+    ]
+  }
+}
