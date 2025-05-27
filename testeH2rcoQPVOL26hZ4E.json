@@ -1,0 +1,1055 @@
+{
+  "data": {
+    "createdAt": "2025-05-22T13:56:55.608Z",
+    "updatedAt": "2025-05-23T13:31:16.478Z",
+    "id": "H2rcoQPVOL26hZ4E",
+    "name": "Síntese conhecimento conversas comercial - Dalila",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -3760,
+          420
+        ],
+        "id": "78c7ee76-acd1-4157-a50e-ca09a5f0c110",
+        "name": "When clicking ‘Test workflow’"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "1e6bc518-409c-4d6d-8389-d272437132f5",
+                "name": "pasta",
+                "value": "1f5f_hgE8__cu4IVZOom1AdJbuJi-8EV91udTz4DXSZ4",
+                "type": "string"
+              },
+              {
+                "id": "74ce0086-e870-48bf-aadc-a3ddf20fc590",
+                "name": "image_transcription",
+                "value": "Faça uma descrição mais resumida possível, omita detalhes\n\nSe for uma máquina diga apenas qual é, omita detalhes técnicos\nSe for documentos diga qual é, omita valores e datas\n\nSempre diga que se trata de uma imagem, ex: Imagem de uma máquina X, Imagem de um Comprovante de pagamento, Imagem de um documento etc",
+                "type": "string"
+              },
+              {
+                "id": "c0005c00-d3e5-41b1-9dc7-26970bccb5cf",
+                "name": "total_analysis",
+                "value": "=Você deve analisar uma venda e trazer os principais pontos relevantes da conversa como:\n\nTom de conversa do vendedor\nProporção de mensagens que o vendedor manda para cada uma que o cliente manda\nquantidade de audios e videos enviados pelo vendedor",
+                "type": "string"
+              },
+              {
+                "id": "464badfb-505e-4ea3-a436-9ee6d29eadab",
+                "name": "empresa",
+                "value": "blips",
+                "type": "string"
+              },
+              {
+                "id": "e8eb64af-e004-44cf-af79-ed1fb1049cc7",
+                "name": "campanha",
+                "value": "construcao",
+                "type": "string"
+              },
+              {
+                "id": "f5d47ad3-3897-4ea9-99f4-edf1a14bb51a",
+                "name": "tipo",
+                "value": "ganho",
+                "type": "string"
+              },
+              {
+                "id": "3528652d-9290-458d-949b-4f9d5a4b1bc8",
+                "name": "notAnalyzedOnly",
+                "value": false,
+                "type": "boolean"
+              },
+              {
+                "id": "ac86b994-c67f-427f-8f53-0f78ed02e7a5",
+                "name": "singleSegmentMode",
+                "value": false,
+                "type": "boolean"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -3560,
+          420
+        ],
+        "id": "90837925-bf68-4806-9a14-3a76ea984815",
+        "name": "Globais"
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "={{ $json.doc_id }}",
+            "mode": "id"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "={{ $json.gid }}",
+            "mode": "id"
+          },
+          "filtersUI": {
+            "values": [
+              {
+                "lookupColumn": "Passou da recepção",
+                "lookupValue": "true"
+              },
+              {
+                "lookupColumn": "Passou da recepção",
+                "lookupValue": "TRUE"
+              }
+            ]
+          },
+          "combineFilters": "OR",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          -2900,
+          420
+        ],
+        "id": "215cadb2-d79f-4ce2-a49a-d6318a3fc6d5",
+        "name": "Google Sheets1",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "0RLOIXG0sHPHB1xe",
+            "name": "IA - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const tipo = $input.first().json.tipo.toLocaleLowerCase()\nconst empresa = $input.first().json.empresa.toLocaleLowerCase()\nconst campanha = $input.first().json.campanha.toLocaleLowerCase()\nconst mode = $input.first().json.singleSegmentMode\n\nconst link_ids = {\n  \"ganho\": {\n    \"synth_doc_id\": \"1f5f_hgE8__cu4IVZOom1AdJbuJi-8EV91udTz4DXSZ4\",\n    \"doc_id\": \"17gx4-pXR-f02CxioRytPZzXyWhieUeZl0TZ720u3q48\",\n    \"ideal\": {\n     \"synth_gid\" : \"0\",\n      \"mkt\": {\n        \"drive\": \"13_9IGcw4Ydt4JPwoVnUDG78apUygzXn4\",\n        \"gid\": 0\n      },\n      \"suprimentos\": {\n        \"drive\": \"1HarD-58YAhYAfomVXScTN9i7l3W6ox8l\",\n        \"gid\": 2004548289\n      }\n    },\n    \"blips\": {\n      \"synth_gid\" : \"1807645485\",\n      \"estetica\": {\n        \"drive\": \"1-qWaUUvJMivWpeovQv6urdBtEQfXWRpD\",\n        \"gid\": 636420795\n      },\n      \"sorvete\": {\n        \"drive\": \"1L4c4mcs8Q1IOc7XxpZ5tiUSHHvhqlCFq\",\n        \"gid\": 105227125\n      },\n      \"construcao\": {\n        \"drive\": \"1oPCq_MihwzgTpoSTOgVMgyaGdG5-Wuq7\",\n        \"gid\": 589066330\n      }\n    }\n  },\n  \"perda\": {\n    \"doc_id\": \"1uZMLN4pnQIZRwSO_XnZlLQHPbkT72VFtQ_UXcdoj_xs\",\n    \"ideal\": {\n      \"mkt\": {\n        \"drive\": \"11mRHS-a3hhzcDvGTIVXvpGtmswcmJXDE\",\n        \"gid\": 0\n      },\n      \"suprimentos\": {\n        \"drive\": \"11mRHS-a3hhzcDvGTIVXvpGtmswcmJXDE\",\n        \"gid\": 0\n      }\n    },\n    \"blips\": {\n      \"estetica\":  {\n        \"drive\": \"1NYGeN8_xHS-rPqqDaeiWor5qgQElDcRj\",\n        \"gid\": 636420795\n      },\n      \"sorvete\":  {\n        \"drive\": \"1LXJIkDAYlDf5c2mAS5j0C2rOvASPwpkV\",\n        \"gid\": 105227125\n      },\n      \"construcao\": \"1vQs563HyHUGHATrlPLviggx63d3e_ZwJ\"\n    }\n  }\n}\n\nconst path_tipo = link_ids[tipo]\nconst path_empresa = path_tipo[empresa]\nconst path_campanha = path_empresa[campanha]\n\nfunction returnMode(singleMode){\n\n  //if(singleMode) {return {\"doc_id\": path_tipo.doc_id, \"synth_doc_id\": path_tipo.synth_doc_id, \"gid\" : path_campanha.gid, \"synth_gid\" : path_tipo.synth_gid} }\n\n  //else {\n    const full_list = []\n    const segment_list = Object.entries(link_ids[tipo][empresa])\n\n    for (const [key, value] of Object.entries(path_empresa)) {\n      if(singleMode && key != campanha || key == 'synth_gid'){continue}\n      else{\n      full_list.push({\"segmento\": key, \"gid\": value.gid, \"doc_id\": path_tipo.doc_id,\"synth_doc_id\": path_tipo.synth_doc_id,\"synth_gid\" : path_empresa.synth_gid})\n        if(singleMode && key == campanha) break;\n      }\n      \n}\n\n  return full_list\n  \n///}\n}\n\nreturn returnMode(mode)"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -3360,
+          420
+        ],
+        "id": "835b4a86-852e-4562-a623-86517dc921d3",
+        "name": "Ids"
+      },
+      {
+        "parameters": {
+          "fieldsToSummarize": {
+            "values": [
+              {
+                "aggregation": "append",
+                "field": "Tom"
+              },
+              {
+                "aggregation": "append",
+                "field": "Técnicas Usadas"
+              },
+              {
+                "aggregation": "append",
+                "field": "Argumentos Chave"
+              },
+              {
+                "aggregation": "append",
+                "field": "Tempo fechamento"
+              },
+              {
+                "aggregation": "append",
+                "field": "Tempo médio resposta"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.summarize",
+        "typeVersion": 1.1,
+        "position": [
+          -2680,
+          420
+        ],
+        "id": "35d6e644-8cd6-45b7-a7e3-0bbcb87504d5",
+        "name": "Summarize1"
+      },
+      {
+        "parameters": {
+          "numberInputs": 4
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.1,
+        "position": [
+          -1720,
+          920
+        ],
+        "id": "c740b1c8-862b-4589-bafe-dfa1f27b5e7b",
+        "name": "Merge1"
+      },
+      {
+        "parameters": {
+          "fieldsToSummarize": {
+            "values": [
+              {
+                "aggregation": "append",
+                "field": "message.content.mean_selling_time"
+              },
+              {
+                "aggregation": "append",
+                "field": "message.content.mean_response_time"
+              },
+              {
+                "aggregation": "append",
+                "field": "message.content.tone_resume"
+              },
+              {
+                "aggregation": "append",
+                "field": "message.content.technics_resume"
+              },
+              {
+                "aggregation": "append",
+                "field": "message.content.technics_percentage"
+              },
+              {
+                "aggregation": "append",
+                "field": "message.content.key_arguments_resume"
+              },
+              {
+                "aggregation": "append",
+                "field": "message.content.key_arguments_percentage"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.summarize",
+        "typeVersion": 1.1,
+        "position": [
+          -1400,
+          1140
+        ],
+        "id": "e71c5d00-30a0-4390-bb62-15f6f1401ef2",
+        "name": "Summarize2"
+      },
+      {
+        "parameters": {
+          "operation": "appendOrUpdate",
+          "documentId": {
+            "__rl": true,
+            "value": "={{ $('Globais').item.json.pasta }}",
+            "mode": "id"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "={{ $('Ids').item.json.synth_gid }}",
+            "mode": "id"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "Segmento": "={{ $json.segmento }}",
+              "Tom": "={{ $json.tone_resume }}",
+              "Tempo médio resposta": "={{ $json.response_time }}",
+              "Tempo fechamento": "={{ $json.selling_time }}",
+              "Argumentos (%)": "={{ $json.key_arguments_percentage }}",
+              "Argumentos Resumo": "={{ $json.key_arguments_resume }}",
+              "Técnicas (%)": "={{ $json.technics_percentage }}",
+              "Técnicas Resumo": "={{ $json.technics_resume }}",
+              "Período": "=04/2025",
+              "Média das Notas": "={{ $json.mean_score }}",
+              "Blips Educa (%)": "={{ $json.mean_blipsEduca }}",
+              "Amostras": "={{ $json.samples }}"
+            },
+            "matchingColumns": [
+              "Segmento"
+            ],
+            "schema": [
+              {
+                "id": "Segmento",
+                "displayName": "Segmento",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Período",
+                "displayName": "Período",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Amostras",
+                "displayName": "Amostras",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Tom",
+                "displayName": "Tom",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Média das Notas",
+                "displayName": "Média das Notas",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Tempo médio resposta",
+                "displayName": "Tempo médio resposta",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Tempo fechamento",
+                "displayName": "Tempo fechamento",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Argumentos (%)",
+                "displayName": "Argumentos (%)",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Argumentos Resumo",
+                "displayName": "Argumentos Resumo",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Técnicas (%)",
+                "displayName": "Técnicas (%)",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Técnicas Resumo",
+                "displayName": "Técnicas Resumo",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Blips Educa (%)",
+                "displayName": "Blips Educa (%)",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          -760,
+          1220
+        ],
+        "id": "cd997225-736e-4e72-b541-d91fbe122ea4",
+        "name": "Google Sheets4",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "0RLOIXG0sHPHB1xe",
+            "name": "IA - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "9eedf789-2f1d-4ec9-b1bf-e975c9d79ef6",
+                "name": "segmento",
+                "value": "={{ $('Globais').item.json.campanha.charAt(0).toUpperCase() + $('Globais').item.json.campanha.slice(1) }}",
+                "type": "string"
+              },
+              {
+                "id": "feb353b4-d413-4dde-b53b-112813961ade",
+                "name": "selling_time",
+                "value": "={{ $json.appended_message_content_mean_selling_time[0] }}",
+                "type": "string"
+              },
+              {
+                "id": "6a14efa3-a7c6-429a-92c3-2e119e41b59b",
+                "name": "response_time",
+                "value": "={{ $json.appended_message_content_mean_response_time[0] }}",
+                "type": "string"
+              },
+              {
+                "id": "40ff1e86-9c8c-41e4-ae8b-e283f91debc5",
+                "name": "tone_resume",
+                "value": "={{ $json.appended_message_content_tone_resume[0] }}",
+                "type": "string"
+              },
+              {
+                "id": "71894398-1dc5-42f8-8e81-eb8ba39e7736",
+                "name": "technics_resume",
+                "value": "={{ $json.appended_message_content_technics_resume[0] }}",
+                "type": "string"
+              },
+              {
+                "id": "41938049-cfdd-48d2-acf1-e87db25570d0",
+                "name": "technics_percentage",
+                "value": "={{ $json.appended_message_content_technics_percentage[0].toJsonString().replace(/,\\\"/g,\"\\n\").replace(/[{\\\"}]/g,\"\").replace(/:/g,\": \") }}",
+                "type": "string"
+              },
+              {
+                "id": "c760c19a-5bcd-4021-ae7b-64affe998b42",
+                "name": "key_arguments_resume",
+                "value": "={{ $json.appended_message_content_key_arguments_resume.length > 1 ? $json.appended_message_content_key_arguments_resume[0].join(\". \") : $json.appended_message_content_key_arguments_resume[0]  }}",
+                "type": "string"
+              },
+              {
+                "id": "8af9f99a-b945-400f-a765-35f19fa0c0ff",
+                "name": "key_arguments_percentage",
+                "value": "={{ $json.appended_message_content_key_arguments_percentage[0].toJsonString().replace(/,\\\"/g,\"\\n\").replace(/[{}\\\"]/g,\"\").replace(/:/g,\": \") }}",
+                "type": "string"
+              },
+              {
+                "id": "29d7eef0-ed9a-4e7a-8a5d-7fadf5efc89f",
+                "name": "mean_blipsEduca",
+                "value": "={{ $('Google Sheets1').all().filter(item => item.json['Citou Blips Educa'] == true).length / $('Google Sheets1').all().length * 100}}",
+                "type": "string"
+              },
+              {
+                "id": "de0a2e40-29bf-4e38-8016-bc19be9f5718",
+                "name": "mean_score",
+                "value": "={{ $('Google Sheets1').all().reduce((sum, item) => {   return sum + item.json['Nota Atendimento']; }, 0) / $('Google Sheets1').all().length }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1200,
+          1140
+        ],
+        "id": "4b45f5ce-93f4-4636-96aa-7f7d6362c5ab",
+        "name": "preformatInput"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "gpt-4.1-mini",
+            "mode": "list",
+            "cachedResultName": "gpt-4.1-mini"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          -2680,
+          1120
+        ],
+        "id": "0f16cf57-60b1-4768-8f92-7ed1387a0a5f",
+        "name": "OpenAI Chat Model1",
+        "credentials": {
+          "openAiApi": {
+            "id": "U8lLxccdmdeAdSW0",
+            "name": "OpenAi account - Dalila"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "9eedf789-2f1d-4ec9-b1bf-e975c9d79ef6",
+                "name": "segmento",
+                "value": "={{ $('Globais').item.json.campanha.charAt(0).toUpperCase() + $('Globais').item.json.campanha.slice(1) }}",
+                "type": "string"
+              },
+              {
+                "id": "feb353b4-d413-4dde-b53b-112813961ade",
+                "name": "selling_time",
+                "value": "={{ $json.appended_output_mean_selling_time[0] }}",
+                "type": "string"
+              },
+              {
+                "id": "6a14efa3-a7c6-429a-92c3-2e119e41b59b",
+                "name": "response_time",
+                "value": "={{ $json.appended_output_mean_response_time[0] }}",
+                "type": "string"
+              },
+              {
+                "id": "40ff1e86-9c8c-41e4-ae8b-e283f91debc5",
+                "name": "tone_resume",
+                "value": "={{ $json.appended_output_tone_resume[0] }}",
+                "type": "string"
+              },
+              {
+                "id": "71894398-1dc5-42f8-8e81-eb8ba39e7736",
+                "name": "technics_resume",
+                "value": "={{ $json.appended_output_technics_resume[0] }}",
+                "type": "string"
+              },
+              {
+                "id": "41938049-cfdd-48d2-acf1-e87db25570d0",
+                "name": "technics_percentage",
+                "value": "={{ $json.appended_output_technics_percentage[0].replace(/;/g,\"\\n\") }}",
+                "type": "string"
+              },
+              {
+                "id": "c760c19a-5bcd-4021-ae7b-64affe998b42",
+                "name": "key_arguments_resume",
+                "value": "={{ $json.appended_output_key_arguments_resume[0].replace(/;/g,\"\\n\") }}",
+                "type": "string"
+              },
+              {
+                "id": "8af9f99a-b945-400f-a765-35f19fa0c0ff",
+                "name": "key_arguments_percentage",
+                "value": "={{ $json.appended_output_key_arguments_percentage[0].replace(/;/g,\"\\n\") }}",
+                "type": "string"
+              },
+              {
+                "id": "29d7eef0-ed9a-4e7a-8a5d-7fadf5efc89f",
+                "name": "mean_blipsEduca",
+                "value": "={{ $('Google Sheets1').all().filter(item => item.json['Citou Blips Educa'] == true).length / $('Google Sheets1').all().length * 100}}",
+                "type": "string"
+              },
+              {
+                "id": "de0a2e40-29bf-4e38-8016-bc19be9f5718",
+                "name": "mean_score",
+                "value": "={{ $('Google Sheets1').all().reduce((sum, item) => {   return sum + item.json['Nota Atendimento']; }, 0) / $('Google Sheets1').all().length }}",
+                "type": "string"
+              },
+              {
+                "id": "da70d8b6-f416-4a5f-9ced-608a306da1ea",
+                "name": "samples",
+                "value": "={{$('Google Sheets1').all().length}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1220,
+          940
+        ],
+        "id": "d0776b5d-88b3-4d9d-98d4-49b2b0f5df68",
+        "name": "preformatInput_old"
+      },
+      {
+        "parameters": {
+          "fieldsToSummarize": {
+            "values": [
+              {
+                "aggregation": "append",
+                "field": "output.mean_selling_time"
+              },
+              {
+                "aggregation": "append",
+                "field": "output.mean_response_time"
+              },
+              {
+                "aggregation": "append",
+                "field": "output.tone_resume"
+              },
+              {
+                "aggregation": "append",
+                "field": "output.technics_resume"
+              },
+              {
+                "aggregation": "append",
+                "field": "output.technics_percentage"
+              },
+              {
+                "aggregation": "append",
+                "field": "output.key_arguments_resume"
+              },
+              {
+                "aggregation": "append",
+                "field": "output.key_arguments_percentage"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.summarize",
+        "typeVersion": 1.1,
+        "position": [
+          -1480,
+          940
+        ],
+        "id": "99ac2232-b37c-46f5-a6b3-fd5cf95d29e7",
+        "name": "Summarize"
+      },
+      {
+        "parameters": {
+          "schemaType": "manual",
+          "inputSchema": "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"mean_selling_time\": {\n\t\t\t\"type\": \"string\"\n\t\t},\n\n      \"mean_response_time\": {\n\t\t\t\"type\": \"string\"\n\t\t}\n\t\t\t}\n\t\t}\n\t\n"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.2,
+        "position": [
+          -2120,
+          660
+        ],
+        "id": "50ff1ee8-ced0-48d2-b14c-8640af6088cd",
+        "name": "times_output"
+      },
+      {
+        "parameters": {
+          "schemaType": "manual",
+          "inputSchema": "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"tone_resume\": {\n\t\t\t\"type\": \"string\"\n\t\t}\n\t\t\t}\n\t\t}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.2,
+        "position": [
+          -2120,
+          880
+        ],
+        "id": "1919a938-17da-409c-be62-d0b196a28e11",
+        "name": "tone_output"
+      },
+      {
+        "parameters": {
+          "schemaType": "manual",
+          "inputSchema": "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"key_arguments_resume\": {\n\t\t\t\"type\": \"string\"\n\t\t},\n\t\t\"key_arguments_percentage\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"items\": {\n\t\t\t\t\"type\": \"string\",\n              \"exemplo\": \"Arg 1: 10%; Arg2: 40%;...\"\n\t\t\t}\n\t\t}\n\t}\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.2,
+        "position": [
+          -2120,
+          1240
+        ],
+        "id": "9aa8b9d4-db8d-45a6-8fb1-5fe9a04fc4c4",
+        "name": "arguments_output1"
+      },
+      {
+        "parameters": {
+          "schemaType": "manual",
+          "inputSchema": "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"technics_resume\": {\n\t\t\t\"type\": \"string\"\n\t\t},\n\t\t\"technics_percentage\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"items\": {\n\t\t\t\t\"type\": \"string\",\n              \"exemplo\": \"Tecnica 1: 10%; Tecnica 2: 40%;...\"\n\t\t\t}\n\t\t}\n\t}\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.2,
+        "position": [
+          -2120,
+          1060
+        ],
+        "id": "822fe9c3-fadd-44d9-a1d6-588d2cf181f2",
+        "name": "technics_output"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Você vai receber listas de tempos de eventos separados por ; e retornar a média de tempo de cada lista numa string\n\n{{ $json.appended_Tempo_fechamento.join('; ') }} (mean_selling_time)\n\n{{ $json['appended_Tempo_médio_resposta'] }} (mean_response_time)",
+          "hasOutputParser": true
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.6,
+        "position": [
+          -2460,
+          420
+        ],
+        "id": "d260d024-59bd-4b62-a5bb-b607b6176512",
+        "name": "Tempos médios"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Você vai receber listas de tons adotados cada um em uma conversa separados por ; e retornar uma síntese (tone_resume)\n\n{{ $json.appended_Tom[0] }}",
+          "hasOutputParser": true
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.6,
+        "position": [
+          -2460,
+          580
+        ],
+        "id": "dbf5683d-db85-41ef-984f-b1ebaff4b829",
+        "name": "Tom da conversa"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Você vai receber uma lista onde cada item separado por ; são técnicas usadas em uma negociação e retornar uma síntese das das técnicas usadas (technics_resume) e porcetagem que cada tecnica foi utiliza (technics_percentage)\n\nUse ; como separador das técnicas\n\n{{ $json['appended_Técnicas_Usadas'].join('; ') }}",
+          "hasOutputParser": true
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.6,
+        "position": [
+          -2460,
+          780
+        ],
+        "id": "dcfea833-fe2f-4e28-be0d-3a3ff14ff954",
+        "name": "Análise das Técnicas"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Você vai receber uma lista onde cada item separado por ; são argumentos de persuasão usadas em uma negociação e retornar uma síntese dos argumentos usados (key_arguments_resume) e porcetagem que cada argumento foi utilizado (key_arguments_percentage)\n\nUse ; como separador dos argumentos\n{{ $json.appended_Argumentos_Chave.join('; ') }}",
+          "hasOutputParser": true
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.6,
+        "position": [
+          -2460,
+          980
+        ],
+        "id": "4ab12b4c-0011-479a-af81-1c4e07f95c67",
+        "name": "Análise dos Argumentos"
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          -3120,
+          420
+        ],
+        "id": "7fc31296-2861-4e79-91aa-f165d501958a",
+        "name": "Loop Over Items"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.noOp",
+        "name": "Replace Me",
+        "typeVersion": 1,
+        "position": [
+          -3000,
+          1520
+        ],
+        "id": "e056878a-975b-48e1-88f0-3fc16580b59e"
+      }
+    ],
+    "connections": {
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "Globais",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Globais": {
+        "main": [
+          [
+            {
+              "node": "Ids",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Sheets1": {
+        "main": [
+          [
+            {
+              "node": "Summarize1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ids": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Summarize1": {
+        "main": [
+          [
+            {
+              "node": "Tempos médios",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Tom da conversa",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Análise das Técnicas",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Análise dos Argumentos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge1": {
+        "main": [
+          [
+            {
+              "node": "Summarize",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Summarize2": {
+        "main": [
+          [
+            {
+              "node": "preformatInput",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "preformatInput": {
+        "main": [
+          []
+        ]
+      },
+      "OpenAI Chat Model1": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Tempos médios",
+              "type": "ai_languageModel",
+              "index": 0
+            },
+            {
+              "node": "Tom da conversa",
+              "type": "ai_languageModel",
+              "index": 0
+            },
+            {
+              "node": "Análise das Técnicas",
+              "type": "ai_languageModel",
+              "index": 0
+            },
+            {
+              "node": "Análise dos Argumentos",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Summarize": {
+        "main": [
+          [
+            {
+              "node": "preformatInput_old",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "times_output": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Tempos médios",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "tone_output": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Tom da conversa",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "arguments_output1": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Análise dos Argumentos",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "technics_output": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Análise das Técnicas",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "preformatInput_old": {
+        "main": [
+          [
+            {
+              "node": "Google Sheets4",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tempos médios": {
+        "main": [
+          [
+            {
+              "node": "Merge1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tom da conversa": {
+        "main": [
+          [
+            {
+              "node": "Merge1",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Análise das Técnicas": {
+        "main": [
+          [
+            {
+              "node": "Merge1",
+              "type": "main",
+              "index": 2
+            }
+          ]
+        ]
+      },
+      "Análise dos Argumentos": {
+        "main": [
+          [
+            {
+              "node": "Merge1",
+              "type": "main",
+              "index": 3
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Google Sheets1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Replace Me": {
+        "main": [
+          []
+        ]
+      },
+      "Google Sheets4": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "689d542e-0090-48f7-b3a6-3c48d7273fc4",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
