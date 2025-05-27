@@ -1,0 +1,2616 @@
+{
+  "data": {
+    "createdAt": "2025-01-22T12:21:44.683Z",
+    "updatedAt": "2025-01-22T12:54:41.602Z",
+    "id": "RyABQNpvbIDA2JS6",
+    "name": "J4Dev - Gera Perguntas e Respostas",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "keepOnlySet": true,
+          "values": {
+            "string": [
+              {
+                "name": "name",
+                "value": "assistant-tecnico-juarez"
+              },
+              {
+                "name": "commitDate",
+                "value": "={{ $now.toISO() }}"
+              },
+              {
+                "name": "owner",
+                "value": "blips-ai"
+              },
+              {
+                "name": "conversas",
+                "value": "=bases-conhecimento/dados-brutos/conversas-whatsapp/"
+              },
+              {
+                "name": "halfPath",
+                "value": "bases-conhecimento/dados-brutos/conversas-whatsapp/"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "08d80085-1fd4-4b4a-abe1-2a1f8a24f6f3",
+        "name": "PARAM_GITHUB",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 2,
+        "position": [
+          920,
+          -100
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "8c714c5f-a36a-4a55-b231-9851b5126480",
+                "name": "data",
+                "value": "={{$('Execute Workflow Trigger').isExecuted ? $('Execute Workflow Trigger').item.json.proxima_data : $('Gera Lista Dias').item.json.formattedDate}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "c43fc6c6-4cff-40c4-8832-199c5fb38a9d",
+        "name": "Globais",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          480,
+          -100
+        ],
+        "executeOnce": false
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "list",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $json.name }}",
+            "mode": "name"
+          },
+          "filePath": "={{ $json.halfPath }}"
+        },
+        "id": "f62bcd7a-2e7a-46f7-b7a4-4730093da8a3",
+        "name": "GitHub",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          1080,
+          -100
+        ],
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "d352a362-0ff4-4044-82a2-c97ee964f4d0",
+                "leftValue": "={{ $json.type }}",
+                "rightValue": "dir",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "3d930e24-de29-482a-8442-34b1bcff228c",
+                "leftValue": "={{ $json.name }}",
+                "rightValue": "iA Customer Success Blips",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEquals"
+                }
+              },
+              {
+                "id": "11dde889-73a2-4bc5-af4f-7f1dfc4143ba",
+                "leftValue": "={{ $json.name }}",
+                "rightValue": "Blips AI - Todos",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEquals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "842456e5-b5f2-4e99-b0e5-f18768be6cb6",
+        "name": "Filter",
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2,
+        "position": [
+          1240,
+          -100
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "list",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.name }}",
+            "mode": "name"
+          },
+          "filePath": "=/{{ $('PARAM_GITHUB').item.json.conversas }}{{ $json.name }}"
+        },
+        "id": "9c83efd0-85f1-497b-bec1-aef21805f1e2",
+        "name": "GitHub1",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          1700,
+          -80
+        ],
+        "executeOnce": false,
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "655e280e-4a9b-4e64-9203-c5f5b1ee5746",
+                "leftValue": "={{ $json.name }}",
+                "rightValue": "={{ $('Globais').item.json.data}}.json",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "0156f4e3-b9c4-4ada-9a43-d7770522e813",
+        "name": "If",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          1880,
+          -80
+        ]
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "01318adb-ad7e-490e-8df7-3c1b3f569e8b",
+        "name": "Loop Over Items",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          1480,
+          -100
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "get",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.name }}",
+            "mode": "name"
+          },
+          "filePath": "={{ $json.path }}",
+          "binaryPropertyName": "data0",
+          "additionalParameters": {}
+        },
+        "id": "f0aaf997-ff11-45f8-8cc8-59608d103246",
+        "name": "GitHub2",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          2080,
+          -120
+        ],
+        "executeOnce": false,
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "fromJson",
+          "binaryPropertyName": "data0",
+          "destinationKey": "data1",
+          "options": {}
+        },
+        "id": "76660985-bcad-47a9-8712-cdade16c9e44",
+        "name": "Extract from File",
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          2260,
+          -120
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "d14da165-80f5-4737-ae1d-e4fa4d766f06",
+        "name": "Execute Workflow Trigger",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          260,
+          -100
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "3385b2da-9961-4bf3-bae1-dc53dd41d3df",
+                "name": "conversa",
+                "value": "={{ $json.data1 }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "383045d8-dc75-4c06-a40a-4dc613dee9f7",
+        "name": "DadosBrutos",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2440,
+          -120
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "3e1d6205-9eff-4e2d-855c-5e9e6943f7d2",
+                "name": "text",
+                "value": "={{ $json.message.content }}",
+                "type": "string"
+              },
+              {
+                "id": "c758d8ed-fa54-4f5b-8e77-a07ad5a2e4a4",
+                "name": "finish_reason",
+                "value": "={{ $json.finish_reason }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "44fb81e8-d644-42df-964d-dea56f0085a1",
+        "name": "Dados_4o",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3020,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d0ad9605-b108-49bc-8e8c-c3a93888f219",
+                "name": "ensinamentos_total",
+                "value": "={{ $json.message.content.relatorio }}",
+                "type": "object"
+              },
+              {
+                "id": "b4715a54-e4fa-4f0a-81f6-9d2d05b278d3",
+                "name": "categorias",
+                "value": "={{ $json.message.content.relatorio.aprendizado.keys() }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "5bde109b-a427-4376-94a9-e1148228ab74",
+        "name": "Dados_processados",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1560,
+          620
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.name }}",
+            "mode": "name"
+          },
+          "filePath": "=bases-conhecimento/dados-processados/conversas-whatsapp/perguntas-respostas/{{ $('Globais').item.json.data }}/{{ $('Filter').item.json.name }}.json",
+          "binaryData": true,
+          "commitMessage": "=Atualizado {{ $now.format('HH:mm:ss') }}"
+        },
+        "id": "8cde06f3-0654-4b81-95b4-74fd57f2df33",
+        "name": "Sobe Git",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          2480,
+          3060
+        ],
+        "executeOnce": false
+      },
+      {
+        "parameters": {
+          "modelId": {
+            "__rl": true,
+            "value": "gpt-4o-mini",
+            "mode": "list",
+            "cachedResultName": "GPT-4O-MINI"
+          },
+          "messages": {
+            "values": [
+              {
+                "content": "=Você receberá um histórico de mensagens formatado como JSON\n\nCada _id representa um pacote individual de dados enviados por vez\n\nmetadados.user_id: número de whatsapp do remetente\nmetadados.user_name: Nome do remetente da mensagem\nmetadados.message_id: Identificador único da mensagem\nmetadados.reply_message_id: o id de outra mensagem a qual esta responde\ncontent.message: a mensagem de texto. Se a mensagem tiver algo como \"@34987190906\", significa que essa mensagem está citando outro participante do grupo com o numero especificado\ncontent.media_transcription: A transcrição de uma imagem ou audio anexos na mensagem\n\nFaça um relatório sobre a conversa {{ $json.conversa }}\nResumindo os principais pontos, e caso contenha link de mídia evidencieo-o naquele ponto da conversa, assim como a transcrição, se um trecho for uma transcrição de um audio considere como um texto, mas coloque ele entre [A]\n\nTambém faça uma seção chamada *Aprendizado* onde você vai listar as informações técnicas em tópicos que aprendeu lendo a conversa.\nSepare os conhecimentos técncios (informações sobre equipamentos, técnicas e suas operações) dos conhecimentos sobre as pessoas e o grupo\n\nPara cada informação aprendida você deverá categorizá-la entre uma das categorias abaixo, se não se encaixar em nenhuma considere a categoria \"Geral\"\n\n- Ensinamentos_Plotter_Recorte\n- Ensinamentos_Plotter_Impressao\n- Ensinamentos_CNC\n- Ensinamentos_Fiber\n- Ensinamentos_Escavadeira\n- Ensinamentos_Fitness_TOPSTEP\n- Ensinamentos_HTM_Stimulus Face Maxx\n- Ensinamentos_HTM_Stimullus R\n- Ensinamentos_HTM_Effect\n- Ensinamentos_HTM_Light Pulse\n- Ensinamentos_KLD_HERTIX SMART\n- Ensinamentos_KLD_KAVYS\n- Ensinamentos_KLD_HYGIADERMO VACUO\n- Ensinamentos_KLD_ENDOPHOTON ESTHETIC\n- Ensinamentos_KLD_Hygia\n- Ensinamentos_KLD_MANTHUS\n- Ensinamentos_KLD_Artix\n- Ensinamentos_MaxiShape_MaxiFlash G2\n- Ensinamentos_BIOSET_OMNILIGHT\n- Ensinamentos_BIOSET_KryoPlatten\n- Ensinamentos_Sorvete_Vuze_Artic\n- Ensinamentos_Fitness_ONTRACK\n- Ensinamentos_KLD_Start Clinic\n\nOs aprendizados devem sempre estar no afirmativo, enumerados numa lista contendo a pergunta que foi feita e a resposta e não devem citar pessoas \n\nExemplo:\n\n*Aprendizados*\n\n#Ensinamentos_Plotter_Recorte\n\n1 - Pergunta: Qual a temperatura de operação da plotter de recorte?\nResposta: A ploter recorte deve operar a 60c",
+                "role": "assistant"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "317cfe8a-c4ac-442b-8677-8218e3decaa8",
+        "name": "4o mini",
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.4,
+        "position": [
+          1560,
+          2520
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "3e1d6205-9eff-4e2d-855c-5e9e6943f7d2",
+                "name": "text",
+                "value": "={{ $json.text }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "bd47ead8-3f26-4121-941f-f4686a90a43b",
+        "name": "Dados_flash",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2580,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "modelName": "models/gemini-2.0-flash-exp",
+          "options": {}
+        },
+        "id": "72425088-f49e-4b7a-a655-3cfde7ce17e9",
+        "name": "Gemini Flash 2.0",
+        "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+        "typeVersion": 1,
+        "position": [
+          2280,
+          440
+        ],
+        "credentials": {
+          "googlePalmApi": {
+            "id": "nJiJWVZaDecaeKDp",
+            "name": "Google Gemini(PaLM) Api account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "3385b2da-9961-4bf3-bae1-dc53dd41d3df",
+                "name": "prompt",
+                "value": "=Você receberá um histórico de mensagens formatado como JSON\n\nCada _id representa um pacote individual de dados enviados por vez\n\nmetadados.user_id: número de whatsapp do remetente\nmetadados.user_name: Nome do remetente da mensagem\nmetadados.message_id: Identificador único da mensagem\nmetadados.reply_message_id: o id de outra mensagem a qual esta responde\ncontent.message: a mensagem de texto. Se a mensagem tiver algo como \"@34987190906\", significa que essa mensagem está citando outro participante do grupo com o numero especificado\ncontent.media_transcription: A transcrição de uma imagem ou audio anexos na mensagem\n\n\nFaça um relatório sobre a conversa {{ $json.conversa }}\nElabore o melhor relatório possível usando a máxima quantidade de tokens  (1648) que puder para elaborar a melhor resposta\nResumindo os principais pontos, e caso contenha link de mídia evidencieo-o naquele ponto da conversa, assim como a transcrição, se um trecho for uma transcrição de um audio considere como um texto, mas coloque ele entre [A]\n\nTambém faça uma seção chamada *Aprendizado* onde você vai listar as informações técnicas em tópicos que aprendeu lendo a conversa.\nSepare os conhecimentos técncios (informações sobre equipamentos, técnicas e suas operações) dos conhecimentos sobre as pessoas e o grupo\n\nPara cada informação aprendida você deverá categorizá-la entre uma das categorias abaixo, se não se encaixar em nenhuma considere a categoria \"Geral\"\n\n- Ensinamentos_Plotter_Recorte \n- Ensinamentos_Plotter_Impressao (Ex.: XP600, i1600, i3200, Sublimática, EcoSolvente, Flatbed)\n- Ensinamentos_CNC (Ex.:10060, 6040, 4040)\n- Ensinamentos_Fiber\n- Ensinamentos_Impressora_DTF_UV\n- Ensinamentos_Flatbed_UV\n- Ensinamentos_Escavadeira (Ex.: X15)\n- Ensinamentos_Fitness_Simulador_Escada (Ex.: TopStep)\n- Ensinamentos_Fitness_Esteira (Ex.: Ontrack)\n- Ensinamentos_Pecas_Avulsas\n- Ensinamentos_HTM (Ex.: Stimulus Face Maxx, Stimullus R, Effect, Light Pulse)\n- Ensinamentos_KLD (Ex.: HERTIX SMART, KAVYS, HYGIADERMO VACUO, ENDOPHOTON ESTHETIC, Hygia, MANTHUS, Artix, Start Clinic)\n- Ensinamentos_MaxiShape_MaxiFlash G2\n- Ensinamentos_BIOSET (Ex.: OMNILIGHT, KryoPlatten)\n- Ensinamentos_Sorvete_Vuze_Artic\n\nOs aprendizados devem sempre estar no afirmativo, enumerados numa lista contendo a pergunta que foi feita e a resposta e não devem citar pessoas \n\nExemplo:\n\n*Aprendizados*\n\n#Ensinamentos_Plotter_Recorte\n\n1 - Pergunta: Qual a temperatura de operação da plotter de recorte?\nResposta: A ploter recorte deve operar a 60c",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "36201d15-75f9-4321-9b40-be93775edce8",
+        "name": "Dados LLM",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2100,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d0ad9605-b108-49bc-8e8c-c3a93888f219",
+                "name": "ensinamentos",
+                "value": "={{ $json.message.content.relatorio.aprendizado}}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d7649c64-0cad-499f-9568-16374360d5ec",
+        "name": "Dados_Atual",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          5220,
+          840
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "17eb9e26-0b09-401e-b75d-d990cb12b731",
+        "name": "When clicking ‘Test workflow’",
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          520,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "3385b2da-9961-4bf3-bae1-dc53dd41d3df",
+                "name": "conhecimento",
+                "value": "={{ $json.data }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "bee793b0-3cb4-488f-a59d-d55f48bf6373",
+        "name": "Dados_atualAntigo",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          4740,
+          840
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "toJson",
+          "options": {
+            "format": true
+          }
+        },
+        "id": "e3ea7160-d359-4a4c-86d1-81e2cf44eddf",
+        "name": "Convert to File",
+        "type": "n8n-nodes-base.convertToFile",
+        "typeVersion": 1.1,
+        "position": [
+          5380,
+          840
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "toJson",
+          "binaryPropertyName": "data2",
+          "options": {
+            "format": true,
+            "fileName": "total2"
+          }
+        },
+        "id": "1ea6797b-15cc-427c-9dfe-e06ec496cbd9",
+        "name": "total_toJSON",
+        "type": "n8n-nodes-base.convertToFile",
+        "typeVersion": 1.1,
+        "position": [
+          3060,
+          1040
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d0ad9605-b108-49bc-8e8c-c3a93888f219",
+                "name": "data2",
+                "value": "={{ $('Dados_processados').item.json.ensinamentos_total }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "c1f04646-5687-4754-acc6-b44f44b4e059",
+        "name": "total",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2780,
+          1040
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "fromJson",
+          "options": {}
+        },
+        "id": "ef2e6dc7-6168-4f50-982a-87efd7337914",
+        "name": "Extract Atual",
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          4580,
+          840
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.name }}",
+            "mode": "name"
+          },
+          "filePath": "=bases-conhecimento/dados-processados/conversas-whatsapp/perguntas-respostas/atual/{{ $('Loop Over Items').item.json.name }}.json",
+          "binaryData": true,
+          "commitMessage": "={{ $('Globais').item.json.data }}"
+        },
+        "id": "06b627b5-f162-41d0-975f-b18ddee4ecda",
+        "name": "Sobe Atual",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          5580,
+          1160
+        ],
+        "executeOnce": false,
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "edit",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.name }}",
+            "mode": "name"
+          },
+          "filePath": "=bases-conhecimento/dados-processados/conversas-whatsapp/perguntas-respostas/atual/README.MD",
+          "fileContent": "={{ $('Globais').item.json.data }}",
+          "commitMessage": "={{ $('Globais').item.json.data }}"
+        },
+        "id": "82e17478-462f-475b-96bc-56b2c4d7885d",
+        "name": "Registra_data_Atual",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          5780,
+          1160
+        ],
+        "executeOnce": true,
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "eeda3e04-6a47-4446-8da5-cb52331596d5",
+                "name": "dia",
+                "value": 3,
+                "type": "number"
+              },
+              {
+                "id": "01ece8fa-d3de-4cf3-8ffe-8d69770ffed4",
+                "name": "mes",
+                "value": 12,
+                "type": "number"
+              },
+              {
+                "id": "be4b67b4-b231-4b5d-9c99-2fe2f4119d42",
+                "name": "ano",
+                "value": 2024,
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "9d5e1cb0-3748-4704-9bd7-37023f4bfc83",
+        "name": "Inicio",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          700,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "eeda3e04-6a47-4446-8da5-cb52331596d5",
+                "name": "dia",
+                "value": "=4",
+                "type": "number"
+              },
+              {
+                "id": "01ece8fa-d3de-4cf3-8ffe-8d69770ffed4",
+                "name": "mes",
+                "value": 12,
+                "type": "number"
+              },
+              {
+                "id": "be4b67b4-b231-4b5d-9c99-2fe2f4119d42",
+                "name": "ano",
+                "value": 2024,
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "825719bb-b353-4f29-a2ad-d8c97328fd51",
+        "name": "Fim",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          860,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "68697667-6b86-4f16-aeed-1545c4570cfa",
+                "name": "inicio",
+                "value": "={{$('Inicio').item.json.ano}},{{$('Inicio').item.json.mes}},{{ $('Inicio').item.json.dia }}",
+                "type": "string"
+              },
+              {
+                "id": "b6430ca9-d52b-43f1-b6fc-83742aa3127d",
+                "name": "fim",
+                "value": "={{$('Fim').item.json.ano}},{{$('Fim').item.json.mes}},{{ $('Fim').item.json.dia }}",
+                "type": "string"
+              },
+              {
+                "id": "09e6da75-36b0-4663-b1ef-71d12aaf574b",
+                "name": "separador",
+                "value": "-",
+                "type": "string"
+              },
+              {
+                "id": "050f4488-392f-474e-98ce-3503d7168f63",
+                "name": "tipo_modo",
+                "value": "3",
+                "type": "string"
+              },
+              {
+                "id": "c9f58686-7d51-4ecd-95b0-79d3ac376a5d",
+                "name": "atualizar",
+                "value": "0",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "7856f775-ea2c-4992-a318-cd5d6d5699d6",
+        "name": "Inicio&Fim",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1020,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "OM7kIUgwcWl1y3WL",
+          "options": {}
+        },
+        "id": "4185239d-4e03-4f89-8c46-5af44cef8f5e",
+        "name": "Gera Lista Dias",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          1180,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "list",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.name }}",
+            "mode": "name"
+          },
+          "filePath": "=bases-conhecimento/dados-processados/conversas-whatsapp/perguntas-respostas"
+        },
+        "id": "062beac8-1e48-4996-b629-3d0a2c73e7ab",
+        "name": "listaArquivos",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          1720,
+          620
+        ],
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "edit",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.name }}",
+            "mode": "name"
+          },
+          "filePath": "=bases-conhecimento/dados-processados/conversas-whatsapp/perguntas-respostas/{{ $('Globais').item.json.data }}/{{ $('Filter').item.json.name }}.json",
+          "binaryData": true,
+          "binaryPropertyName": "data1",
+          "commitMessage": "=Atualizado {{ $now.format('HH:mm:ss') }}"
+        },
+        "id": "a8b9055f-2330-4848-be39-106e802cc365",
+        "name": "atualizaArquivo",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          3480,
+          480
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.name }}",
+            "mode": "name"
+          },
+          "filePath": "={{ $('PARAM_GITHUB').item.json.conversas }}{{$json.formattedDate || $('Globais').item.json.data.replaceAll('/','-') }}.json",
+          "fileContent": "={{ $('Arquivo').item.json.relatorio }}",
+          "commitMessage": "=Atualizado {{ $('horaAtual').item.json.horario }}"
+        },
+        "id": "a8e282ba-74db-4ba7-8e36-67dff6b39748",
+        "name": "criaArquivo",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          2320,
+          2840
+        ]
+      },
+      {
+        "parameters": {
+          "fieldsToAggregate": {
+            "fieldToAggregate": [
+              {
+                "fieldToAggregate": "name"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "885b97a0-baef-46ad-b73f-6750482ff6c1",
+        "name": "Aggregate2",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          1880,
+          620
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "9298482a-1eb7-424b-8c78-04e5b667730c",
+                "leftValue": "={{ $json.name }}",
+                "rightValue": "={{ $('Globais').item.json.data }}",
+                "operator": {
+                  "type": "array",
+                  "operation": "contains",
+                  "rightType": "any"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "03e30aa8-aff6-41eb-bdf6-0e477e59398a",
+        "name": "If1",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          2040,
+          620
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "8c714c5f-a36a-4a55-b231-9851b5126480",
+                "name": "data",
+                "value": "={{ $json.formattedDate }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "05fce526-1532-4298-aef9-e3532c1109dc",
+        "name": "Globais1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -300,
+          -280
+        ],
+        "executeOnce": false
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.name }}",
+            "mode": "name"
+          },
+          "filePath": "=bases-conhecimento/dados-processados/conversas-whatsapp/perguntas-respostas/{{ $('Globais').item.json.data }}/{{ $('Filter').item.json.name }}.json",
+          "binaryData": true,
+          "commitMessage": "=Atualizado {{ $now.format('HH:mm:ss') }}"
+        },
+        "id": "c8379b67-2bfb-416b-9c49-e74b5ff82952",
+        "name": "Sobe Git1",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          3220,
+          1040
+        ],
+        "executeOnce": false,
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "edit",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.name }}",
+            "mode": "name"
+          },
+          "filePath": "=bases-conhecimento/dados-processados/conversas-whatsapp/perguntas-respostas/{{ $('Globais').item.json.data }}/{{ $('Filter').item.json.name }}.json",
+          "binaryData": true,
+          "commitMessage": "=Atualizado {{ $now.format('HH:mm:ss') }}"
+        },
+        "id": "7ffc4fef-ad28-46ab-9269-5839df0c256c",
+        "name": "Sobe Git2",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          2480,
+          2560
+        ],
+        "executeOnce": false
+      },
+      {
+        "parameters": {
+          "operation": "toJson",
+          "options": {
+            "format": true,
+            "fileName": "={{ $('Filter').item.json.name }}.json"
+          }
+        },
+        "id": "22efa515-119b-4b39-90a2-f14ff9c0a87a",
+        "name": "total_toJSON1",
+        "type": "n8n-nodes-base.convertToFile",
+        "typeVersion": 1.1,
+        "position": [
+          2960,
+          580
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d0ad9605-b108-49bc-8e8c-c3a93888f219",
+                "name": "data",
+                "value": "={{ $('Dados_processados').item.json.ensinamentos_total }}",
+                "type": "string"
+              },
+              {
+                "id": "346aa438-366e-4e7e-9083-48339b547d83",
+                "name": "name",
+                "value": "teste JL",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "78699d8b-d360-44c7-9751-bc242c19bf98",
+        "name": "total1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2780,
+          580
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "toJson",
+          "binaryPropertyName": "data3",
+          "options": {
+            "format": true
+          }
+        },
+        "id": "f1d03a7e-1a63-4d41-add5-7a9555801a63",
+        "name": "total_toJSON2",
+        "type": "n8n-nodes-base.convertToFile",
+        "typeVersion": 1.1,
+        "position": [
+          3600,
+          1040
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d0ad9605-b108-49bc-8e8c-c3a93888f219",
+                "name": "data3",
+                "value": "={{ $('Dados_processados').item.json.ensinamentos_total }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d47b41f1-ef53-4a88-9858-e1ab3eef2a3e",
+        "name": "total2",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3400,
+          1040
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "list",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.name }}",
+            "mode": "name"
+          },
+          "filePath": "=bases-conhecimento/dados-processados/conversas-whatsapp/perguntas-respostas/atual"
+        },
+        "id": "0937e011-3979-4554-a254-d0d35e7a56eb",
+        "name": "listaArquivos1",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          3820,
+          960
+        ],
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "fieldsToAggregate": {
+            "fieldToAggregate": [
+              {
+                "fieldToAggregate": "name"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "7039f4e1-17cf-4f2e-b9b4-4eaefb7e0927",
+        "name": "Aggregate",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          4000,
+          960
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "9298482a-1eb7-424b-8c78-04e5b667730c",
+                "leftValue": "={{ $json.name }}",
+                "rightValue": "={{ $('Loop Over Items').item.json.name }}.json",
+                "operator": {
+                  "type": "array",
+                  "operation": "contains",
+                  "rightType": "any"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "76db980a-c914-43fe-a4c4-2bc5efb5a83a",
+        "name": "If2",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          4160,
+          960
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "toJson",
+          "options": {
+            "format": true
+          }
+        },
+        "id": "2261e1b3-e36f-4491-94ac-b4ef777a26ba",
+        "name": "total_toJSON3",
+        "type": "n8n-nodes-base.convertToFile",
+        "typeVersion": 1.1,
+        "position": [
+          4500,
+          1140
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d0ad9605-b108-49bc-8e8c-c3a93888f219",
+                "name": "conhecimento",
+                "value": "={{ $('Dados_processados').item.json.ensinamentos_total }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "6dc5214d-5a72-45b3-92bd-8bd1742d9ce4",
+        "name": "total3",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          4340,
+          1140
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "edit",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.name }}",
+            "mode": "name"
+          },
+          "filePath": "=bases-conhecimento/dados-processados/conversas-whatsapp/perguntas-respostas/atual/{{ $('Loop Over Items').item.json.name }}.json",
+          "binaryData": true,
+          "commitMessage": "={{ $('Globais').item.json.data }}"
+        },
+        "id": "b8f5b81c-6a67-4d63-8ee1-d96d43680c4b",
+        "name": "Sobe Atual1",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          5580,
+          980
+        ],
+        "executeOnce": false,
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "modelId": {
+            "__rl": true,
+            "value": "gpt-4o",
+            "mode": "list",
+            "cachedResultName": "GPT-4O"
+          },
+          "messages": {
+            "values": [
+              {
+                "content": "={{ $('Dados LLM').item.json.prompt }}",
+                "role": "assistant"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "80c4338f-6ffb-434f-bf26-9bd3c74fa60d",
+        "name": "4o",
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.4,
+        "position": [
+          2720,
+          240
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "tuJNruAgnnM96by3",
+            "name": "Open AI - Suporte Técnico"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "9298482a-1eb7-424b-8c78-04e5b667730c",
+                "leftValue": "={{ $json.name }}",
+                "rightValue": "={{ $('Filter').item.json.name }}.json",
+                "operator": {
+                  "type": "array",
+                  "operation": "contains",
+                  "rightType": "any"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "2adaee45-ea2f-4a43-87c5-d2a6a489b02b",
+        "name": "If3",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          2600,
+          600
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "list",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.name }}",
+            "mode": "name"
+          },
+          "filePath": "=bases-conhecimento/dados-processados/conversas-whatsapp/perguntas-respostas/{{ $('Globais').item.json.data }}"
+        },
+        "id": "e3514154-1513-4e0c-a138-a08e596b7356",
+        "name": "listaArquivos2",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          2280,
+          600
+        ],
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "fieldsToAggregate": {
+            "fieldToAggregate": [
+              {
+                "fieldToAggregate": "name"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "55633a2e-16d1-4854-b61a-39a7b1a53cd4",
+        "name": "Aggregate3",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          2440,
+          600
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "get",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.name }}",
+            "mode": "name"
+          },
+          "filePath": "=bases-conhecimento/dados-processados/conversas-whatsapp/perguntas-respostas/atual/{{ $('Filter').item.json.name }}.json",
+          "additionalParameters": {}
+        },
+        "id": "954ec348-1cb6-430d-bbed-e8ef3fc710bc",
+        "name": "Get_ensinamentoAtual",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          4360,
+          740
+        ],
+        "executeOnce": false,
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "fieldsToAggregate": {
+            "fieldToAggregate": [
+              {
+                "fieldToAggregate": "name"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "0b3d759f-0b25-408f-a72f-f3ea9a9c2762",
+        "name": "Aggregate1",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          6260,
+          1160
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "9298482a-1eb7-424b-8c78-04e5b667730c",
+                "leftValue": "={{ $json.name }}",
+                "rightValue": "={{ $('Globais').item.json.data }}.md",
+                "operator": {
+                  "type": "array",
+                  "operation": "contains",
+                  "rightType": "any"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "dc9a9867-2324-4785-9f62-7d84dd095e65",
+        "name": "If4",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          6420,
+          1160
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "list",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.name }}",
+            "mode": "name"
+          },
+          "filePath": "=bases-conhecimento/dados-processados/conversas-whatsapp/perguntas-respostas/logs/"
+        },
+        "id": "f912cf6e-4cb8-4866-a66d-9afe6017ef48",
+        "name": "Lista Logs",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          6100,
+          1160
+        ],
+        "executeOnce": false,
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "get",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.name }}",
+            "mode": "name"
+          },
+          "filePath": "=bases-conhecimento/dados-processados/conversas-whatsapp/perguntas-respostas/logs/{{ $('Globais').item.json.data }}.md",
+          "asBinaryProperty": false,
+          "additionalParameters": {
+            "reference": ""
+          }
+        },
+        "id": "1e633839-8702-47a3-b07a-b841cf3a68a6",
+        "name": "Get Log",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          6640,
+          920
+        ],
+        "executeOnce": false,
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d0ad9605-b108-49bc-8e8c-c3a93888f219",
+                "name": "text",
+                "value": "=### {{ $now.format('dd-MM-yyyy - HH:mm:ss') }} - {{ $('Filter').item.json.name }}\n\n{{$('4o - novo atual').isExecuted == true ? $('4o - novo atual').item.json.message.content.relatorio.log : \"Criação do arquivo\" }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "dbaaab3e-7ade-4385-808b-e607ccbcb79f",
+        "name": "Log",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          5940,
+          1160
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "toJson",
+          "options": {
+            "format": true
+          }
+        },
+        "id": "31afa98e-0dec-44c2-b661-652e447580c1",
+        "name": "total_toJSON4",
+        "type": "n8n-nodes-base.convertToFile",
+        "typeVersion": 1.1,
+        "position": [
+          7320,
+          800
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.name }}",
+            "mode": "name"
+          },
+          "filePath": "=bases-conhecimento/dados-processados/conversas-whatsapp/perguntas-respostas/logs/{{ $('Globais').item.json.data }}.md",
+          "fileContent": "={{ $('Log').item.json.text }}",
+          "commitMessage": "=Atualizado {{ $now.format('HH:mm:ss') }}"
+        },
+        "id": "6b2264e5-7882-4534-9fa1-b7db8c05ed0f",
+        "name": "Cria Log",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          6620,
+          1180
+        ],
+        "executeOnce": false,
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "text",
+          "options": {}
+        },
+        "id": "10e67b61-f1ca-4f9b-be41-daf3f66d5884",
+        "name": "Extract from File1",
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          7580,
+          740
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "c3d29e13-7d09-4928-9185-6938b9308e71",
+                "name": "log_text",
+                "value": "={{ $json.content.base64Decode() }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "7863117e-a8e5-4bb8-89fd-5e08978f73cd",
+        "name": "Log_Antigo",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          6780,
+          920
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "c3d29e13-7d09-4928-9185-6938b9308e71",
+                "name": "text",
+                "value": "={{ $json.log_text }} \n{{ $('Log').item.json.text }}",
+                "type": "string"
+              },
+              {
+                "id": "953ca234-2438-4c40-86fc-66204e8de820",
+                "name": "",
+                "value": "=",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "70f48fb1-12f2-407d-b1d4-3efa30c2396b",
+        "name": "Log_Novo",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          6920,
+          920
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "edit",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.name }}",
+            "mode": "name"
+          },
+          "filePath": "=bases-conhecimento/dados-processados/conversas-whatsapp/perguntas-respostas/logs/{{ $('Globais').item.json.data }}.md",
+          "fileContent": "={{ $json.text }}",
+          "commitMessage": "=Atualizado {{ $now.format('HH:mm:ss') }}"
+        },
+        "id": "918621bd-f063-4578-b5f0-9c408955d4f9",
+        "name": "Atualiza Log",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          7140,
+          1260
+        ],
+        "executeOnce": false,
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $('Dados LLM').item.json.prompt }}"
+        },
+        "id": "e53a7feb-aa38-4e9f-90fa-9debb709f76f",
+        "name": "Gemini Flash",
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.4,
+        "position": [
+          2260,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "modelId": {
+            "__rl": true,
+            "value": "gpt-4o",
+            "mode": "list",
+            "cachedResultName": "GPT-4O"
+          },
+          "messages": {
+            "values": [
+              {
+                "content": "=Elabore o melhor relatório possível usando a máxima quantidade de tokens  (1648) que puder para elaborar a melhor resposta\n\nVocê receberá duas base de conhecimento \n\nBase 1: {{ $('Dados_processados').item.json.ensinamentos_total.toJsonString()}}\nBase 2: {{$('Dados_atualAntigo').item.json.conhecimento }}\n\nSua tarefa é organizar os conhecimentos de todas as bases, retirando as informações redundantes (items nas bases diferentes com a mesma pergunta e resposta)\n\nPara cada informação aprendida você deverá categorizá-la entre uma das categorias abaixo, se não se encaixar em nenhuma considere a categoria \"Geral\"\n\nSó retorne as categorias que tiverem itens \n\n- Ensinamentos_Plotter_Recorte \n- Ensinamentos_Plotter_Impressao (Ex.: XP600, i1600, i3200, Sublimática, EcoSolvente, Flatbed)\n- Ensinamentos_CNC (Ex.:10060, 6040, 4040)\n- Ensinamentos_Fiber\n- Ensinamentos_Impressora_DTF_UV\n- Ensinamentos_Flatbed_UV\n- Ensinamentos_Escavadeira (Ex.: X15)\n- Ensinamentos_Fitness_Simulador_Escada (Ex.: TopStep)\n- Ensinamentos_Fitness_Esteira (Ex.: Ontrack)\n- Ensinamentos_Pecas_Avulsas\n- Ensinamentos_Gerais_Maquinas\n- Ensinamentos_HTM_Stimulus Face Maxx\n- Ensinamentos_HTM_Stimullus R\n- Ensinamentos_HTM_Effect\n- Ensinamentos_HTM_Light Pulse\n- Ensinamentos_KLD_HERTIX SMART\n- Ensinamentos_KLD_KAVYS\n- Ensinamentos_KLD_HYGIADERMO VACUO\n- Ensinamentos_KLD_ENDOPHOTON ESTHETIC\n- Ensinamentos_KLD_Hygia\n- Ensinamentos_KLD_MANTHUS\n- Ensinamentos_KLD_Artix\n- Ensinamentos_MaxiShape_MaxiFlash G2\n- Ensinamentos_BIOSET_OMNILIGHT\n- Ensinamentos_BIOSET_KryoPlatten\n- Ensinamentos_Sorvete_Vuze_Artic\n- Ensinamentos_Fitness_ONTRACK\n- Ensinamentos_KLD_Start Clinic\n\nExemplo:\n\nA estrutura do json deve ser\n\n{\"relatorio\": {\n\n\"conversa\" : \"....\",\n\n\"aprendizado\": {\n\n\"Ensinamentos_1\" : {\"pergunta: \"...\", resposta: \"...\"}, { pergunta: \"...\", resposta: \"...\"}\", \n\n.....\n}\n\n\"log\" : \"Aqui você deve fazer um resumo direto e breve sobre quais conhecimentos adicionados, mantidos e os removidos\"\n\n}\n\nNÃO use ```json\nElabore o melhor relatório possível usando a máxima quantidade de tokens que puder para elaborar a melhor resposta",
+                "role": "assistant"
+              }
+            ]
+          },
+          "jsonOutput": true,
+          "options": {}
+        },
+        "id": "8fc5df24-72f1-4fd3-9f78-3b1963ec3716",
+        "name": "4o - novo atual",
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.4,
+        "position": [
+          4900,
+          840
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "tuJNruAgnnM96by3",
+            "name": "Open AI - Suporte Técnico"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "modelId": {
+            "__rl": true,
+            "value": "gpt-4o",
+            "mode": "list",
+            "cachedResultName": "GPT-4O"
+          },
+          "messages": {
+            "values": [
+              {
+                "content": "=Você receberá duas análises de um mesmo histórico de conversa\n\nSua tarefa é juntar as duas informações complementando-as em um texto coerente\n\nFormate como uma string JSON\n\nA seção *Aprendizado* lista as informações técnicas em tópicos que aprendeu lendo a conversa.\nSepare os conhecimentos técnicos (informações sobre equipamentos, técnicas e suas operações) dos conhecimentos sobre as pessoas e o grupo\n\nSe um conhecimento técnico citar: pessoas, o grupo, mídias do grupo ou Bitrix refaça a pergunta ou resposta tirando essa parte ou substituindo os termos \"mídias do grupo\" pelo link\n\nExemplo:\nErrado: Alguem aqui no grupo sabe como regula a máquina?\nCerto: Como regula a máquina?\n\nSe alguma mensagem cita \"mídias\" ou \"mídia do grupo\", procure nas mensagens alguma que tenha um link que seja adequado como resposta para essa pergunta e substituia \"mídias\" pelo link\n\nPerguntas sem resposta não devem ser incluídas\n\nInclua links nas respostas caso ele seja necessário para responder a pergunta\n\n(Ex.: \"pergunta\": \"Onde eu encontro vídeos de como regular a máquina?\", resposta: \"Você pode encontra-los neste link ...\")\n\n\nPara cada informação aprendida você deverá categorizá-la entre uma das categorias abaixo, se não se encaixar em nenhuma considere a categoria \"Geral\"\n\nSó retorne as categorias que tiverem itens \n\n- Ensinamentos_Plotter_Recorte \n- Ensinamentos_Plotter_Impressao (Ex.: XP600, i1600, i3200, Sublimática, EcoSolvente, Flatbed)\n- Ensinamentos_CNC (Ex.:10060, 6040, 4040)\n- Ensinamentos_Fiber\n- Ensinamentos_Impressora_DTF_UV\n- Ensinamentos_Flatbed_UV\n- Ensinamentos_Escavadeira (Ex.: X15)\n- Ensinamentos_Fitness_Simulador_Escada (Ex.: TopStep)\n- Ensinamentos_Fitness_Esteira (Ex.: Ontrack)\n- Ensinamentos_Pecas_Avulsas\n- Ensinamentos_Gerais_Maquinas\n- Ensinamentos_HTM_Stimulus Face Maxx\n- Ensinamentos_HTM_Stimullus R\n- Ensinamentos_HTM_Effect\n- Ensinamentos_HTM_Light Pulse\n- Ensinamentos_KLD_HERTIX SMART\n- Ensinamentos_KLD_KAVYS\n- Ensinamentos_KLD_HYGIADERMO VACUO\n- Ensinamentos_KLD_ENDOPHOTON ESTHETIC\n- Ensinamentos_KLD_Hygia\n- Ensinamentos_KLD_MANTHUS\n- Ensinamentos_KLD_Artix\n- Ensinamentos_MaxiShape_MaxiFlash G2\n- Ensinamentos_BIOSET_OMNILIGHT\n- Ensinamentos_BIOSET_KryoPlatten\n- Ensinamentos_Sorvete_Vuze_Artic\n- Ensinamentos_Fitness_ONTRACK\n- Ensinamentos_KLD_Start Clinic\n\nOs aprendizados devem sempre estar no afirmativo, enumerados numa lista contendo a pergunta que foi feita e a resposta e não devem citar pessoas, o grupo, ou mídias do grupo\n\nAs perguntas devem ser reelaboradas para corresponder as regras do prompt\n\nExemplo:\n\n*Aprendizados*\n\n#Ensinamentos_Plotter_Recorte\n\n1 - Pergunta: Qual a temperatura de operação da plotter de recorte?\nResposta: A ploter recorte deve operar a 60c\n\n\nA estrutura do json deve ser\n\n{\"relatorio\": {\n\n\"conversa\" : \"....\",\n\n\"aprendizado\": {\n\n\"Ensinamentos_1\" : {pergunta: \"...\", resposta: \"...\"}, {pergunta: \"...\", resposta: \"...\"}\",\n\n.....\n\n}}\n\nRelatorios para analisar:\n\nRelatorio 1: {{ $json.text }}\nRelatorio 2: {{ $('Dados_flash').item.json.text }}\n\nNÃO use ```json\n\n\n",
+                "role": "assistant"
+              }
+            ]
+          },
+          "jsonOutput": true,
+          "options": {}
+        },
+        "id": "c5485707-6433-4e83-9a47-0465df47284d",
+        "name": "4o junta",
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.4,
+        "position": [
+          3200,
+          240
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "tuJNruAgnnM96by3",
+            "name": "Open AI - Suporte Técnico"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "edit",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.name }}",
+            "mode": "name"
+          },
+          "filePath": "=bases-conhecimento/dados-processados/conversas-whatsapp/perguntas-respostas/{{ $('Globais').item.json.data }}/{{ $('Filter').item.json.name }}.json",
+          "binaryData": true,
+          "commitMessage": "=Atualizado {{ $now.format('HH:mm:ss') }}"
+        },
+        "id": "07a4746e-6e31-407b-876b-ef4fd8c950f4",
+        "name": "GitHub3",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          3160,
+          580
+        ],
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "return $input.all().map(item => {\n  const jsonContent = JSON.stringify(item.json)\n  const binaryData = Buffer.from(jsonContent, 'utf-8')\n  const fileName = `${item.json.name.normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').replace(/[^a-zA-Z0-9\\s]/g, '').replace(/\\s+/g, '-').toLowerCase()}-${item.json.id}.json`\n  \n  return {\n    json: item.json,\n    binary: {\n      data: {\n        data: binaryData.toString('base64'),\n        mimeType: 'application/json',\n        fileName: fileName\n      }\n    }\n  }\n})"
+        },
+        "id": "9479201c-3279-4e40-bf71-a5433f3f9b84",
+        "name": "Code",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1000,
+          -340
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "return $input.all().map(item => {\n  const jsonContent = JSON.stringify(item.json)\n  const binaryData = Buffer.from(jsonContent, 'utf-8')\n  const fileName = `${item.json.name.normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').replace(/[^a-zA-Z0-9\\s]/g, '').replace(/\\s+/g, '-').toLowerCase()}.json`\n  \n  return {\n    json: item.json,\n    binary: {\n      data: {\n        data: binaryData.toString('base64'),\n        mimeType: 'application/json',\n        fileName: fileName\n      }\n    }\n  }\n})"
+        },
+        "id": "8c65b4e6-ff2d-44ab-b3cd-e6f878539adf",
+        "name": "Code1",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          3580,
+          680
+        ]
+      }
+    ],
+    "connections": {
+      "PARAM_GITHUB": {
+        "main": [
+          [
+            {
+              "node": "GitHub",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Globais": {
+        "main": [
+          [
+            {
+              "node": "PARAM_GITHUB",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GitHub": {
+        "main": [
+          [
+            {
+              "node": "Filter",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GitHub1": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "GitHub2",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [],
+          [
+            {
+              "node": "GitHub1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GitHub2": {
+        "main": [
+          [
+            {
+              "node": "Extract from File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract from File": {
+        "main": [
+          [
+            {
+              "node": "DadosBrutos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute Workflow Trigger": {
+        "main": [
+          [
+            {
+              "node": "Globais",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "DadosBrutos": {
+        "main": [
+          [
+            {
+              "node": "Dados LLM",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados_4o": {
+        "main": [
+          [
+            {
+              "node": "4o junta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados_processados": {
+        "main": [
+          [
+            {
+              "node": "listaArquivos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados_flash": {
+        "main": [
+          [
+            {
+              "node": "4o",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gemini Flash 2.0": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Gemini Flash",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados LLM": {
+        "main": [
+          [
+            {
+              "node": "Gemini Flash",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados_Atual": {
+        "main": [
+          [
+            {
+              "node": "Convert to File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "Inicio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados_atualAntigo": {
+        "main": [
+          [
+            {
+              "node": "4o - novo atual",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Convert to File": {
+        "main": [
+          [
+            {
+              "node": "Sobe Atual1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "total_toJSON": {
+        "main": [
+          [
+            {
+              "node": "Sobe Git1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "total": {
+        "main": [
+          [
+            {
+              "node": "total_toJSON",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract Atual": {
+        "main": [
+          [
+            {
+              "node": "Dados_atualAntigo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sobe Atual": {
+        "main": [
+          [
+            {
+              "node": "Registra_data_Atual",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Registra_data_Atual": {
+        "main": [
+          [
+            {
+              "node": "Log",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Inicio": {
+        "main": [
+          [
+            {
+              "node": "Fim",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Fim": {
+        "main": [
+          [
+            {
+              "node": "Inicio&Fim",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Inicio&Fim": {
+        "main": [
+          [
+            {
+              "node": "Gera Lista Dias",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gera Lista Dias": {
+        "main": [
+          [
+            {
+              "node": "Globais",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "listaArquivos": {
+        "main": [
+          [
+            {
+              "node": "Aggregate2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aggregate2": {
+        "main": [
+          [
+            {
+              "node": "If1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If1": {
+        "main": [
+          [
+            {
+              "node": "listaArquivos2",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "total",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sobe Git1": {
+        "main": [
+          [
+            {
+              "node": "total2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "total1": {
+        "main": [
+          [
+            {
+              "node": "total_toJSON1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "total_toJSON2": {
+        "main": [
+          [
+            {
+              "node": "listaArquivos1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "total2": {
+        "main": [
+          [
+            {
+              "node": "total_toJSON2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "listaArquivos1": {
+        "main": [
+          [
+            {
+              "node": "Aggregate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aggregate": {
+        "main": [
+          [
+            {
+              "node": "If2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If2": {
+        "main": [
+          [
+            {
+              "node": "Get_ensinamentoAtual",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "total3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "total_toJSON3": {
+        "main": [
+          [
+            {
+              "node": "Sobe Atual",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "total3": {
+        "main": [
+          [
+            {
+              "node": "total_toJSON3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sobe Atual1": {
+        "main": [
+          [
+            {
+              "node": "Registra_data_Atual",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "4o": {
+        "main": [
+          [
+            {
+              "node": "Dados_4o",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If3": {
+        "main": [
+          [
+            {
+              "node": "total1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "total",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "listaArquivos2": {
+        "main": [
+          [
+            {
+              "node": "Aggregate3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aggregate3": {
+        "main": [
+          [
+            {
+              "node": "If3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get_ensinamentoAtual": {
+        "main": [
+          [
+            {
+              "node": "Extract Atual",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aggregate1": {
+        "main": [
+          [
+            {
+              "node": "If4",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If4": {
+        "main": [
+          [
+            {
+              "node": "Get Log",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Cria Log",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Lista Logs": {
+        "main": [
+          [
+            {
+              "node": "Aggregate1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get Log": {
+        "main": [
+          [
+            {
+              "node": "Log_Antigo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Log": {
+        "main": [
+          [
+            {
+              "node": "Lista Logs",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Cria Log": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Log_Antigo": {
+        "main": [
+          [
+            {
+              "node": "Log_Novo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Log_Novo": {
+        "main": [
+          [
+            {
+              "node": "Atualiza Log",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Atualiza Log": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gemini Flash": {
+        "main": [
+          [
+            {
+              "node": "Dados_flash",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "4o - novo atual": {
+        "main": [
+          [
+            {
+              "node": "Dados_Atual",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "4o junta": {
+        "main": [
+          [
+            {
+              "node": "Dados_processados",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GitHub3": {
+        "main": [
+          [
+            {
+              "node": "total2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code1": {
+        "main": [
+          []
+        ]
+      },
+      "total_toJSON1": {
+        "main": [
+          [
+            {
+              "node": "GitHub3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {},
+    "versionId": "357788b1-4236-4559-8dfa-d8bfe9a7467f",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
