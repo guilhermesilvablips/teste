@@ -1,0 +1,1147 @@
+{
+  "data": {
+    "createdAt": "2025-04-01T17:43:40.448Z",
+    "updatedAt": "2025-04-10T12:58:56.808Z",
+    "id": "FDuiWF7628uflNGB",
+    "name": "Olhar atendimentos Clara",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -500,
+          -20
+        ],
+        "id": "62690a29-880e-43fa-8ac7-49b75b073e7c",
+        "name": "When clicking ‘Test workflow’"
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "1vf-xSdkfWBuPu9fPTXUkUneOwkIem-OuXp9gEMaRK24",
+            "mode": "list",
+            "cachedResultName": "Atendimentos Socorro - Blips iA",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vf-xSdkfWBuPu9fPTXUkUneOwkIem-OuXp9gEMaRK24/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Página1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vf-xSdkfWBuPu9fPTXUkUneOwkIem-OuXp9gEMaRK24/edit#gid=0"
+          },
+          "filtersUI": {
+            "values": [
+              {
+                "lookupColumn": "Chamou Clara",
+                "lookupValue": "1"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          -280,
+          -20
+        ],
+        "id": "a272d72c-ca90-4ca6-a851-55920cd4a850",
+        "name": "Google Sheets",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "0RLOIXG0sHPHB1xe",
+            "name": "IA - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "6912315e-a579-4a1c-a21e-3fd9ac3ca19b",
+                "name": "row_number",
+                "value": "={{ $json.row_number }}",
+                "type": "number"
+              },
+              {
+                "id": "d8d035f9-1d22-43cf-8a49-096de8e6910f",
+                "name": "Telefone",
+                "value": "={{ $json.Telefone }}",
+                "type": "string"
+              },
+              {
+                "id": "ce9f4426-9d3b-4a22-a9f8-0dd96a5e02c6",
+                "name": "Data Inicio",
+                "value": "={{ $json['Data Inicio'] }}",
+                "type": "string"
+              },
+              {
+                "id": "261d4d91-7958-4c79-8dbf-21f906941294",
+                "name": "Chamou Clara",
+                "value": "={{ $json['Chamou Clara'] }}",
+                "type": "number"
+              },
+              {
+                "id": "09a4e160-59e3-4b6e-8126-ad28121a6d0f",
+                "name": "Log Atendimento",
+                "value": "={{ $json['Log Atendimento'] }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -60,
+          -20
+        ],
+        "id": "5fa7c744-bbb1-44f1-a065-03d0133ed702",
+        "name": "Edit Fields"
+      }
+    ],
+    "connections": {
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "Google Sheets",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Sheets": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Edit Fields": [
+        {
+          "json": {
+            "row_number": 28886,
+            "Telefone": "62985949883",
+            "Data Inicio": "05/03/2025 14:49",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Ongoing"
+          }
+        },
+        {
+          "json": {
+            "row_number": 31980,
+            "Telefone": "91983336799",
+            "Data Inicio": "17/03/2025 11:50",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Ongoing,especialista"
+          }
+        },
+        {
+          "json": {
+            "row_number": 32997,
+            "Telefone": "75991158362",
+            "Data Inicio": "19/03/2025 18:32",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Chamou Clara"
+          }
+        },
+        {
+          "json": {
+            "row_number": 34700,
+            "Telefone": "81981627089",
+            "Data Inicio": "25/03/2025 13:49",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Chamou Juarez"
+          }
+        },
+        {
+          "json": {
+            "row_number": 34937,
+            "Telefone": "11917272324",
+            "Data Inicio": "26/03/2025 09:12",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding"
+          }
+        },
+        {
+          "json": {
+            "row_number": 35831,
+            "Telefone": "11913176165",
+            "Data Inicio": "28/03/2025 11:09",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding"
+          }
+        },
+        {
+          "json": {
+            "row_number": 36108,
+            "Telefone": "88981340161",
+            "Data Inicio": "29/03/2025 10:25",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding"
+          }
+        },
+        {
+          "json": {
+            "row_number": 36125,
+            "Telefone": "44984179220",
+            "Data Inicio": "29/03/2025 12:02",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Suporte"
+          }
+        },
+        {
+          "json": {
+            "row_number": 36455,
+            "Telefone": "11948759225",
+            "Data Inicio": "31/03/2025 13:30",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Financeiro"
+          }
+        },
+        {
+          "json": {
+            "row_number": 36705,
+            "Telefone": "13988625085",
+            "Data Inicio": "01/04/2025 09:28",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Ongoing"
+          }
+        },
+        {
+          "json": {
+            "row_number": 36724,
+            "Telefone": "61992381715",
+            "Data Inicio": "01/04/2025 10:03",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano - Erro "
+          }
+        },
+        {
+          "json": {
+            "row_number": 36729,
+            "Telefone": "31987433402",
+            "Data Inicio": "01/04/2025 10:07",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano - Erro "
+          }
+        },
+        {
+          "json": {
+            "row_number": 36744,
+            "Telefone": "27999642905",
+            "Data Inicio": "01/04/2025 10:37",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Chamou Clara"
+          }
+        },
+        {
+          "json": {
+            "row_number": 36750,
+            "Telefone": "34999657191",
+            "Data Inicio": "01/04/2025 10:40",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Instalação"
+          }
+        },
+        {
+          "json": {
+            "row_number": 36753,
+            "Telefone": "16993430097",
+            "Data Inicio": "01/04/2025 10:42",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Chamou Clara"
+          }
+        },
+        {
+          "json": {
+            "row_number": 36775,
+            "Telefone": "81991446585",
+            "Data Inicio": "01/04/2025 11:37",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding"
+          }
+        },
+        {
+          "json": {
+            "row_number": 36777,
+            "Telefone": "82993257791",
+            "Data Inicio": "01/04/2025 11:41",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding"
+          }
+        },
+        {
+          "json": {
+            "row_number": 36781,
+            "Telefone": "19994976882",
+            "Data Inicio": "01/04/2025 11:46",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Financeiro"
+          }
+        },
+        {
+          "json": {
+            "row_number": 36786,
+            "Telefone": "51992133523",
+            "Data Inicio": "01/04/2025 11:55",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Ongoing"
+          }
+        },
+        {
+          "json": {
+            "row_number": 36791,
+            "Telefone": "81999383870",
+            "Data Inicio": "01/04/2025 12:06",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Suporte"
+          }
+        },
+        {
+          "json": {
+            "row_number": 36804,
+            "Telefone": "69984835526",
+            "Data Inicio": "01/04/2025 12:43",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Ongoing"
+          }
+        },
+        {
+          "json": {
+            "row_number": 36811,
+            "Telefone": "31988405471",
+            "Data Inicio": "01/04/2025 13:01",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding"
+          }
+        },
+        {
+          "json": {
+            "row_number": 36875,
+            "Telefone": "92991031027",
+            "Data Inicio": "01/04/2025 15:26",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding"
+          }
+        },
+        {
+          "json": {
+            "row_number": 36885,
+            "Telefone": "62986346629",
+            "Data Inicio": "01/04/2025 15:36",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Ongoing"
+          }
+        },
+        {
+          "json": {
+            "row_number": 36888,
+            "Telefone": "35988372555",
+            "Data Inicio": "01/04/2025 15:38",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Ongoing"
+          }
+        },
+        {
+          "json": {
+            "row_number": 36900,
+            "Telefone": "92994755547",
+            "Data Inicio": "01/04/2025 15:54",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Ongoing"
+          }
+        },
+        {
+          "json": {
+            "row_number": 36915,
+            "Telefone": "84996103267",
+            "Data Inicio": "01/04/2025 16:17",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding"
+          }
+        },
+        {
+          "json": {
+            "row_number": 36925,
+            "Telefone": "17935000594",
+            "Data Inicio": "01/04/2025 16:39",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding"
+          }
+        },
+        {
+          "json": {
+            "row_number": 36927,
+            "Telefone": "88981975444",
+            "Data Inicio": "01/04/2025 16:50",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding"
+          }
+        },
+        {
+          "json": {
+            "row_number": 36936,
+            "Telefone": "83999453381",
+            "Data Inicio": "01/04/2025 17:03",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding"
+          }
+        },
+        {
+          "json": {
+            "row_number": 36941,
+            "Telefone": "64992193434",
+            "Data Inicio": "01/04/2025 17:08",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding"
+          }
+        },
+        {
+          "json": {
+            "row_number": 36948,
+            "Telefone": "61999831127",
+            "Data Inicio": "01/04/2025 17:40",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding,Antonio"
+          }
+        },
+        {
+          "json": {
+            "row_number": 36950,
+            "Telefone": "34999279911",
+            "Data Inicio": "01/04/2025 17:42",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Ongoing"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37008,
+            "Telefone": "11951561129",
+            "Data Inicio": "02/04/2025 07:00",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Instalação"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37010,
+            "Telefone": "86981429088",
+            "Data Inicio": "02/04/2025 07:15",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Chamou Clara"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37026,
+            "Telefone": "74988429005",
+            "Data Inicio": "02/04/2025 08:26",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Ongoing"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37035,
+            "Telefone": "41991590621",
+            "Data Inicio": "02/04/2025 08:35",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Instalação"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37037,
+            "Telefone": "61998750098",
+            "Data Inicio": "02/04/2025 08:42",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Documentação"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37042,
+            "Telefone": "63992625059",
+            "Data Inicio": "02/04/2025 08:49",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Chamou Clara"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37044,
+            "Telefone": "14981242723",
+            "Data Inicio": "02/04/2025 08:52",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Ongoing"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37064,
+            "Telefone": "31993966133",
+            "Data Inicio": "02/04/2025 09:28",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Instalação"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37074,
+            "Telefone": "91992955485",
+            "Data Inicio": "02/04/2025 09:42",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Instalação"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37096,
+            "Telefone": "31995122922",
+            "Data Inicio": "02/04/2025 10:05",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Ongoing"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37102,
+            "Telefone": "85986709714",
+            "Data Inicio": "02/04/2025 10:12",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Chamou Clara"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37114,
+            "Telefone": "61991061293",
+            "Data Inicio": "02/04/2025 10:21",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37125,
+            "Telefone": "85988430592",
+            "Data Inicio": "02/04/2025 10:36",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Ongoing"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37130,
+            "Telefone": "31972258886",
+            "Data Inicio": "02/04/2025 10:43",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37153,
+            "Telefone": "31995122922",
+            "Data Inicio": "02/04/2025 11:11",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Ongoing"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37166,
+            "Telefone": "61999732123",
+            "Data Inicio": "02/04/2025 11:36",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Instalação"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37177,
+            "Telefone": "92991123947",
+            "Data Inicio": "02/04/2025 11:48",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Chamou Clara"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37183,
+            "Telefone": "22999738813",
+            "Data Inicio": "02/04/2025 11:58",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Chamou Clara"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37212,
+            "Telefone": "95981170679",
+            "Data Inicio": "02/04/2025 13:06",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Chamou Juarez"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37223,
+            "Telefone": "84974002276",
+            "Data Inicio": "02/04/2025 13:30",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding,Especialista"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37235,
+            "Telefone": "68992350110",
+            "Data Inicio": "02/04/2025 13:46",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Chamou Clara"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37239,
+            "Telefone": "92991031027",
+            "Data Inicio": "02/04/2025 14:00",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Instalação,Linaldo"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37244,
+            "Telefone": "41999673517",
+            "Data Inicio": "02/04/2025 14:04",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Ongoing"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37245,
+            "Telefone": "92993280360",
+            "Data Inicio": "02/04/2025 14:05",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37272,
+            "Telefone": "92994755547",
+            "Data Inicio": "02/04/2025 15:04",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano - Erro "
+          }
+        },
+        {
+          "json": {
+            "row_number": 37279,
+            "Telefone": "89999410620",
+            "Data Inicio": "02/04/2025 15:18",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Instalação"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37299,
+            "Telefone": "61982262760",
+            "Data Inicio": "02/04/2025 15:42",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Chamou Clara"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37314,
+            "Telefone": "92981769664",
+            "Data Inicio": "02/04/2025 16:11",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Chamou Clara"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37316,
+            "Telefone": "92991031027",
+            "Data Inicio": "02/04/2025 16:18",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37329,
+            "Telefone": "16992337058",
+            "Data Inicio": "02/04/2025 16:31",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Instalação"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37366,
+            "Telefone": "77991101012",
+            "Data Inicio": "02/04/2025 17:57",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  DTF"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37425,
+            "Telefone": "21971772849",
+            "Data Inicio": "03/04/2025 07:40",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Chamou Clara"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37432,
+            "Telefone": "88998108744",
+            "Data Inicio": "03/04/2025 07:57",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37462,
+            "Telefone": "84974002276",
+            "Data Inicio": "03/04/2025 08:52",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37463,
+            "Telefone": "19992578147",
+            "Data Inicio": "03/04/2025 08:53",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Instalação"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37469,
+            "Telefone": "73988117229",
+            "Data Inicio": "03/04/2025 09:02",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Chamou Clara"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37471,
+            "Telefone": "17991326751",
+            "Data Inicio": "03/04/2025 09:03",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Financeiro"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37474,
+            "Telefone": "28999050348",
+            "Data Inicio": "03/04/2025 09:08",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Ongoing"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37484,
+            "Telefone": "62984026768",
+            "Data Inicio": "03/04/2025 09:28",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37488,
+            "Telefone": "41999673517",
+            "Data Inicio": "03/04/2025 09:34",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Ongoing"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37500,
+            "Telefone": "27996887575",
+            "Data Inicio": "03/04/2025 09:47",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Chamou Clara"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37514,
+            "Telefone": "55997265425",
+            "Data Inicio": "03/04/2025 10:01",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Documentação"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37533,
+            "Telefone": "61999732123",
+            "Data Inicio": "03/04/2025 10:35",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37535,
+            "Telefone": "18991659988",
+            "Data Inicio": "03/04/2025 10:36",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37546,
+            "Telefone": "21982417467",
+            "Data Inicio": "03/04/2025 10:55",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Ongoing"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37576,
+            "Telefone": "11961628068",
+            "Data Inicio": "03/04/2025 11:31",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Recorte,Suporte"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37586,
+            "Telefone": "92991548305",
+            "Data Inicio": "03/04/2025 11:55",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Ongoing"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37593,
+            "Telefone": "88997139859",
+            "Data Inicio": "03/04/2025 12:10",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Ongoing"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37594,
+            "Telefone": "17996084665",
+            "Data Inicio": "03/04/2025 12:10",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Sorvete"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37598,
+            "Telefone": "11932057253",
+            "Data Inicio": "03/04/2025 12:19",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37607,
+            "Telefone": "91991245386",
+            "Data Inicio": "03/04/2025 12:34",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Suporte"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37608,
+            "Telefone": "15981263017",
+            "Data Inicio": "03/04/2025 12:34",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37611,
+            "Telefone": "88992123078",
+            "Data Inicio": "03/04/2025 12:45",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Financeiro"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37612,
+            "Telefone": "11999151867",
+            "Data Inicio": "03/04/2025 12:46",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Ongoing"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37614,
+            "Telefone": "84988711694",
+            "Data Inicio": "03/04/2025 12:47",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Chamou Clara"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37616,
+            "Telefone": "35988372555",
+            "Data Inicio": "03/04/2025 12:54",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding,Suzana Castro"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37643,
+            "Telefone": "92984847905",
+            "Data Inicio": "03/04/2025 13:59",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano - Erro Socorro Erro Run Status"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37645,
+            "Telefone": "65992495909",
+            "Data Inicio": "03/04/2025 14:02",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Instalação"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37651,
+            "Telefone": "99984247248",
+            "Data Inicio": "03/04/2025 14:12",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Ongoing"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37658,
+            "Telefone": "6232827847",
+            "Data Inicio": "03/04/2025 14:23",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Instalação"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37662,
+            "Telefone": "94992558989",
+            "Data Inicio": "03/04/2025 14:29",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  SAC"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37702,
+            "Telefone": "85991351051",
+            "Data Inicio": "03/04/2025 15:30",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Instalação,River"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37751,
+            "Telefone": "92991031027",
+            "Data Inicio": "03/04/2025 17:06",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Ongoing"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37776,
+            "Telefone": "86998461350",
+            "Data Inicio": "03/04/2025 18:03",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37842,
+            "Telefone": "51981847634",
+            "Data Inicio": "04/04/2025 08:44",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Ongoing"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37879,
+            "Telefone": "11991087375",
+            "Data Inicio": "04/04/2025 09:46",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Instalação,Marília"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37887,
+            "Telefone": "67992050750",
+            "Data Inicio": "04/04/2025 09:55",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Ongoing"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37890,
+            "Telefone": "86981429088",
+            "Data Inicio": "04/04/2025 09:57",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37895,
+            "Telefone": "74991364738",
+            "Data Inicio": "04/04/2025 10:01",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Instalação,Silvio"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37915,
+            "Telefone": "66992567181",
+            "Data Inicio": "04/04/2025 10:51",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Instalação"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37932,
+            "Telefone": "93991245075",
+            "Data Inicio": "04/04/2025 11:09",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Ongoing"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37934,
+            "Telefone": "91991245386",
+            "Data Inicio": "04/04/2025 11:09",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Chamou Clara"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37935,
+            "Telefone": "66997176916",
+            "Data Inicio": "04/04/2025 11:09",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Onboarding,Abraão"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37947,
+            "Telefone": "62986322089",
+            "Data Inicio": "04/04/2025 11:34",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Chamou Clara"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37948,
+            "Telefone": "41999256442",
+            "Data Inicio": "04/04/2025 11:34",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Chamou Clara"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37980,
+            "Telefone": "11982247708",
+            "Data Inicio": "04/04/2025 12:42",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Ongoing"
+          }
+        },
+        {
+          "json": {
+            "row_number": 37993,
+            "Telefone": "81979003286",
+            "Data Inicio": "04/04/2025 13:08",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Transferiu humano  Suporte"
+          }
+        },
+        {
+          "json": {
+            "row_number": 38000,
+            "Telefone": "21964390896",
+            "Data Inicio": "04/04/2025 13:21",
+            "Chamou Clara": 1,
+            "Log Atendimento": "Chamou Clara"
+          }
+        }
+      ]
+    },
+    "versionId": "8b623cfe-ccfe-4ad7-817f-9828a7ceb2cc",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
