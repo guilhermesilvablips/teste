@@ -1,0 +1,125 @@
+{
+  "data": {
+    "createdAt": "2024-05-16T08:46:28.377Z",
+    "updatedAt": "2025-05-08T11:43:16.126Z",
+    "id": "Ec5vAJh1q66aJryo",
+    "name": "Suporte Neurônio - func - buscar_desbloqueio",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "id"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -80,
+          0
+        ],
+        "id": "8ece5857-3f87-4081-9d6d-eb7e5e07be59",
+        "name": "Execute"
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "response",
+          "options": {}
+        },
+        "id": "9679006b-dfb6-433e-a31a-36ab4546070a",
+        "name": "Aggregate",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          440,
+          0
+        ],
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "select eb.cnpj, eb.numero_serie, eb.data_hora as ultima_conxeao\nfrom `IOT.EquipamentosParaDesbloquear` eb\nwhere 1 = 1\nand eb.numero_serie = '{{ $json.id }}'\nor eb.numero_serie = 'blips_{{ $json.id }}'",
+          "options": {}
+        },
+        "id": "41ccf3c0-72ac-45e3-8e1a-d2d0b0250882",
+        "name": "Google BigQuery1",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2,
+        "position": [
+          180,
+          0
+        ],
+        "notesInFlow": false,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Google BigQuery1": {
+        "main": [
+          [
+            {
+              "node": "Aggregate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute": {
+        "main": [
+          [
+            {
+              "node": "Google BigQuery1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Execute": [
+        {
+          "json": {
+            "id": "blips_AA34D1"
+          }
+        }
+      ]
+    },
+    "versionId": "852308da-90af-4430-873a-302a97502f6a",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-05-08T01:53:37.021Z",
+        "updatedAt": "2024-05-08T01:53:37.021Z",
+        "id": "HJrJfNUAaBoLOV2q",
+        "name": "Suporte Neuronio"
+      }
+    ]
+  }
+}
