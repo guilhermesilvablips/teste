@@ -1,0 +1,654 @@
+{
+  "data": {
+    "createdAt": "2024-12-11T18:40:03.340Z",
+    "updatedAt": "2025-01-14T11:33:52.445Z",
+    "id": "3xmF6UV839aRoP4w",
+    "name": "Analise de Documentos - Face Match",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://app.bigdatacorp.com.br/bigid/biometrias/facematch",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "accept",
+                "value": "application/json"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1bmlxdWVfbmFtZSI6ImluZnJhZXN0cnV0dXJhQGJsaXBzLmNvbS5iciIsIm5iZiI6MTY3MzU0NTc2NSwiZXhwIjoxOTg4NTQ1NzY1LCJpYXQiOjE2NzM1NDU3NjUsImlzcyI6IkJpZyBEYXRhIENvcnAuIiwicHJvZHVjdHMiOlsiQklHQk9PU1QiXSwiZG9tYWluIjoiQkxJUFMifQ.Ep_mYbFOiyLl7EMJ-jmFgEoOPO8_VuO3JZelc_GZGh0"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"Parameters\": [\n    \"BASE_FACE_IMG_URL={{ $('Execute').first().json.Selfie.url }}\", \n    \"MATCH_IMG_URL={{ $json.documento }}\"\n  ]\n}",
+          "options": {}
+        },
+        "id": "7b9b01f5-57ff-4928-b451-78ef63249f3f",
+        "name": "Api Face Match",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          200,
+          260
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d91d4982-113b-4900-9867-7a4de57b6615",
+                "name": "output.resultado",
+                "value": "={{ $json.ResultCode === 80}}",
+                "type": "boolean"
+              },
+              {
+                "id": "16656b46-35ca-4c77-8add-d69e7e680e72",
+                "name": "output.justificativa",
+                "value": "={{ $json.ResultMessage }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "ff000867-5798-45b5-805b-bc768724687d",
+        "name": "Resultado",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          680,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "0af398de-0321-48b1-be53-1fd3bc9ff9ad",
+                "leftValue": "={{ !!($json.Selfie && $json.Frente && $json.Verso) }}",
+                "rightValue": "=",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "f7323f0e-64da-4715-a3fb-2eff9d86021f",
+        "name": "Tem dados?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          -900,
+          540
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "3cbf42fa-6d21-4a0a-8492-8382808b5038",
+                "name": "output.resultado",
+                "value": false,
+                "type": "boolean"
+              },
+              {
+                "id": "4200157d-b070-4e94-9005-6790b4e5c0cc",
+                "name": "output.justificativa",
+                "value": "Não veio nenhum documento",
+                "type": "string"
+              },
+              {
+                "id": "dc990b39-b3df-4d20-8ac4-5983495376bc",
+                "name": "output.vazio",
+                "value": true,
+                "type": "boolean"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "57e4cc5b-fd3d-45ab-9300-4476f897df72",
+        "name": "Return vazio",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -660,
+          640
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "29e6c0e9-6716-46a0-a353-515101a4f66c",
+                "name": "documento",
+                "value": "={{ $json.foto }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -440,
+          260
+        ],
+        "id": "6d186752-cb60-4be0-8200-779abbc6daba",
+        "name": "Documento certo"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "99f3f43c-7caf-444b-979c-5e5e18efcdd6",
+                "leftValue": "={{ !!$json.foto }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -660,
+          400
+        ],
+        "id": "8edc2360-57a2-40bb-82d6-20e30952eb46",
+        "name": "Veio campo foto?"
+      },
+      {
+        "parameters": {
+          "resource": "image",
+          "operation": "analyze",
+          "modelId": {
+            "__rl": true,
+            "value": "gpt-4o",
+            "mode": "list",
+            "cachedResultName": "GPT-4O"
+          },
+          "text": "=# Entrada: Você irá receber duas fotos, não tem problema se elas forem idênticas.\n\n# Tarefa: Você tem duas tarefas.\n  - A primeira é identificar qual das duas tem as informações de data de nascimento, cpf, data de emissão e etc do documento, a primeira ou a segunda.\n  - A segunda é identificar qual das duas tem a foto da pessoa, a primeira ou a segunda.\n\n*Importante*: Se as imagens forem idênticas, escolha a primeira sempre.\n\n# Saída esperada: String do objeto json completo e json válido com os seguintes campos: 'dados', 'campos' e 'foto'. \n\n#Exemplo de Saída:\n{\n  \"dados\": \"primeira\",\n  \"foto\": \"segunda\"\n}\n\n*Importante*: Não use ```json. Deixe como se fosse uma string normal que represente um json.\n\n*Improtante*: Se não for um documento ou não conseguir extratir as informações, retorne exatamente e especifcamente: '#ERRO#' juntamente com o motivo do erro.",
+          "imageUrls": "={{ $json.Frente.url1 }},{{ $json.Verso.url }}",
+          "options": {}
+        },
+        "id": "4bb26115-39f8-4d5f-b8f7-768088d72e59",
+        "name": "Dados Imagens",
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.4,
+        "position": [
+          -440,
+          540
+        ],
+        "alwaysOutputData": false,
+        "credentials": {
+          "openAiApi": {
+            "id": "utH6piS62wyaw3eE",
+            "name": "1Clara - DEV"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "c0c11087-494b-4180-87b5-cc178f5c19d0",
+                "leftValue": "={{ $json.content.replaceAll(\"```json\", \"\").replaceAll(\"```\", \"\").toUpperCase() }}",
+                "rightValue": "#ERRO#",
+                "operator": {
+                  "type": "string",
+                  "operation": "notContains"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -180,
+          520
+        ],
+        "id": "75198cef-2316-49df-a681-7a2cec4d2b1f",
+        "name": "Sucesso?"
+      },
+      {
+        "parameters": {},
+        "id": "085e2104-5cfb-4bb0-929d-5a0b3401249d",
+        "name": "Execute",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          -1100,
+          540
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f7a51989-6d42-484b-b7f6-ab87d7562a5b",
+                "name": "documento",
+                "value": "={{ \n$json.content.replaceAll(\"```json\", \"\").replaceAll(\"```\", \"\").parseJson().foto === 'primeira' \n? $('Execute').first().json.Frente.url\n: $('Execute').first().json.Verso.url\n}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          0,
+          400
+        ],
+        "id": "e0fca764-3062-4696-afef-ce1ec2184c07",
+        "name": "Documento escolhido"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d9e789fe-7ffe-40d8-a65c-f69d14f60cd9",
+                "name": "output.resultado",
+                "value": false,
+                "type": "boolean"
+              },
+              {
+                "id": "d065c9b6-d739-4e83-b0d7-f3c1965c634f",
+                "name": "output.justificativa",
+                "value": "Não foi possível ler a imagem",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "26821f2b-c592-4f6a-aa38-06f122b5e257",
+        "name": "Erro",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          680,
+          740
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://app.bigdatacorp.com.br/bigid/biometrias/facematch",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "accept",
+                "value": "application/json"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1bmlxdWVfbmFtZSI6ImluZnJhZXN0cnV0dXJhQGJsaXBzLmNvbS5iciIsIm5iZiI6MTY3MzU0NTc2NSwiZXhwIjoxOTg4NTQ1NzY1LCJpYXQiOjE2NzM1NDU3NjUsImlzcyI6IkJpZyBEYXRhIENvcnAuIiwicHJvZHVjdHMiOlsiQklHQk9PU1QiXSwiZG9tYWluIjoiQkxJUFMifQ.Ep_mYbFOiyLl7EMJ-jmFgEoOPO8_VuO3JZelc_GZGh0"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"Parameters\": [\n    \"BASE_FACE_IMG_URL={{ $('Execute').first().json.Selfie.url }}\", \n    \"MATCH_IMG_URL={{ $('Execute').first().json.Frente.url }}\"\n  ]\n}",
+          "options": {}
+        },
+        "id": "f70bf76e-487b-4ccb-91e2-7f4c4922ee79",
+        "name": "Face Match Frente",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          0,
+          700
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://app.bigdatacorp.com.br/bigid/biometrias/facematch",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "accept",
+                "value": "application/json"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1bmlxdWVfbmFtZSI6ImluZnJhZXN0cnV0dXJhQGJsaXBzLmNvbS5iciIsIm5iZiI6MTY3MzU0NTc2NSwiZXhwIjoxOTg4NTQ1NzY1LCJpYXQiOjE2NzM1NDU3NjUsImlzcyI6IkJpZyBEYXRhIENvcnAuIiwicHJvZHVjdHMiOlsiQklHQk9PU1QiXSwiZG9tYWluIjoiQkxJUFMifQ.Ep_mYbFOiyLl7EMJ-jmFgEoOPO8_VuO3JZelc_GZGh0"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"Parameters\": [\n    \"BASE_FACE_IMG_URL={{ $('Execute').first().json.Selfie.url }}\", \n    \"MATCH_IMG_URL={{ $('Execute').first().json.Verso.url }}\"\n  ]\n}",
+          "options": {}
+        },
+        "id": "af474bff-b407-4224-b934-cb8e21968fad",
+        "name": "Face Match Verso",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          400,
+          720
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "8c34b0d8-909d-4b7a-aebc-5736a33fe3bd",
+                "leftValue": "={{ $json.ResultCode }}",
+                "rightValue": 80,
+                "operator": {
+                  "type": "number",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          200,
+          540
+        ],
+        "id": "869b9d23-9d2c-4349-b9f3-5c5dde61816e",
+        "name": "Deu match?"
+      }
+    ],
+    "connections": {
+      "Api Face Match": {
+        "main": [
+          [
+            {
+              "node": "Resultado",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tem dados?": {
+        "main": [
+          [
+            {
+              "node": "Veio campo foto?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Return vazio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Veio campo foto?": {
+        "main": [
+          [
+            {
+              "node": "Documento certo",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Dados Imagens",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados Imagens": {
+        "main": [
+          [
+            {
+              "node": "Sucesso?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Face Match Frente",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Documento certo": {
+        "main": [
+          [
+            {
+              "node": "Api Face Match",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sucesso?": {
+        "main": [
+          [
+            {
+              "node": "Documento escolhido",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Face Match Frente",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute": {
+        "main": [
+          [
+            {
+              "node": "Tem dados?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Documento escolhido": {
+        "main": [
+          [
+            {
+              "node": "Api Face Match",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Face Match Frente": {
+        "main": [
+          [
+            {
+              "node": "Deu match?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Face Match Verso",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Face Match Verso": {
+        "main": [
+          [
+            {
+              "node": "Resultado",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Deu match?": {
+        "main": [
+          [
+            {
+              "node": "Resultado",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Face Match Verso",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Execute": [
+        {
+          "json": {
+            "Selfie": {
+              "id": 523224534069547,
+              "mime_type": "image/jpeg",
+              "sha256": "Tb16puu2G4Xw7VFRR5ODbHBAMDmxa+tsOD5S4QIveB4=",
+              "file_name": "54325A60-A3D9-4175-808D-DD85C169FA01.jpg",
+              "url": "https://storage.hyperflow.global/whatsapp/523224534069547"
+            },
+            "Frente": {
+              "id": 951044516527995,
+              "mime_type": "image/jpeg",
+              "sha256": "EiukY6VeW9s2rmMF1TqFAslHjYqQpwsYWpwPuwQg+88=",
+              "file_name": "c39f3e88-62bc-4d5d-a9dd-455c2654a88d.jpg",
+              "url": "https://storage.hyperflow.global/whatsapp/581699694570360"
+            },
+            "Verso": {
+              "id": 951044516527995,
+              "mime_type": "image/jpeg",
+              "sha256": "EiukY6VeW9s2rmMF1TqFAslHjYqQpwsYWpwPuwQg+88=",
+              "file_name": "c39f3e88-62bc-4d5d-a9dd-455c2654a88d.jpg",
+              "url": "https://storage.hyperflow.global/whatsapp/621711100419853"
+            },
+            "foto": "https://storage.hyperflow.global/whatsapp/581699694570360"
+          }
+        }
+      ]
+    },
+    "versionId": "b05cc2ee-d253-42f1-a383-39dee96ba1f2",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-11-22T13:13:26.514Z",
+        "updatedAt": "2024-11-22T13:13:26.514Z",
+        "id": "owb3cfmzFRbqjP06",
+        "name": "Clara"
+      }
+    ]
+  }
+}
