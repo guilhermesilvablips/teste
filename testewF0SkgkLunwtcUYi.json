@@ -1,0 +1,487 @@
+{
+  "data": {
+    "createdAt": "2025-01-20T23:41:57.923Z",
+    "updatedAt": "2025-05-19T16:57:56.091Z",
+    "id": "wF0SkgkLunwtcUYi",
+    "name": "Score Blips API",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "operation": "insert",
+          "projectId": {
+            "__rl": true,
+            "value": "blips-prod-v2",
+            "mode": "list",
+            "cachedResultName": "blips-prod-v2",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-prod-v2"
+          },
+          "datasetId": {
+            "__rl": true,
+            "value": "analise_de_credito",
+            "mode": "list",
+            "cachedResultName": "analise_de_credito"
+          },
+          "tableId": {
+            "__rl": true,
+            "value": "catalogo_variaveis",
+            "mode": "list",
+            "cachedResultName": "catalogo_variaveis"
+          },
+          "options": {}
+        },
+        "id": "0f81ea9b-d658-457c-9e1d-f285c6fddf33",
+        "name": "Save CV Blips Score",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          760,
+          240
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "ccc38aa1-1c39-4b6a-8c02-2ca271a2c2d5",
+                "leftValue": "={{ $('lead').first().json.cnae_fiscal_principal }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notExists",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "c31dd6d9-cae4-43f3-aefe-3ac727a3ddaf",
+                "leftValue": "={{ $('lead').first().json.porte_empresa }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "number",
+                  "operation": "notExists",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "ca692659-8915-4e0d-9ab9-8dd00f23d763",
+                "leftValue": "={{ $('lead').first().json.qualificacao_responsavel }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "number",
+                  "operation": "notExists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "id": "574b07ea-57e8-4266-8177-c39f864ba03a",
+        "name": "Faltando Dados ?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          0,
+          100
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "c4ec12d4-58df-4dd8-a0cb-e47deeca07c3",
+                "name": "score",
+                "value": "Não Classificado",
+                "type": "string"
+              },
+              {
+                "id": "67b72f22-1191-485f-a128-37dc19b3b6d2",
+                "name": "rating",
+                "value": "N/A",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "56ff1b49-26b9-406f-9863-5e1294556d06",
+        "name": "Score Não Classificado",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          260,
+          -20
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "c0f6d3e7-eb3c-4540-aaa8-7be94a63fa77",
+        "name": "lead",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          -680,
+          100
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips-credit-backend-prod-685867804490.us-central1.run.app/api/v1/score/",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "={{ \"Bearer \" + $json.access_token}}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n \"vlr_original_total\": {{ $('lead').first().json.vlr_original_total }}, \n \"SEGMENTO\": \"{{ $('lead').first().json.SEGMENTO }}\", \n \"grupo_maquina\": \"{{ $('lead').first().json.grupo_maquina }}\", \n \"MODALIDADE\": \"{{ $('lead').first().json.MODALIDADE }}\", \n \"UF\": \"{{ $('lead').first().json.UF }}\", \n \"protestovalorcnpj\": {{ $('lead').first().json.protestovalorcnpj }}, \n \"bacenlimitecnpj\": {{ $('lead').first().json.bacenlimitecnpj == 0 ? 1 : $('lead').first().json.bacenlimitecnpj }}, \n \"bacenprejcnpj\": {{ $('lead').first().json.bacenprejcnpj }}, \n \"bacenvencidocnpj\": {{ $('lead').first().json.bacenvencidocnpj }}, \n \"bacenutlcnpj\": {{ $('lead').first().json.bacenutlcnpj }},\n \"chqqtdcnpj\": {{ $('lead').first().json.chqqtdcnpj }}, \n \"refinValorCnpj\": {{ $('lead').first().json.refinValorCnpj }}, \n \"protestovalorcpf\": {{ 0 }}, \n \"bacenlimitecpf\": {{ 0 }}, \n \"bacenvencidocpf\": {{ 0 }}, \n \"bacenprejcpf\": {{ 0 }},\n \"bacenutlcpf\": {{ 0 }},\n \"Relevancia_Carteira_Ativa\": {{ 0 }},\n \"cnae_fiscal_principal\": \"{{ $('lead').first().json.cnae_fiscal_principal }}\", \n \"Idade_Empresa\": {{ $('lead').first().json.Idade_Empresa }}, \n \"porte_empresa\": {{ $('lead').first().json.porte_empresa }}, \n \"qualificacao_responsavel\": {{ $('lead').first().json.qualificacao_responsavel }}\n}",
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "ab3e8f5b-a915-4edb-8517-23663baae752",
+        "name": "Score Blips",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          260,
+          240
+        ],
+        "retryOnFail": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "useJson": true,
+          "claimsJson": "={\n  \"iss\": \"blips-bigdata@appspot.gserviceaccount.com\",\n  \"scope\": \"https://www.googleapis.com/auth/cloud-platform\",\n  \"aud\": \"https://oauth2.googleapis.com/token\",\n  \"iat\": {{Math.floor(new Date().getTime() / 1000)}},\n  \"exp\": {{Math.floor(new Date().getTime() / 1000) + 3600}} \n}",
+          "options": {}
+        },
+        "id": "c14b83b1-a31d-4eff-ab1f-7a164c77f85a",
+        "name": "JWT GOOGLE",
+        "type": "n8n-nodes-base.jwt",
+        "typeVersion": 1,
+        "position": [
+          -460,
+          100
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "jwtAuth": {
+            "id": "qucHFpcTrmVLRJYC",
+            "name": "JWT Auth GOOGLE"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://oauth2.googleapis.com/token",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "googleOAuth2Api",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "grant_type",
+                "value": "urn:ietf:params:oauth:grant-type:jwt-bearer"
+              },
+              {
+                "name": "assertion",
+                "value": "={{ $json.token }}"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "a7fa235b-bd7d-49b9-885f-8dd017d9e334",
+        "name": "HTTP Request",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -220,
+          100
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "googleOAuth2Api": {
+            "id": "AUpV7k8Hj4mJXlUi",
+            "name": "Google account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "322e58fb-8448-4bd7-8638-1d456bf138b8",
+                "name": "date",
+                "value": "={{ $now.toFormat(\"yyyy-MM-dd HH:mm:ss\") }}",
+                "type": "string"
+              },
+              {
+                "id": "c8fd2836-5505-49be-a343-1f0ea277be2b",
+                "name": "cpf_cnpj",
+                "value": "={{ $('lead').first().json.doc }}",
+                "type": "string"
+              },
+              {
+                "id": "bf8a4ab5-6259-4238-ad7f-08c6d99d2b7f",
+                "name": "bureau",
+                "value": "QueryBlips",
+                "type": "string"
+              },
+              {
+                "id": "31b5beba-a4cf-41d8-9789-448075e5b3bb",
+                "name": "query",
+                "value": "={{ $('lead').first().json.dataset }}",
+                "type": "string"
+              },
+              {
+                "id": "b9dd4408-55db-41c7-a938-6f51526e1972",
+                "name": "output_payload",
+                "value": "={{ $json }}",
+                "type": "object"
+              },
+              {
+                "id": "1cfb393a-ca38-4b04-9a2e-f0c30b81e033",
+                "name": "input_payload",
+                "value": "={{ {} }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "0cb9eb5a-9799-44d7-8bfa-a5455212f6d7",
+        "name": "save_cv_BlipsScore_type",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          520,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "78403caf-d089-48ef-bdc3-f371f9205d73",
+                "name": "api",
+                "value": "Blips",
+                "type": "string"
+              },
+              {
+                "id": "7ac37d72-6cd0-4dde-b380-900648d0b54c",
+                "name": "func",
+                "value": "=format_blips_score",
+                "type": "string"
+              },
+              {
+                "id": "b194be5c-c81e-4da4-ba04-d7c8482516e9",
+                "name": "={{ $('save_cv_BlipsScore_type').first().json.bureau + \"_\" + $('save_cv_BlipsScore_type').first().json.query}}",
+                "value": "={{ $('save_cv_BlipsScore_type').first().json.output_payload }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "90424584-3518-4f70-acfd-d4134dcc4651",
+        "name": "set_blips_score",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          980,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "IpUkbgfrYtfnK0as",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "id": "a5df5dae-74b8-440d-9d0c-9a371a1f7842",
+        "name": "Utils Blips Score",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          1200,
+          240
+        ]
+      }
+    ],
+    "connections": {
+      "Save CV Blips Score": {
+        "main": [
+          [
+            {
+              "node": "set_blips_score",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Faltando Dados ?": {
+        "main": [
+          [
+            {
+              "node": "Score Não Classificado",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Score Blips",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "lead": {
+        "main": [
+          [
+            {
+              "node": "JWT GOOGLE",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Score Blips": {
+        "main": [
+          [
+            {
+              "node": "save_cv_BlipsScore_type",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "JWT GOOGLE": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request": {
+        "main": [
+          [
+            {
+              "node": "Faltando Dados ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "save_cv_BlipsScore_type": {
+        "main": [
+          [
+            {
+              "node": "Save CV Blips Score",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_blips_score": {
+        "main": [
+          [
+            {
+              "node": "Utils Blips Score",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {
+      "lead": [
+        {
+          "json": {
+            "vlr_original_total": 53666,
+            "SEGMENTO": "Comunicação visual",
+            "grupo_maquina": "DTF A3 UV 2 CABEÇAS-Pronta Entrega",
+            "MODALIDADE": "VENDA",
+            "UF": "AM",
+            "protestovalorcnpj": 1110.78,
+            "bacenlimitecnpj": 0,
+            "bacenprejcnpj": 0,
+            "bacenvencidocnpj": 0,
+            "bacenutlcnpj": 0,
+            "chqqtdcnpj": 0,
+            "refinValorCnpj": 0,
+            "cnae_fiscal_principal": "4781400",
+            "Idade_Empresa": 6,
+            "porte_empresa": 1,
+            "qualificacao_responsavel": 49,
+            "type": "CNPJ",
+            "dataset": "score",
+            "doc": "33049675000184"
+          }
+        }
+      ]
+    },
+    "versionId": "d64b4f68-e34f-48f3-918f-67b3af290e99",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-31T16:22:41.803Z",
+        "updatedAt": "2024-07-31T16:22:41.803Z",
+        "id": "mmaXbyiWhptUXaTd",
+        "name": "New Motor"
+      }
+    ]
+  }
+}
