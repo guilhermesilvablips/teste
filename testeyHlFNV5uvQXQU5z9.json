@@ -1,0 +1,251 @@
+{
+  "data": {
+    "createdAt": "2025-05-26T16:03:47.938Z",
+    "updatedAt": "2025-05-27T12:46:52.620Z",
+    "id": "yHlFNV5uvQXQU5z9",
+    "name": "fluxo backup github-g",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "daysInterval": 5
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          20,
+          -40
+        ],
+        "id": "e7eaff95-d317-44b4-9238-3ab1d5c3e7a1",
+        "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "get",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('Edit Fields').item.json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('Edit Fields').item.json.repository }}",
+            "mode": "url"
+          },
+          "filePath": "=teste{{ $json.id }}.json",
+          "additionalParameters": {}
+        },
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1.1,
+        "position": [
+          620,
+          -220
+        ],
+        "id": "631b2705-49e3-4e78-a796-89ffac9a078c",
+        "name": "GitHub",
+        "webhookId": "ec9f3f67-926a-4a71-8c32-c4e218c60b2b",
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "LOWsolM2hZ755W3z",
+            "name": "GitHub account 4"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "filters": {},
+          "requestOptions": {}
+        },
+        "type": "n8n-nodes-base.n8n",
+        "typeVersion": 1,
+        "position": [
+          400,
+          -40
+        ],
+        "id": "fe629734-4737-47d0-9296-111463907bfd",
+        "name": "n8n",
+        "credentials": {
+          "n8nApi": {
+            "id": "HThv0Vk9rlZJdGdV",
+            "name": "n8n account 2"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "a7a14d05-7736-4671-8ead-af811ddb1355",
+                "name": "owner",
+                "value": "guilhermesilvablips",
+                "type": "string"
+              },
+              {
+                "id": "a6e28835-2a1f-4277-8433-2b06ee7e5162",
+                "name": "repository",
+                "value": "teste",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          240,
+          -40
+        ],
+        "id": "fff2ba74-4ff3-43e7-a6a8-c5acbbfa647b",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "04665264-c2af-4ded-b657-11c472fea1a7",
+                "name": "data",
+                "value": "={{ $json }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          600,
+          160
+        ],
+        "id": "0bc2cb8f-7a6c-4782-a3ee-14d7ee5b7839",
+        "name": "workdata"
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('Edit Fields').item.json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('Edit Fields').item.json.repository }}",
+            "mode": "name"
+          },
+          "filePath": "=teste{{ $json.data.id }}.json",
+          "fileContent": "={{ JSON.stringify($json.data) }}",
+          "commitMessage": "={{ $json.data.name }}"
+        },
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1.1,
+        "position": [
+          1000,
+          20
+        ],
+        "id": "7619b510-0043-4079-b75e-0f1bcf41eb34",
+        "name": "GitHub1",
+        "webhookId": "273b4ad6-9db5-49ef-8687-ab6f48cea03a",
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "LOWsolM2hZ755W3z",
+            "name": "GitHub account 4"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "toJson",
+          "mode": "each",
+          "options": {
+            "format": true,
+            "encoding": "utf8",
+            "fileName": "={{ $json.data.id }}.json"
+          }
+        },
+        "type": "n8n-nodes-base.convertToFile",
+        "typeVersion": 1.1,
+        "position": [
+          820,
+          180
+        ],
+        "id": "ef19f624-02c0-4a53-a91f-35489b878ab2",
+        "name": "Convert to File"
+      }
+    ],
+    "connections": {
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "n8n": {
+        "main": [
+          [
+            {
+              "node": "GitHub",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "workdata",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "n8n",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "workdata": {
+        "main": [
+          [
+            {
+              "node": "Convert to File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "a4ac58aa-1b74-4a47-b3aa-b1c6655fb8f6",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
