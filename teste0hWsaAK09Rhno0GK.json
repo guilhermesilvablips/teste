@@ -1,0 +1,394 @@
+{
+  "data": {
+    "createdAt": "2025-02-25T17:27:11.635Z",
+    "updatedAt": "2025-04-01T14:34:50.554Z",
+    "id": "0hWsaAK09Rhno0GK",
+    "name": "Querie Agent",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $('Webhook').item.json.body.question }}",
+          "hasOutputParser": true,
+          "messages": {
+            "messageValues": [
+              {
+                "message": "=Você é um especialista em SQL focado em gerar consultas para o Google BigQuery. Seu objetivo é criar queries eficientes e precisas com base na pergunta do usuário e no esquema das tabelas fornecidas.\n\nAtenção Importante:\n\nAs tabelas NÃO são relacionáveis, o que significa que JOIN ou UNION entre elas não são permitidos. Cada consulta deve ser feita apenas dentro de uma única tabela por vez.\nRegras de SLA\nAqui estão as regras de SLA para cada fase e status do contrato:\n{{ $json.data.toJsonString() }}\n\n**Atenção leve em consideração os campos SLA não null na tabela acima**\n\nSchemas das Tabelas\nTabela Atual de Contratos: blips-bigdata.VIEWS_DASHES.blips_vision\n\nContém informações em tempo real sobre contratos ativos.\nCampos principais:\nsla_realizado_minutos, sla_realizado_horas, sla_realizado_dias (tempo real gasto na fase do contrato)\ncontract_number (número do contrato)\nphase_name (fase do contrato)\nphase_status (status do contrato)\nidentifier (identificação única)\nphase_ptbr (descrição da fase em português)\ncreated_at, started_at, finished_at (datas do contrato)\n\nHistórico de Contratos: blips-bigdata.SNAPS_DADOS.vision_snap\nUtilize para ver históricos de contratos por exemplo, contratos do Mẽs ou até dia anteriores.\nContém registros históricos dos contratos.\nPossui os mesmos campos da tabela acima, com o acréscimo de data_register (data do registro do histórico neste formato de exemplo \"2025-03-10T07:00:10.977581\").\nInstrução para Geração da Query:\nSempre respeite o esquema da tabela ao construir as queries.\nNunca tente unir as tabelas (JOIN ou UNION).\n\nCaso 1:\nPergunta: \"Me diga quais os contratos no comercial estão com o sla estourados\"\nResolução: Leva em consideração as regras de SLA de cada fase, monta a querie baseado no schema da tabela blips-bigdata.VIEWS_DASHES.blips_vision\n\nCaso 2:\nPergunta: \"Me diga quais os contratos tiveram o sla estourados em Janeiro\"\nResolução: Leva em consideração as regras de SLA de cada fase, monta a querie baseado no schema da tabela do histórico de contratos blips-bigdata.SNAPS_DADOS.vision_snap.\n** Lembre-se neste caso de pegar apenas o ultimo registro de cada contrato na base histórica e se esteve com o sla estourado. Além de não repitilo e oferecer a \nPhase_PTBR em que estourou seu sla **\nAgora, gere a query com base na pergunta do usuário.\nATENÇÂO **faça a querie sempre priorizando o campo phase_name e nunca Phase_PTBR**\n\n*** RESPONSE MODEL ***\n{\n    \"querie\":\"select example querie here\"\n}"
+              }
+            ]
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.5,
+        "position": [
+          1140,
+          20
+        ],
+        "id": "00c6094b-95f7-4af2-9c6d-31f04eda7178",
+        "name": "Basic LLM Chain1"
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "{{ $json.output.querie }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          1560,
+          20
+        ],
+        "id": "0a045854-9201-408d-86f7-203b3098157f",
+        "name": "Google BigQuery",
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "bRbkqjD11DQDf0B8",
+            "name": "BigQuery - Rodolfo"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "83115bc1-a04b-442e-8baa-b6e99c562049",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          260,
+          0
+        ],
+        "id": "28f06406-f286-40e6-880e-d71364f80d7c",
+        "name": "Webhook",
+        "webhookId": "83115bc1-a04b-442e-8baa-b6e99c562049"
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          2420,
+          20
+        ],
+        "id": "23cb3cbe-6a50-482e-89e3-865b7678a0b0",
+        "name": "Respond to Webhook"
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT * FROM `blips-bigdata.PARAMETROS_EQUIPE_DADOS.Meta_SLA_Vision`",
+          "options": {
+            "includeSchema": false
+          }
+        },
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          500,
+          0
+        ],
+        "id": "3d1fcb38-d6f1-4a9f-819d-7969009faeca",
+        "name": "Google BigQuery1",
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "bRbkqjD11DQDf0B8",
+            "name": "BigQuery - Rodolfo"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          820,
+          0
+        ],
+        "id": "1759f79c-1f11-4f3e-90ed-00f5fdc2442d",
+        "name": "Aggregate1"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "a376b93a-86bd-42c3-a7ca-20c3949a3624",
+                "leftValue": "={{ $('Aggregate').item.json.response }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "array",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          2000,
+          20
+        ],
+        "id": "00d7024b-44fc-40dc-886d-58ef6ca5cef9",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "mode": "raw",
+          "jsonOutput": "{\n  \"response\": \"não foi encontrado nenhuma informação.\"\n}\n",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2220,
+          180
+        ],
+        "id": "7c1e5d09-4f1d-4552-b89c-7d20910d3b78",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "modelName": "models/gemini-2.0-flash-exp",
+          "options": {
+            "temperature": 0.4,
+            "topP": 1
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+        "typeVersion": 1,
+        "position": [
+          1100,
+          300
+        ],
+        "id": "336d7043-a88b-4557-89f2-252ecc1474a8",
+        "name": "Google Gemini Chat Model",
+        "credentials": {
+          "googlePalmApi": {
+            "id": "CuJxjolJuOtVRE1K",
+            "name": "Luan Gemini Key"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n\t\"querie\":\"select * from *\"\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.2,
+        "position": [
+          1380,
+          280
+        ],
+        "id": "f3119314-8a7f-4782-bb13-286760f9ff6d",
+        "name": "Structured Output Parser"
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "response",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          1780,
+          20
+        ],
+        "id": "77adc594-fedb-4bc7-aa83-abb8fbb71ed8",
+        "name": "Aggregate"
+      }
+    ],
+    "connections": {
+      "Basic LLM Chain1": {
+        "main": [
+          [
+            {
+              "node": "Google BigQuery",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Google BigQuery1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google BigQuery": {
+        "main": [
+          [
+            {
+              "node": "Aggregate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google BigQuery1": {
+        "main": [
+          [
+            {
+              "node": "Aggregate1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aggregate1": {
+        "main": [
+          [
+            {
+              "node": "Basic LLM Chain1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Gemini Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Basic LLM Chain1",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Basic LLM Chain1",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aggregate": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Webhook": [
+        {
+          "json": {
+            "headers": {
+              "host": "n8n-dev.blips-labs.com",
+              "user-agent": "axios/1.7.4",
+              "content-length": "71",
+              "accept": "application/json, text/plain, */*",
+              "accept-encoding": "gzip, compress, deflate, br",
+              "content-type": "application/json",
+              "x-forwarded-for": "34.145.12.49",
+              "x-forwarded-host": "n8n-dev.blips-labs.com",
+              "x-forwarded-proto": "https",
+              "x-railway-edge": "railway/us-west1",
+              "x-railway-request-id": "dPd8k-m1RviO26uKXoOf8Q_3987874068",
+              "x-real-ip": "34.145.12.49",
+              "x-request-start": "1741699527499"
+            },
+            "params": {},
+            "query": {},
+            "body": {
+              "question": "Quais contratos no comercial estão com o SLA estourado?"
+            },
+            "webhookUrl": "https://n8n-dev.blips-labs.com/webhook/83115bc1-a04b-442e-8baa-b6e99c562049",
+            "executionMode": "production"
+          }
+        }
+      ]
+    },
+    "versionId": "494091c4-16ae-4fb8-ab7a-8c6652ba3229",
+    "triggerCount": 1,
+    "tags": []
+  }
+}
