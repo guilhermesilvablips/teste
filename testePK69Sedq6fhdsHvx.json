@@ -1,0 +1,418 @@
+{
+  "data": {
+    "createdAt": "2024-05-22T13:09:37.295Z",
+    "updatedAt": "2025-04-01T16:53:10.484Z",
+    "id": "PK69Sedq6fhdsHvx",
+    "name": "Backup GitHub",
+    "active": true,
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "hours",
+                "hoursInterval": 6
+              }
+            ]
+          }
+        },
+        "id": "3cf2e63c-0901-41ab-b0de-6d773507c16b",
+        "name": "Schedule Trigger",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          660,
+          940
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f1ab72c2-5763-4910-90a1-8853bceef059",
+                "name": "owner",
+                "value": "blips-ai",
+                "type": "string"
+              },
+              {
+                "id": "173e1d7c-ad78-416e-903a-a290a9e23b32",
+                "name": "repo",
+                "value": "ambientes-n8n",
+                "type": "string"
+              },
+              {
+                "id": "60883347-8d8e-4a93-856e-b0c3e83b1a5e",
+                "name": "path",
+                "value": "Dev",
+                "type": "string"
+              },
+              {
+                "id": "f29cfa28-29db-42e5-ab9c-555bc00667bd",
+                "name": "date",
+                "value": "={{ $now.format('dd/MM/yyyy - HH:mm') }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "92eb6712-7cb6-483b-9353-4a35871a1f97",
+        "name": "Parâmetros",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          860,
+          940
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "list",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $json.repo }}",
+            "mode": "name"
+          },
+          "filePath": "={{ $json.path }}"
+        },
+        "id": "d5e2794e-e89e-4d5e-b4d1-7b41e60b9a5b",
+        "name": "Listar Files",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          1060,
+          940
+        ],
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "filters": {},
+          "requestOptions": {}
+        },
+        "id": "06d03692-2f51-4180-99b6-c67c98af2936",
+        "name": "Get Workflows",
+        "type": "n8n-nodes-base.n8n",
+        "typeVersion": 1,
+        "position": [
+          1460,
+          940
+        ],
+        "credentials": {
+          "n8nApi": {
+            "id": "zyc1Rhd9LKcUNM8O",
+            "name": "n8n account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "fieldsToAggregate": {
+            "fieldToAggregate": [
+              {
+                "fieldToAggregate": "name"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "07f8f9d6-fb36-499f-834c-ed52162512ce",
+        "name": "Lista de Nomes",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          1260,
+          940
+        ]
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "0c33bc1b-a18e-4fcd-87a7-35858dad451f",
+        "name": "Loop Over Items",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          1860,
+          940
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "toJson",
+          "mode": "each",
+          "options": {
+            "format": true,
+            "fileName": "={{ $json.name.normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').replace(/[^a-zA-Z0-9\\s]/g, '').replace(/\\s+/g, '-').toLowerCase() }}-{{ $json.id }}.json"
+          }
+        },
+        "id": "e958b9aa-d888-4b99-ac29-77fec45c3e5c",
+        "name": "Convert to File",
+        "type": "n8n-nodes-base.convertToFile",
+        "typeVersion": 1.1,
+        "position": [
+          1660,
+          940
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "edit",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('Parâmetros').first().json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('Parâmetros').first().json.repo }}",
+            "mode": "name"
+          },
+          "filePath": "={{ $('Parâmetros').first().json.path }}/{{ $binary.data.fileName }}",
+          "binaryData": true,
+          "commitMessage": "=update-{{ $binary.data.fileName }}-{{ $('Parâmetros').first().json.date }}"
+        },
+        "id": "d97334a3-494c-4ab1-a297-25b4ec2082e9",
+        "name": "Upadte File",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          2320,
+          640
+        ],
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('Parâmetros').first().json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('Parâmetros').first().json.repo }}",
+            "mode": "name"
+          },
+          "filePath": "={{ $('Parâmetros').first().json.path }}/{{ $binary.data.fileName }}",
+          "binaryData": true,
+          "commitMessage": "=create-{{ $binary.data.fileName }}-{{ $('Parâmetros').first().json.date }}"
+        },
+        "id": "751a0a1b-aebb-44d2-9011-631080eff065",
+        "name": "Create File",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          2320,
+          1000
+        ],
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "8487f603-6b23-45de-ad4c-83c4e846d7c2",
+                "leftValue": "={{ $('Lista de Nomes').first().json.name }}",
+                "rightValue": "={{ $binary.data.fileName }}",
+                "operator": {
+                  "type": "array",
+                  "operation": "contains",
+                  "rightType": "any"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "7b3a4fe8-5e64-4a31-9abc-ccb4b70cd5c3",
+        "name": "Já tá no Git?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          2100,
+          840
+        ]
+      }
+    ],
+    "connections": {
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Parâmetros",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parâmetros": {
+        "main": [
+          [
+            {
+              "node": "Listar Files",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Listar Files": {
+        "main": [
+          [
+            {
+              "node": "Lista de Nomes",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Lista de Nomes": {
+        "main": [
+          [
+            {
+              "node": "Get Workflows",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get Workflows": {
+        "main": [
+          [
+            {
+              "node": "Convert to File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Já tá no Git?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Convert to File": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Create File": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Upadte File": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Já tá no Git?": {
+        "main": [
+          [
+            {
+              "node": "Upadte File",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Create File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "America/Sao_Paulo",
+      "saveManualExecutions": true,
+      "callerPolicy": "workflowsFromSameOwner"
+    },
+    "staticData": {
+      "node:Schedule Trigger": {
+        "recurrencyRules": [
+          7
+        ],
+        "recurrenceRules": [
+          12
+        ]
+      }
+    },
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "bb3ca717-8cb0-4d4e-bd68-fe11d50f6b9a",
+    "triggerCount": 1,
+    "tags": []
+  }
+}
