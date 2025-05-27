@@ -1,0 +1,126 @@
+{
+  "data": {
+    "createdAt": "2024-05-16T01:49:55.892Z",
+    "updatedAt": "2025-05-08T11:43:47.795Z",
+    "id": "BcOK1G1NutmDyqmn",
+    "name": "Suporte Neurônio - func - buscar_ultima_conexao",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "response",
+          "options": {}
+        },
+        "id": "d799fed1-8c79-4ae0-a3f0-c43faa83ba22",
+        "name": "Aggregate1",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          2740,
+          420
+        ],
+        "alwaysOutputData": true,
+        "executeOnce": false
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "select *\nfrom `IOT.NeuronioUltimaConexao`\nwhere id = '{{ $json.id }}'\nor id = 'blips_{{ $json.id }}'",
+          "options": {}
+        },
+        "id": "cb69bf2a-be9f-44d1-815b-80c4e315337a",
+        "name": "Google BigQuery",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2,
+        "position": [
+          2540,
+          420
+        ],
+        "alwaysOutputData": true,
+        "executeOnce": false,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "id"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          2340,
+          420
+        ],
+        "id": "c2e9ed54-59d3-4514-aeb1-f1ba14a9533c",
+        "name": "Execute"
+      }
+    ],
+    "connections": {
+      "Google BigQuery": {
+        "main": [
+          [
+            {
+              "node": "Aggregate1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute": {
+        "main": [
+          [
+            {
+              "node": "Google BigQuery",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Execute": [
+        {
+          "json": {
+            "id": "blips_AA34D1"
+          }
+        }
+      ]
+    },
+    "versionId": "c0529843-5c55-4220-a28f-de939b3f6455",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-05-08T01:53:37.021Z",
+        "updatedAt": "2024-05-08T01:53:37.021Z",
+        "id": "HJrJfNUAaBoLOV2q",
+        "name": "Suporte Neuronio"
+      }
+    ]
+  }
+}
