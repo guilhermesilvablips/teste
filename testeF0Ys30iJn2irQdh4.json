@@ -1,0 +1,702 @@
+{
+  "data": {
+    "createdAt": "2024-12-13T17:50:51.831Z",
+    "updatedAt": "2025-05-12T16:14:00.197Z",
+    "id": "F0Ys30iJn2irQdh4",
+    "name": "Criar Card no Bitrix",
+    "active": true,
+    "nodes": [
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.item.fields",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "entityTypeId",
+                "value": "1080"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "f98b2bb6-adf2-49d5-b161-4f548e2df0c4",
+        "name": "Fileds",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          620,
+          -220
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f1c51ebc-4cd9-40f1-9db5-cbca6baf2d06",
+                "name": "stageId",
+                "value": "={{ $json.result.item.stageId }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "331f566a-7627-48ec-b4d2-8560f171da9e",
+        "name": "Edit Fields",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -440,
+          -220
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.type.list",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {}
+            ]
+          },
+          "options": {}
+        },
+        "id": "7f7706db-0d8f-404c-a0d6-de0c701d48c7",
+        "name": "SPAs",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          360,
+          -220
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.item.update",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"entityTypeId\": \"1080\",\n  \"id\": \"{{ $('Webhook').first().json.body.dados.item_id }}\",\n  \"fields\": {{ $json.toJsonString() }}\n}",
+          "options": {}
+        },
+        "id": "4a8476de-57ae-4a4b-8aaa-b331673f05a0",
+        "name": "Update Bitrix",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -220,
+          -220
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.item.add",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"entityTypeId\": \"1080\",\n  \"fields\": {{ $json.toJsonString() }}\n}",
+          "options": {}
+        },
+        "id": "9d322e0e-22ee-45e7-b431-eb4ba730a66d",
+        "name": "Add Bitrix",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          460,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "147ea438-7cc0-4340-afbe-db6a36a883c5",
+                "name": "title",
+                "value": "=DOCUMENTAÇÃO {{ $('Webhook').first().json.body.dados.contrato }} - {{ $('Webhook').first().json.body.dados.nome_responsavel }}",
+                "type": "string"
+              },
+              {
+                "id": "8281baab-b6bf-4afc-a860-4f4c6ab05d3c",
+                "name": "ufCrm59Contrato",
+                "value": "={{ $('Webhook').first().json.body.dados.contrato }}",
+                "type": "string"
+              },
+              {
+                "id": "ea9e1c89-50d6-4483-8771-5187661a8678",
+                "name": "ufCrm59Telefone",
+                "value": "={{ $('Webhook').first().json.body.dados.telefone }}",
+                "type": "string"
+              },
+              {
+                "id": "d232d1eb-cbe4-4a43-bdb4-4c9db43377ac",
+                "name": "ufCrm59Erro",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "63af1a86-45e6-4fa6-8a34-c4292954b0f7",
+                "name": "ufCrm59FrenteDocEnv",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "adac3ef5-9d53-402a-94e6-3b4ab71127de",
+                "name": "ufCrm59FrenteDocAnalise",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "44c08807-0f00-47f0-8454-98dee18e6f01",
+                "name": "ufCrm59VersoDocEnv",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "868f5c52-9e3d-497c-aca1-976e3669c365",
+                "name": "ufCrm59VersoDocAnalise",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "af41f226-6e21-4f26-8e20-dac8538d93ea",
+                "name": "ufCrm59EndEmpresaEnv",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "2265e6bc-06bf-49f1-832f-fa189e44352b",
+                "name": "ufCrm59EndEmpresaAnalise",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "a6316cfb-7012-4182-9b8c-dccfd841b846",
+                "name": "ufCrm59EndResponEnv",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "ef15761b-f0ee-450c-8e22-5cfa5564d4aa",
+                "name": "ufCrm59EndResponAnalise",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "0418747b-7461-4733-ae95-985a00f5a0e6",
+                "name": "ufCrm59SelfEnv",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "7bfce5ff-be2c-4542-ac93-e62559befcc4",
+                "name": "ufCrm59SelfAnalise",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "897ecdcf-5844-4721-8665-5df2c25a5636",
+                "name": "ufCrm59AudioEnv",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "be82d87a-11b3-4531-9b0b-2b8ab142d48d",
+                "name": "ufCrm59AudioAnalise",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "65531a3d-8f16-4980-93ab-236e789a0794",
+                "name": "ufCrm59PercCod",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "5a3f99e7-ac8d-4401-a788-b432d317bcde",
+                "name": "ufCrm59PercAnalise",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "95a06be0-0061-4d84-891f-547907092ee6",
+                "name": "ufCrm59Nome",
+                "value": "={{ $('Webhook').first().json.body.dados.nome_responsavel }}",
+                "type": "string"
+              },
+              {
+                "id": "235f61e8-6a54-4750-bda5-b1836181b429",
+                "name": "ufCrm59RespOnboarding",
+                "value": "={{ 2491 || $('Webhook').first().json.body.dados.id_resp.match(/\\d+/g)[0] }}",
+                "type": "string"
+              },
+              {
+                "id": "edb6ce5c-ef66-400c-9148-a67beaedfd3c",
+                "name": "ufCrm59Empresa",
+                "value": "={{ $('Webhook').first().json.body.dados.empresa }}",
+                "type": "string"
+              },
+              {
+                "id": "f8ec5b47-b683-45a9-a08f-109ea67e13e8",
+                "name": "ufCrm59Justificativa",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "52dc874c-85ee-4a33-975f-42f781ce6d07",
+                "name": "ufCrm59CardOnboarding",
+                "value": "={{ $('Webhook').first().json.body.dados.id_card_onboarding }}",
+                "type": "string"
+              },
+              {
+                "id": "9524798c-f5f2-4b97-b9c8-1564a36a8084",
+                "name": "ufCrm59EmailGerente",
+                "value": "={{ $('Webhook').first().json.body.dados.email }}",
+                "type": "string"
+              },
+              {
+                "id": "9bdb8e1e-708d-4742-98b0-ffc0c5feb680",
+                "name": "ufCrm59DadosPlataforma",
+                "value": "=- Contratante:\n  - Nome: {{ $('Dados do contrato').first().json.contractor.name }}\n  - Documento: {{ $('Dados do contrato').first().json.contractor.document }}\n\n- Responsável:\n  - Nome: {{ $('Dados do contrato').first().json.contractor.personalData.name }}\n  - Documento: {{ $('Dados do contrato').first().json.contractor.personalData.document }}\n\n- Endereço da Empresa:\n  - Cidade: {{ $('Dados do contrato').first().json.contractor.businessData.address.city }}\n  - Bairro: {{ $('Dados do contrato').first().json.contractor.businessData.address.neighborhood }}\n  - Número: {{ $('Dados do contrato').first().json.contractor.businessData.address.number }}\n  - Logradouro: {{ $('Dados do contrato').first().json.contractor.businessData.address.stAve }}\n  - Estado: {{ $('Dados do contrato').first().json.contractor.businessData.address.state }}\n  - CEP: {{ $('Dados do contrato').first().json.contractor.businessData.address.zipCode }}\n\n- Endereço do Responsável:\n  - Cidade: {{ $('Dados do contrato').first().json.contractor.personalData.address.city }}\n  - Bairro: {{ $('Dados do contrato').first().json.contractor.personalData.address.neighborhood }}\n  - Número: {{ $('Dados do contrato').first().json.contractor.personalData.address.number }}\n  - Logradouro: {{ $('Dados do contrato').first().json.contractor.personalData.address.stAve }}\n  - Estado: {{ $('Dados do contrato').first().json.contractor.personalData.address.state }}\n  - CEP: {{ $('Dados do contrato').first().json.contractor.personalData.address.zipCode }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "a8e0c73a-e094-4a28-b6e8-b7eaadc60c87",
+        "name": "Criar valores",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          240,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "02f003e6-dd12-484c-b7ba-c01f9f75c124",
+                "leftValue": "={{ $('Webhook').first().json.body.dados.item_id ? true : false }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "1751d37a-424d-48a9-8667-4825d71c6b70",
+        "name": "Tem card no Bitrix?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          -380,
+          100
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.timeline.comment.add",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"fields\": {\n    \"ENTITY_ID\": \"{{ $('Webhook').first().json.body.dados.item_id }}\", \n    \"ENTITY_TYPE\": \"DYNAMIC_1080\", \n    \"COMMENT\": \"{{ $('Webhook').first().json.body.dados.log.replaceAll('\\n', '\\\\n') }}\"\n  }\n}",
+          "options": {}
+        },
+        "id": "8a145e30-f641-43a5-8651-2a8e022b7d16",
+        "name": "Comentário",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          40,
+          -20
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "45deca95-8870-456f-ab95-43ff15bf70b0",
+                "leftValue": "={{ $('Webhook').first().json.body.dados.log }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "4d8c019c-f28a-4164-8266-7d3e31d1b9be",
+        "name": "Tem log?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          -180,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "respondWith": "text",
+          "responseBody": "Comentário adicionado.",
+          "options": {
+            "responseCode": 200
+          }
+        },
+        "id": "964202e4-755a-4cbf-82d5-cae1de551baf",
+        "name": "Respond Sucesso",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          240,
+          -20
+        ]
+      },
+      {
+        "parameters": {
+          "httpMethod": "=POST",
+          "path": "planilha-clara",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "id": "065536a0-1563-4e9a-9ed8-1051e51cfca9",
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -580,
+          100
+        ],
+        "webhookId": "6532a4b8-ab6c-4fc1-b190-a1f22ce53b8e"
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "={\n  \"item_id\": {{ $json.result.item.id }}\n} ",
+          "options": {}
+        },
+        "id": "2b997e25-7258-4a04-80a4-737fc26a7ecf",
+        "name": "Return ID",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          680,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips-backend-staging-25jdzzxqga-uc.a.run.app/v2/user/login/624b373210c6fc7fcb4b7e0b",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\n    \"email\": \"joao.freitas@blips.com.br\",\n    \"password\": \"BlipsAI7\"\n}",
+          "options": {}
+        },
+        "id": "cf1975a7-3205-4272-a2ec-f611efb95692",
+        "name": "Gera token",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -180,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "url": "=https://blips-backend-staging-25jdzzxqga-uc.a.run.app/v2/negotiation/{{ $('Webhook').first().json.body.dados.contrato }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{ $json.accessToken }}"
+              }
+            ]
+          },
+          "options": {
+            "redirect": {
+              "redirect": {}
+            }
+          }
+        },
+        "id": "d420f2d9-faad-4a03-8d20-dbbb726f5d2f",
+        "name": "Dados do contrato",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          40,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.item.get",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "entityTypeId",
+                "value": "1080"
+              },
+              {
+                "name": "id",
+                "value": "110971"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "5f8c5d73-eab1-4a6d-b694-dbc147449f04",
+        "name": "Get Card",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -660,
+          -220
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.deal.get",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "id",
+                "value": "110971"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          40,
+          -300
+        ],
+        "id": "b3d33b95-a983-4c33-ae7d-072c9df75308",
+        "name": "Get deal"
+      }
+    ],
+    "connections": {
+      "Add Bitrix": {
+        "main": [
+          [
+            {
+              "node": "Return ID",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Criar valores": {
+        "main": [
+          [
+            {
+              "node": "Add Bitrix",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tem card no Bitrix?": {
+        "main": [
+          [
+            {
+              "node": "Tem log?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Gera token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Comentário": {
+        "main": [
+          [
+            {
+              "node": "Respond Sucesso",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tem log?": {
+        "main": [
+          [
+            {
+              "node": "Comentário",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Tem card no Bitrix?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gera token": {
+        "main": [
+          [
+            {
+              "node": "Dados do contrato",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados do contrato": {
+        "main": [
+          [
+            {
+              "node": "Criar valores",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Return ID": {
+        "main": [
+          []
+        ]
+      },
+      "Get Card": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "America/Sao_Paulo",
+      "saveManualExecutions": true,
+      "callerPolicy": "workflowsFromSameOwner"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Webhook": [
+        {
+          "json": {
+            "headers": {
+              "host": "n8n-dev.blips-labs.com",
+              "content-length": "241",
+              "accept": "application/json",
+              "content-type": "application/json",
+              "x-forwarded-for": "54.232.37.49",
+              "x-forwarded-host": "n8n-dev.blips-labs.com",
+              "x-forwarded-proto": "https",
+              "x-railway-edge": "railway/us-east4",
+              "x-railway-request-id": "6MbNUMLOSlC9X683eHMQ4A",
+              "x-real-ip": "54.232.37.49",
+              "x-request-start": "1747066128188",
+              "accept-encoding": "gzip"
+            },
+            "params": {},
+            "query": {},
+            "body": {
+              "dados": {
+                "nome_responsavel": "JOSÉ MOCADO",
+                "teste": "SIM",
+                "telefone": "34999999999",
+                "id_card_onboarding": "107367",
+                "id_resp": "2175",
+                "contrato": "68221c893a30c479569647f3",
+                "empresa": "BLIPS",
+                "email": "joao.freitas@blips.com.br",
+                "gerente": "Clara"
+              }
+            },
+            "webhookUrl": "https://n8n-dev.blips-labs.com/webhook/planilha-clara",
+            "executionMode": "production"
+          }
+        }
+      ]
+    },
+    "versionId": "3f171ecb-204c-48d3-9e80-54fe2e732132",
+    "triggerCount": 1,
+    "tags": [
+      {
+        "createdAt": "2024-11-22T13:13:26.514Z",
+        "updatedAt": "2024-11-22T13:13:26.514Z",
+        "id": "owb3cfmzFRbqjP06",
+        "name": "Clara"
+      }
+    ]
+  }
+}
