@@ -1,0 +1,83 @@
+{
+  "data": {
+    "createdAt": "2024-08-12T18:00:24.416Z",
+    "updatedAt": "2024-08-12T18:08:52.553Z",
+    "id": "GTySNiQIDDJqhYWE",
+    "name": "Horario de Brasilia",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "efab4f12-0540-4646-adab-e7ee34542bea",
+        "name": "Execute Workflow Trigger",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          540,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "outputFieldName": "-3GMT",
+          "options": {
+            "timezone": ""
+          }
+        },
+        "id": "f066e39d-e890-4e2a-95cb-68848d3362f9",
+        "name": "Date & Time",
+        "type": "n8n-nodes-base.dateTime",
+        "typeVersion": 2,
+        "position": [
+          760,
+          200
+        ]
+      }
+    ],
+    "connections": {
+      "Execute Workflow Trigger": {
+        "main": [
+          [
+            {
+              "node": "Date & Time",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Date & Time": {
+        "main": [
+          []
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "America/Sao_Paulo",
+      "saveManualExecutions": true,
+      "callerPolicy": "workflowsFromSameOwner"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "4afdd783-037b-4571-ae06-ecd4b8ecc628",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-08-12T18:08:40.492Z",
+        "updatedAt": "2024-08-12T18:08:40.492Z",
+        "id": "TYn6oWtif11Cqgge",
+        "name": "clock"
+      },
+      {
+        "createdAt": "2024-08-08T16:17:37.968Z",
+        "updatedAt": "2024-08-08T16:17:37.968Z",
+        "id": "tv6Ov4En3lT5oHhf",
+        "name": "pedro"
+      }
+    ]
+  }
+}
