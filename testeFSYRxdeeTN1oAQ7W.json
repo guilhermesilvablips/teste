@@ -1,0 +1,477 @@
+{
+  "data": {
+    "createdAt": "2025-03-07T14:18:40.938Z",
+    "updatedAt": "2025-03-07T19:13:02.717Z",
+    "id": "FSYRxdeeTN1oAQ7W",
+    "name": "Teste modelos de resumo",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Gere para mim um sumario usando a lista de mensagens abaixo.\n\n{{ $json.message_convert.toJsonString() }}",
+          "options": {
+            "systemMessage": "=# **Instruções para a LLM**  \nVocê é um assistente especializado em **análise e resumo de atendimentos ao cliente da Blips**.  \nSua função é processar um **histórico completo de interações entre cliente e atendentes**, organizado no formato `[usuario] - [horário]: [mensagem]`, e gerar um **sumário acumulativo unificado**. Se houver um sumário anterior, você deve compará-lo com o novo conteúdo, incorporando apenas informações novas e relevantes.\n\n---\n\n## **Fluxo de Execução**  \n\n1. **Leia e interprete todo o histórico fornecido.**  \n   - Cada registro segue o formato: `[usuario] - [horário]: [mensagem]`.  \n   - Organize as mensagens **cronologicamente** para entender a sequência completa do atendimento.  \n\n2. **Analise o contexto geral das interações.**  \n   - Identifique o **problema inicial relatado pelo cliente** e como ele evoluiu ao longo do atendimento.  \n   - Destaque **mudanças significativas no contexto**, como novas reclamações, avanços na solução, alterações no posicionamento do cliente ou transferências de setor.  \n   - Conecte os eventos de forma lógica para garantir que o sumário tenha **coesão e fluidez**.  \n\n3. **Gere um sumário consolidado.**  \n   - Se **não houver sumário anterior**, crie um novo sumário abrangendo todas as informações relevantes.  \n   - Se **houver sumário anterior**, compare-o com o novo conteúdo e incorpore apenas informações novas e impactantes. Evite repetições desnecessárias ou reafirmações que não acrescentem valor.  \n\n4. **Reescreva o sumário de forma coesa e fluída.**  \n   - Use frases curtas e objetivas para facilitar a leitura.  \n   - Garanta que o texto final seja **claro, profissional e direto**, sem parecer uma colagem de trechos distintos.  \n\n5. **Destaque o status atual do atendimento.**  \n   - Informe claramente se o problema foi resolvido, se há pendências ou se o atendimento está em andamento.  \n\n---\n\n## **Diretrizes para o Sumário**  \n\n### **Tamanho**  \n- **Novo sumário:** Máximo de **200 palavras** (ou até **300 palavras** se houver mais de 250 mensagens).  \n- **Sumário atualizado:** Máximo de **300 palavras**.  \n\n### **Conteúdo Essencial**  \nInclua os seguintes elementos, sempre que aplicável:  \n1. **Problema inicial relatado pelo cliente.**  \n   - Descreva sucintamente o motivo do primeiro contato.  \n2. **Etapas seguidas para diagnóstico e resolução.**  \n   - Resuma as principais ações tomadas pela equipe e pelo cliente.  \n3. **Mudanças ou reiterações relevantes do cliente.**  \n   - Destaque novas reclamações, questionamentos ou mudanças no posicionamento.  \n4. **Dificuldades enfrentadas pela equipe ou pelo cliente.**  \n   - Mencione obstáculos significativos, como problemas técnicos, atrasos ou desentendimentos.  \n5. **Solução final adotada e status atual do atendimento.**  \n   - Informe se o problema foi resolvido, se há pendências ou se o atendimento está em andamento.  \n\n### **Estilo**  \n- Use um **tom profissional, claro e objetivo.**  \n- Priorize **eventos que impactam diretamente a resolução do problema.**  \n- Resuma questionamentos repetitivos e evite detalhes irrelevantes.  \n- Reformule expressões informais ou técnicas para um tom mais adequado ao público-alvo.  \n- **Você não precisa informar a quantidade de palavras usadas**\n\n---\n\n### **Exemplo de Saída Esperada**  \n\n#### **Histórico de Atendimento (exemplo):**  \n[cliente] - 10:00: Estou com problemas para acessar minha conta.\n[atendente] - 10:05: Verificamos sua conta e identificamos uma falha no login.\n[cliente] - 10:10: Já tentei resetar a senha, mas não funcionou.\n[atendente] - 10:15: Enviaremos um link para redefinição de senha.\n[cliente] - 10:20: Recebi o link, mas ainda não consigo acessar.\n[atendente] - 10:25: Encaminhamos sua solicitação para o suporte técnico.\n\n\n#### **Sumário Gerado:**  \nO cliente relatou dificuldade para acessar sua conta, mencionando que tentativas de resetar a senha foram infrutíferas. Após análise inicial, o atendente identificou uma possível falha no sistema de login e enviou um link para redefinição de senha. No entanto, o cliente informou que o problema persistiu mesmo após usar o link. A solicitação foi então encaminhada para o suporte técnico para investigação mais aprofundada. O atendimento encontra-se em andamento.  ",
+            "returnIntermediateSteps": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 1.7,
+        "position": [
+          960,
+          240
+        ],
+        "id": "eb5f934a-244f-4159-9c45-43d3d98af18d",
+        "name": "AI Agent"
+      },
+      {
+        "parameters": {
+          "model": "qwen/qwq-32b:free",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+        "typeVersion": 1,
+        "position": [
+          1000,
+          460
+        ],
+        "id": "c0f63ca1-99c6-4ce5-a4dd-7d6e142f6d37",
+        "name": "OpenRouter Chat Model",
+        "credentials": {
+          "openRouterApi": {
+            "id": "7EQYDOhsLOEZrgpZ",
+            "name": "Blips AI - DEV"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -1420,
+          -20
+        ],
+        "id": "c42bcec4-395b-4518-a731-aa2ffbc064ab",
+        "name": "When clicking ‘Test workflow’"
+      },
+      {
+        "parameters": {
+          "jsCode": "const message = $input.last().json\n\nconst { message_processed, ...rest } = message; \n\nconst message_convert = (message_processed || []).map(msg => \n  `${msg.sender} - ${msg.createdAt}: ${msg.textMessage || msg.message}`\n);\n\nreturn { ...rest, message_convert };\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          720,
+          240
+        ],
+        "id": "918f24e7-87e1-4d1a-8de7-873ffaa4c050",
+        "name": "Entrega da transcrição das mensagens1"
+      },
+      {
+        "parameters": {
+          "url": "https://n8n-auditoria.blips-labs.com/webhook/hyper_messages",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "phone",
+                "value": "={{ $json.phone_list }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -440,
+          120
+        ],
+        "id": "485d7306-6d9a-44f6-aabd-733ef3400221",
+        "name": "GET hyper_messages1"
+      },
+      {
+        "parameters": {
+          "jsCode": "return [{\n  phone_list: [\n    \"5534984059464\",\n    \"5592993014121\",\n    \"5514996930666\",\n    \"5519994088924\",\n    \"5524998241889\",\n    \"5547996482184\",\n    \"5555991733791\",\n    \"5571991436024\",\n    \"5581982818030\",\n    \"5591980235595\"   \n  ]\n}]"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1200,
+          -20
+        ],
+        "id": "c9389a0f-fd06-4bcf-a40c-c6d04936dc21",
+        "name": "Code"
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          -740,
+          -20
+        ],
+        "id": "53dbc54e-a918-4235-8a49-2b0eb434eabb",
+        "name": "Loop Over Items"
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "phone_list",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          -980,
+          -20
+        ],
+        "id": "8d8a66ee-eba6-4c4c-88d3-092d73f0ac4f",
+        "name": "Split Out"
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          260,
+          120
+        ],
+        "id": "faaecb80-fce6-4e3b-8ef7-17dba5f78d4b",
+        "name": "Loop Over Items1"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4e67839e-8197-4b6d-afe5-b2182dbc346a",
+                "name": "data",
+                "value": "={{ $json.data }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -220,
+          120
+        ],
+        "id": "816986e1-6df6-4107-86d9-dd0163f2fdfc",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "data",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          0,
+          120
+        ],
+        "id": "52451cdb-0488-45a5-8fb6-81c1d7b1f189",
+        "name": "Split Out1"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "8c72e339-03d2-4752-ad44-a85aafb787c5",
+                "name": "protocol",
+                "value": "={{ $json.protocol }}",
+                "type": "string"
+              },
+              {
+                "id": "c132641a-2a9f-4be9-81c7-91e716c3dc54",
+                "name": "phone",
+                "value": "={{ $json.phone }}",
+                "type": "string"
+              },
+              {
+                "id": "b2cf5343-69e8-44ad-a49c-0aab68f68d00",
+                "name": "contact",
+                "value": "={{ $json.contact }}",
+                "type": "string"
+              },
+              {
+                "id": "fda5ceeb-8197-456e-a663-c975e3ca4126",
+                "name": "createdAt",
+                "value": "={{ $json.createdAt }}",
+                "type": "string"
+              },
+              {
+                "id": "729189cf-0167-4bf6-93b1-dd71ae2f63de",
+                "name": "finishedAt",
+                "value": "={{ $json.finishedAt }}",
+                "type": "string"
+              },
+              {
+                "id": "e07c99a3-164f-41f1-bbcf-f62abdecf006",
+                "name": "message_processed",
+                "value": "={{ $json.message_processed }}",
+                "type": "array"
+              },
+              {
+                "id": "ac9aba24-5d5f-45d2-96bf-c07b6cf9456b",
+                "name": "last_message",
+                "value": "={{ $json.last_message }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          500,
+          240
+        ],
+        "id": "89cb7494-83c9-4231-a641-b6fc26315e92",
+        "name": "setMessage"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "6a806f8d-a808-4984-b064-4164b0dcb6fa",
+                "name": "summary",
+                "value": "={{ $json.output }}",
+                "type": "string"
+              },
+              {
+                "id": "afe4ebf6-6f63-42df-ad9d-be645a4ff85f",
+                "name": "protocol",
+                "value": "={{ $('setMessage').last().json.protocol }}",
+                "type": "string"
+              },
+              {
+                "id": "93d55a16-c7c5-44cc-881d-785a3c6722c9",
+                "name": "phone",
+                "value": "={{ $('setMessage').last().json.phone }}",
+                "type": "string"
+              },
+              {
+                "id": "4997f8cb-ee8f-4538-844a-d7881fd92523",
+                "name": "model",
+                "value": "qwq-32:free",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1320,
+          240
+        ],
+        "id": "8f55c2fe-9768-4340-9fe9-b6aa451545cd",
+        "name": "Edit Fields1"
+      },
+      {
+        "parameters": {
+          "operation": "insert",
+          "collection": "summary_dev",
+          "fields": "summary, protocol, phone, model",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1.1,
+        "position": [
+          1540,
+          240
+        ],
+        "id": "812772de-c4e6-4c39-bf34-834f3a930bc5",
+        "name": "MongoDB",
+        "credentials": {
+          "mongoDb": {
+            "id": "ClF5e4SDnhIipgL6",
+            "name": "Blips Mongo Dev - Luan"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "OpenRouter Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GET hyper_messages1": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "Split Out",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [],
+          [
+            {
+              "node": "GET hyper_messages1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items1": {
+        "main": [
+          [],
+          [
+            {
+              "node": "setMessage",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Entrega da transcrição das mensagens1": {
+        "main": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "Split Out1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out1": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "setMessage": {
+        "main": [
+          [
+            {
+              "node": "Entrega da transcrição das mensagens1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields1": {
+        "main": [
+          [
+            {
+              "node": "MongoDB",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "MongoDB": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "57d156e0-b46f-4085-8d7d-a91c475682e0",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
