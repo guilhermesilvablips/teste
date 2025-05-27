@@ -1,0 +1,127 @@
+{
+  "data": {
+    "createdAt": "2024-05-16T12:14:22.021Z",
+    "updatedAt": "2025-05-08T11:53:10.320Z",
+    "id": "JK083mnyz0StWaWK",
+    "name": "Suporte Neurônio - func - buscar_liberacao_confianca",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT\n  eb.*,\n  CASE\n    WHEN eb.validade < CURRENT_DATE() THEN 'LIBERACAO_EXPIRADA'\n    ELSE 'LIBERACAO_VIGENTE'\nEND\n  AS status\nFROM\n  `IOT.ExcecaoBloqueio` eb\nWHERE 1 = 1\n{{ $json.cnpj ? \"and eb.cnpj = '\" + $json.cnpj + \"'\" : \"\" }}\n{{ $json.id ? \"and eb.numero_serie = '\" + $json.id + \"'\" : \"\" }}\n",
+          "options": {}
+        },
+        "id": "bb52dcea-7c36-42ed-8e75-d5c4e50ea0f4",
+        "name": "Google BigQuery",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2,
+        "position": [
+          180,
+          -300
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "response",
+          "options": {}
+        },
+        "id": "43bdb893-24f2-4851-b7c8-e7725de3e13c",
+        "name": "Aggregate",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          400,
+          -300
+        ]
+      },
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "id"
+              },
+              {
+                "name": "cnpj"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -60,
+          -300
+        ],
+        "id": "f08cecb8-3399-4f51-8b6f-556c042ba39d",
+        "name": "Execute"
+      }
+    ],
+    "connections": {
+      "Google BigQuery": {
+        "main": [
+          [
+            {
+              "node": "Aggregate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute": {
+        "main": [
+          [
+            {
+              "node": "Google BigQuery",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Execute": [
+        {
+          "json": {
+            "id": "blips_6F5C6D",
+            "cnpj": "53597821000113"
+          }
+        }
+      ]
+    },
+    "versionId": "d2c8d3af-d518-4395-aefc-9851404a87f6",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-05-08T01:53:37.021Z",
+        "updatedAt": "2024-05-08T01:53:37.021Z",
+        "id": "HJrJfNUAaBoLOV2q",
+        "name": "Suporte Neuronio"
+      }
+    ]
+  }
+}
