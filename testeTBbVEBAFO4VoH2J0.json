@@ -1,0 +1,126 @@
+{
+  "data": {
+    "createdAt": "2024-06-26T14:28:16.684Z",
+    "updatedAt": "2024-06-27T12:31:12.143Z",
+    "id": "TBbVEBAFO4VoH2J0",
+    "name": "MKT - TESTE - Enviar e-mail em massa - Carol",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "weeks",
+                "triggerAtDay": [
+                  1
+                ],
+                "triggerAtHour": 11,
+                "triggerAtMinute": 30
+              }
+            ]
+          }
+        },
+        "id": "f03bdbc2-0421-4716-b379-29c3c55c4375",
+        "name": "Schedule Trigger",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          200,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "get"
+        },
+        "id": "5221afb3-e019-4963-a590-5dc98a7751a7",
+        "name": "Gmail",
+        "type": "n8n-nodes-base.gmail",
+        "typeVersion": 2.1,
+        "position": [
+          720,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "copy",
+          "fileId": {
+            "__rl": true,
+            "mode": "list",
+            "value": ""
+          },
+          "options": {}
+        },
+        "id": "288dd7c4-bb7e-49a4-b591-c2802b727ad2",
+        "name": "Google Drive",
+        "type": "n8n-nodes-base.googleDrive",
+        "typeVersion": 3,
+        "position": [
+          460,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "weeks",
+                "triggerAtDay": [
+                  1
+                ],
+                "triggerAtHour": 11,
+                "triggerAtMinute": 30
+              }
+            ]
+          }
+        },
+        "id": "87956f43-2f32-4860-ad98-38e1e1b4222b",
+        "name": "Schedule Trigger1",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          200,
+          380
+        ]
+      }
+    ],
+    "connections": {
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Google Drive",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Drive": {
+        "main": [
+          [
+            {
+              "node": "Gmail",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "aea2ef63-1352-456b-bae6-884e88d0347c",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
