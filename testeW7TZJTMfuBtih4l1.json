@@ -1,0 +1,4564 @@
+{
+  "data": {
+    "createdAt": "2024-08-06T14:20:09.604Z",
+    "updatedAt": "2025-05-26T13:56:25.825Z",
+    "id": "W7TZJTMfuBtih4l1",
+    "name": "Utils",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "24cc904a-e6dc-49bb-a2e7-637e437b1f54",
+        "name": "lead",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          -1340,
+          2060
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "fa9beb94-f86f-443b-a13e-3445057def7c",
+                "name": "activities",
+                "value": "={{ $json.QueryBDC_companies_basic_data.Result[0].BasicData.Activities }}",
+                "type": "string"
+              },
+              {
+                "id": "c2e6a995-cbe4-4253-93bf-096166482da8",
+                "name": "age",
+                "value": "={{ $json.QueryBDC_companies_basic_data.Result[0].BasicData.Age }}",
+                "type": "string"
+              },
+              {
+                "id": "8915b605-6aa9-4789-af62-77ade5c9824b",
+                "name": "company_type",
+                "value": "={{ $json.QueryBDC_companies_basic_data.Result[0].BasicData.CompanyType_ReceitaFederal }}",
+                "type": "string"
+              },
+              {
+                "id": "a93b9085-60ab-407a-b4e8-339443d02e32",
+                "name": "created_at",
+                "value": "={{ $json.QueryBDC_companies_basic_data.Result[0].BasicData.CreationDate }}",
+                "type": "string"
+              },
+              {
+                "id": "a9a83cfa-080a-4b66-82b5-2a283f32e0c4",
+                "name": "state",
+                "value": "={{ $json.QueryBDC_companies_basic_data.Result[0].BasicData.HeadquarterState }}",
+                "type": "string"
+              },
+              {
+                "id": "cc36a130-e9ed-44b2-b1a7-d4c2422e27f7",
+                "name": "legal_nature",
+                "value": "={{ $json.QueryBDC_companies_basic_data.Result[0].BasicData.LegalNature }}",
+                "type": "object"
+              },
+              {
+                "id": "aeacc109-1683-40dc-8136-1b3410555097",
+                "name": "name",
+                "value": "={{ $json.QueryBDC_companies_basic_data.Result[0].BasicData.OfficialName }}",
+                "type": "string"
+              },
+              {
+                "id": "4cf28841-e303-4a33-b0cc-981a97ddbaad",
+                "name": "origin_data",
+                "value": "={{ $json.QueryBDC_companies_basic_data.Result[0].BasicData.TaxIdOrigin }}",
+                "type": "string"
+              },
+              {
+                "id": "8890a90f-7a7a-41fd-8d9d-6e5cc0e904fd",
+                "name": "regime",
+                "value": "={{ $json.QueryBDC_companies_basic_data.Result[0].BasicData.HistoricalData.HistoricalDataEvolution.TaxRegime }}",
+                "type": "array"
+              },
+              {
+                "id": "bb054429-3f60-4cb9-b29c-2b348a4ab91f",
+                "name": "founded_date",
+                "value": "={{ $json.QueryBDC_companies_basic_data.Result[0].BasicData.FoundedDate }}",
+                "type": "string"
+              },
+              {
+                "id": "6f974d1f-7e9e-4ba1-9795-6ae041469477",
+                "name": "country",
+                "value": "={{ $json.QueryBDC_companies_basic_data.Result[0].BasicData.TaxIdCountry }}",
+                "type": "string"
+              },
+              {
+                "id": "a711b8b5-db98-48ca-96d2-9aa6118b8974",
+                "name": "status",
+                "value": "={{ $json.QueryBDC_companies_basic_data.Result[0].BasicData.TaxIdStatus }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "fadbd6b5-ec82-4a25-80c1-c61bfe87c70d",
+        "name": "format_companies_basic_data",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -160,
+          -260
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "fa9beb94-f86f-443b-a13e-3445057def7c",
+                "name": "activities",
+                "value": "={{ $json.QueryBDC_peoplev2_basic_data.Result[0].BasicData.Activities }}",
+                "type": "array"
+              },
+              {
+                "id": "c2e6a995-cbe4-4253-93bf-096166482da8",
+                "name": "age",
+                "value": "={{ $json.QueryBDC_peoplev2_basic_data.Result[0].BasicData.Age }}",
+                "type": "string"
+              },
+              {
+                "id": "8915b605-6aa9-4789-af62-77ade5c9824b",
+                "name": "company_type",
+                "value": "={{ $json.QueryBDC_peoplev2_basic_data.Result[0].BasicData.CompanyType_ReceitaFederal }}",
+                "type": "string"
+              },
+              {
+                "id": "a93b9085-60ab-407a-b4e8-339443d02e32",
+                "name": "created_at",
+                "value": "={{ $json.QueryBDC_peoplev2_basic_data.Result[0].BasicData.CreationDate }}",
+                "type": "string"
+              },
+              {
+                "id": "a9a83cfa-080a-4b66-82b5-2a283f32e0c4",
+                "name": "state",
+                "value": "={{ $json.QueryBDC_peoplev2_basic_data.Result[0].BasicData.HeadquarterState }}",
+                "type": "string"
+              },
+              {
+                "id": "cc36a130-e9ed-44b2-b1a7-d4c2422e27f7",
+                "name": "legal_nature",
+                "value": "={{ $json.QueryBDC_peoplev2_basic_data.Result[0].BasicData.LegalNature }}",
+                "type": "object"
+              },
+              {
+                "id": "aeacc109-1683-40dc-8136-1b3410555097",
+                "name": "name",
+                "value": "={{ $json.QueryBDC_peoplev2_basic_data.Result[0].BasicData.Name }}",
+                "type": "string"
+              },
+              {
+                "id": "4cf28841-e303-4a33-b0cc-981a97ddbaad",
+                "name": "origin_data",
+                "value": "={{ $json.QueryBDC_peoplev2_basic_data.Result[0].BasicData.TaxIdOrigin }}",
+                "type": "string"
+              },
+              {
+                "id": "8890a90f-7a7a-41fd-8d9d-6e5cc0e904fd",
+                "name": "regime",
+                "value": "={{ $json.QueryBDC_peoplev2_basic_data.Result[0].BasicData.HistoricalData.HistoricalDataEvolution.TaxRegime }}",
+                "type": "array"
+              },
+              {
+                "id": "bb054429-3f60-4cb9-b29c-2b348a4ab91f",
+                "name": "founded_date",
+                "value": "={{ $json.QueryBDC_peoplev2_basic_data.Result[0].BasicData.FoundedDate }}",
+                "type": "string"
+              },
+              {
+                "id": "6f974d1f-7e9e-4ba1-9795-6ae041469477",
+                "name": "country",
+                "value": "={{ $json.QueryBDC_peoplev2_basic_data.Result[0].BasicData.TaxIdCountry }}",
+                "type": "string"
+              },
+              {
+                "id": "a711b8b5-db98-48ca-96d2-9aa6118b8974",
+                "name": "status",
+                "value": "={{ $json.QueryBDC_peoplev2_basic_data.Result[0].BasicData.TaxIdStatus }}",
+                "type": "string"
+              },
+              {
+                "id": "20f7e1af-fd38-4c45-8774-8d05d9a45d3b",
+                "name": "gender",
+                "value": "={{ $json.QueryBDC_peoplev2_basic_data.Result[0].BasicData.Gender }}",
+                "type": "string"
+              },
+              {
+                "id": "de11e48c-6164-47ad-9d4b-713dd55a0f98",
+                "name": "birth_date",
+                "value": "={{ $json.QueryBDC_peoplev2_basic_data.Result[0].BasicData.BirthDate }}",
+                "type": "string"
+              },
+              {
+                "id": "8d880c87-528f-4469-baf4-5993637e55d0",
+                "name": "age",
+                "value": "={{ $json.QueryBDC_peoplev2_basic_data.Result[0].BasicData.Age }}",
+                "type": "number"
+              },
+              {
+                "id": "c2f8b149-0340-41b1-a413-0d0e7a5c630a",
+                "name": "mother_name",
+                "value": "={{ $json.QueryBDC_peoplev2_basic_data.Result[0].BasicData.MotherName }}",
+                "type": "string"
+              },
+              {
+                "id": "d1e48fc5-0ea6-42ff-a407-d9cf65554493",
+                "name": "status",
+                "value": "={{ $json.QueryBDC_peoplev2_basic_data.Result[0].BasicData.TaxIdStatus }}",
+                "type": "string"
+              },
+              {
+                "id": "526f0b15-14c9-4e94-9dbc-919c5a55101e",
+                "name": "obit",
+                "value": "={{ $json.QueryBDC_peoplev2_basic_data.Result[0].BasicData.HasObitIndication }}",
+                "type": "string"
+              },
+              {
+                "id": "1e0c4a97-bafd-4dac-aa59-9c93e4ade4a6",
+                "name": "father_name",
+                "value": "={{ $json.QueryBDC_peoplev2_basic_data.Result[0].BasicData.FatherName }}",
+                "type": "string"
+              },
+              {
+                "id": "442078ef-35be-4a3c-a62b-779213f880e1",
+                "name": "zodiac_sign",
+                "value": "={{ $json.QueryBDC_peoplev2_basic_data.Result[0].BasicData.ZodiacSign }}",
+                "type": "string"
+              },
+              {
+                "id": "bedfea39-a30d-44e2-b5c9-d82ddaca44c4",
+                "name": "country",
+                "value": "={{ $json.QueryBDC_peoplev2_basic_data.Result[0].BasicData.BirthCountry }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "a58cf169-0789-4ed1-bcce-664fe6ca2e3e",
+        "name": "format_peoplev2_basic_data",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -160,
+          -40
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "fa9beb94-f86f-443b-a13e-3445057def7c",
+                "name": "typology",
+                "value": "={{ $json.QueryBDC_addresses_extended.Result[0].ExtendedAddresses.Addresses[0].Typology }}",
+                "type": "string"
+              },
+              {
+                "id": "c2e6a995-cbe4-4253-93bf-096166482da8",
+                "name": "address_main",
+                "value": "={{ $json.QueryBDC_addresses_extended.Result[0].ExtendedAddresses.Addresses[0].AddressMain }}",
+                "type": "string"
+              },
+              {
+                "id": "8915b605-6aa9-4789-af62-77ade5c9824b",
+                "name": "number",
+                "value": "={{ $json.QueryBDC_addresses_extended.Result[0].ExtendedAddresses.Addresses[0].Number }}",
+                "type": "string"
+              },
+              {
+                "id": "80a8f06d-6df3-484d-afbb-aa66e41e75ac",
+                "name": "complement",
+                "value": "={{ $json.QueryBDC_addresses_extended.Result[0].ExtendedAddresses.Addresses[0].Complement }}",
+                "type": "string"
+              },
+              {
+                "id": "85940276-dd23-4db9-adf8-e66fca901e9e",
+                "name": "neighborhood",
+                "value": "={{ $json.QueryBDC_addresses_extended.Result[0].ExtendedAddresses.Addresses[0].Neighborhood }}",
+                "type": "string"
+              },
+              {
+                "id": "3124b4a4-d9b5-4216-a7e8-62e55feeafec",
+                "name": "zip_code",
+                "value": "={{ $json.QueryBDC_addresses_extended.Result[0].ExtendedAddresses.Addresses[0].ZipCode }}",
+                "type": "string"
+              },
+              {
+                "id": "a01b7615-04ca-46ee-8f18-6459b02d8941",
+                "name": "city",
+                "value": "={{ $json.QueryBDC_addresses_extended.Result[0].ExtendedAddresses.Addresses[0].City }}",
+                "type": "string"
+              },
+              {
+                "id": "73160e71-698d-41cf-a668-1c63c33bd3d9",
+                "name": "state",
+                "value": "={{ $json.QueryBDC_addresses_extended.Result[0].ExtendedAddresses.Addresses[0].State }}",
+                "type": "string"
+              },
+              {
+                "id": "5ee41ee4-a2ad-47e4-ae0b-734cbbb92985",
+                "name": "country",
+                "value": "={{ $json.QueryBDC_addresses_extended.Result[0].ExtendedAddresses.Addresses[0].Country }}",
+                "type": "string"
+              },
+              {
+                "id": "c44fd801-a0be-48db-83b1-e6217ae0bc6e",
+                "name": "type",
+                "value": "={{ $json.QueryBDC_addresses_extended.Result[0].ExtendedAddresses.Addresses[0].Type }}",
+                "type": "string"
+              },
+              {
+                "id": "aaa3fe74-4d69-478e-8b6b-30ebba84b0f2",
+                "name": "complement_type",
+                "value": "={{ $json.QueryBDC_addresses_extended.Result[0].ExtendedAddresses.Addresses[0].ComplementType }}",
+                "type": "string"
+              },
+              {
+                "id": "33a47ae8-0090-4756-ba5d-67b623a9e349",
+                "name": "priority",
+                "value": "={{ $json.QueryBDC_addresses_extended.Result[0].ExtendedAddresses.Addresses[0].Priority }}",
+                "type": "string"
+              },
+              {
+                "id": "b4574210-2c09-445e-8c91-65f22b2e0559",
+                "name": "is_main",
+                "value": "={{ $json.QueryBDC_addresses_extended.Result[0].ExtendedAddresses.Addresses[0].IsMainForEntity }}",
+                "type": "string"
+              },
+              {
+                "id": "cc282273-cba4-4b26-bc39-a2d44ed805ed",
+                "name": "is_recent",
+                "value": "={{ $json.QueryBDC_addresses_extended.Result[0].ExtendedAddresses.Addresses[0].IsRecentForEntity }}",
+                "type": "string"
+              },
+              {
+                "id": "74124658-6ede-4fea-8e7d-e0741d17946a",
+                "name": "is_active",
+                "value": "={{ $json.QueryBDC_addresses_extended.Result[0].ExtendedAddresses.Addresses[0].IsActive }}",
+                "type": "string"
+              },
+              {
+                "id": "2493c005-eda4-4ab1-9d99-4e620bc2a3e8",
+                "name": "latitude",
+                "value": "={{ $json.QueryBDC_addresses_extended.Result[0].ExtendedAddresses.Addresses[0].Latitude }}",
+                "type": "string"
+              },
+              {
+                "id": "c5f76a45-8d46-4ffb-95da-a48b368b8064",
+                "name": "longitude",
+                "value": "={{ $json.QueryBDC_addresses_extended.Result[0].ExtendedAddresses.Addresses[0].Longitude }}",
+                "type": "string"
+              },
+              {
+                "id": "b733b7cd-8147-4024-a256-0db4a3326d1a",
+                "name": "creation_data",
+                "value": "={{ $json.QueryBDC_addresses_extended.Result[0].ExtendedAddresses.Addresses[0].CreationDate }}",
+                "type": "string"
+              },
+              {
+                "id": "cb937365-6fe2-434a-bcdf-a0b91a0e64fa",
+                "name": "last_update_data",
+                "value": "={{ $json.QueryBDC_addresses_extended.Result[0].ExtendedAddresses.Addresses[0].LastUpdateDate }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "0ef3fb57-0795-4647-b1b1-f63eabfd7689",
+        "name": "result_peoplev2_addresses_extended",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -160,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "content": "- Transformas funções em low code\n\n- Retornar valores e não resultado"
+        },
+        "id": "625e5a98-e611-42c9-8086-77f501232418",
+        "name": "Sticky Note",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -1400,
+          1760
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "e8a85203-8c7f-4ccd-9ca7-d8f49212c7fa",
+                "name": "pefin_vl",
+                "value": "={{ Number([ \"0\", \"N/A\", \"Não\", None].includes($json.serasa_cpf.pefin_valor) ? 1 : $json.serasa_cpf.pefin_valor + $json.pefin_cnpj).toFixed(2) }}",
+                "type": "number"
+              },
+              {
+                "id": "ecc50311-dfd4-49ab-93a7-290eb56d2833",
+                "name": "valor_equip",
+                "value": "={{ Number([ \"0\", \"N/A\", \"Não\", None].includes($json.valor_equip.toString()) ? 1 : $json.valor_equip).toFixed(2) }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "4e14e5bc-57b1-44de-af4f-505354cfbcc7",
+        "name": "pefin_valor_equip",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -160,
+          3960
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b03adfc9-0ecf-4041-ade6-321c03c8e898",
+                "name": "pefin_equip",
+                "value": "={{ parseFloat(Number($json.pefin_vl / $json.valor_equip).toFixed(2)) }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d896809b-7465-49a0-be9a-33a782f2103d",
+        "name": "pefin_equip",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          60,
+          3960
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "377c3560-f506-433b-8b5c-a223e7f1bf23",
+                "name": "data_fundacao_anos",
+                "value": "={{ $json.basic_data.founded_date ? $now.format('yyyy-MM-dd').split(\"-\")[0] - $json.basic_data.founded_date.toDateTime().format('yyyy-MM-dd').split(\"-\")[0] : 0 }}",
+                "type": "number"
+              },
+              {
+                "id": "68ebe7c4-78c1-4bed-a927-bc08216444b5",
+                "name": "data_fundacao_meses",
+                "value": "={{ $json.basic_data.founded_date ? $now.format('yyyy-MM-dd').split(\"-\")[1] -  $json.basic_data.founded_date.toDateTime().format('yyyy-MM-dd').split(\"-\")[1] : 0 }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "b8274ec9-11cd-49fc-93e9-a1f03202d62b",
+        "name": "calc_meses_fundacao",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -160,
+          400
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7759c790-f488-40cb-925b-374818398d8e",
+                "name": "data_fundacao_anos",
+                "value": "={{ $json.data_fundacao_anos }}",
+                "type": "number"
+              },
+              {
+                "id": "8af3f6fa-0ef0-4cae-ab6a-da6f1586ad58",
+                "name": "data_fundacao_meses",
+                "value": "={{ $json.data_fundacao_meses }}",
+                "type": "number"
+              },
+              {
+                "id": "6f4df6fb-ffe7-4298-acb3-aecf30a0f37e",
+                "name": "data_fundacao_meses_total",
+                "value": "={{ $json.data_fundacao_anos * 12 + $json.data_fundacao_meses }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "b2bfec06-e3ec-4634-bb68-9ab0a61027da",
+        "name": "result_meses_fundação",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          60,
+          400
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "00159e9d-a80e-4e2c-a404-b09467a4e831",
+                "name": "bacenLimiteCnpj",
+                "value": "={{ $json.scr_cnpj.lista_resumo_operacoes.reduce((sum, op) => sum + (op.listaDeVencimentos.reduce((acc, venc) => acc + (['v20', 'v40', 'v60', 'v80'].includes(venc.codigoVencimento) ? parseFloat(venc.valorVencimento) : 0), 0)), 0) }}",
+                "type": "number"
+              },
+              {
+                "id": "5bcd6f8f-69fb-4188-8c49-83ade30cada0",
+                "name": "bacenUtlCnpj",
+                "value": "={{ $json.scr_cnpj.lista_resumo_operacoes.reduce((sum, op) => sum + (op.listaDeVencimentos.reduce((acc, venc) => acc + (['v110', 'v120', 'v130', 'v140', 'v150', 'v160', 'v165', 'v170', 'v175', 'v180', 'v190', 'v199'].includes(venc.codigoVencimento) ? parseFloat(venc.valorVencimento) : 0), 0)), 0) }}",
+                "type": "number"
+              },
+              {
+                "id": "ebb432b6-ee60-4112-8e5e-d3e38e5b584b",
+                "name": "bacenPrejCnpj",
+                "value": "={{ $json.scr_cnpj.lista_resumo_operacoes.reduce((sum, op) => sum + (op.listaDeVencimentos.reduce((acc, venc) => acc + (['v310', 'v320', 'v330', 'v340', 'v375', 'v390'].includes(venc.codigoVencimento) ? parseFloat(venc.valorVencimento) : 0), 0)), 0) }}",
+                "type": "number"
+              },
+              {
+                "id": "7395e33f-f9ba-4e0d-8045-2bdf1334528b",
+                "name": "bacenVencidoCnpj",
+                "value": "={{ $json.scr_cnpj.lista_resumo_operacoes.reduce((sum, op) => sum + (op.listaDeVencimentos.reduce((acc, venc) => acc + (['v205', 'v210', 'v220', 'v230', 'v240', 'v245', 'v250', 'v255', 'v260', 'v270','v275', 'v280', 'v290'].includes(venc.codigoVencimento) ? parseFloat(venc.valorVencimento) : 0), 0)), 0) }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "2ebcf6b3-4215-44dd-92e9-d54477a2b22e",
+        "name": "sum_debtors_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -160,
+          2220
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "00159e9d-a80e-4e2c-a404-b09467a4e831",
+                "name": "bacenUtlCpf",
+                "value": "={{ $json.scr_cpf.lista_resumo_operacoes.reduce((sum, op) => sum + (op.listaDeVencimentos.reduce((acc, venc) => acc + (['v110', 'v120', 'v130', 'v140', 'v150', 'v160', 'v165', 'v170', 'v175', 'v180', 'v190', 'v199'].includes(venc.codigoVencimento) ? parseFloat(venc.valorVencimento) : 0), 0)), 0) }}",
+                "type": "number"
+              },
+              {
+                "id": "5bcd6f8f-69fb-4188-8c49-83ade30cada0",
+                "name": "bacenPrejCpf",
+                "value": "={{ $json.scr_cpf.lista_resumo_operacoes.reduce((sum, op) => sum + (op.listaDeVencimentos.reduce((acc, venc) => acc + (['v310', 'v320', 'v330', 'v340', 'v375', 'v390'].includes(venc.codigoVencimento) ? parseFloat(venc.valorVencimento) : 0), 0)), 0) }}",
+                "type": "number"
+              },
+              {
+                "id": "ebb432b6-ee60-4112-8e5e-d3e38e5b584b",
+                "name": "bacenVencidoCpf",
+                "value": "={{ $json.scr_cpf.lista_resumo_operacoes.reduce((sum, op) => sum + (op.listaDeVencimentos.reduce((acc, venc) => acc + (['v205', 'v210', 'v220', 'v230', 'v240', 'v245', 'v250', 'v255', 'v260', 'v270','v275', 'v280', 'v290'].includes(venc.codigoVencimento) ? parseFloat(venc.valorVencimento) : 0), 0)), 0) }}",
+                "type": "number"
+              },
+              {
+                "id": "3092eb26-4727-49bd-b164-b05a90efca92",
+                "name": "bacenLimiteCpf",
+                "value": "={{ $json.scr_cpf.lista_resumo_operacoes.reduce((sum, op) => sum + (op.listaDeVencimentos.reduce((acc, venc) => acc + (['v20', 'v40', 'v60', 'v80'].includes(venc.codigoVencimento) ? parseFloat(venc.valorVencimento) : 0), 0)), 0) }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d718b3e9-4136-42f6-9adf-c64bd2bce078",
+        "name": "sum_debtors_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -160,
+          2420
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "eb439056-af53-4ba9-87b1-fd227b5e4ee0",
+                "name": "bacen_vencido_cpf",
+                "value": "={{ Number($json.bacenVencidoCpf).toFixed(2) }}",
+                "type": "number"
+              },
+              {
+                "id": "a0b34324-1f02-4ef3-ae41-6889ebb75a3a",
+                "name": "prej_bacen_cpf",
+                "value": "={{ Number($json.bacenPrejCpf).toFixed(2) }}",
+                "type": "number"
+              },
+              {
+                "id": "7693d155-5ca4-42a6-b278-41ee90ae2f49",
+                "name": "bacen_limite_utilizado_cpf",
+                "value": "={{ Number($json.bacenUtlCpf + $json.bacenPrejCpf + $json.bacenVencidoCpf).toFixed(2) }}",
+                "type": "number"
+              },
+              {
+                "id": "1b647c63-74c8-4c6d-aa22-3a9b5f88f4d0",
+                "name": "bacen_limite_cpf",
+                "value": "={{ Number($json[\"bacenLimiteCpf\"] + $json.bacenPrejCpf + $json.bacenUtlCpf + $json.bacenVencidoCpf).toFixed(2) }}",
+                "type": "number"
+              },
+              {
+                "id": "8cb53207-796d-4c65-92fe-ba8b0992d2b5",
+                "name": "bacen_a_vencer_cpf",
+                "value": "={{ Number($json.bacenUtlCpf).toFixed(2) }}",
+                "type": "number"
+              },
+              {
+                "id": "cddb7df2-5973-4e62-9bce-ac9a23103652",
+                "name": "carteira_de_credito",
+                "value": "={{ Number($json.bacenUtlCpf + $json.bacenVencidoCpf + $json.bacenPrejCpf).toFixed(2) }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "27ef0d82-697b-4caf-8171-fc82f2203d6a",
+        "name": "result_bacen_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          40,
+          2420
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "74c05198-4883-4e19-99ee-d9814f154f91",
+                "name": "cnpj_if_solicitante",
+                "value": "={{ $json.QueryBMP_2.cnpjDaIfSolicitante }}",
+                "type": "string"
+              },
+              {
+                "id": "73de73b9-d4fb-4d18-8d27-c101bc7b7507",
+                "name": "codigo_do_cliente",
+                "value": "={{ $json.QueryBMP_2.codigoDoCliente }}",
+                "type": "string"
+              },
+              {
+                "id": "ea420cc4-cee3-451f-9594-33b2b30d9a4b",
+                "name": "coobrigacao_assumida",
+                "value": "={{ $json.QueryBMP_2.coobrigacaoAssumida }}",
+                "type": "string"
+              },
+              {
+                "id": "3a622a0c-4445-4fde-8672-c24d0e618f89",
+                "name": "coobrigacao_recebida",
+                "value": "={{ $json.QueryBMP_2.coobrigacaoRecebida }}",
+                "type": "string"
+              },
+              {
+                "id": "e90dae99-64b3-4ac5-87a0-ad6213bb79d6",
+                "name": "data_base_consultada",
+                "value": "={{ $json.QueryBMP_2.dataBaseConsultada }}",
+                "type": "string"
+              },
+              {
+                "id": "9b025d91-dc2c-45fd-add8-973a9b30f795",
+                "name": "data_inicio_relacionamento",
+                "value": "={{ $json.QueryBMP_2.dataInicioRelacionamento }}",
+                "type": "string"
+              },
+              {
+                "id": "da95b9e0-9d7a-4535-9e2e-e9ed3d898093",
+                "name": "lista_resumo_operacoes",
+                "value": "={{ $json.QueryBMP_2.listaDeResumoDasOperacoes }}",
+                "type": "array"
+              },
+              {
+                "id": "e315e3ad-3ab8-4f36-8294-2d90efb5a67a",
+                "name": "percentual_documentos_processados",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "816f84e9-2a69-43bf-b810-55909dae7e3b",
+                "name": "percentual_volume_processado",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "37c4a311-724b-4546-82fb-b30ae5dc9d4f",
+                "name": "quantidade_instituicoes",
+                "value": "={{ $json.QueryBMP_2.qtdeInstituicoes }}",
+                "type": "string"
+              },
+              {
+                "id": "816bc259-6c03-4250-8b35-b248ba41d6e0",
+                "name": "quantidade_operacoes",
+                "value": "={{ $json.QueryBMP_2.qtdeOperacoes }}",
+                "type": "string"
+              },
+              {
+                "id": "2ef4dbc0-74b8-4259-aa70-80713b5acc03",
+                "name": "quantidade_operacoes_discordancia",
+                "value": "={{ $json.QueryBMP_2.qtdeOperacoesDiscordancia }}",
+                "type": "string"
+              },
+              {
+                "id": "1e3a5636-680a-49f9-affa-d3b013cbb0fb",
+                "name": "quantidade_operacoes_sub_judice",
+                "value": "={{ $json.QueryBMP_2.qtdeOperacoesSobJudice }}",
+                "type": "string"
+              },
+              {
+                "id": "7c311a33-0dbb-4721-9ba1-ba496a0bd528",
+                "name": "responsabilidade_total_discordancia",
+                "value": "={{ $json.QueryBMP_2.responsabilidadeTotalDiscordancia }}",
+                "type": "string"
+              },
+              {
+                "id": "bb22ed15-34b8-47d3-9c79-30b8fced2f7e",
+                "name": "responsabilidade_total_sub_judice",
+                "value": "={{ $json.QueryBMP_2.responsabilidadeTotalSubJudice }}",
+                "type": "string"
+              },
+              {
+                "id": "50de6589-e8db-40ff-96b9-d97161d761ae",
+                "name": "risco_indireto_vendor",
+                "value": "={{ $json.QueryBMP_2.riscoIndiretoVendor }}",
+                "type": "string"
+              },
+              {
+                "id": "cf9dca56-dc2b-4270-8562-eb22b07261f0",
+                "name": "tipo_cliente",
+                "value": "={{ $json.QueryBMP_2.tipoDoCliente }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "53b90917-877d-4c76-ab0f-71d59bb886a0",
+        "name": "format_response_bmp_CNPJ",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -160,
+          2040
+        ]
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "QueryBDC_relationships.Result[0].Relationships.CurrentRelationships",
+          "options": {}
+        },
+        "id": "1b4529c3-51e9-4411-b21c-379bcdb1decc",
+        "name": "Separa Sócios",
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          160,
+          -500
+        ],
+        "alwaysOutputData": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "76e59a29-899f-464b-baed-5c06e46dd56a",
+                "leftValue": "={{ $json.RelationshipName }}",
+                "rightValue": "=DIRETOR",
+                "operator": {
+                  "type": "string",
+                  "operation": "contains"
+                }
+              },
+              {
+                "id": "2fe52415-9fea-479b-86fb-91cd8d0c5d3c",
+                "leftValue": "={{ $json.RelationshipName }}",
+                "rightValue": "PRESIDENTE",
+                "operator": {
+                  "type": "string",
+                  "operation": "contains"
+                }
+              },
+              {
+                "id": "cea36dea-a630-495e-939d-71f4689e5831",
+                "leftValue": "={{ $json.RelationshipName }}",
+                "rightValue": "ADMINISTRADOR",
+                "operator": {
+                  "type": "string",
+                  "operation": "contains"
+                }
+              },
+              {
+                "id": "ef9a1264-b87c-41da-861d-233cdb09a49b",
+                "leftValue": "={{ $json.RelationshipName }}",
+                "rightValue": "OWNER",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "36f9e3f9-efc5-4609-9a11-dd0d1bbb79fc",
+                "leftValue": "={{ $json.RelationshipLevel }}",
+                "rightValue": "Direct",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "id": "023a4400-f65f-48e8-9559-b980f596acea",
+        "name": "Filtro por Relacionamento",
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2,
+        "position": [
+          460,
+          -500
+        ],
+        "alwaysOutputData": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "socios",
+          "options": {}
+        },
+        "id": "e505516a-48d0-43af-afd5-35d7da623328",
+        "name": "Agregar Sócios",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          700,
+          -500
+        ],
+        "alwaysOutputData": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "fa9beb94-f86f-443b-a13e-3445057def7c",
+                "name": "cpf",
+                "value": "={{ $json.socios.first().RelatedEntityTaxIdNumber }}",
+                "type": "string"
+              },
+              {
+                "id": "d67637e8-55b2-478f-8490-aac038169d6d",
+                "name": "country",
+                "value": "={{ $json.socios.first().RelatedEntityTaxIdCountry }}",
+                "type": "string"
+              },
+              {
+                "id": "c5546706-b3ff-4408-a74d-ef8a773974a0",
+                "name": "name",
+                "value": "={{ $json.socios.first().RelatedEntityName }}",
+                "type": "string"
+              },
+              {
+                "id": "78f8b1df-ae4d-4896-948f-ad5e604453fb",
+                "name": "relationship_type",
+                "value": "={{ $json.socios.first().RelationshipType }}",
+                "type": "string"
+              },
+              {
+                "id": "5cd618eb-42e7-4df6-b3ac-eba857f411a7",
+                "name": "relationship_name",
+                "value": "={{ $json.socios.first().RelationshipName }}",
+                "type": "string"
+              },
+              {
+                "id": "a203894e-25ac-4f0c-b23f-9fd38ead2a0a",
+                "name": "relationship_level",
+                "value": "={{ $json.socios.first().RelationshipLevel }}",
+                "type": "string"
+              },
+              {
+                "id": "12c25acb-51c4-4312-8f2c-be7bb058cf5d",
+                "name": "relationship_data_origin",
+                "value": "={{ $json.socios.first().RelationshipDataOrigin }}",
+                "type": "string"
+              },
+              {
+                "id": "24598073-1763-46b9-a5b5-ede5902e482c",
+                "name": "creation_data",
+                "value": "={{ $json.socios.first().CreationDate }}",
+                "type": "string"
+              },
+              {
+                "id": "591bf9bf-028e-40a8-8a45-636b30c156f8",
+                "name": "last_update_data",
+                "value": "={{ $json.socios.first().LastUpdateDate }}",
+                "type": "string"
+              },
+              {
+                "id": "0e2ae9cd-7c23-43c5-9d8e-7ddff7f378cf",
+                "name": "relationship_date_start",
+                "value": "={{ $json.socios.first().RelationshipStartDate }}",
+                "type": "string"
+              },
+              {
+                "id": "cb8b236a-07f7-4735-bb23-c1e0e8d1e601",
+                "name": "relationship_date_end",
+                "value": "={{ $json.socios.first().RelationshipEndDate }}",
+                "type": "string"
+              },
+              {
+                "id": "c911f6a4-4d61-4e0a-bc60-40dea02febdc",
+                "name": "cpf_divergente",
+                "value": "={{ (() => {\n  // CPF a ser verificado (substitua pelo CPF que deseja verificar)\n  const cpfCliente = $('lead').first().json.cpfCliente || \"\";\n  \n  // Lista de relacionamentos do JSON\n  const relationships = $json.socios || [];\n  \n  // Verificar se o CPF está na lista de sócios\n  const cpfExiste = relationships.some(rel =>\n    rel.RelatedEntityTaxIdNumber === cpfCliente\n  );\n\n  // Retornar o resultado\n  return cpfExiste ? \"NÃO\" : \"SIM\";\n})() }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "4143df2b-1be3-4df1-8ba3-5721402c9681",
+        "name": "format_companies_relationships",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          920,
+          -500
+        ],
+        "alwaysOutputData": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "066973d1-eac9-4827-b6ad-541bd19ccea7",
+                "name": "extractedData",
+                "value": "={{ $json.QuerySerasa_J ? $json.QuerySerasa_J : $json.QuerySerasa_F }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "463d9662-ea6d-4a44-a278-b49eadf9451a",
+        "name": "extractedData",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -160,
+          2640
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "90935744-e0d0-4092-a72f-3053ab8ff133",
+                "name": "chequeIndex",
+                "value": "={{ $json.extractedData.indexOf('N27090') }}",
+                "type": "number"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "id": "549b493b-443d-4a1d-95a1-33db40f24b31",
+        "name": "chequeIndex",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          60,
+          2640
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "9ea38721-92a5-42db-860e-f3dee8d34419",
+                "name": "chequeDate",
+                "value": "={{ $json.chequeIndex !== -1 ? $json.extractedData.substring($json.chequeIndex + 19, $json.chequeIndex + 27).replace(/(\\d{2})(\\d{2})(\\d{4})/, '$2/$1/$3') : 'N/A' }}",
+                "type": "string"
+              },
+              {
+                "id": "02c80cb4-b1df-4fd8-8fab-3b4ae8cf061e",
+                "name": "chequeQuantity",
+                "value": "={{ $json.chequeIndex !== -1 ? $json.extractedData.substring($json.chequeIndex + 6, $json.chequeIndex + 11).trim() : '0' }}",
+                "type": "number"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "id": "f2e53504-6b64-46d9-ac30-9ff86d84d578",
+        "name": "chequeDate - chequeQuantity",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          280,
+          2640
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d2c7bf8e-c6ed-4cfb-955a-121fbb1310c9",
+                "name": "protestoIndex",
+                "value": "={{ $json.extractedData.indexOf('N25090') }}",
+                "type": "number"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "id": "81f43e81-e9e4-4116-8931-46970f20d20e",
+        "name": "protestoIndex",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          500,
+          2640
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f75366d7-f24d-4c29-9e23-57f7651febab",
+                "name": "protestoDate",
+                "value": "={{ $json.protestoIndex !== -1 ? '01' + $json.extractedData.substring($json.protestoIndex + 17, $json.protestoIndex + 23).trim().replace(/(\\d{2})(\\d{2})(\\d{4})/, '$2/$1/$3') : 'N/A' }}",
+                "type": "string"
+              },
+              {
+                "id": "48c6d411-6f8b-4fdd-8785-abd1caf76f6d",
+                "name": "protestoValue",
+                "value": "={{ $json.protestoIndex !== -1 ? parseFloat($json.extractedData.substring($json.protestoIndex + 26, $json.protestoIndex + 39).trim() + '.' + $json.extractedData.substring($json.protestoIndex + 39, $json.protestoIndex + 41)) : 0 }}",
+                "type": "number"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "id": "33601470-673d-4b71-ac5d-9220a3116193",
+        "name": "protestoDate - protestoValue",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          700,
+          2640
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "a6afa5a1-930f-45bc-9d85-1bdd7e899bd2",
+                "name": "chq_data",
+                "value": "={{ $json.chequeDate }}",
+                "type": "string"
+              },
+              {
+                "id": "888cc77c-2a33-49b0-8cd7-20373df8ad4d",
+                "name": "chq_qtd",
+                "value": "={{ $json.chequeQuantity }}",
+                "type": "number"
+              },
+              {
+                "id": "a1996786-a3e4-4259-94e6-3cccbaad7fad",
+                "name": "pefin_valor",
+                "value": "={{ Number($json.pefinValue).toFixed(2) }}",
+                "type": "number"
+              },
+              {
+                "id": "acf3abc1-7f65-42af-98e0-4ce12d9465cc",
+                "name": "pefin_data",
+                "value": "={{ $json.pefinDate }}",
+                "type": "string"
+              },
+              {
+                "id": "8461c8ea-84e3-4c49-8932-735dc85aa4d2",
+                "name": "refin_valor",
+                "value": "={{ Number($json.refinValue).toFixed(2) }}",
+                "type": "number"
+              },
+              {
+                "id": "c11f44c6-1275-4190-8102-a6bb722fca7e",
+                "name": "refin_data",
+                "value": "={{ $json.refinDate }}",
+                "type": "string"
+              },
+              {
+                "id": "56a96625-1ca7-49ef-8632-c8f89614836c",
+                "name": "protesto_valor",
+                "value": "={{ Number($json.protestoValue).toFixed(2) }}",
+                "type": "number"
+              },
+              {
+                "id": "1afea16c-b9c6-4304-aaae-89e754a94401",
+                "name": "protesto_data",
+                "value": "={{ $json.protestoDate }}",
+                "type": "string"
+              },
+              {
+                "id": "2c24ee31-fd53-441f-b734-0569be27d866",
+                "name": "serasa_score",
+                "value": "={{( $json.scoreSerasaCNPJ == 0 ? $json.scoreSerasaCPF : $json.scoreSerasaCNPJ ) == \"SCOR\" ? 0 : $json.scoreSerasaCNPJ == 0 ? $json.scoreSerasaCPF : $json.scoreSerasaCNPJ }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {
+            "ignoreConversionErrors": true
+          }
+        },
+        "id": "ad845ec7-14b1-497b-97e3-a780b6805100",
+        "name": "result",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1660,
+          2640
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b2208f16-f017-4e7c-9dd8-f4f8413209eb",
+                "name": "antecedentes",
+                "value": "={{ $json.QueryBDC_ondemand_pf_antecedente.Result[0].OnlineCertificates[0].BaseStatus }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "9ecaf4e5-7388-4446-a151-28301f26ab90",
+        "name": "format_antecedente",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -160,
+          600
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b2208f16-f017-4e7c-9dd8-f4f8413209eb",
+                "name": "mandatos",
+                "value": "={{ $json.QueryBDC_ondemand_nada_consta.Result[0].OnlineCertificates[0].BaseStatus }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "93a07eb2-c3ec-4566-8a1e-717537445ac2",
+        "name": "format_mandato",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -160,
+          800
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.api }}",
+                      "rightValue": "=BDC",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "04bb6af6-fb1a-4dd8-baeb-d4d9994f6764"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "BDC"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "47dfbe04-3ad0-4468-83d2-6ade6db53b80",
+                      "leftValue": "={{ $json.api }}",
+                      "rightValue": "BMP",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "BMP"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "f8c309c0-5217-4f51-975d-d6126f3feb79",
+                      "leftValue": "={{ $json.api }}",
+                      "rightValue": "Serasa",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Serasa"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "31bc3f73-4b7a-46b9-98b3-2cab135d45a3",
+                      "leftValue": "={{ $json.api }}",
+                      "rightValue": "DestravaAi",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "DestravaAi"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "810a7832-df73-466d-ab78-101f22cbf97a",
+        "name": "Qual API ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -1100,
+          2040
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "74c05198-4883-4e19-99ee-d9814f154f91",
+                "name": "cnpj_if_solicitante",
+                "value": "={{ $json.QueryBMP_1.cnpjDaIfSolicitante }}",
+                "type": "string"
+              },
+              {
+                "id": "73de73b9-d4fb-4d18-8d27-c101bc7b7507",
+                "name": "codigo_do_cliente",
+                "value": "={{ $json.QueryBMP_1.codigoDoCliente }}",
+                "type": "string"
+              },
+              {
+                "id": "ea420cc4-cee3-451f-9594-33b2b30d9a4b",
+                "name": "coobrigacao_assumida",
+                "value": "={{ $json.QueryBMP_1.coobrigacaoAssumida }}",
+                "type": "string"
+              },
+              {
+                "id": "3a622a0c-4445-4fde-8672-c24d0e618f89",
+                "name": "coobrigacao_recebida",
+                "value": "={{ $json.QueryBMP_1.coobrigacaoRecebida }}",
+                "type": "string"
+              },
+              {
+                "id": "e90dae99-64b3-4ac5-87a0-ad6213bb79d6",
+                "name": "data_base_consultada",
+                "value": "={{ $json.QueryBMP_1.dataBaseConsultada }}",
+                "type": "string"
+              },
+              {
+                "id": "9b025d91-dc2c-45fd-add8-973a9b30f795",
+                "name": "data_inicio_relacionamento",
+                "value": "={{ $json.QueryBMP_1.dataInicioRelacionamento }}",
+                "type": "string"
+              },
+              {
+                "id": "da95b9e0-9d7a-4535-9e2e-e9ed3d898093",
+                "name": "lista_resumo_operacoes",
+                "value": "={{ $json.QueryBMP_1.listaDeResumoDasOperacoes }}",
+                "type": "array"
+              },
+              {
+                "id": "e315e3ad-3ab8-4f36-8294-2d90efb5a67a",
+                "name": "percentual_documentos_processados",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "816f84e9-2a69-43bf-b810-55909dae7e3b",
+                "name": "percentual_volume_processado",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "37c4a311-724b-4546-82fb-b30ae5dc9d4f",
+                "name": "quantidade_instituicoes",
+                "value": "={{ $json.QueryBMP_1.quantidadeDeInstituicoes }}",
+                "type": "string"
+              },
+              {
+                "id": "816bc259-6c03-4250-8b35-b248ba41d6e0",
+                "name": "quantidade_operacoes",
+                "value": "={{ $json.QueryBMP_1.quantidadeDeOperacoes }}",
+                "type": "string"
+              },
+              {
+                "id": "2ef4dbc0-74b8-4259-aa70-80713b5acc03",
+                "name": "quantidade_operacoes_discordancia",
+                "value": "={{ $json.QueryBMP_1.quantidadeOperacoesDiscordancia }}",
+                "type": "string"
+              },
+              {
+                "id": "1e3a5636-680a-49f9-affa-d3b013cbb0fb",
+                "name": "quantidade_operacoes_sub_judice",
+                "value": "={{ $json.QueryBMP_1.quantidadeOperacoesSubJudice }}",
+                "type": "string"
+              },
+              {
+                "id": "7c311a33-0dbb-4721-9ba1-ba496a0bd528",
+                "name": "responsabilidade_total_discordancia",
+                "value": "={{ $json.QueryBMP_1.responsabilidadeTotalDiscordancia }}",
+                "type": "string"
+              },
+              {
+                "id": "bb22ed15-34b8-47d3-9c79-30b8fced2f7e",
+                "name": "responsabilidade_total_sub_judice",
+                "value": "={{ $json.QueryBMP_1.responsabilidadeTotalSubJudice }}",
+                "type": "string"
+              },
+              {
+                "id": "50de6589-e8db-40ff-96b9-d97161d761ae",
+                "name": "risco_indireto_vendor",
+                "value": "={{ $json.QueryBMP_1.riscoIndiretoVendor }}",
+                "type": "string"
+              },
+              {
+                "id": "cf9dca56-dc2b-4270-8562-eb22b07261f0",
+                "name": "tipo_cliente",
+                "value": "={{ $json.QueryBMP_1.tipoDoCliente }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "1d053ad1-2aad-47eb-bf53-3365418c2ef4",
+        "name": "format_response_bmp_CPF",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -160,
+          1860
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.func }}",
+                      "rightValue": "format_companies_relationships",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Formatar Relações"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "d6699fa6-8b80-4ce1-bdf0-b1ca08b99b8e",
+                      "leftValue": "={{ $json.func }}",
+                      "rightValue": "format_companies_basic_data",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Formatar Dados Básicos"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "6b39e03f-d168-4a7c-83b7-9fe129c75289",
+                      "leftValue": "={{ $json.func }}",
+                      "rightValue": "format_peoplev2_basic_data",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Formatar Dadso Básicos"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "e845a107-512b-4bbe-b239-e49bdb5371fd",
+                      "leftValue": "={{ $json.func }}",
+                      "rightValue": "format_peoplev2_addresses_extended",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Formatar Edereço"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "9905f99b-cdf2-49bb-b8dd-c219dd8bead7",
+                      "leftValue": "={{ $json.func }}",
+                      "rightValue": "calcula_meses_fundacao",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Calc. Mês Fundação"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "b68f9e5a-857c-439a-85c4-0438fc1e6901",
+                      "leftValue": "={{ $json.func }}",
+                      "rightValue": "format_peoplev2_ondemand_pf_antecedente",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Formatar Antecedente"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "cb72fbfa-b4c5-476c-8bcd-d450eabb1639",
+                      "leftValue": "={{ $json.func }}",
+                      "rightValue": "format_peoplev2_ondemand_nada_consta",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Formatar Madatos"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "e66e179b-85f2-4342-a527-0a4887a08981",
+                      "leftValue": "={{ $json.func }}",
+                      "rightValue": "format_companies_kyc",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Formatar KYC EMP"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "44b26a1d-4a83-4d2a-a1ca-6a3d6c9aabb3",
+                      "leftValue": "={{ $json.func }}",
+                      "rightValue": "format_peoplev2_kyc",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Formatar KYC Pessoa"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "49ce209b-8f28-4161-b25e-2b99161ec0f6",
+                      "leftValue": "={{ $json.func }}",
+                      "rightValue": "format_companies_processos",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Formatar Processos EMP"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "c9abb69f-3b2a-4aa2-9e44-e16b3de1296c",
+                      "leftValue": "={{ $json.func }}",
+                      "rightValue": "format_peoplev2_processos",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Formatar Processos Pessoa"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "4e0ed5d1-6c3a-4955-89a8-72f4f544b384",
+        "name": "Qual Função ? BDC",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -680,
+          360
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "3e88801a-da13-4561-93b2-468d210d6a96",
+                "name": "chqDataCnpj",
+                "value": "={{ $json.serasa_cnpj?.chq_data || 'N/A' }}",
+                "type": "string"
+              },
+              {
+                "id": "9471af63-d537-429b-a444-50959c6925f1",
+                "name": "chqQtdCnpj",
+                "value": "={{ $json.serasa_cnpj?.chq_qtd ? parseFloat($json.serasa_cnpj.chq_qtd) : 0 }}",
+                "type": "number"
+              },
+              {
+                "id": "bd799459-48d9-4cb2-9c73-a39d0955b065",
+                "name": "mesesChequeCnpj",
+                "value": "={{ \n  $json.serasa_cnpj?.chq_data && $json.serasa_cnpj.chq_data !== 'N/A' && $json.serasa_cnpj.chq_data !== '' ?\n  (new Date().extract('year') - $json.serasa_cnpj.chq_data.toDateTime().extract('year')) * 12 \n  + (new Date().extract('month') - $json.serasa_cnpj.chq_data.toDateTime().extract('month')) : 0 \n}}",
+                "type": "number"
+              },
+              {
+                "id": "496aecbb-4d86-4600-8dfd-f35fbdb69bc8",
+                "name": "data_fundacao_anos",
+                "value": "={{ $json.data_fundacao_anos }}",
+                "type": "number"
+              },
+              {
+                "id": "9b52dce9-3101-49aa-b021-e3d998d6c08a",
+                "name": "data_fundacao_meses",
+                "value": "={{ $json.data_fundacao_meses }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "73527566-b443-4b81-8e7d-d54f196b2516",
+        "name": "verificar_avaliacao_cheque_sem_fundo_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -160,
+          3560
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "3e88801a-da13-4561-93b2-468d210d6a96",
+                "name": "chqDataCpf",
+                "value": "={{ $json.serasa_cpf?.chq_data || 'N/A' }}",
+                "type": "string"
+              },
+              {
+                "id": "9471af63-d537-429b-a444-50959c6925f1",
+                "name": "chqQtdCpf",
+                "value": "={{ $json.serasa_cpf?.chq_qtd ? parseFloat($json.serasa_cpf.chq_qtd) : 0 }}",
+                "type": "number"
+              },
+              {
+                "id": "bd799459-48d9-4cb2-9c73-a39d0955b065",
+                "name": "mesesChequeCpf",
+                "value": "={{ \n  $json.serasa_cpf?.chq_data && $json.serasa_cpf.chq_data !== 'N/A' && $json.serasa_cpf.chq_data !== '' ?\n  (new Date().extract('year') - $json.serasa_cpf.chq_data.toDateTime().extract('year')) * 12 \n  + (new Date().extract('month') - $json.serasa_cpf.chq_data.toDateTime().extract('month')) : 0 \n}}",
+                "type": "number"
+              },
+              {
+                "id": "496aecbb-4d86-4600-8dfd-f35fbdb69bc8",
+                "name": "data_fundacao_anos",
+                "value": "={{ $json.data_fundacao_anos }}",
+                "type": "number"
+              },
+              {
+                "id": "9b52dce9-3101-49aa-b021-e3d998d6c08a",
+                "name": "data_fundacao_meses",
+                "value": "={{ $json.data_fundacao_meses }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {
+            "ignoreConversionErrors": true
+          }
+        },
+        "id": "dc46dd40-1af7-41fa-9f45-fe90a4f1a91a",
+        "name": "verificar_avaliacao_cheque_sem_fundo_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -160,
+          3760
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "e2b2c079-1da5-4126-b2dd-2d584159bf52",
+                "leftValue": "={{ $json.QueryBDC_relationships.Result[0].Relationships.Relationships }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "array",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "eb4d9535-af8e-464b-a79b-24b6e13f2706",
+        "name": "If",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -160,
+          -520
+        ]
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "QueryBDC_relationships.Result[0].Relationships.Relationships",
+          "options": {}
+        },
+        "id": "c923ab70-84a5-4400-a40d-3c11a6673b04",
+        "name": "Separa OWNER",
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          480,
+          -960
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "ef9a1264-b87c-41da-861d-233cdb09a49b",
+                "leftValue": "={{ $json.RelationshipName }}",
+                "rightValue": "OWNER",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "e8266be6-816a-4b60-a533-6a643adf6952",
+                "leftValue": "={{ $json.RelationshipType }}",
+                "rightValue": "REPRESENTANTELEGAL",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "77140892-9c5c-4ac1-b89e-951249643677",
+                "leftValue": "={{ $json.RelationshipLevel }}",
+                "rightValue": "Direct",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "id": "429847d8-1ee7-4786-aeb9-c3367271d2b0",
+        "name": "Filtro por OWNER",
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2,
+        "position": [
+          720,
+          -960
+        ]
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "socios",
+          "options": {}
+        },
+        "id": "70957a47-c8a1-4c78-bb18-43069b2968d6",
+        "name": "Agregar OWNER",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          940,
+          -960
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "fa9beb94-f86f-443b-a13e-3445057def7c",
+                "name": "cpf",
+                "value": "={{ $json.socios.first().RelatedEntityTaxIdNumber }}",
+                "type": "string"
+              },
+              {
+                "id": "d67637e8-55b2-478f-8490-aac038169d6d",
+                "name": "country",
+                "value": "={{ $json.socios.first().RelatedEntityTaxIdCountry }}",
+                "type": "string"
+              },
+              {
+                "id": "c5546706-b3ff-4408-a74d-ef8a773974a0",
+                "name": "name",
+                "value": "={{ $json.socios.first().RelatedEntityName }}",
+                "type": "string"
+              },
+              {
+                "id": "78f8b1df-ae4d-4896-948f-ad5e604453fb",
+                "name": "relationship_type",
+                "value": "={{ $json.socios.first().RelationshipType }}",
+                "type": "string"
+              },
+              {
+                "id": "5cd618eb-42e7-4df6-b3ac-eba857f411a7",
+                "name": "relationship_name",
+                "value": "={{ $json.socios.first().RelationshipName }}",
+                "type": "string"
+              },
+              {
+                "id": "a203894e-25ac-4f0c-b23f-9fd38ead2a0a",
+                "name": "relationship_level",
+                "value": "={{ $json.socios.first().RelationshipLevel }}",
+                "type": "string"
+              },
+              {
+                "id": "12c25acb-51c4-4312-8f2c-be7bb058cf5d",
+                "name": "relationship_data_origin",
+                "value": "={{ $json.socios.first().RelationshipDataOrigin }}",
+                "type": "string"
+              },
+              {
+                "id": "24598073-1763-46b9-a5b5-ede5902e482c",
+                "name": "creation_data",
+                "value": "={{ $json.socios.first().CreationDate }}",
+                "type": "string"
+              },
+              {
+                "id": "591bf9bf-028e-40a8-8a45-636b30c156f8",
+                "name": "last_update_data",
+                "value": "={{ $json.socios.first().LastUpdateDate }}",
+                "type": "string"
+              },
+              {
+                "id": "0e2ae9cd-7c23-43c5-9d8e-7ddff7f378cf",
+                "name": "relationship_date_start",
+                "value": "={{ $json.socios.first().RelationshipStartDate }}",
+                "type": "string"
+              },
+              {
+                "id": "cb8b236a-07f7-4735-bb23-c1e0e8d1e601",
+                "name": "relationship_date_end",
+                "value": "={{ $json.socios.first().RelationshipEndDate }}",
+                "type": "string"
+              },
+              {
+                "id": "0e5c1e77-b52e-49c4-af6b-72081db11b7b",
+                "name": "cpf_divergente",
+                "value": "={{ (() => {\n  // CPF a ser verificado (substitua pelo CPF que deseja verificar)\n  const cpfCliente = $('lead').first().json.cpfCliente || \"\";\n  \n  // Lista de relacionamentos do JSON\n  const relationships = $json.socios || [];\n  \n  // Verificar se o CPF está na lista de sócios\n  const cpfExiste = relationships.some(rel =>\n    rel.RelatedEntityTaxIdNumber === cpfCliente\n  );\n\n  // Retornar o resultado\n  return cpfExiste ? \"NÃO\" : \"SIM\";\n})() }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "e76c8e52-cbce-4dcc-8b69-1a0c8437961a",
+        "name": "format_companies_relationships_owner",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1160,
+          -960
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "8d5c3bed-b8bf-48b0-8b6c-c11f1034cb0a",
+                      "leftValue": "={{ $json.func }}",
+                      "rightValue": "1",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "FormatarCPF"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.func }}",
+                      "rightValue": "2",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "FormatarCNPJ"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "2665a4f9-a88e-4c7f-8976-4efa8099fa4f",
+                      "leftValue": "={{ $json.func }}",
+                      "rightValue": "sum_debtors_cnpj",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "BacenCNPJ"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "4bc4453c-0a80-4af1-bd97-3c3b15aaf85a",
+                      "leftValue": "={{ $json.func }}",
+                      "rightValue": "sum_debtors_cpf",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "BacenCPF"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "e2ecbdc6-49ee-448e-a93e-2680676efa11",
+        "name": "Qual Função ? BMP",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -680,
+          2040
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "cddb7bfa-2c80-436f-a45b-d621563b8ce2",
+                "leftValue": "={{ $json.QueryBDC_relationships.Result[0].Relationships.Relationships }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "array",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "5cb3b5cc-e5d3-44c1-8134-80b660a44fb5",
+        "name": "If1",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          180,
+          -940
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "fa9beb94-f86f-443b-a13e-3445057def7c",
+                "name": "cpf",
+                "value": "={{ $('lead').first().json.cpfCliente }}",
+                "type": "string"
+              },
+              {
+                "id": "d67637e8-55b2-478f-8490-aac038169d6d",
+                "name": "country",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "c5546706-b3ff-4408-a74d-ef8a773974a0",
+                "name": "name",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "78f8b1df-ae4d-4896-948f-ad5e604453fb",
+                "name": "relationship_type",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "5cd618eb-42e7-4df6-b3ac-eba857f411a7",
+                "name": "relationship_name",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "a203894e-25ac-4f0c-b23f-9fd38ead2a0a",
+                "name": "relationship_level",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "12c25acb-51c4-4312-8f2c-be7bb058cf5d",
+                "name": "relationship_data_origin",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "24598073-1763-46b9-a5b5-ede5902e482c",
+                "name": "creation_data",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "591bf9bf-028e-40a8-8a45-636b30c156f8",
+                "name": "last_update_data",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "0e2ae9cd-7c23-43c5-9d8e-7ddff7f378cf",
+                "name": "relationship_date_start",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "cb8b236a-07f7-4735-bb23-c1e0e8d1e601",
+                "name": "relationship_date_end",
+                "value": "=",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "73111dc9-e3c4-419f-b5ea-f189b024496c",
+        "name": "format_companies_relationships_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          480,
+          -760
+        ]
+      },
+      {
+        "parameters": {
+          "language": "python",
+          "pythonCode": "from datetime import datetime\n\ndef get_index(data: str, substring: str):\n    try:\n        return data.index(substring)\n    except ValueError:\n        return None\n\nfor item in _input.all():\n    data = item[\"json\"].get(\"extractedData\", \"\")\n\n    pefin_date = 'N/A'\n    refin_date = 'N/A'\n    pefin = 0\n    refin = 0\n\n    while get_index(data, 'N24090') is not None:\n        index = get_index(data, 'N24090')\n        if index is not None:\n            type = data[index + 38:index + 39]\n            value = float(data[index + 23:index + 36].strip() + '.' + data[index + 36:index + 38])\n            try:\n                date = datetime.strptime('01' + data[index + 17:index + 23].strip(), '%d%m%Y').strftime('%d/%m/%Y')\n            except (TypeError, ValueError):\n                date = 'N/A'\n            if type == 'V':\n                pefin_date = date\n                pefin += value\n            elif type == 'I':\n                refin_date = date\n                refin += value\n            # Replace the processed part to avoid processing it again\n            data = data[:index] + 'X' + data[index + 1:]\n\n    item[\"json\"][\"pefinDate\"] = pefin_date\n    item[\"json\"][\"refinDate\"] = refin_date\n    item[\"json\"][\"pefinValue\"] = pefin\n    item[\"json\"][\"refinValue\"] = refin\n\nreturn _input.all()"
+        },
+        "id": "9eeab0be-d9d0-4536-9544-7d1f9e423178",
+        "name": "PefinOrRefin",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1420,
+          2640
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "39ceade0-2cc6-4d87-b330-c8276d9ed5f3",
+                "name": "protesto_valor_cpf",
+                "value": "={{ ([ \"0\", \"N/A\", \"Não\", None].includes($json.serasa_cpf.protesto_valor.toString()) ? 0 : $json.serasa_cpf.protesto_valor) }}",
+                "type": "number"
+              },
+              {
+                "id": "552fab18-cb63-4ef7-98d2-e8d3e2a68c92",
+                "name": "base_cred_bacen_prots",
+                "value": "={{ \n  Number($json.protesto.bacen_vencido_cpf && $json.protesto.bacen_vencido_cpf !== 'N/A' \n  ? $json.protesto.bacen_vencido_cpf\n  : $json.protesto.bacen_limite_cpf - $json.protesto.bacen_limite_utilizado_cpf - $json.serasa_cpf.protesto_valor).toFixed(2)\n}}",
+                "type": "number"
+              },
+              {
+                "id": "1130848c-4fb6-4617-a59d-8f178c89a4c0",
+                "name": "protesto_data",
+                "value": "={{ $json.serasa_cpf?.protesto_data != \"N/A\" ? $json.serasa_cpf.protesto_data : 'N/A' }}",
+                "type": "string"
+              },
+              {
+                "id": "9df13e38-8811-4db0-b221-4f40993b7a21",
+                "name": "valor_equipamento",
+                "value": "={{ Number($json.valor_equipamento ? parseFloat($json.valor_equipamento) : 1).toFixed(2) }}",
+                "type": "number"
+              },
+              {
+                "id": "25c5d68d-22f4-4705-b852-a320fb284a96",
+                "name": "base_cred_bacen_cpf",
+                "value": "={{ Number($json.protesto.bacen_limite_cpf).toFixed(2) }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {
+            "ignoreConversionErrors": false
+          }
+        },
+        "id": "762da201-8309-4ba1-8fc2-db419fe3574f",
+        "name": "protesto_cpf_ideal",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -160,
+          3380
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "39ceade0-2cc6-4d87-b330-c8276d9ed5f3",
+                "name": "protesto_valor_cpf",
+                "value": "={{ ([ \"0\", \"N/A\", \"Não\", None].includes($json.serasa_cpf.protesto_valor.toString()) ? 0 : $json.serasa_cpf.protesto_valor ) + ( $json.protesto_cnpj ? $json.protesto_cnpj : 0 )}}",
+                "type": "number"
+              },
+              {
+                "id": "552fab18-cb63-4ef7-98d2-e8d3e2a68c92",
+                "name": "base_cred_bacen_prots",
+                "value": "={{  Number($json.protesto.bacen_vencido_cpf && parseFloat($json.protesto.bacen_vencido_cpf) !== 0      ? parseFloat($json.protesto.bacen_vencido_cpf)      : ( parseFloat($json.protesto.bacen_limite_cpf) * 1.3 )- parseFloat($json.protesto.bacen_limite_utilizado_cpf) - parseFloat($json.protesto.protesto_valor_cpf || 0)).toFixed(2)  }}",
+                "type": "number"
+              },
+              {
+                "id": "1130848c-4fb6-4617-a59d-8f178c89a4c0",
+                "name": "protesto_data",
+                "value": "={{ $json.serasa_cpf?.protesto_data != \"N/A\" ? $json.serasa_cpf.protesto_data : 'N/A' }}",
+                "type": "string"
+              },
+              {
+                "id": "9df13e38-8811-4db0-b221-4f40993b7a21",
+                "name": "valor_equipamento",
+                "value": "={{ Number($json.valor_equipamento ? parseFloat($json.valor_equipamento) : 1).toFixed(2) }}",
+                "type": "number"
+              },
+              {
+                "id": "25c5d68d-22f4-4705-b852-a320fb284a96",
+                "name": "base_cred_bacen_cpf",
+                "value": "={{ Number($json.protesto.bacen_limite_cpf * 1.3).toFixed(2) }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {
+            "ignoreConversionErrors": false
+          }
+        },
+        "id": "c6a36c12-d18a-476b-9a91-cead1cabcd1c",
+        "name": "protesto_cpf_blips",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -160,
+          3180
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "108f78f2-16e0-4117-b70b-ac50968240d0",
+                "name": "protesto_valor_cnpj",
+                "value": "={{ Number($json.serasa_cnpj?.protesto_valor ? parseFloat($json.serasa_cnpj.protesto_valor) : 0).toFixed(2) }}",
+                "type": "number"
+              },
+              {
+                "id": "af8c8034-c020-462a-9dba-d1d1f6a84046",
+                "name": "bacen_limite_cnpj",
+                "value": "={{ Number($json.protesto.bacen_limite_cnpj).toFixed(2) }}",
+                "type": "number"
+              },
+              {
+                "id": "17f1b35d-e9a3-4658-96a3-383ebe0062dd",
+                "name": "bacen_limite_utilizado_cnpj",
+                "value": "={{ Number($json.protesto.bacen_limite_utilizado_cnpj).toFixed(2) }}",
+                "type": "number"
+              },
+              {
+                "id": "8d58e025-e46f-4372-aa0e-a9d9a18e1bc0",
+                "name": "bacen_vencido_cnpj",
+                "value": "={{ Number($json.protesto.bacen_vencido_cnpj).toFixed(2) }}",
+                "type": "number"
+              },
+              {
+                "id": "5cc7ccb7-81b5-41f3-ae22-737578a7fd0e",
+                "name": "base_cred_bacen_prots",
+                "value": "={{ \n  Number($json.protesto.bacen_vencido_cnpj && $json.protesto.bacen_vencido_cnpj !== 'N/A' \n  ? $json.protesto.bacen_vencido_cnpj\n  : $json.protesto.bacen_limite_cnpj - $json.protesto.bacen_limite_utilizado_cnpj - $json.serasa_cnpj.protesto_valor).toFixed(2)\n}}",
+                "type": "number"
+              },
+              {
+                "id": "3f3b908b-6666-4bb2-880d-26804f2a77b3",
+                "name": "protesto_data_cnpj",
+                "value": "={{ $json.serasa_cnpj?.protesto_data != \"N/A\" ? $json.serasa_cnpj.protesto_data : 'N/A' }}",
+                "type": "string"
+              },
+              {
+                "id": "c7f0d8f6-b2fd-4594-b4fa-31b3e8f5ed86",
+                "name": "valor_equipamento",
+                "value": "={{ Number($json.valor_equipamento ? parseFloat($json.valor_equipamento) : 1).toFixed(2) }}",
+                "type": "number"
+              },
+              {
+                "id": "8d8563ec-3a7a-4837-9db2-c1c46f28c3c3",
+                "name": "base_cred_bacen_cnpj",
+                "value": "={{ Number($json.protesto.bacen_limite_cnpj * 1.3).toFixed(2) }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "cef51e21-b99c-49a3-8501-607c3149fae1",
+        "name": "protesto_cnpj_ideal",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -160,
+          3000
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.func }}",
+                      "rightValue": "format_serasa",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Formatar"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "d6f0939b-9bd3-43a8-be08-96eec5facde1",
+                      "leftValue": "={{ $json.func }}",
+                      "rightValue": "protesto_cnpj",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Protesto CNPJ"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "24234e9d-4e67-4623-9fa7-13e6d4c4a5d9",
+                      "leftValue": "={{ $json.func }}",
+                      "rightValue": "protesto_cnpj_ideal",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Prot. CNPJ Ideal"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "534f7441-5384-4dd0-bb49-0dce8a964521",
+                      "leftValue": "={{ $json.func }}",
+                      "rightValue": "protesto_cpf",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Protesto CPF"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "8f52af10-170a-4dbc-9c19-d6b874fc9491",
+                      "leftValue": "={{ $json.func }}",
+                      "rightValue": "protesto_cpf_ideal",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Prot. CPF Ideal"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "8c8a03f7-9de3-4b3a-99c4-f54909ef4e18",
+                      "leftValue": "={{ $json.func }}",
+                      "rightValue": "verificar_avaliacao_cheque_sem_fundo_cnpj",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Cheque Sem Fundo CNPJ Ideal"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "5b922002-f8b6-498c-a08e-57b1e19ea4f6",
+                      "leftValue": "={{ $json.func }}",
+                      "rightValue": "verificar_avaliacao_cheque_sem_fundo_cpf",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Cheque Sem Fundo CPF Ideal"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "885109b3-9994-4f3f-97ca-5643be1ce93e",
+                      "leftValue": "={{ $json.func }}",
+                      "rightValue": "pefin",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "pefin"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "075d9662-795d-46c7-b31a-16ae3f0390af",
+        "name": "Qual Função ? Serasa",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -620,
+          3160
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "108f78f2-16e0-4117-b70b-ac50968240d0",
+                "name": "protesto_valor_cnpj",
+                "value": "={{ Number($json.serasa_cnpj?.protesto_valor ? parseFloat($json.serasa_cnpj.protesto_valor) : 0).toFixed(2) }}",
+                "type": "number"
+              },
+              {
+                "id": "af8c8034-c020-462a-9dba-d1d1f6a84046",
+                "name": "bacen_limite_cnpj",
+                "value": "={{ Number($json.protesto.bacen_limite_cnpj).toFixed(2) }}",
+                "type": "number"
+              },
+              {
+                "id": "17f1b35d-e9a3-4658-96a3-383ebe0062dd",
+                "name": "bacen_limite_utilizado_cnpj",
+                "value": "={{ Number($json.protesto.bacen_limite_utilizado_cnpj).toFixed(2) }}",
+                "type": "number"
+              },
+              {
+                "id": "8d58e025-e46f-4372-aa0e-a9d9a18e1bc0",
+                "name": "bacen_vencido_cnpj",
+                "value": "={{ Number($json.protesto.bacen_vencido_cnpj).toFixed(2) }}",
+                "type": "number"
+              },
+              {
+                "id": "5cc7ccb7-81b5-41f3-ae22-737578a7fd0e",
+                "name": "base_cred_bacen_prots",
+                "value": "={{ Number($json.protesto.bacen_vencido_cnpj && $json.protesto.bacen_vencido_cnpj !== 0 ? $json.protesto.bacen_vencido_cnpj : ( ($json.protesto.bacen_limite_cnpj * 1.3) - $json.protesto.bacen_limite_utilizado_cnpj - parseFloat($json.serasa_cnpj?.protesto_valor || 0))).toFixed(2) }}",
+                "type": "number"
+              },
+              {
+                "id": "3f3b908b-6666-4bb2-880d-26804f2a77b3",
+                "name": "protesto_data_cnpj",
+                "value": "={{ $json.serasa_cnpj?.protesto_data != \"N/A\" ? $json.serasa_cnpj.protesto_data : 'N/A' }}",
+                "type": "string"
+              },
+              {
+                "id": "c7f0d8f6-b2fd-4594-b4fa-31b3e8f5ed86",
+                "name": "valor_equipamento",
+                "value": "={{ Number($json.valor_equipamento ? parseFloat($json.valor_equipamento) : 1).toFixed(2) }}",
+                "type": "number"
+              },
+              {
+                "id": "8d8563ec-3a7a-4837-9db2-c1c46f28c3c3",
+                "name": "base_cred_bacen_cnpj",
+                "value": "={{ Number($json.protesto.bacen_limite_cnpj * 1.3).toFixed(2) }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "61214477-a3cb-4a18-9619-a9e56a7c72e8",
+        "name": "protesto_cnpj_blips",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -160,
+          2820
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "04937425-6c54-4564-bc0f-8a57a7df93fe",
+                "name": "serasa_index_cnpj",
+                "value": "={{ $json.extractedData.indexOf('F900REH3') != -1 ? $json.extractedData.indexOf('F900REH3') : $json.extractedData.indexOf('F900REHJ') }}",
+                "type": "number"
+              },
+              {
+                "id": "74c27823-cfdf-4687-a43f-bc5a08800b0a",
+                "name": "serasa_index_cpf",
+                "value": "={{ $json.extractedData.indexOf('F900REHM') }}",
+                "type": "number"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "id": "1a67016d-197c-4822-842d-08c0fa04f2d8",
+        "name": "serasaIndex",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          940,
+          2640
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f75366d7-f24d-4c29-9e23-57f7651febab",
+                "name": "scoreSerasaCNPJ",
+                "value": "={{ $json.serasa_index_cnpj !== -1 ? $json.extractedData.substring($json.serasa_index_cnpj + 27, $json.serasa_index_cnpj + 31).trim() : 0 }}",
+                "type": "number"
+              },
+              {
+                "id": "48c6d411-6f8b-4fdd-8785-abd1caf76f6d",
+                "name": "scoreSerasaCPF",
+                "value": "={{ $json.serasa_index_cpf !== -1 ? $json.extractedData.substring($json.serasa_index_cpf + 8, $json.serasa_index_cpf + 14).trim() : 0 }}",
+                "type": "number"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {
+            "ignoreConversionErrors": true
+          }
+        },
+        "id": "0aae88fe-91ea-4c71-84b7-45e9bbf4500f",
+        "name": "scoreSerasa",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1180,
+          2640
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "eb439056-af53-4ba9-87b1-fd227b5e4ee0",
+                "name": "bacen_vencido_cnpj",
+                "value": "={{ Number($json.bacenVencidoCnpj).toFixed(2) }}",
+                "type": "number"
+              },
+              {
+                "id": "a0b34324-1f02-4ef3-ae41-6889ebb75a3a",
+                "name": "prej_bacen_cnpj",
+                "value": "={{ Number($json.bacenPrejCnpj).toFixed(2) }}",
+                "type": "number"
+              },
+              {
+                "id": "7693d155-5ca4-42a6-b278-41ee90ae2f49",
+                "name": "bacen_limite_utilizado_cnpj",
+                "value": "={{ Number($json.bacenUtlCnpj + $json.bacenPrejCnpj + $json.bacenVencidoCnpj).toFixed(2) }}",
+                "type": "number"
+              },
+              {
+                "id": "1b647c63-74c8-4c6d-aa22-3a9b5f88f4d0",
+                "name": "bacen_limite_cnpj",
+                "value": "={{ Number($json[\"bacenLimiteCnpj\"] + $json.bacenPrejCnpj + $json.bacenUtlCnpj + $json.bacenVencidoCnpj).toFixed(2) }}",
+                "type": "number"
+              },
+              {
+                "id": "67f09eea-8b84-4d1d-86a2-b3509d308a05",
+                "name": "bacen_a_vencer_cnpj",
+                "value": "={{ Number($json.bacenUtlCnpj).toFixed(2) }}",
+                "type": "number"
+              },
+              {
+                "id": "789ddcbb-38cc-41b0-89e0-f02edb2fa5f4",
+                "name": "carteira_de_credito",
+                "value": "={{ Number($json.bacenUtlCnpj + $json.bacenVencidoCnpj + $json.bacenPrejCnpj).toFixed(2) }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "05d2a33e-43c0-45f5-bb5e-5860288f66e1",
+        "name": "result_bacen_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          40,
+          2220
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b2208f16-f017-4e7c-9dd8-f4f8413209eb",
+                "name": "kyc",
+                "value": "={{ $json.QueryBDC_companies_kyc }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "f8b53b57-00ca-4a1f-9a70-e6dbacf5b18a",
+        "name": "format_kyc_emp",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -160,
+          1000
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b2208f16-f017-4e7c-9dd8-f4f8413209eb",
+                "name": "kyc",
+                "value": "={{ $json.QueryBDC_peoplev2_kyc }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "36a787aa-accd-4ce0-82cc-8e90838bedfd",
+        "name": "format_kyc_people",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -160,
+          1220
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b2208f16-f017-4e7c-9dd8-f4f8413209eb",
+                "name": "processos",
+                "value": "={{ $json.QueryBDC_companies_processos }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "462ca74f-2693-4f60-9727-0043c0e975f8",
+        "name": "format_processos_emp",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -160,
+          1440
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b2208f16-f017-4e7c-9dd8-f4f8413209eb",
+                "name": "processos",
+                "value": "={{ $json.QueryBDC_peoplev2_processos }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "c1929fff-a575-4fe7-8bce-1b02f980feeb",
+        "name": "format_processos_people",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -160,
+          1660
+        ]
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "processos.Result[0].Processes.Lawsuits",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          720,
+          1680
+        ],
+        "id": "96e0d624-9ba7-48a1-8893-a75cabe58092",
+        "name": "Separa Processos"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "36596eab-df08-4296-80a5-bc63f68a0f10",
+                "name": "processos",
+                "value": "={{ {} }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1180,
+          1380
+        ],
+        "id": "58b7e6e5-915a-457c-98da-b96917d6e047",
+        "name": "processos emp"
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "kyc.Result[0].KycData.SanctionsHistory",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          500,
+          1020
+        ],
+        "id": "aa635278-342d-4c42-b191-8c8a897a618a",
+        "name": "Separar Sansao emp",
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "1e22b226-eaae-4cd6-b3b3-a6de18d7c246",
+                "leftValue": "={{ $json.Type }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.2,
+        "position": [
+          720,
+          1020
+        ],
+        "id": "bb3d4bd1-2157-40e3-b23b-94116b6b44d7",
+        "name": "Filtrar Sansao emp"
+      },
+      {
+        "parameters": {
+          "fieldsToAggregate": {
+            "fieldToAggregate": [
+              {
+                "fieldToAggregate": "Type",
+                "renameField": true,
+                "outputFieldName": "tipo"
+              },
+              {
+                "fieldToAggregate": "StandardizedSanctionType",
+                "renameField": true,
+                "outputFieldName": "tipo_sansao"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          940,
+          1020
+        ],
+        "id": "fb3e7477-5ae5-4688-884e-5fcea64ddff1",
+        "name": "Agregar Sansao emp",
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "24d151fe-49cd-4590-a815-95148fee72ab",
+                "name": "sansao",
+                "value": "={{ $('Agregar Sansao emp').isExecuted ? $json : {} }}",
+                "type": "object"
+              },
+              {
+                "id": "40973c14-29ce-49ba-aa2b-3d022ff5fa3b",
+                "name": "pep",
+                "value": "={{ $('Sansão Vazio ?').first().json.kyc.Result[0].KycData.IsCurrentlyPEP }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1180,
+          880
+        ],
+        "id": "7722216c-eaa1-48ce-b970-aad78a17aeb7",
+        "name": "sansao_pep emp",
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "8c95bcc3-a4eb-4391-a0ea-03473130360b",
+                "name": "kyc",
+                "value": "={{ $json }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1400,
+          880
+        ],
+        "id": "1ad393ee-3fad-4d99-ac66-2f55a968df37",
+        "name": "kyc emp"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "7fd43f0a-4652-4063-af02-8148e89c2e16",
+                "leftValue": "={{ $json.kyc.Result[0].KycData.SanctionsHistory }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "array",
+                  "operation": "empty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          60,
+          1000
+        ],
+        "id": "c9b0865c-364d-4d94-8f45-c4190c2e885a",
+        "name": "Sansão Vazio ?"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "24d151fe-49cd-4590-a815-95148fee72ab",
+                "name": "sansao",
+                "value": "={{ $('Agregar Sansao').isExecuted ? $json : {} }}",
+                "type": "object"
+              },
+              {
+                "id": "40973c14-29ce-49ba-aa2b-3d022ff5fa3b",
+                "name": "pep",
+                "value": "={{ $('Sansão CPF Vazio ?').first().json.kyc.Result[0].KycData.IsCurrentlyPEP }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1180,
+          1140
+        ],
+        "id": "41c05dcb-b834-40cf-890f-3af6874d13c0",
+        "name": "sansao_pep",
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "8c95bcc3-a4eb-4391-a0ea-03473130360b",
+                "name": "kyc",
+                "value": "={{ $json }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1400,
+          1140
+        ],
+        "id": "73051270-3338-429d-a3e8-e80489880ea6",
+        "name": "kyc"
+      },
+      {
+        "parameters": {
+          "fieldsToAggregate": {
+            "fieldToAggregate": [
+              {
+                "fieldToAggregate": "Type",
+                "renameField": true,
+                "outputFieldName": "tipo"
+              },
+              {
+                "fieldToAggregate": "StandardizedSanctionType",
+                "renameField": true,
+                "outputFieldName": "tipo_sansao"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          940,
+          1240
+        ],
+        "id": "15804992-c5d5-4f4a-b233-8737e9782edc",
+        "name": "Agregar Sansao",
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "1e22b226-eaae-4cd6-b3b3-a6de18d7c246",
+                "leftValue": "={{ $json.Type }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.2,
+        "position": [
+          720,
+          1240
+        ],
+        "id": "1bd0e297-bd36-46be-947b-e3288653c9b6",
+        "name": "Filtrar Sansao"
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "kyc.Result[0].KycData.SanctionsHistory",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          500,
+          1240
+        ],
+        "id": "0afe10d0-b8aa-46bd-ba81-5f33626dd912",
+        "name": "Separar Sansao",
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "7fd43f0a-4652-4063-af02-8148e89c2e16",
+                "leftValue": "={{ $json.kyc.Result[0].KycData.SanctionsHistory }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "array",
+                  "operation": "empty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          60,
+          1220
+        ],
+        "id": "eb871739-a4b7-47d3-815c-a811d87e6ea4",
+        "name": "Sansão CPF Vazio ?"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "7fd43f0a-4652-4063-af02-8148e89c2e16",
+                "leftValue": "={{ $json.processos.Result[0].Lawsuits.Lawsuits }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "array",
+                  "operation": "empty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          60,
+          1440
+        ],
+        "id": "439bb9f9-9b32-45a4-a044-e24b404808be",
+        "name": "Processos Vazio ?"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "7fd43f0a-4652-4063-af02-8148e89c2e16",
+                "leftValue": "={{ $json.processos.Result[0].Processes.Lawsuits }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "array",
+                  "operation": "empty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          60,
+          1660
+        ],
+        "id": "06dd0719-a78d-4f9c-b58e-f95f35f6c9cb",
+        "name": "Processos CPF Vazio ?"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "36596eab-df08-4296-80a5-bc63f68a0f10",
+                "name": "processos",
+                "value": "={{ {} }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1180,
+          1600
+        ],
+        "id": "1a05001a-acc7-4394-b58f-1a7d6b2d835c",
+        "name": "processos"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "RWVBbrTUMHuKKGmM",
+            "mode": "list",
+            "cachedResultName": "Playgorund LLMs Diogo"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          940,
+          1460
+        ],
+        "id": "12428e46-4db2-4de2-a1eb-f46cdc40bf55",
+        "name": "Analisar Processos"
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "processos.Result[0].Lawsuits.Lawsuits",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          720,
+          1460
+        ],
+        "id": "b958adfd-5866-4a33-8ed5-fd10195d85b0",
+        "name": "Separa Processos emp"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "RWVBbrTUMHuKKGmM",
+            "mode": "list",
+            "cachedResultName": "Playgorund LLMs Diogo"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          940,
+          1680
+        ],
+        "id": "5f4ccb2f-c159-4adb-aae0-87fa152c2e35",
+        "name": "Analisar Processos people"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.func }}",
+                      "rightValue": "format_receivable",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "1835c846-84bb-4ce9-888b-d1204c0867e8"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Formatar"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "cafb227b-770c-416e-b4ea-9727e48f564c",
+        "name": "Qual Função ? DestravaAi",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -620,
+          4340
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "26f68367-c648-4ad8-a58c-fef4dba9874b",
+                "name": "total",
+                "value": "={{ $('Qual Função ? DestravaAi').first().json.QueryDestravaAi_receivable.meta.totalAmount }}",
+                "type": "number"
+              },
+              {
+                "id": "074c7ca2-af64-47be-a029-0fd6d8ea4af6",
+                "name": "alto_risco",
+                "value": "={{ $('Qual Função ? DestravaAi').first().json.QueryDestravaAi_receivable.data.filter(item => item.collateralManagement?.status === 'HIGH_RISK').reduce((total, item) => total + item.netAmount, 0) }}",
+                "type": "number"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -40,
+          4340
+        ],
+        "id": "fa72ab7f-91aa-4ac4-a3f0-d3a0b329991c",
+        "name": "format_receivable",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "jsCode": "// Obtenha o JSON de risco e a lista de modalidades do BigQuery\nconst risco = $('Qual Função ? BMP').first().json.scr_cnpj || {};\nconst modalidades = $input.all(); // Obtenha todos os itens do BigQuery como um array\n\n// Verifique a existência da lista de operações\nconst listaOperacoes = risco.lista_resumo_operacoes || [];\n\n// Variáveis para somar os valores ponderados e totais\nlet sumWeighted = 0;\nlet sumValues = 0;\n\n// Tabela de códigos \"A VENCER\"\nconst codigosAVencer = [\n  'v110', 'v120', 'v130', 'v140',\n  'v150', 'v160', 'v165', 'v170',\n  'v175', 'v180', 'v190', 'v199'\n];\n\n// Função para garantir que o número é válido\nconst safeNumber = (value) => (typeof value === 'number' && !isNaN(value) ? value : 0);\n\n// Função para converter taxa (string -> número)\nconst parseTaxa = (taxaString) => {\n  const taxa = parseFloat(taxaString);\n  return isNaN(taxa) || taxa <= 0 ? 0 : taxa;\n};\n\n// Função para buscar a taxa por modalidade no BigQuery\nconst buscarTaxa = (modalidade) => {\n  // Procure na lista de modalidades do BigQuery\n  for (const item of modalidades) {\n    const modalidadeData = item.json; // Cada item é um JSON com os dados de modalidade\n    if (modalidadeData.modalidade === modalidade) {\n      return parseTaxa(modalidadeData.taxa_a_m); // Converta a taxa para número\n    }\n  }\n  return 0; // Retorna 0 se a modalidade não for encontrada\n};\n\n// Processar todas as operações e calcular os somatórios\nlistaOperacoes.forEach((operacao) => {\n  const modalidade = operacao.modalidade || ''; // Modalidade da operação\n  const listaVencimentos = operacao.listaDeVencimentos || []; // Lista de vencimentos\n\n  listaVencimentos.forEach((vencimento) => {\n    // Filtrar apenas os códigos \"A VENCER\"\n    if (codigosAVencer.includes(vencimento.codigoVencimento)) {\n      const valor = safeNumber(vencimento.valorVencimento); // Valor do vencimento\n      const taxa = buscarTaxa(modalidade); // Taxa da modalidade\n      sumWeighted += valor * taxa; // Soma ponderada\n      sumValues += valor; // Soma total dos valores\n    }\n  });\n});\n\n// Cálculo do custo médio ponderado\nconst custoDivida = sumValues > 0 ? (sumWeighted / sumValues) * 100 : 0;\n\n// Retornar o resultado consolidado\nreturn [{ json: { custo_divida: custoDivida.toFixed(2) } }];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          480,
+          2220
+        ],
+        "id": "02d52601-86c9-45e2-954a-b7f308774ca1",
+        "name": "custo_da_divida_cnpj",
+        "alwaysOutputData": true,
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-prod-v2",
+            "mode": "list",
+            "cachedResultName": "blips-prod-v2",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-prod-v2"
+          },
+          "sqlQuery": "SELECT * FROM `blips-prod-v2.analise_de_credito.scr_modalidades` LIMIT 100",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          240,
+          2220
+        ],
+        "id": "adfa3e8f-6d59-4f2b-9ae2-c850f29c3f57",
+        "name": "Modalidades",
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "0d206b94-966d-42ea-b7cb-a3754831d8b0",
+                "name": "custo_divida",
+                "value": "={{ $json.custo_divida }}",
+                "type": "number"
+              },
+              {
+                "id": "325557f6-b130-47bf-8996-5661006dd47f",
+                "name": "bacen_vencido_cnpj",
+                "value": "={{ $('result_bacen_cnpj').first().json.bacen_vencido_cnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "65c38cbe-4d41-422d-9117-d76544ccf6f8",
+                "name": "prej_bacen_cnpj",
+                "value": "={{ $('result_bacen_cnpj').first().json.prej_bacen_cnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "f58c61aa-e0d4-42e3-8527-3e1ef6acd539",
+                "name": "bacen_limite_utilizado_cnpj",
+                "value": "={{ $('result_bacen_cnpj').first().json.bacen_limite_utilizado_cnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "62b88e48-6583-4e99-81dd-4c7950f49401",
+                "name": "bacen_limite_cnpj",
+                "value": "={{ $('result_bacen_cnpj').first().json.bacen_limite_cnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "fc490c75-631e-474b-b641-a556e1377b38",
+                "name": "bacen_a_vencer_cnpj",
+                "value": "={{ $('result_bacen_cnpj').first().json.bacen_a_vencer_cnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "deb956d2-009d-487f-aa91-194099d27e92",
+                "name": "carteira_de_credito",
+                "value": "={{ $('result_bacen_cnpj').first().json.carteira_de_credito }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          700,
+          2220
+        ],
+        "id": "34f86b4d-342f-4e7e-b080-a546fcfe2cb2",
+        "name": "result_cnpj",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-prod-v2",
+            "mode": "list",
+            "cachedResultName": "blips-prod-v2",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-prod-v2"
+          },
+          "sqlQuery": "SELECT * FROM `blips-prod-v2.analise_de_credito.scr_modalidades` LIMIT 100",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          240,
+          2420
+        ],
+        "id": "8285a9e7-85e7-45be-8593-0f0b2249a002",
+        "name": "Modalidades1",
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "jsCode": "// Obtenha o JSON de risco e a lista de modalidades do BigQuery\nconst risco = $('Qual Função ? BMP').first().json.scr_cpf || {};\nconst modalidades = $input.all(); // Obtenha todos os itens do BigQuery como um array\n\n// Verifique a existência da lista de operações\nconst listaOperacoes = risco.lista_resumo_operacoes || [];\n\n// Variáveis para somar os valores ponderados e totais\nlet sumWeighted = 0;\nlet sumValues = 0;\n\n// Tabela de códigos \"A VENCER\"\nconst codigosAVencer = [\n  'v110', 'v120', 'v130', 'v140',\n  'v150', 'v160', 'v165', 'v170',\n  'v175', 'v180', 'v190', 'v199'\n];\n\n// Função para garantir que o número é válido\nconst safeNumber = (value) => (typeof value === 'number' && !isNaN(value) ? value : 0);\n\n// Função para converter taxa (string -> número)\nconst parseTaxa = (taxaString) => {\n  const taxa = parseFloat(taxaString);\n  return isNaN(taxa) || taxa <= 0 ? 0 : taxa;\n};\n\n// Função para buscar a taxa por modalidade no BigQuery\nconst buscarTaxa = (modalidade) => {\n  // Procure na lista de modalidades do BigQuery\n  for (const item of modalidades) {\n    const modalidadeData = item.json; // Cada item é um JSON com os dados de modalidade\n    if (modalidadeData.modalidade === modalidade) {\n      return parseTaxa(modalidadeData.taxa_a_m); // Converta a taxa para número\n    }\n  }\n  return 0; // Retorna 0 se a modalidade não for encontrada\n};\n\n// Processar todas as operações e calcular os somatórios\nlistaOperacoes.forEach((operacao) => {\n  const modalidade = operacao.modalidade || ''; // Modalidade da operação\n  const listaVencimentos = operacao.listaDeVencimentos || []; // Lista de vencimentos\n\n  listaVencimentos.forEach((vencimento) => {\n    // Filtrar apenas os códigos \"A VENCER\"\n    if (codigosAVencer.includes(vencimento.codigoVencimento)) {\n      const valor = safeNumber(vencimento.valorVencimento); // Valor do vencimento\n      const taxa = buscarTaxa(modalidade); // Taxa da modalidade\n      sumWeighted += valor * taxa; // Soma ponderada\n      sumValues += valor; // Soma total dos valores\n    }\n  });\n});\n\n// Cálculo do custo médio ponderado\nconst custoDivida = sumValues > 0 ? (sumWeighted / sumValues) * 100 : 0;\n\n// Retornar o resultado consolidado\nreturn [{ json: { custo_divida: custoDivida.toFixed(2) } }];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          480,
+          2420
+        ],
+        "id": "7cb20fc9-c44a-4c15-9ac3-b6ab1e2f607e",
+        "name": "custo_da_divida_cpf",
+        "alwaysOutputData": true,
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "0d206b94-966d-42ea-b7cb-a3754831d8b0",
+                "name": "custo_divida",
+                "value": "={{ $json.custo_divida }}",
+                "type": "number"
+              },
+              {
+                "id": "325557f6-b130-47bf-8996-5661006dd47f",
+                "name": "bacen_vencido_cnpj",
+                "value": "={{ $('result_bacen_cpf').first().json.bacen_vencido_cpf }}",
+                "type": "number"
+              },
+              {
+                "id": "65c38cbe-4d41-422d-9117-d76544ccf6f8",
+                "name": "prej_bacen_cnpj",
+                "value": "={{ $('result_bacen_cpf').first().json.prej_bacen_cpf }}",
+                "type": "number"
+              },
+              {
+                "id": "f58c61aa-e0d4-42e3-8527-3e1ef6acd539",
+                "name": "bacen_limite_utilizado_cnpj",
+                "value": "={{ $('result_bacen_cpf').first().json.bacen_limite_utilizado_cpf }}",
+                "type": "number"
+              },
+              {
+                "id": "62b88e48-6583-4e99-81dd-4c7950f49401",
+                "name": "bacen_limite_cnpj",
+                "value": "={{ $('result_bacen_cpf').first().json.bacen_limite_cpf }}",
+                "type": "number"
+              },
+              {
+                "id": "fc490c75-631e-474b-b641-a556e1377b38",
+                "name": "bacen_a_vencer_cnpj",
+                "value": "={{ $('result_bacen_cpf').first().json.bacen_a_vencer_cpf }}",
+                "type": "number"
+              },
+              {
+                "id": "deb956d2-009d-487f-aa91-194099d27e92",
+                "name": "carteira_de_credito",
+                "value": "={{ $('result_bacen_cpf').first().json.carteira_de_credito }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          700,
+          2420
+        ],
+        "id": "4a63a30f-d945-434e-9d92-20fc33141261",
+        "name": "result_cpf",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "jsCode": "const today = new Date();\ntoday.setHours(0, 0, 0, 0);\n\nconst grouped = {};\n\nfor (const item of $input.all()) {\n  const recebiveis = item.json.QueryDestravaAi_receivable?.data || [];\n\n  for (const rec of recebiveis) {\n    try {\n      const company = rec.company || {};\n      const acquirer = rec.acquirer || {};\n      const scheme = rec.paymentScheme || {};\n      const status = rec.collateralManagement?.status || 'UNKNOWN';\n      const settlementDate = new Date(rec.settlementDate);\n      settlementDate.setHours(0, 0, 0, 0);\n      const netAmount = Number(rec.netAmount || 0);\n\n      const daysUntil = Math.floor((settlementDate - today) / (1000 * 60 * 60 * 24));\n      const key = `${company.companyTaxId}|${company.companyName}|${acquirer.nickname}|${scheme.code}|${status}`;\n\n      if (!grouped[key]) {\n        grouped[key] = {\n          \"CNPJ\": company.companyTaxId || '',\n          \"Razão Social\": company.companyName || '',\n          \"Data da Consulta\": today.toISOString().split('T')[0],\n          \"Data de Liquidação\": settlementDate.toISOString().split('T')[0],\n          \"Adquirente\": acquirer.nickname || '',\n          \"Arranjo\": scheme.code || '',\n          \"Avaliação de Riscos\": status,\n          \"Valor - Hoje\": 0, \"Qtde - Hoje\": 0,\n          \"Valor - 30 dias\": 0, \"Qtde - 30 dias\": 0,\n          \"Valor - 90 dias\": 0, \"Qtde - 90 dias\": 0,\n          \"Valor - 180 dias\": 0, \"Qtde - 180 dias\": 0,\n          \"Valor - 365 dias\": 0, \"Qtde - 365 dias\": 0\n        };\n      }\n\n      const row = grouped[key];\n\n      // Atualiza a data de liquidação com a mais distante\n      const prevDate = new Date(row[\"Data de Liquidação\"]);\n      if (settlementDate > prevDate) {\n        row[\"Data de Liquidação\"] = settlementDate.toISOString().split('T')[0];\n      }\n\n      if (daysUntil === 0) {\n        row[\"Valor - Hoje\"] += netAmount;\n        row[\"Qtde - Hoje\"] += 1;\n      } else if (daysUntil <= 30) {\n        row[\"Valor - 30 dias\"] += netAmount;\n        row[\"Qtde - 30 dias\"] += 1;\n      } else if (daysUntil <= 90) {\n        row[\"Valor - 90 dias\"] += netAmount;\n        row[\"Qtde - 90 dias\"] += 1;\n      } else if (daysUntil <= 180) {\n        row[\"Valor - 180 dias\"] += netAmount;\n        row[\"Qtde - 180 dias\"] += 1;\n      } else if (daysUntil <= 365) {\n        row[\"Valor - 365 dias\"] += netAmount;\n        row[\"Qtde - 365 dias\"] += 1;\n      }\n    } catch {\n      continue;\n    }\n  }\n}\n\nreturn Object.values(grouped).map(entry => ({ json: entry }));"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -280,
+          4340
+        ],
+        "id": "aecad228-3fb7-4730-9da2-2cafc1fb8224",
+        "name": "Code",
+        "alwaysOutputData": true,
+        "onError": "continueRegularOutput"
+      }
+    ],
+    "connections": {
+      "lead": {
+        "main": [
+          [
+            {
+              "node": "Qual API ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "pefin_valor_equip": {
+        "main": [
+          [
+            {
+              "node": "pefin_equip",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "calc_meses_fundacao": {
+        "main": [
+          [
+            {
+              "node": "result_meses_fundação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "sum_debtors_cnpj": {
+        "main": [
+          [
+            {
+              "node": "result_bacen_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "sum_debtors_cpf": {
+        "main": [
+          [
+            {
+              "node": "result_bacen_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Separa Sócios": {
+        "main": [
+          [
+            {
+              "node": "Filtro por Relacionamento",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filtro por Relacionamento": {
+        "main": [
+          [
+            {
+              "node": "Agregar Sócios",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Agregar Sócios": {
+        "main": [
+          [
+            {
+              "node": "format_companies_relationships",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "extractedData": {
+        "main": [
+          [
+            {
+              "node": "chequeIndex",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "chequeIndex": {
+        "main": [
+          [
+            {
+              "node": "chequeDate - chequeQuantity",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "chequeDate - chequeQuantity": {
+        "main": [
+          [
+            {
+              "node": "protestoIndex",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "protestoIndex": {
+        "main": [
+          [
+            {
+              "node": "protestoDate - protestoValue",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "protestoDate - protestoValue": {
+        "main": [
+          [
+            {
+              "node": "serasaIndex",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Qual API ?": {
+        "main": [
+          [
+            {
+              "node": "Qual Função ? BDC",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Qual Função ? BMP",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Qual Função ? Serasa",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Qual Função ? DestravaAi",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Qual Função ? BDC": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "format_companies_basic_data",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "format_peoplev2_basic_data",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "result_peoplev2_addresses_extended",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "calc_meses_fundacao",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "format_antecedente",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "format_mandato",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "format_kyc_emp",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "format_kyc_people",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "format_processos_emp",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "format_processos_people",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "If1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Separa Sócios",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Separa OWNER": {
+        "main": [
+          [
+            {
+              "node": "Filtro por OWNER",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filtro por OWNER": {
+        "main": [
+          [
+            {
+              "node": "Agregar OWNER",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Agregar OWNER": {
+        "main": [
+          [
+            {
+              "node": "format_companies_relationships_owner",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Qual Função ? BMP": {
+        "main": [
+          [
+            {
+              "node": "format_response_bmp_CPF",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "format_response_bmp_CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "sum_debtors_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "sum_debtors_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If1": {
+        "main": [
+          [
+            {
+              "node": "Separa OWNER",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "format_companies_relationships_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "PefinOrRefin": {
+        "main": [
+          [
+            {
+              "node": "result",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Qual Função ? Serasa": {
+        "main": [
+          [
+            {
+              "node": "extractedData",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "protesto_cnpj_blips",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "protesto_cnpj_ideal",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "protesto_cpf_blips",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "protesto_cpf_ideal",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "verificar_avaliacao_cheque_sem_fundo_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "verificar_avaliacao_cheque_sem_fundo_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "pefin_valor_equip",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "serasaIndex": {
+        "main": [
+          [
+            {
+              "node": "scoreSerasa",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "scoreSerasa": {
+        "main": [
+          [
+            {
+              "node": "PefinOrRefin",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "format_processos_people": {
+        "main": [
+          [
+            {
+              "node": "Processos CPF Vazio ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "format_processos_emp": {
+        "main": [
+          [
+            {
+              "node": "Processos Vazio ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Separa Processos": {
+        "main": [
+          [
+            {
+              "node": "Analisar Processos people",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "format_kyc_people": {
+        "main": [
+          [
+            {
+              "node": "Sansão CPF Vazio ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "format_kyc_emp": {
+        "main": [
+          [
+            {
+              "node": "Sansão Vazio ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Separar Sansao emp": {
+        "main": [
+          [
+            {
+              "node": "Filtrar Sansao emp",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filtrar Sansao emp": {
+        "main": [
+          [
+            {
+              "node": "Agregar Sansao emp",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Agregar Sansao emp": {
+        "main": [
+          [
+            {
+              "node": "sansao_pep emp",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "sansao_pep emp": {
+        "main": [
+          [
+            {
+              "node": "kyc emp",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sansão Vazio ?": {
+        "main": [
+          [
+            {
+              "node": "sansao_pep emp",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Separar Sansao emp",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "sansao_pep": {
+        "main": [
+          [
+            {
+              "node": "kyc",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Agregar Sansao": {
+        "main": [
+          [
+            {
+              "node": "sansao_pep",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filtrar Sansao": {
+        "main": [
+          [
+            {
+              "node": "Agregar Sansao",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Separar Sansao": {
+        "main": [
+          [
+            {
+              "node": "Filtrar Sansao",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sansão CPF Vazio ?": {
+        "main": [
+          [
+            {
+              "node": "sansao_pep",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Separar Sansao",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Processos Vazio ?": {
+        "main": [
+          [
+            {
+              "node": "processos emp",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Separa Processos emp",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Processos CPF Vazio ?": {
+        "main": [
+          [
+            {
+              "node": "processos",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Separa Processos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Separa Processos emp": {
+        "main": [
+          [
+            {
+              "node": "Analisar Processos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Qual Função ? DestravaAi": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "result_bacen_cnpj": {
+        "main": [
+          []
+        ]
+      },
+      "Modalidades": {
+        "main": [
+          [
+            {
+              "node": "custo_da_divida_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "custo_da_divida_cnpj": {
+        "main": [
+          [
+            {
+              "node": "result_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Modalidades1": {
+        "main": [
+          [
+            {
+              "node": "custo_da_divida_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "result_bacen_cpf": {
+        "main": [
+          []
+        ]
+      },
+      "custo_da_divida_cpf": {
+        "main": [
+          [
+            {
+              "node": "result_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          []
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "lead": [
+        {
+          "json": {
+            "api": "DestravaAi",
+            "func": "format_receivable",
+            "QueryDestravaAi_null": {
+              "meta": {
+                "currentItem": null,
+                "limit": 1000,
+                "nextItem": null,
+                "totalItems": 1,
+                "pageAmount": 13,
+                "totalAmount": 13
+              },
+              "data": [
+                {
+                  "netAmount": 13,
+                  "acquirer": {
+                    "taxId": "14380200000121",
+                    "name": "IFOOD.COM AGENCIA DE SERVICOS DE RESTAURANTES ONLINE SA",
+                    "nickname": "iFood"
+                  },
+                  "paymentScheme": {
+                    "code": "VCC",
+                    "name": "Visa Cartão de Crédito",
+                    "type": "CREDIT"
+                  },
+                  "settlementDate": "2025-06-18",
+                  "company": {
+                    "companyTaxId": "59284895000186",
+                    "companyName": "59.284.895 OLIVEIRA PINHEIRO",
+                    "nickname": "59.284.895 OLIVEIRA PINHEIRO"
+                  },
+                  "bankingAddress": {
+                    "holderTaxId": "",
+                    "ispb": "",
+                    "branch": "",
+                    "account": "",
+                    "bankName": null
+                  },
+                  "collateralManagement": {
+                    "status": "AVAILABLE",
+                    "evaluatedAt": "2025-05-22T18:36:26.925799",
+                    "categories": []
+                  },
+                  "uniqueKey": "5928489500018614380200000121VCC2025-06-18"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "versionId": "1ac20344-0327-46f1-942b-efaee9ddb34e",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-31T16:22:41.803Z",
+        "updatedAt": "2024-07-31T16:22:41.803Z",
+        "id": "mmaXbyiWhptUXaTd",
+        "name": "New Motor"
+      }
+    ]
+  }
+}
