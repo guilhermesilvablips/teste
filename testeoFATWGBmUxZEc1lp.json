@@ -1,0 +1,1197 @@
+{
+  "data": {
+    "createdAt": "2025-05-02T17:23:36.303Z",
+    "updatedAt": "2025-05-06T11:01:18.617Z",
+    "id": "oFATWGBmUxZEc1lp",
+    "name": "Enbio imagem Bitrix",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f40268a0-feea-4ebb-957e-a5a48bbb62e8",
+                "name": "response",
+                "value": "=Erro ao enviar {{ $('variaveis').first().json.tipo }}. Envie a resposta via texto.",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "e7d29470-802e-4bb0-9d44-d158f7fdedfd",
+        "name": "resposta erro",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          1340
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f40268a0-feea-4ebb-957e-a5a48bbb62e8",
+                "name": "response",
+                "value": "={{ $('variaveis').first().json.tipo }} enviado com sucesso",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "09ba0f17-6d39-4fa8-bae3-543e83cad730",
+        "name": "resposta",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          940
+        ]
+      },
+      {
+        "parameters": {
+          "url": "https://api.elevenlabs.io/v1/history",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "xi-api-key",
+                "value": "sk_90d7835cde355438b53e530c0325ae58cb0d0ee3e2e219b3"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "e7145361-1e9a-4699-bb5a-25f3ab58c6fb",
+        "name": "HTTP Request1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -1200,
+          120
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://ajuda.blips.com.br/wp-json/wp/v2/media",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "wordpressApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Disposition",
+                "value": "=attachment; filename=\"{{ $binary.data.fileName }}\""
+              }
+            ]
+          },
+          "sendBody": true,
+          "contentType": "binaryData",
+          "inputDataFieldName": "data",
+          "options": {}
+        },
+        "id": "93d36de3-89fa-482a-801e-45829005b9fa",
+        "name": "Enviar arq wordpress",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -1200,
+          1800
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "6bbae0b5-8486-4691-aa3c-2778897a601f",
+                "leftValue": "={{ $('variaveis').first().json.is_chat }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "03838326-2bf2-4c83-86c6-d8ed8ef203fb",
+        "name": "Responder Bitrix?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -980,
+          1090
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.elevenlabs.io/v1/text-to-speech/33B4UnXyTNbgLmdEDh5P/with-timestamps",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "output_format",
+                "value": "mp3_44100_128"
+              }
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "xi-api-key",
+                "value": "sk_90d7835cde355438b53e530c0325ae58cb0d0ee3e2e219b3"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "text",
+                "value": "={{ $('variaveis').item.json.conteudo.trim() }}"
+              },
+              {
+                "name": "model_id",
+                "value": "eleven_multilingual_v2"
+              },
+              {
+                "name": "stability",
+                "value": "1"
+              },
+              {
+                "name": "similarity_boost",
+                "value": "1"
+              },
+              {
+                "name": "style",
+                "value": "0.55"
+              },
+              {
+                "name": "use_speaker_boost",
+                "value": "true"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "f8662542-7e74-40bc-bdcf-3e373378a951",
+        "name": "Gerar audio ElevenLabs",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -760,
+          1540
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "operation": "toBinary",
+          "sourceProperty": "audio_base64",
+          "options": {
+            "fileName": "=audio_dalila_ID{{ $('variaveis').item.json.DIALOG_ID }}_{{ $now.format('yyyy-MM-dd_HH-mm-ss') }}.mp3"
+          }
+        },
+        "id": "81e543a7-d513-409f-bc2f-7f3d280ad1a4",
+        "name": "Convert to File",
+        "type": "n8n-nodes-base.convertToFile",
+        "typeVersion": 1.1,
+        "position": [
+          -540,
+          1540
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/5/adko274f5n0arveg/disk.folder.uploadFile",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "id",
+                "value": "207071"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "aa1c2305-404a-4a1c-bc34-259ed8b0e567",
+        "name": "Pre envio bitrix",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -760,
+          380
+        ],
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://blips.bitrix24.com.br/rest/5/adko274f5n0arveg/im.disk.file.save",
+          "sendBody": true,
+          "contentType": "multipart-form-data",
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "chat_id",
+                "value": "12717"
+              },
+              {
+                "name": "DISK_ID",
+                "value": "={{ $json.result.ID }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d80fb60c-04d8-47e2-8f6f-66eef6cd66c7",
+        "name": "Enviar arquivo bitrix1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -1200,
+          -140
+        ],
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "0cfbc3e5-5e42-4b5c-949f-9ece91334574",
+                "name": "telefone",
+                "value": "={{ $json.telefone }}",
+                "type": "string"
+              },
+              {
+                "id": "3708b73c-6005-4343-87c6-9a695f3635ba",
+                "name": "empresa",
+                "value": "={{ $json.empresa }}",
+                "type": "string"
+              },
+              {
+                "id": "f3ebcda5-bcb2-4b60-b56e-a44246b0464b",
+                "name": "conteudo",
+                "value": "={{ $json.arguments.conteudo }}",
+                "type": "string"
+              },
+              {
+                "id": "366079c1-5bd2-46cc-acb0-92ced64a4193",
+                "name": "tipo",
+                "value": "={{ $json.tipo }}",
+                "type": "string"
+              },
+              {
+                "id": "273beedd-3897-4172-a380-1ef8bfda2aa4",
+                "name": "is_chat",
+                "value": "={{ $json.is_chat }}",
+                "type": "boolean"
+              },
+              {
+                "id": "75b1f2d4-20c9-4f14-bed4-b3b6e6519190",
+                "name": "CLIENT_ID",
+                "value": "={{ $json.CLIENT_ID }}",
+                "type": "string"
+              },
+              {
+                "id": "3db4ae0b-004b-481a-a83a-4e65a45b85b4",
+                "name": "DIALOG_ID",
+                "value": "={{ $json.DIALOG_ID }}",
+                "type": "string"
+              },
+              {
+                "id": "bd8d8d32-6301-438e-b49d-3563c4f29649",
+                "name": "=chat_id",
+                "value": "={{ $json.chat_id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d318d227-44e5-4634-ad3f-7699c4e49628",
+        "name": "variaveis",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -980,
+          380
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $('Pre envio bitrix').item.json.result.uploadUrl }}",
+          "sendBody": true,
+          "contentType": "multipart-form-data",
+          "bodyParameters": {
+            "parameters": [
+              {
+                "parameterType": "formBinaryData",
+                "name": "={{ $('Pre envio bitrix').item.json.result.field }}",
+                "inputDataFieldName": "data"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "5d356dfc-e5e8-4d35-b817-d18dc64b0f09",
+        "name": "Enviar arquivo bitrix",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          120,
+          380
+        ],
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://blips.bitrix24.com.br/rest/5/adko274f5n0arveg/im.disk.file.commit",
+          "sendBody": true,
+          "contentType": "multipart-form-data",
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "=chat_id",
+                "value": "={{ $('variaveis').item.json.chat_id}}"
+              },
+              {
+                "name": "UPLOAD_ID",
+                "value": "={{ $json.result.FILE_ID }}"
+              },
+              {
+                "name": "DISK_ID",
+                "value": "={{ $json.result.ID }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "6643c552-44a1-44ca-8d0c-10dc121cdba5",
+        "name": "Enviar chat bitrix",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -760,
+          1040
+        ],
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {},
+        "id": "f3a0ea89-6afd-444f-b5c0-21e85f411cf2",
+        "name": "Execute Workflow Trigger",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          -1200,
+          380
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/5/adko274f5n0arveg/imbot.message.add",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n        \"BOT_ID\": \"2407\",\n        \"CLIENT_ID\": \"{{ $('variaveis').first().json.CLIENT_ID }}\",\n        \"DIALOG_ID\": \"{{ $('variaveis').first().json.DIALOG_ID }}\",\n        \"MESSAGE\": \"https://nkpgzxqgljnafqdlihei.supabase.co/storage/v1/object/sign/images/Zuper%20Agentes%20IA.jpg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InN0b3JhZ2UtdXJsLXNpZ25pbmcta2V5X2Q1NzFjM2E0LTMxOWUtNGMyNy05MzYxLTNhNmMyZjM0N2RmNiJ9.eyJ1cmwiOiJpbWFnZXMvWnVwZXIgQWdlbnRlcyBJQS5qcGciLCJpYXQiOjE3NDYzMTU2MTMsImV4cCI6MTc0NjkyMDQxM30.13mvvZuWnfRl6kUk-v8KpoY-TcBKecmh9cw8MljVeyc\"\n}",
+          "options": {}
+        },
+        "id": "530e0034-c119-4681-8fa6-f47ffddd8835",
+        "name": "Enviar chatbot bitrix",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -760,
+          640
+        ],
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('variaveis').item.json.tipo }}",
+                      "rightValue": "audio",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Audio"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "c64c6a02-d9ea-49e9-bcc9-f144b61bfa75",
+                      "leftValue": "={{ $('variaveis').item.json.tipo }}",
+                      "rightValue": "image",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Imagem"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "08c0d531-68bb-4575-a7e9-dca3e16920df",
+        "name": "Tipo arquivo",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -1200,
+          690
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://runtime.hyperflowapis.global/api/dneeXMnM7/dalila",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "client_id",
+                "value": "d65393f4-f062-493a-bfd0-c36aeb5d21b0"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "telefone",
+                "value": "={{ $('variaveis').item.json.telefone }}"
+              },
+              {
+                "name": "output",
+                "value": "={{ $json.result.DOWNLOAD_URL }}"
+              },
+              {
+                "name": "empresa",
+                "value": "={{ $('variaveis').item.json.empresa }}"
+              },
+              {
+                "name": "tipo",
+                "value": "={{ $('variaveis').item.json.tipo }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "87670796-f2b9-4d27-859b-89d2497fbe30",
+        "name": "Enviar audio hyper",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -760,
+          1240
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://runtime.hyperflowapis.global/api/dneeXMnM7/dalila",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "client_id",
+                "value": "d65393f4-f062-493a-bfd0-c36aeb5d21b0"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "telefone",
+                "value": "={{ $('variaveis').item.json.telefone }}"
+              },
+              {
+                "name": "output",
+                "value": "={{ $('variaveis').item.json.conteudo }}"
+              },
+              {
+                "name": "empresa",
+                "value": "={{ $('variaveis').item.json.empresa }}"
+              },
+              {
+                "name": "tipo",
+                "value": "={{ $('variaveis').item.json.tipo }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "4247a8da-63f3-47f9-b727-62f728039dea",
+        "name": "Enviar imagem hyper",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -760,
+          840
+        ],
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "6bbae0b5-8486-4691-aa3c-2778897a601f",
+                "leftValue": "={{ $('variaveis').first().json.is_chat }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "3aeb741f-0e25-4736-beb0-d8cf9b342ef0",
+        "name": "Responder Bitrix?1",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -980,
+          690
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://quickchart.io/chart",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ $json.toJsonString() }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -320,
+          380
+        ],
+        "id": "c3528bec-47c4-4efb-87d0-a21dc281d637",
+        "name": "create_chart"
+      },
+      {
+        "parameters": {
+          "mode": "raw",
+          "jsonOutput": "  {\n    \"chart\": {\n      \"type\": \"line\",\n      \"name\": \"media_Paulo Ferreira\",\n      \"data\": {\n        \"labels\": [\n          \"22-04-25\",\n          \"23-04-25\",\n          \"24-04-25\",\n          \"25-04-25\",\n          \"28-04-25\",\n          \"29-04-25\",\n          \"30-04-25\"\n        ],\n        \"datasets\": [\n          {\n            \"label\": \"Média das Auditorias\",\n            \"data\": [\n              3.41,\n              3.11,\n              3.45,\n              3.28,\n              2.3,\n              3.72,\n              4.1\n            ],\n            \"fill\": false,\n            \"borderColor\": \"rgb(75, 192, 192)\",\n            \"tension\": 0.1,\n            \"pointBackgroundColor\": \"rgb(75, 192, 192)\",\n            \"pointBorderColor\": \"#fff\",\n            \"pointRadius\": 5\n          }\n        ]\n      },\n      \"options\": {\n        \"responsive\": false,\n        \"plugins\": {\n          \"title\": {\n            \"display\": true,\n            \"text\": \"Média por Dia - Paulo Ferreira\"\n          }\n        },\n        \"scales\": {\n          \"xAxes\": [\n            {\n              \"ticks\": {\n                \"min\": 0,\n                \"max\": 5,\n                \"stepSize\": 1\n              }\n            }\n          ],\n          \"yAxes\": [\n            {\n              \"ticks\": {\n                \"min\": 0,\n                \"max\": 5,\n                \"stepSize\": 1\n              }\n            }\n          ]\n        }\n      }\n    }\n  }",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -540,
+          380
+        ],
+        "id": "8f8c37eb-ac73-456d-a5b0-6f385f0c6c81",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/5/adko274f5n0arveg/imbot.message.add",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n        \"BOT_ID\": \"2407\",\n        \"CLIENT_ID\": \"{{ $('variaveis').first().json.CLIENT_ID }}\",\n        \"DIALOG_ID\": \"{{ $('variaveis').first().json.DIALOG_ID }}\",\n        \"MESSAGE\": \"Acessa imagem: [URL={{ $json.result.DETAIL_URL }}]Clique aqui[/URL]\",\n        \"ATTACH\": [\n            { \"IMAGE\":{ \"LINK\":\"https://blips.bitrix24.com.br/disk/showFile/{{ $json.result.ID }}/\" } }\n          ]\n}",
+          "options": {}
+        },
+        "id": "145b7bae-b195-4be5-bb9c-4667619ffcbc",
+        "name": "Enviar chatbot bitrix1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          580,
+          380
+        ],
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Para cada item recebido\nfor (let i = 0; i < items.length; i++) {\n  const file = items[i].binary.data;\n  const original = file.fileName || 'file';\n  \n  // Encontra o último ponto\n  const dotIndex = original.lastIndexOf('.');\n  // Se existir ponto, pega a extensão (incluindo o próprio ‘.’), senão fica vazio\n  const extension = dotIndex !== -1\n    ? file.fileExtension    // ex: \".png\"\n    : 'png';\n  // E o nome sem extensão\n  const baseName = dotIndex !== -1\n    ? original.substring(0, dotIndex)\n    : original;\n\n  // Timestamp sem caracteres inválidos\n  const now = new Date().toISOString().replace(/[:.]/g, '-');\n\n  // Novo nome: baseName_timestamp + extensão (já com ponto)\n  items[i].binary.data.fileName = `${baseName}_${now}.${extension}`;\n}\n\n// Retorna os itens modificados\nreturn items;\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -100,
+          380
+        ],
+        "id": "9e93636a-62d4-4c9f-b838-74c93d130ffd",
+        "name": "ajustar nome"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://blips.bitrix24.com.br/rest/5/adko274f5n0arveg/disk.file.get",
+          "sendBody": true,
+          "contentType": "multipart-form-data",
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "=id",
+                "value": "={{ $json.result.ID }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "6f2036e5-ea4b-45a4-8ec4-e3c9b3531856",
+        "name": "Pegar arquivo",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          340,
+          380
+        ],
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "zapi-env",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -540,
+          0
+        ],
+        "id": "21ad0c74-5ae4-4431-9f03-f74461e8d6c6",
+        "name": "Webhook env",
+        "webhookId": "04ae7997-454c-4f1b-bfa9-5eace9e0c548"
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "zapi-rec",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -540,
+          160
+        ],
+        "id": "1c9c9953-161d-4ae7-b087-24e7aecf95c0",
+        "name": "Webhook rec",
+        "webhookId": "04ae7997-454c-4f1b-bfa9-5eace9e0c548"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.z-api.io/instances/3E0C92B74288508C465F3EF0F02679BC/token/71D63C6B0CC7E23346F80150/send-text",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Client-Token",
+                "value": "Fbfe77ede10f54da5940adde640ad041cS"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "phone",
+                "value": "={{ $json.body.phone }}"
+              },
+              {
+                "name": "message",
+                "value": "={{ $json.body.senderName }} {{ $json.body.text.message }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          160,
+          160
+        ],
+        "id": "28b7b364-3856-4122-9d6f-29b6f3690a53",
+        "name": "HTTP Request"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "fb50da77-5a39-4a64-bead-4d64369e5748",
+                "leftValue": "={{ $json.body.phone }}",
+                "rightValue": "556183487828-1484407440",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "f34d9813-8d3a-453b-ba06-dae3a2f38296",
+                "leftValue": "={{ $json.body.phone }}",
+                "rightValue": "={{ $json.body.connectedPhone }}",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.2,
+        "position": [
+          -100,
+          160
+        ],
+        "id": "ae4f8bc1-7ff1-436f-9267-bed3ffd9ef12",
+        "name": "Filter"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "86821f43-8c2a-455a-ad05-bcb0602bf4c1",
+                "leftValue": "={{ $json.body.text.message }}",
+                "rightValue": "Enviada por uma conta TESTE *gratuita!",
+                "operator": {
+                  "type": "string",
+                  "operation": "notContains"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.2,
+        "position": [
+          -320,
+          160
+        ],
+        "id": "059f5e6a-5d1f-4d1d-86bc-5ac81cce064f",
+        "name": "Filter1"
+      }
+    ],
+    "connections": {
+      "Responder Bitrix?": {
+        "main": [
+          [
+            {
+              "node": "Enviar chat bitrix",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Enviar audio hyper",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gerar audio ElevenLabs": {
+        "main": [
+          [
+            {
+              "node": "Convert to File",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "resposta erro",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Convert to File": {
+        "main": [
+          []
+        ]
+      },
+      "Pre envio bitrix": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "variaveis": {
+        "main": [
+          [
+            {
+              "node": "Pre envio bitrix",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Enviar arquivo bitrix": {
+        "main": [
+          [
+            {
+              "node": "Pegar arquivo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Enviar chat bitrix": {
+        "main": [
+          [
+            {
+              "node": "resposta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute Workflow Trigger": {
+        "main": [
+          [
+            {
+              "node": "variaveis",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Enviar chatbot bitrix": {
+        "main": [
+          [
+            {
+              "node": "resposta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tipo arquivo": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Responder Bitrix?1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Enviar audio hyper": {
+        "main": [
+          [
+            {
+              "node": "resposta",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "resposta erro",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Enviar imagem hyper": {
+        "main": [
+          [
+            {
+              "node": "resposta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Responder Bitrix?1": {
+        "main": [
+          [
+            {
+              "node": "Enviar chatbot bitrix",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Enviar imagem hyper",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "create_chart": {
+        "main": [
+          [
+            {
+              "node": "ajustar nome",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "create_chart",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "ajustar nome": {
+        "main": [
+          [
+            {
+              "node": "Enviar arquivo bitrix",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Pegar arquivo": {
+        "main": [
+          [
+            {
+              "node": "Enviar chatbot bitrix1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook rec": {
+        "main": [
+          [
+            {
+              "node": "Filter1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter1": {
+        "main": [
+          [
+            {
+              "node": "Filter",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {
+      "Webhook rec": [
+        {
+          "json": {
+            "headers": {
+              "host": "n8n-dev.blips-labs.com",
+              "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_2_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.4 Safari/605.1.15",
+              "content-length": "976",
+              "content-type": "application/json",
+              "origin": "https://api.z-api.io",
+              "server": "Z-API",
+              "x-forwarded-for": "167.234.227.106",
+              "x-forwarded-host": "n8n-dev.blips-labs.com",
+              "x-forwarded-proto": "https",
+              "x-railway-edge": "railway/us-east4",
+              "x-railway-request-id": "4VhyqJNZTWqHbwUe0t50Tg_603524580",
+              "x-real-ip": "167.234.227.106",
+              "x-request-start": "1746528417332",
+              "z-api-token": "71D63C6B0CC7E23346F80150",
+              "accept-encoding": "gzip"
+            },
+            "params": {},
+            "query": {},
+            "body": {
+              "isStatusReply": false,
+              "chatLid": null,
+              "connectedPhone": "553492053452",
+              "waitingMessage": false,
+              "isEdit": false,
+              "isGroup": true,
+              "isNewsletter": false,
+              "instanceId": "3E0C92B74288508C465F3EF0F02679BC",
+              "messageId": "95D337BA3F9EC0558110DE85839A79C8",
+              "phone": "556183487828-1484407440",
+              "fromMe": true,
+              "momment": 1746528416832,
+              "status": "RECEIVED",
+              "chatName": "Eu, eu mesmo e Mateus",
+              "senderPhoto": "https://pps.whatsapp.net/v/t61.24694-24/440806543_1164187488195812_7378174619696679772_n.jpg?ccb=11-4&oh=01_Q5Aa1QF4eVeDv8eRRa2scVaCVNPhKFzk_MOFqgteWZ8mMUAYyw&oe=6826EB2F&_nc_sid=5e03e0&_nc_cat=101",
+              "senderName": "Mateus Alberone",
+              "photo": "https://pps.whatsapp.net/v/t61.24694-24/57608952_2169253246738811_7334340451073261568_n.jpg?ccb=11-4&oh=01_Q5Aa1QFKIxa56g0USV_4T1qpKikpYIrm5Saly34Jz49j5IE6Ng&oe=68271603&_nc_sid=5e03e0&_nc_cat=100",
+              "broadcast": false,
+              "participantPhone": "553492053452",
+              "participantLid": null,
+              "forwarded": false,
+              "type": "ReceivedCallback",
+              "fromApi": false,
+              "text": {
+                "message": "Oi"
+              }
+            },
+            "webhookUrl": "https://n8n-dev.blips-labs.com/webhook/zapi-rec",
+            "executionMode": "production"
+          }
+        }
+      ]
+    },
+    "versionId": "3663a2b5-be80-4db9-9918-afae23c80273",
+    "triggerCount": 2,
+    "tags": []
+  }
+}
