@@ -1,0 +1,441 @@
+{
+  "data": {
+    "createdAt": "2024-08-23T13:36:03.504Z",
+    "updatedAt": "2024-08-26T18:12:04.366Z",
+    "id": "ee7SP9GVYtQ7Iy6v",
+    "name": "Nascimento - Enviar resposta",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "48ddc55c-8658-49f4-a40f-925fc38d7b79",
+        "name": "Execute Workflow Trigger",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          700,
+          360
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "f1ea30cb-9d3b-4456-a265-2820936dac6e",
+                "leftValue": "={{ $json.type }}",
+                "rightValue": "group",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "d01427f1-9b30-4811-9231-4cbe47b56b59",
+        "name": "É grupo??",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          1380,
+          60
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://new-api.zapsterapi.com/v1/wa/messages",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTc2MTE5MjQsImlzcyI6InphcHN0ZXJhcGkiLCJzdWIiOiJiZDg4ZWI0YS02ZjdkLTRlYzUtYTk5MS1hYWUzMWMxOGMzMDQiLCJqdGkiOiJhNTBiNzdiNC0yNDdmLTQ2ZDEtYTIyOS1jMDZiOWQ1NGI3YjMifQ.Ql1H5JTcgbV48Mgj18IJCfreD8bdxgybNtmW6BOuWS0"
+              },
+              {
+                "name": "accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "instance_id",
+                "value": "={{ $json.instance_id }}"
+              },
+              {
+                "name": "recipient",
+                "value": "=group:{{ $json.group_id }}"
+              },
+              {
+                "name": "text",
+                "value": "={{ $json.text.trim() }}"
+              },
+              {
+                "name": "auto_mention",
+                "value": "={{true}}"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "neverError": true
+              }
+            }
+          }
+        },
+        "id": "12fe9efa-8003-4cbc-8ad3-50acf4616a99",
+        "name": "Envia Whatsapp Grupo",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          1640,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://new-api.zapsterapi.com/v1/wa/messages",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTc2MTE5MjQsImlzcyI6InphcHN0ZXJhcGkiLCJzdWIiOiJiZDg4ZWI0YS02ZjdkLTRlYzUtYTk5MS1hYWUzMWMxOGMzMDQiLCJqdGkiOiJhNTBiNzdiNC0yNDdmLTQ2ZDEtYTIyOS1jMDZiOWQ1NGI3YjMifQ.Ql1H5JTcgbV48Mgj18IJCfreD8bdxgybNtmW6BOuWS0"
+              },
+              {
+                "name": "accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "instance_id",
+                "value": "={{ $json.instance_id }}"
+              },
+              {
+                "name": "recipient",
+                "value": "={{ $json.user_id }}"
+              },
+              {
+                "name": "text",
+                "value": "={{ $json.text.trim() }}"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "neverError": true
+              }
+            }
+          }
+        },
+        "id": "c9780863-388e-4710-ba45-f5e5dbf25f97",
+        "name": "Envia Whatsapp",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          1640,
+          160
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.canal }}",
+                      "rightValue": "=whatsapp",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "whatsapp"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "018c137c-842f-44b9-b3ea-f6bad3edfb36",
+                      "leftValue": "={{ $json.canal }}",
+                      "rightValue": "bitrix",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "bitrix"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d2e796f8-426d-40e0-a2db-76dd0135b219",
+        "name": "Canal de resposta",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          1120,
+          360
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.timeline.comment.add",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n    \"fields\": {\n        \"ENTITY_ID\": {{ $json.result.ID }},\n        \"ENTITY_TYPE\": \"deal\",\n        \"COMMENT\": \"Nascimento: {{ $('Salvar dados').item.json.text.trim().replaceAll('\\n','\\\\n').replaceAll('\"','*') }}\"\n    }\n}",
+          "options": {}
+        },
+        "id": "713946df-8a79-4dcc-98b3-67095c101043",
+        "name": "Criar comentario Bitrix",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1600,
+          380
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/im.notify",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n      \"to\": \"{{ $json.result.ASSIGNED_BY_ID }}\",\n      \"message\": \"Analise do Nascimento. Você recebeu um novo comentário no negócio: {{ $json.result.TITLE }} - ID:{{ $json.result.ID }}\"\n} ",
+          "options": {}
+        },
+        "id": "d4ad8919-2862-48ff-882d-cd1d6363634a",
+        "name": "Notificar dono",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1820,
+          380
+        ]
+      },
+      {
+        "parameters": {
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.deal.get",
+          "sendQuery": true,
+          "specifyQuery": "json",
+          "jsonQuery": "={\n      \"ID\": \"{{$json.id_card}}\"\n}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "4b0e8bb1-b242-4e26-9c0b-51d99e69fc56",
+        "name": "pegar dados deal",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1380,
+          380
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "eaef770f-6560-426d-b6b0-9071719a3352",
+                "name": "text",
+                "value": "={{ $json.text }}",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "id": "c7132b50-e0ba-48a3-afc6-eaf5ae9526c4",
+        "name": "Salvar dados",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          920,
+          360
+        ]
+      }
+    ],
+    "connections": {
+      "Execute Workflow Trigger": {
+        "main": [
+          [
+            {
+              "node": "Salvar dados",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "É grupo??": {
+        "main": [
+          [
+            {
+              "node": "Envia Whatsapp Grupo",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Envia Whatsapp",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Canal de resposta": {
+        "main": [
+          [
+            {
+              "node": "É grupo??",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "pegar dados deal",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Criar comentario Bitrix": {
+        "main": [
+          [
+            {
+              "node": "Notificar dono",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "pegar dados deal": {
+        "main": [
+          [
+            {
+              "node": "Criar comentario Bitrix",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Salvar dados": {
+        "main": [
+          [
+            {
+              "node": "Canal de resposta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Execute Workflow Trigger": [
+        {
+          "json": {
+            "canal": "bitrix",
+            "instance_id": null,
+            "user_id": null,
+            "text": "\n🤬 *Cliente detrator* - **Temperatura:** 2\nDenny SILVA Brazil 86818678653 (5535999942321)\nProtocolos Analisados: 2308247929363, 2706242943670, 2606243200082, 2904249679414\n\nAs interações analisadas revelam um padrão de insatisfação por parte do cliente Denny SILVA, que se manifestou em múltiplos protocolos. O atendimento foi marcado por transferências frequentes e falta de resolução clara dos problemas.\n\n### Resumo da Conversa:\nO cliente iniciou as interações solicitando informações sobre um checklist e expressou frustração devido à falta de resposta ou solução efetiva. O atendimento foi caracterizado por várias transferências entre atendentes, sem interação direta com o cliente, resultando em um sentimento de descaso e insatisfação. Além disso, a comunicação muitas vezes não foi suficiente para esclarecer as dúvidas ou solucionar os problemas apresentados.\n\n### Análise dos Atendentes:\n- *Atendente: Graziela* | Início: 26/06/24 19:58 | Duração: 1h 47m 16s | Falou com cliente: Sim\n- *Atendente: Ronan de Carvalho Filho* | Início: 23/08/24 12:18 | Duração: 0s | Falou com cliente: Não\n- *Atendente: Lucas Santos* | Início: 23/08/24 12:18 | Duração: 0s | Falou com cliente: Não\n- *Atendente: Natália Akemi* | Início: 19/08/24 12:49 | Duração: 0s | Falou com cliente: Não\n- *Atendente: Gustavo Magosso Gomes* | Início: 16/08/24 13:34 | Duração: 0s | Falou com cliente: Não\n\n### Transferências:\n1. *Transferência para Graziela* (sem interação direta)\n2. *Transferência para Ronan de Carvalho Filho* (sem interação direta)\n3. *Transferência para Lucas Santos* (sem interação direta)\n4. *Transferência para Natália Akemi* (sem interação direta)\n\nHouve um total de 3 transferências sem interação direta com o cliente, o que indica um atendimento deficiente. O cliente precisou entrar em contato várias vezes para resolver o mesmo problema, sem que houvesse uma solução clara.\n\n### Classificação Final:\nO atendimento foi ineficaz e não atendeu às necessidades do cliente, resultando em uma experiência negativa. A repetição de problemas não resolvidos e a falta de feedback direto geraram uma forte insatisfação. Portanto, classifica-se o cliente como:\n\n",
+            "type": null,
+            "id_card ": "94907",
+            "group_id": null
+          }
+        }
+      ]
+    },
+    "versionId": "ecc03cb0-af1e-4b47-bf8f-973150d7f7b4",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-08-16T17:26:36.981Z",
+        "updatedAt": "2024-08-16T17:26:36.981Z",
+        "id": "eMX5cAtUIRtHSiCV",
+        "name": "Nascimento"
+      }
+    ]
+  }
+}
