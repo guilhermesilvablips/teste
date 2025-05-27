@@ -1,0 +1,20 @@
+{
+  "data": {
+    "createdAt": "2024-05-24T10:48:36.066Z",
+    "updatedAt": "2024-05-24T10:48:36.066Z",
+    "id": "r6pafNC0eZzy8r2S",
+    "name": "POC Crédito Vinícius",
+    "active": false,
+    "nodes": [],
+    "connections": {},
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {},
+    "versionId": "a95f83be-8a95-429f-b2f8-43687ac5ef2b",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
