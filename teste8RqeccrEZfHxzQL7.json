@@ -1,0 +1,325 @@
+{
+  "data": {
+    "createdAt": "2024-10-25T15:30:57.664Z",
+    "updatedAt": "2025-03-19T13:33:35.498Z",
+    "id": "8RqeccrEZfHxzQL7",
+    "name": "Plataforma Blips",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $('lead').item.json.lead.url_webhook.split('/v2')[0] }}/v2/user/login/624b373210c6fc7fcb4b7e0b",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "email",
+                "value": "diogo.silva@blips.com.br"
+              },
+              {
+                "name": "password",
+                "value": "Mrux31030"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "8206697d-d94c-4bdb-99f4-01dcbcd14c6c",
+        "name": "GET Access Token Blips",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          880,
+          300
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "6871d012-de3e-4866-b666-a25a64ce99f8",
+        "name": "lead",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          600,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $('lead').item.json.lead.url_webhook }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Authorization",
+                "value": "={{ \"Bearer \" + $json.accessToken }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ $('lead').first().json.toJsonString() }}",
+          "options": {}
+        },
+        "id": "5ed6820e-92cb-4aab-9b51-6c5395226dd2",
+        "name": "Lead Response",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1180,
+          300
+        ]
+      }
+    ],
+    "connections": {
+      "lead": {
+        "main": [
+          [
+            {
+              "node": "GET Access Token Blips",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GET Access Token Blips": {
+        "main": [
+          [
+            {
+              "node": "Lead Response",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "lead": [
+        {
+          "json": {
+            "lead": {
+              "integration": "CREDIT_ANALYSIS_BQ_N8N",
+              "url_webhook": "https://blips-backend-stg02-7znollqfuq-uc.a.run.app/v2/leads/credit-query-gcp/webhook",
+              "id": "67dac1775983ab558ac951cc",
+              "segments": [
+                {
+                  "id": "6258261a133743e4deadee8d",
+                  "disabled": false,
+                  "name": "Gráfica",
+                  "description": "grafica tester",
+                  "create_user": {
+                    "id": "624d95cb7096d924cebf765a",
+                    "name": "teste123"
+                  },
+                  "historical": [],
+                  "niches": [],
+                  "created_at": "2022-04-14T10:47:07.00Z",
+                  "updated_at": "2022-04-14T10:47:07.00Z"
+                }
+              ],
+              "type_all": true,
+              "personal_document": "81018826009",
+              "document": "95562213000113",
+              "responsible_id": "67487bba082ce5d59bea4218",
+              "responsible_name": "marcos Souto",
+              "responsible_type": "RESPONSIBLE",
+              "business_rule_type": "LOCACAO",
+              "equipment_value": 30000,
+              "is_with_sale": false,
+              "machine_type": "Plotter Eco-Solvente",
+              "organization_ref": "Blips",
+              "address_final": {
+                "city": "Uberlândia",
+                "st_ave": "Rua Duque de Caxias",
+                "neighborhood": "Centro",
+                "state": "MG",
+                "zip_code": "38400142"
+              },
+              "origin": "plataforma",
+              "monthly_earnings": "",
+              "number_employees": "",
+              "created_at": "2025-03-19T13:07:07.41Z"
+            },
+            "resultado": {
+              "resultadoAprovacaoAutoCPF": "SIM",
+              "resultado_cpf": {
+                "resultadoAprovacaoAutoCPF": "SIM",
+                "serasa_cpf": {
+                  "chq_data": "N/A",
+                  "chq_qtd": 0,
+                  "pefin_valor": 0,
+                  "pefin_data": "N/A",
+                  "refin_valor": 0,
+                  "refin_data": "N/A",
+                  "protesto_valor": 0,
+                  "protesto_data": "N/A",
+                  "serasa_score": 0
+                },
+                "bacen": {
+                  "bacen_vencido_cpf": 0,
+                  "prej_bacen_cpf": 0,
+                  "bacen_limite_utilizado_cpf": 0,
+                  "bacen_limite_cpf": 0,
+                  "bacen_a_vencer_cpf": 0
+                },
+                "mandatos": null,
+                "antecedentes": null,
+                "protesto": {
+                  "protesto_valor_cpf": 0,
+                  "base_cred_bacen_prots": 0,
+                  "protesto_data": "N/A",
+                  "valor_equipamento": 30000,
+                  "base_cred_bacen_cpf": 0
+                },
+                "obsAprovacao": {
+                  "avaliacao_cpf": {
+                    "strMotivoAprovCPF": {
+                      "Score Serasa <= 300?": "NÃO",
+                      "Pefin + Refin > 2000?": "NÃO",
+                      "Cheques > 2 em 24m?": "NÃO",
+                      "PROTESTO > 2000?": "NÃO",
+                      "avaliacaoPefin": "SIM",
+                      "avaliacaoChequeSemFundo": "SIM",
+                      "avaliacaoProtesto": "SIM",
+                      "avaliacaoSerasa": "NÃO",
+                      "temLimiteBacen": "SIM",
+                      "Antecedentes Criminais": "NÃO",
+                      "Mandatos CNPJ": "NÃO"
+                    },
+                    "strMotivoCPF": {
+                      "Protesto": "NÃO",
+                      "Pefin": "NÃO"
+                    },
+                    "resultadoAprovacaoAutoCPF": "SIM"
+                  }
+                },
+                "motivoReprov": ""
+              },
+              "resultado_cnpj": {
+                "resultadoAprovacaoAutoCNPJ": "SIM",
+                "data_fundacao_anos": "0",
+                "data_fundacao_meses": "0",
+                "data_fundacao_meses_total": "0",
+                "basic_data_CNPJ": {
+                  "basic_data": {
+                    "activities": null,
+                    "age": null,
+                    "company_type": null,
+                    "created_at": null,
+                    "state": null,
+                    "legal_nature": null,
+                    "name": null,
+                    "origin_data": null,
+                    "regime": null,
+                    "founded_date": null,
+                    "country": null,
+                    "status": null
+                  }
+                },
+                "serasa_cnpj": {
+                  "chq_data": "N/A",
+                  "chq_qtd": 0,
+                  "pefin_valor": 0,
+                  "pefin_data": "N/A",
+                  "refin_valor": 0,
+                  "refin_data": "N/A",
+                  "protesto_valor": 0,
+                  "protesto_data": "N/A",
+                  "serasa_score": 0
+                },
+                "serasa_chq_cnpj": {
+                  "chqDataCnpj": "N/A",
+                  "chqQtdCnpj": 0,
+                  "mesesChequeCnpj": 0,
+                  "data_fundacao_anos": 0,
+                  "data_fundacao_meses": 0
+                },
+                "bacen": {
+                  "bacen_vencido_cnpj": 0,
+                  "prej_bacen_cnpj": 0,
+                  "bacen_limite_utilizado_cnpj": 0,
+                  "bacen_limite_cnpj": 0,
+                  "bacen_a_vencer_cnpj": 0
+                },
+                "protesto": {
+                  "protesto_valor_cnpj": 0,
+                  "bacen_limite_cnpj": 0,
+                  "bacen_limite_utilizado_cnpj": 0,
+                  "bacen_vencido_cnpj": 0,
+                  "base_cred_bacen_prots": 0,
+                  "protesto_data_cnpj": "N/A",
+                  "valor_equipamento": 30000,
+                  "base_cred_bacen_cnpj": 0
+                },
+                "obsAprovacao": {
+                  "avaliacao_cnpj": {
+                    "strMotivoAprovCNPJ": {
+                      "Pefin + Refin > 1000?": "NÃO",
+                      "Cheques Sem Fundo > 3 em 24m?": "NÃO",
+                      "PROTESTO > 1000?": "NÃO",
+                      "avaliacaoPefin": "SIM",
+                      "avaliacaoChequeSemFundo": "SIM",
+                      "avaliacaoProtesto": "SIM",
+                      "temLimiteBacen": "SIM",
+                      "fundacaoMaior24M": "NÃO"
+                    },
+                    "strMotivoCNPJ": {
+                      "PERFIL EMPRESA NOVA": "SIM",
+                      "EMPRESA < 12 MESES": "SIM",
+                      "PERFIL EMPRESA INVISIVEL": "SIM",
+                      "PERFIL EMPRESA C/ PEFIN": "NÃO"
+                    },
+                    "resultadoAprovacaoAutoCNPJ": "SIM"
+                  }
+                },
+                "blips_cnpj": {
+                  "blips_score_cnpj": {
+                    "score": "Não Classificado",
+                    "rating": "N/A"
+                  }
+                },
+                "taxa_final": null,
+                "matriz_planos": "0.1",
+                "motivoReprov": ""
+              },
+              "avaliacaoFinal": "INCONCLUSIVO"
+            },
+            "avaliacaoFinal": "APROVADO",
+            "name": "",
+            "cellphone": null,
+            "motivoReprov": "",
+            "versaoMotorHist": "v2.2.0 dev",
+            "taxa_scoragem": null,
+            "matriz_planos": "0.1",
+            "id": "67dac1775983ab558ac951cc"
+          }
+        }
+      ]
+    },
+    "versionId": "ae29cedb-c4d1-46db-afe2-c0138b43338e",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-31T16:22:41.803Z",
+        "updatedAt": "2024-07-31T16:22:41.803Z",
+        "id": "mmaXbyiWhptUXaTd",
+        "name": "New Motor"
+      }
+    ]
+  }
+}
