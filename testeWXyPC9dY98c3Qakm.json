@@ -1,0 +1,430 @@
+{
+  "data": {
+    "createdAt": "2025-05-02T12:01:51.774Z",
+    "updatedAt": "2025-05-02T14:05:01.377Z",
+    "id": "WXyPC9dY98c3Qakm",
+    "name": "MCP Server - Esperanza",
+    "active": true,
+    "nodes": [
+      {
+        "parameters": {
+          "path": "tools_esperanza"
+        },
+        "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+        "typeVersion": 1,
+        "position": [
+          -280,
+          -60
+        ],
+        "id": "0daf12b7-0109-4a22-850f-9629c4fc4f2c",
+        "name": "MCP Server Trigger",
+        "webhookId": "8fb4badd-7bf0-4eb5-bdc5-8fb547d7d363"
+      },
+      {
+        "parameters": {
+          "name": "consulta_titulos_suprimentos",
+          "description": "Buscar informações dos títulos de suprimentos do cliente, a partir do CNPJ do cliente",
+          "workflowId": {
+            "__rl": true,
+            "value": "bj81rtjKqwh3VpjV",
+            "mode": "list",
+            "cachedResultName": "Assistente Cobrança - func - consulta_titulos_suprimentos"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "cnpj": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('cnpj', `Número de CNPJ do cliente associado aos títulos de suprimentos`, 'string') }}"
+            },
+            "matchingColumns": [
+              "cnpj"
+            ],
+            "schema": [
+              {
+                "id": "cnpj",
+                "displayName": "cnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+        "typeVersion": 2.1,
+        "position": [
+          -300,
+          200
+        ],
+        "id": "bbe741f8-b81f-4032-a533-fd3aa0be2d6d",
+        "name": "consulta_titulos_suprimentos"
+      },
+      {
+        "parameters": {
+          "name": "liberacao_confianca",
+          "description": "=Tenta fazer a liberação/desbloqueio em confiança da maquina do cliente, a partir do CNPJ do cliente e do número de série da maquina",
+          "workflowId": {
+            "__rl": true,
+            "value": "D2ZUDuaoJ15jA52v",
+            "mode": "list",
+            "cachedResultName": "Assistente Cobrança - func - liberacao_confianca"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "cnpj": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('cnpj', `Numero de CNPJ do cliente`, 'string') }}",
+              "numero_serie": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('numero_serie', `Número de série completo da maquina do cliente`, 'string') }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "cnpj",
+                "displayName": "cnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "numero_serie",
+                "displayName": "numero_serie",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+        "typeVersion": 2.1,
+        "position": [
+          -120,
+          200
+        ],
+        "id": "eea3dd3f-5eb9-4f6d-9823-d59e6014fccc",
+        "name": "liberacao_confianca"
+      },
+      {
+        "parameters": {
+          "name": "consulta_titulos_equipamentos",
+          "description": "Buscar informações dos títulos de equipamentos do cliente, a partir do CNPJ do cliente",
+          "workflowId": {
+            "__rl": true,
+            "value": "WUoxL9OYLTKWXGED",
+            "mode": "list",
+            "cachedResultName": "Assistente Cobrança - func - consulta_titulos_equipamentos"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "cnpj": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('cnpj', `Número de CNPJ do cliente associado aos títulos de equipamentos`, 'string') }}"
+            },
+            "matchingColumns": [
+              "cnpj"
+            ],
+            "schema": [
+              {
+                "id": "cnpj",
+                "displayName": "cnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+        "typeVersion": 2.1,
+        "position": [
+          -480,
+          200
+        ],
+        "id": "56586677-384a-4d01-be22-5d99ee58a169",
+        "name": "consulta_titulos_equipamentos"
+      },
+      {
+        "parameters": {
+          "name": "gerar_pagamento",
+          "description": "Gera a forma de pagamento do título com valor atualizado para o cliente, a partir do CNPJ e financial_number",
+          "workflowId": {
+            "__rl": true,
+            "value": "QDJmYsOTGPYo1Jlk",
+            "mode": "list",
+            "cachedResultName": "Assistente Cobrança - func - gerar_pagamento"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "cnpj": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('cnpj', `CNPJ do cliente`, 'string') }}",
+              "financial_number": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('financial_number', `Nufin do boleto a ser pago`, 'string') }}",
+              "method": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('method', `Método de pagamento (pix ou boleto)`, 'string') }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "cnpj",
+                "displayName": "cnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "financial_number",
+                "displayName": "financial_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "method",
+                "displayName": "method",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+        "typeVersion": 2.1,
+        "position": [
+          40,
+          200
+        ],
+        "id": "5f7164f4-d105-4456-ac97-23575ebc9da0",
+        "name": "gerar_pagamento"
+      },
+      {
+        "parameters": {
+          "name": "validar_cnpj",
+          "description": "Buscar o CNPJ do cliente com base no telefone do cliente que mandou a mensagem",
+          "workflowId": {
+            "__rl": true,
+            "value": "R2QUnFmezhh9iINk",
+            "mode": "list",
+            "cachedResultName": "Assistente Cobrança - func - validar_cnpj"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "telefone": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('telefone', `Número de telefone do cliente associado ao CNPJ`, 'string') }}"
+            },
+            "matchingColumns": [
+              "telefone"
+            ],
+            "schema": [
+              {
+                "id": "telefone",
+                "displayName": "telefone",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+        "typeVersion": 2.1,
+        "position": [
+          180,
+          200
+        ],
+        "id": "724f70f5-3075-41f9-818a-e945fa44c674",
+        "name": "validar_cnpj"
+      },
+      {
+        "parameters": {
+          "name": "consulta_titulos_bloqueio",
+          "description": "=Buscar informações com base no CNPJ do cliente de todos os títulos que bloqueiam o equipamento e que precisam ser pagos para haver desbloqueio",
+          "workflowId": {
+            "__rl": true,
+            "value": "xK3ALnRlTx1hZeOY",
+            "mode": "list",
+            "cachedResultName": "Assistente Cobrança - consulta_titulos_bloqueio"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "cnpj": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('cnpj', `Número de CNPJ do cliente`, 'string') }}"
+            },
+            "matchingColumns": [
+              "cnpj"
+            ],
+            "schema": [
+              {
+                "id": "cnpj",
+                "displayName": "cnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+        "typeVersion": 2.1,
+        "position": [
+          -660,
+          200
+        ],
+        "id": "d1345dfb-0e8a-454e-a853-1562dd8cd1de",
+        "name": "consulta_titulos_bloqueio"
+      },
+      {
+        "parameters": {
+          "name": "perguntar_salvador",
+          "description": "Buscar informações de contratos ou das máquinas dos clientes a partir do CNPJ do cliente e número de contrato.",
+          "workflowId": {
+            "__rl": true,
+            "value": "ve026aJL5FvMXdPU",
+            "mode": "list",
+            "cachedResultName": "Assistente Suporte Neurônio - Salvador"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+        "typeVersion": 2.1,
+        "position": [
+          320,
+          200
+        ],
+        "id": "a0de9a32-ee78-48eb-8bb1-f284c1a1d193",
+        "name": "perguntar_salvador"
+      }
+    ],
+    "connections": {
+      "consulta_titulos_suprimentos": {
+        "ai_tool": [
+          [
+            {
+              "node": "MCP Server Trigger",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "liberacao_confianca": {
+        "ai_tool": [
+          [
+            {
+              "node": "MCP Server Trigger",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "consulta_titulos_equipamentos": {
+        "ai_tool": [
+          [
+            {
+              "node": "MCP Server Trigger",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "gerar_pagamento": {
+        "ai_tool": [
+          [
+            {
+              "node": "MCP Server Trigger",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "validar_cnpj": {
+        "ai_tool": [
+          [
+            {
+              "node": "MCP Server Trigger",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "consulta_titulos_bloqueio": {
+        "ai_tool": [
+          [
+            {
+              "node": "MCP Server Trigger",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "perguntar_salvador": {
+        "ai_tool": [
+          [
+            {
+              "node": "MCP Server Trigger",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {},
+    "versionId": "aa2cf16f-e695-4581-9323-081d4cdcc479",
+    "triggerCount": 1,
+    "tags": [
+      {
+        "createdAt": "2024-07-09T15:07:56.880Z",
+        "updatedAt": "2024-07-09T15:07:56.880Z",
+        "id": "10AfOz2oKmpgqhM9",
+        "name": "Cobranca"
+      }
+    ]
+  }
+}
