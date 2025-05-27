@@ -1,0 +1,2316 @@
+{
+  "data": {
+    "createdAt": "2025-05-08T14:32:44.089Z",
+    "updatedAt": "2025-05-20T17:48:34.599Z",
+    "id": "gu5rjnrpfyt6Mnig",
+    "name": "Cards Cobrança",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "content": "# Atualização dos Cards",
+          "height": 80,
+          "width": 4740,
+          "color": 3
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -60,
+          -300
+        ],
+        "id": "ccf2c026-2ae1-442f-ad6a-d21eec8308b1",
+        "name": "Sticky Note"
+      },
+      {
+        "parameters": {
+          "content": "# Criação dos Cards",
+          "height": 80,
+          "width": 4780,
+          "color": 5
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -80,
+          900
+        ],
+        "id": "1b327f45-fd7d-4c0b-8cef-7e537d7013ac",
+        "name": "Sticky Note1"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.item.list.json",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"entityTypeId\": 1070,\n  \"filter\": {\n    \"CATEGORY_ID\": 93,\n    \"@stageId\": {{ $json.lista.map(item => item.stageId).toJsonString() }}\n  },\n  \"select\": [\n    \"*\"\n  ]\n}",
+          "options": {
+            "pagination": {
+              "pagination": {
+                "parameters": {
+                  "parameters": [
+                    {
+                      "type": "body",
+                      "name": "start",
+                      "value": "={{ $response.body.next || 0 }}"
+                    }
+                  ]
+                },
+                "paginationCompleteWhen": "other",
+                "completeExpression": "={{ !$response.body.next }}",
+                "requestInterval": 1000
+              }
+            }
+          }
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          740,
+          -40
+        ],
+        "id": "f35eacdd-17fe-453f-9d14-e811ed9bdb4b",
+        "name": "Get All Cards"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.status.list.json",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {}
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\n  \"filter\": {\n    \"ENTITY_ID\": \"DYNAMIC_1070_STAGE_93\"\n  },\n  \"select\": [\n    \"STATUS_ID\",\n    \"NAME\",\n    \"SEMANTICS\"\n  ]\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          320,
+          -40
+        ],
+        "id": "f7cfcf42-597d-4e29-8fe6-2d29b7ae3cb5",
+        "name": "Get all Raias"
+      },
+      {
+        "parameters": {
+          "jsCode": "// 1. Pega o array de stages\nconst stages = $input.first().json.result;\n\n// 2. Lista de nomes exatos que queremos capturar\nconst validNames = [\n  'Atendimento Humano (0 a 11 dias)',\n  'Teste João Lucas',\n  '12 a 15 dias',\n  '16 a 19 dias',\n  '20 a 25 dias',\n  '26 a 30 dias'\n];\n\n// 3. Filtra somente pelos nomes exatos da lista e mapeia para o formato desejado\nconst lista = stages\n  .filter(item => validNames.includes(item.NAME))\n  .map(item => ({\n    stageId:   item.STATUS_ID,\n    stageName: item.NAME\n  }));\n\n// 4. Retorna o resultado\nreturn { lista };"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          520,
+          -40
+        ],
+        "id": "ab53c0d2-6f59-41c9-bab1-dd866f571faa",
+        "name": "Select Stages"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.item.fields",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "entityTypeId",
+                "value": "1070"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "a6dc1c60-e197-4bff-b64a-ee12a0afa313",
+        "name": "Fileds",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          320,
+          160
+        ]
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT *,\n  CONCAT(cpf_cnpj, ', ', modalidade) AS CHAVE\nFROM `IA_E_AUTOMACAO.BASE_FLUXO_COBRANCA`\nWHERE telefone IS NOT NULL\n\n  AND cpf_cnpj != '40397096000198'\n  AND numcontrato_array not like '%12402988%'\n  AND (cpf_cnpj, modalidade) IN (\n       {{ $json.tuplas }}\n      )\norder by(max_dias_vencidos)",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          1200,
+          -140
+        ],
+        "id": "8bd50e99-5146-41b8-8041-1f4925763e2b",
+        "name": "Consulta Dados BQ",
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d83d89ed-88b8-4ae1-a1ce-c4f4e4fd259c",
+                "name": "bq.chave",
+                "value": "={{ $json.CHAVE }}",
+                "type": "string"
+              },
+              {
+                "id": "7617876e-dd63-4be9-863e-1d6a1c5993d4",
+                "name": "bq.contratos",
+                "value": "={{ $json.NUMCONTRATO_ARRAY.split('|') }}",
+                "type": "array"
+              },
+              {
+                "id": "bfac36f6-944c-4c47-8d1f-91a361e71bd2",
+                "name": "bq.nufins",
+                "value": "={{ $json.NUFIN_ARRAY.split('|') }}",
+                "type": "array"
+              },
+              {
+                "id": "92fc6456-cbd5-487b-a21a-5bdd9b1b875a",
+                "name": "bq.dias",
+                "value": "={{ $json.MAX_DIAS_VENCIDOS }}",
+                "type": "string"
+              },
+              {
+                "id": "597a0106-56e1-4ed3-aecb-64045a93ba9c",
+                "name": "bq.valor",
+                "value": "={{ $json.VALOR_SUM }}",
+                "type": "string"
+              },
+              {
+                "id": "f7883410-c5c7-4c56-bdb7-40e62ae8f356",
+                "name": "bq.inativo",
+                "value": "={{ $json.INATIVO }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1440,
+          -140
+        ],
+        "id": "18d89a72-f00b-458f-8677-87d8a1db127e",
+        "name": "Campos BQ"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "e6cd8372-cba4-4463-bbba-a0c094260d4b",
+                "leftValue": "={{ $json.bq.length }}",
+                "rightValue": 1,
+                "operator": {
+                  "type": "number",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          2360,
+          220
+        ],
+        "id": "551754e4-2d7a-4bcc-9bb2-e9c247c507dc",
+        "name": "1 Card?"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "5a57b8d9-61b8-498c-a64b-31aa21d671bd",
+                "leftValue": "={{ $json.bitrix.ufCrm55_1741802551914 }}",
+                "rightValue": "={{ $json.bq.dias }}",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "90729c68-4119-4fb1-981d-a30ad5b3d5af",
+                "leftValue": "={{ \n  $json.bitrix.ufCrm55ListaContratosCobranca.length === $json.bq.contratos.length &&\n  $json.bitrix.ufCrm55ListaContratosCobranca.every(item => $json.bq.contratos.includes(item))\n}}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "4c5a42ac-4b0a-474d-ae39-c0235edaa2cb",
+                "leftValue": "={{ \n  $json.bitrix.ufCrm55ListaNufinsCobranca.length === $json.bq.nufins.length &&\n  $json.bitrix.ufCrm55ListaNufinsCobranca.every(item => $json.bq.nufins.includes(item))\n}}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "be4117cb-6de8-42f2-b8f4-6b0269cc8fb9",
+                "leftValue": "={{ $json.bitrix.stageId  }}",
+                "rightValue": "={{ $json.stage.stageId }}",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          3140,
+          200
+        ],
+        "id": "248fa84a-2c9c-47d9-9a1e-b3a4e2530667",
+        "name": "Iguais?"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "061f9176-62df-4373-af64-d3a6391f5cc0",
+                "name": "bitrix.stageId",
+                "value": "={{ $json.stage.stageId }}",
+                "type": "string"
+              },
+              {
+                "id": "606171b7-bc85-4822-a64d-557f9a1b2172",
+                "name": "bitrix.ufCrm55_1741802551914",
+                "value": "={{ $json.bq.dias }}",
+                "type": "string"
+              },
+              {
+                "id": "bc26ff41-0235-4287-838f-ccabd7fbfdc6",
+                "name": "bitrix.ufCrm55ListaContratosCobranca",
+                "value": "={{ $json.bq.contratos }}",
+                "type": "array"
+              },
+              {
+                "id": "1244934c-0a63-4f53-84bf-cfa5271bebe8",
+                "name": "bitrix.ufCrm55ListaNufinsCobranca",
+                "value": "={{ $json.bq.nufins }}",
+                "type": "array"
+              },
+              {
+                "id": "a934e469-610d-4114-a41b-85159f748279",
+                "name": "bitrix.opportunity",
+                "value": "={{ $json.bq.valor }}",
+                "type": "string"
+              },
+              {
+                "id": "025aa429-f15e-43ae-a056-5661e1e61378",
+                "name": "bitrix.ufCrm55UsuarioCriacaoOriginal",
+                "value": "={{ $json.bitrix.ufCrm55UsuarioCriacaoOriginal || $json.bitrix.createdBy }}",
+                "type": "string"
+              },
+              {
+                "id": "4fd506f0-d2e4-404d-86f7-8e0817d8dfbc",
+                "name": "bitrix.ufCrm55DataCriacaoOriginal",
+                "value": "={{ $json.bitrix.ufCrm55DataCriacaoOriginal || $json.bitrix.createdTime.toDateTime().minus(6, 'hours').toISO() }}",
+                "type": "string"
+              },
+              {
+                "id": "786e5801-ff43-4d7d-9597-2d48573b6b9d",
+                "name": "bitrix.ufCrm55CriadoEsperanza",
+                "value": true,
+                "type": "boolean"
+              },
+              {
+                "id": "39628a46-83cb-406a-8d48-65d0356dd572",
+                "name": "anteriores",
+                "value": "={{\n  {\n    stageId: $json.bitrix.stageId,\n    stageName: $json.bitrix.stageName,\n    dias: $json.bitrix.ufCrm55_1741802551914,\n    contratos: $json.bitrix.ufCrm55ListaContratosCobranca,\n    nufins: $json.bitrix.ufCrm55ListaNufinsCobranca\n  }\n}}",
+                "type": "object"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3140,
+          560
+        ],
+        "id": "4722fa08-de3f-411e-95c8-731ca49a3e05",
+        "name": "Campos Criação"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.item.add.json",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"entityTypeId\": 1070,\n  \"fields\": {{ JSON.stringify($json.bitrix, null, 4) }}\n}",
+          "options": {}
+        },
+        "id": "6fde2847-f1ad-4975-a35b-e3d989b64a6b",
+        "name": "Criar Card",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          3380,
+          660
+        ]
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "bq",
+          "include": "selectedOtherFields",
+          "fieldsToInclude": "bitrix",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          2640,
+          560
+        ],
+        "id": "73fc0947-70c3-47d8-82ba-666ad4bf5568",
+        "name": "Dados de Cada Card"
+      },
+      {
+        "parameters": {
+          "jsCode": "// 1. Recupera a lista de stages do nó \"Select Stages\"\nconst selectStages = $('Select Stages').first().json.lista;\n\n// 2. Constrói um Map para lookup rápido por stageName → stageId\nconst stageMap = new Map(\n  selectStages.map(({ stageName, stageId }) => [stageName, stageId])\n);\n\n// 3. Constantes de fallback\nconst ERROR_STAGE_ID   = 'DT1070_93:UC_FW8HZW';\nconst ERROR_STAGE_NAME = 'Teste João Lucas';\n\n// 4. Função para obter {stageId, stageName} dado um nome\nfunction getStageByName(name) {\n  if (stageMap.has(name)) {\n    return { stageId: stageMap.get(name), stageName: name };\n  }\n  return { stageId: ERROR_STAGE_ID, stageName: ERROR_STAGE_NAME };\n}\n\n\nconst GANHO_AUTOMATICO = {\n  stageId:   'DT1070_93:UC_YWVXSI',\n  stageName: 'Ganho Automático - João Lucas'\n};\nconst PERDA_AUTOMATICO = {\n  stageId:   'DT1070_93:UC_7XSZ7D',\n  stageName: 'Perda Automática - João Lucas'\n};\n\n// 5. Regras de limites em dias (entre 7 e 30)\nconst STAGE_RULES = [\n  { maxDias: 11, name: 'Atendimento Humano (0 a 11 dias)' },\n  { maxDias: 15, name: '12 a 15 dias' },\n  { maxDias: 19, name: '16 a 19 dias' },\n  { maxDias: 25, name: '20 a 25 dias' },\n  { maxDias: 30, name: '26 a 30 dias' },\n];\n\n// 6. Determina o stage com base em item.json.bq.dias\nfunction qualRaia(item) {\n  const raw = item.json?.bq?.dias;\n  const dias = Number(raw);\n  \n  if (isNaN(dias)) {\n    return { stageId: ERROR_STAGE_ID, stageName: ERROR_STAGE_NAME };\n  }\n\n  // Ganho automático: menos de 7 dias\n  if (dias < 7) {\n    return GANHO_AUTOMATICO;\n  }\n\n  // Perda automática: mais de 30 dias\n  if (dias > 30) {\n    return PERDA_AUTOMATICO;\n  }\n\n  // Faixas entre 7 e 30 dias\n  for (const { maxDias, name } of STAGE_RULES) {\n    if (dias <= maxDias) {\n      return getStageByName(name);\n    }\n  }\n\n  // Fallback\n  return { stageId: ERROR_STAGE_ID, stageName: ERROR_STAGE_NAME };\n}\n\nconst output = $input\n  .all()\n  .map(item => {\n    item.json.stage = qualRaia(item);\n    return item;\n  });\n\nreturn output;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2900,
+          560
+        ],
+        "id": "4b867619-f8b1-411f-b655-050c2f7c6448",
+        "name": "Calcular Raia"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.item.delete",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "entityTypeId",
+                "value": "1070"
+              },
+              {
+                "name": "id",
+                "value": "={{ $json.bitrix.id }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "24155409-7362-47fd-bca1-232a26a9359e",
+        "name": "Delete Card",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2640,
+          380
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.timeline.comment.add",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"fields\": {\n    \"ENTITY_ID\": \"{{ $json.result.item.id }}\",\n    \"ENTITY_TYPE\": \"DYNAMIC_1070\",\n    \"COMMENT\": \"Os dados anteriores do CARD antes da última atualização eram: \\\\n\\\\nContratos: {{ $json.anteriores.contratos.join(', ') }}\\\\nNufins: {{ $json.anteriores.nufins.join(', ') }} \\\\nDias Vencido: {{ $json.anteriores.dias }}  \\\\nStageName: {{ $json.anteriores.stageName }} \\\\nStageId: {{ $json.anteriores.stageId }}\"\n  }\n}",
+          "options": {}
+        },
+        "id": "d5c11883-e6c3-4b3d-9474-946fc59d32b0",
+        "name": "Comentário",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          3860,
+          580
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.item.update",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"entityTypeId\": \"1070\",\n  \"id\": \"{{ $json.bitrix.id }}\",\n  \"fields\": {\n    \"stageId\": \"DT1070_93:UC_YWVXSI\"\n  }\n}\n",
+          "options": {}
+        },
+        "id": "83fec067-73af-4b49-a2ad-fa9932dca50c",
+        "name": "Dar Ganho",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2360,
+          -160
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.item.update",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"entityTypeId\": \"1070\",\n  \"id\": \"{{ $json.bitrix.id }}\",\n  \"fields\": {\n    \"stageId\": \"DT1070_93:UC_7XSZ7D\"\n  }\n}\n",
+          "options": {}
+        },
+        "id": "df131662-ca2c-42da-b969-027ef73ca1c7",
+        "name": "Dar Perda",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2360,
+          40
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.timeline.comment.add",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"fields\": {\n    \"ENTITY_ID\": \"{{ $json.result.item.id }}\",\n    \"ENTITY_TYPE\": \"DYNAMIC_1070\",\n    \"COMMENT\": \"Perda Automática - Cobrança: {{ $json.result.item.title }} está com mais de 30 dias vencidos ({{ $json.result.item.ufCrm55_1741802551914 }} dias)\"\n  }\n}",
+          "options": {}
+        },
+        "id": "532854fe-8f80-4841-95da-c4f7fcd0355d",
+        "name": "Comentário2",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2640,
+          40
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.timeline.comment.add",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"fields\": {\n    \"ENTITY_ID\": \"{{ $json.result.item.id }}\",\n    \"ENTITY_TYPE\": \"DYNAMIC_1070\",\n    \"COMMENT\": \"Ganho Automático - Cobrança: {{ $json.result.item.title }} não está mais na base\"\n  }\n}",
+          "options": {}
+        },
+        "id": "2c4a3f56-7e05-4377-85f7-2c1c75a41b84",
+        "name": "Comentário1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2640,
+          -160
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// 1. Recupera a lista de stages do nó \"Select Stages\"\nconst selectStages = $('Select Stages').first().json.lista;\n\n// 2. Constrói um Map para lookup rápido por stageName → stageId\nconst stageMap = new Map(\n  selectStages.map(({ stageName, stageId }) => [stageName, stageId])\n);\n\n// 3. Constantes de fallback\nconst ERROR_STAGE_ID   = 'DT1070_93:UC_FW8HZW';\nconst ERROR_STAGE_NAME = 'Teste João Lucas';\n\n// 4. Função para obter {stageId, stageName} dado um nome\nfunction getStageByName(name) {\n  if (stageMap.has(name)) {\n    return { stageId: stageMap.get(name), stageName: name };\n  }\n  return { stageId: ERROR_STAGE_ID, stageName: ERROR_STAGE_NAME };\n}\n\n\nconst GANHO_AUTOMATICO = {\n  stageId:   'DT1070_93:UC_YWVXSI',\n  stageName: 'Ganho Automático - João Lucas'\n};\nconst PERDA_AUTOMATICO = {\n  stageId:   'DT1070_93:UC_7XSZ7D',\n  stageName: 'Perda Automática - João Lucas'\n};\n\n// 5. Regras de limites em dias (entre 7 e 30)\nconst STAGE_RULES = [\n  { maxDias: 11, name: 'Atendimento Humano (0 a 11 dias)' },\n  { maxDias: 15, name: '12 a 15 dias' },\n  { maxDias: 19, name: '16 a 19 dias' },\n  { maxDias: 25, name: '20 a 25 dias' },\n  { maxDias: 30, name: '26 a 30 dias' },\n];\n\n// 6. Determina o stage com base em item.json.bq.dias\nfunction qualRaia(item) {\n  const raw = item.json?.bq?.dias;\n  const dias = Number(raw);\n  \n  if (isNaN(dias)) {\n    return { stageId: ERROR_STAGE_ID, stageName: ERROR_STAGE_NAME };\n  }\n\n  // Ganho automático: menos de 7 dias\n  if (dias < 7) {\n    return GANHO_AUTOMATICO;\n  }\n\n  // Perda automática: mais de 30 dias\n  if (dias > 30) {\n    return PERDA_AUTOMATICO;\n  }\n\n  // Faixas entre 7 e 30 dias\n  for (const { maxDias, name } of STAGE_RULES) {\n    if (dias <= maxDias) {\n      return getStageByName(name);\n    }\n  }\n\n  // Fallback\n  return { stageId: ERROR_STAGE_ID, stageName: ERROR_STAGE_NAME };\n}\n\nconst output = $input\n  .all()\n  .map(item => {\n    item.json.stage = qualRaia(item);\n    return item;\n  });\n\nreturn output;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2900,
+          200
+        ],
+        "id": "ae19ed71-00f3-4e7f-b03f-07bfd5bfd49c",
+        "name": "Calcular Raia1"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b5953f72-5c41-4102-8147-9d284befa465",
+                "name": "id",
+                "value": "={{ $json.bitrix.id }}",
+                "type": "string"
+              },
+              {
+                "id": "39628a46-83cb-406a-8d48-65d0356dd572",
+                "name": "anteriores",
+                "value": "={{\n  {\n    stageId: $json.bitrix.stageId,\n    stageName: $json.bitrix.stageName,\n    dias: $json.bitrix.ufCrm55_1741802551914,\n    contratos: $json.bitrix.ufCrm55ListaContratosCobranca,\n    nufins: $json.bitrix.ufCrm55ListaNufinsCobranca\n  }\n}}",
+                "type": "object"
+              },
+              {
+                "id": "6fd99a44-2815-44e2-94fe-96e85678f734",
+                "name": "fields.stageId",
+                "value": "={{ $json.stage.stageId }}",
+                "type": "string"
+              },
+              {
+                "id": "605ec967-df14-4f2e-a4be-3051f7891047",
+                "name": "fields.ufCrm55ListaContratosCobranca",
+                "value": "={{ $json.bq.contratos }}",
+                "type": "array"
+              },
+              {
+                "id": "d73f0593-1307-4ef9-823a-d4f3327522be",
+                "name": "fields.ufCrm55ListaNufinsCobranca",
+                "value": "={{ $json.bq.nufins }}",
+                "type": "array"
+              },
+              {
+                "id": "13c3ffbe-9e02-4ecd-a761-191e39771b3a",
+                "name": "fields.ufCrm55_1741802551914",
+                "value": "={{ $json.bq.dias }}",
+                "type": "number"
+              },
+              {
+                "id": "ff16d42c-3cbc-4577-938f-da651be244a2",
+                "name": "fields.opportunity",
+                "value": "={{ $json.bq.valor }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3380,
+          220
+        ],
+        "id": "9b416c69-8536-44f3-997a-92f4c51e7a05",
+        "name": "Campos Update"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.timeline.comment.add",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"fields\": {\n    \"ENTITY_ID\": \"{{ $json.id }}\",\n    \"ENTITY_TYPE\": \"DYNAMIC_1070\",\n    \"COMMENT\": \"Os dados anteriores do CARD antes da última atualização eram: \\\\n\\\\nContratos: {{ $json.anteriores.contratos.join(', ') }}\\\\nNufins: {{ $json.anteriores.nufins.join(', ') }} \\\\nDias Vencido: {{ $json.anteriores.dias }}  \\\\nStageName: {{ $json.anteriores.stageName }} \\\\nStageId: {{ $json.anteriores.stageId }}\"\n  }\n}\n",
+          "options": {}
+        },
+        "id": "b8cf27f3-714d-4bee-ad26-43c15c882b03",
+        "name": "Comentário3",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          3600,
+          320
+        ]
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "bq",
+          "include": "selectedOtherFields",
+          "fieldsToInclude": "bitrix",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          2640,
+          200
+        ],
+        "id": "4932376f-edbf-40ab-be7e-56f7a9ed732c",
+        "name": "Dados de Cada Card1"
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "lista",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          1200,
+          60
+        ],
+        "id": "3f85e59a-4009-4448-aa6b-f8d0b3e50c11",
+        "name": "Separa Cards"
+      },
+      {
+        "parameters": {
+          "mode": "combine",
+          "advanced": true,
+          "mergeByFields": {
+            "values": [
+              {
+                "field1": "bq.chave",
+                "field2": "bitrix.title"
+              }
+            ]
+          },
+          "joinMode": "enrichInput2",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.1,
+        "position": [
+          1680,
+          40
+        ],
+        "id": "b00e08e5-a660-4d34-a8f3-b2ca38ff00ce",
+        "name": "Match Title"
+      },
+      {
+        "parameters": {
+          "jsCode": "// 1. Reúna todos os arrays result.items de cada input\nconst allItems = $input\n  .all()\n  .flatMap(i => i.json.result.items || []);\n\n// 2. Filtre só quem foi criado pela Esperanza\nconst lista = allItems\n  .filter(item => item.ufCrm55CriadoEsperanza)\n  .map(item => item.title);\n\n// 3. Para cada título, faça split em vírgula e monte a tupla SQL\nconst tuplasSQL = lista\n  .map(str => {\n    const [cnpj, modalidade] = str\n      .split(',')\n      .map(s => s.trim());\n    return `('${cnpj}','${modalidade}')`;\n  })\n  // explicita a vírgula + espaço entre tuplas\n  .join(', ');\n\n// 4. Retorne o JSON com a string de tuplas\nreturn { tuplas: tuplasSQL };"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          960,
+          -140
+        ],
+        "id": "31fa202e-89a1-4adf-b452-2313b9707618",
+        "name": "Pega Titulo"
+      },
+      {
+        "parameters": {
+          "jsCode": "// 1. Reúna todos os result.items de cada input\nconst allItems = $input\n  .all()\n  .flatMap(i => i.json?.result?.items || []);\n\n// 2. Função para remover chaves com null, string vazia ou array vazio\nfunction compact(obj) {\n  return Object.fromEntries(\n    Object.entries(obj).filter(([_, v]) => {\n      if (v == null) return false;\n      if (typeof v === 'string' && v.trim() === '') return false;\n      if (Array.isArray(v) && v.length === 0) return false;\n      return true;\n    })\n  );\n}\n\n// 3. Filtra por assignedById e empacota em { bitrix: {...} }\nconst lista = allItems\n  .filter(item => item.ufCrm55CriadoEsperanza)\n  .map(item => ({\n    bitrix: compact(item)\n  }));\n\n// 4. Retorna o objeto com a lista pronta\nreturn { lista };"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          960,
+          60
+        ],
+        "id": "720eaaf5-5d56-49fc-bef2-6fd51a8b861e",
+        "name": "Compacta objeto"
+      },
+      {
+        "parameters": {
+          "jsCode": "// 1. Coleta todas as entradas e a lista de stages do nó \"Select Stages\"\nconst inputs = $input.all().map(item => item.json);\nconst selectStages = $('Select Stages').first().json.lista;\n\n// 2. Cria um Map invertido stageId → stageName\nconst idToNameMap = new Map(\n  selectStages.map(({ stageName, stageId }) => [stageId, stageName])\n);\n\n// 3. Estrutura para agrupar por bitrix.id\nconst agrupado = {};\n\nfor (const entry of inputs) {\n  const key = entry.bitrix.id;\n\n  // 4. Extrai o stageId que já está em entry.bitrix e busca o nome correspondente\n  const { stageId } = entry.bitrix;\n  const stageName = idToNameMap.get(stageId) || 'Nome não encontrado';\n\n  // 5. Reconstrói o objeto bitrix garantindo que stageId e stageName fiquem juntos\n  const { stageId: _, ...otherFields } = entry.bitrix;\n  const bitrixWithStage = {\n    ...otherFields,\n    stageId,\n    stageName\n  };\n\n  // 6. Inicializa agrupamento se necessário\n  if (!agrupado[key]) {\n    agrupado[key] = {\n      bitrix: bitrixWithStage,\n      bq: []\n    };\n  }\n\n  // 7. Acrescenta a parte bq, se houver\n  if (entry.bq) {\n    agrupado[key].bq.push(entry.bq);\n  }\n}\n\n// 8. Retorna array agrupado\nreturn Object.values(agrupado);\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1900,
+          40
+        ],
+        "id": "f57d53dd-443f-42fc-944a-9be3986d31e2",
+        "name": "Agrupa Dados"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.item.update",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"entityTypeId\": \"1070\",\n  \"id\": \"{{ $json.id }}\",\n  \"fields\": {{ $json.fields.toJsonString() }}\n}",
+          "options": {}
+        },
+        "id": "09f1ad4c-5dc4-4816-a4cd-7f0010df7ef9",
+        "name": "Atualizar Card",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          3600,
+          120
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/tasks.task.add.json",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"fields\": {\n    \"TITLE\": \"Verificar Cobrança\",\n    \"RESPONSIBLE_ID\": {{ $json.result[0].ID }},\n    \"DESCRIPTION\": \"A cobrança associada a esse Card já está com {{ $json.dias }} dias de vencimento. \\\\nVerificar se foi realizado contato com o cliente.\",\n    \"PRIORITY\": 2,\n    \"DEADLINE\": \"{{ (() => {\n      const now     = $now;            // Luxon DateTime\n      const hour    = now.hour;        // hora atual (0–23)\n      const weekday = now.weekday;     // 1 = seg … 5 = sex, 6 = sáb, 7 = dom\n\n      // — lista de feriados (ISO dates). Atualize conforme seu calendário local —\n      const holidays = [\n        '2025-01-01', // Ano Novo\n        '2025-04-18', // Sexta-Feira Santa\n        '2025-04-21', // Dia de Tiradentes\n        '2025-05-01', // Dia do Trabalho\n        '2025-06-19', // Corpus Christi\n        '2025-08-15', // Nossa Sra da Abadia\n        '2025-08-31', // Aniversário da cidade\n        '2025-09-07', // Independência do Brasil\n        '2025-10-12', // Nossa Senhora Aparecida\n        '2025-11-02', // Dia de Finados\n        '2025-11-15', // Proclamação da República\n        '2025-12-25'  // Natal\n      ];\n\n\n      // Verifica se uma data é dia útil (não fim de semana nem feriado)\n      function isBusinessDay(dt) {\n        const w = dt.weekday;\n        const iso = dt.toISODate();\n        return w <= 5 && !holidays.includes(iso);\n      }\n\n      // Retorna o próximo dia útil às 10h\n      function nextBusinessDayAt10(from) {\n        let d = (from || now).plus({ days: 1 }).set({ hour: 10, minute: 0, second: 0, millisecond: 0 });\n        while (!isBusinessDay(d)) {\n          d = d.plus({ days: 1 });\n        }\n        return d;\n      }\n\n      let deadline;\n\n      if (weekday === 5) {\n        // — SEXTA-FEIRA —\n        if (hour < 15) {\n          // antes das 15h: soma 2h\n          deadline = now.plus({ hours: 2 });\n        } else if (hour < 16) {\n          // entre 15h e 16h: fixa 17h\n          deadline = now.set({ hour: 17, minute: 0, second: 0, millisecond: 0 });\n        } else {\n          // a partir de 16h: próximo dia útil às 10h\n          deadline = nextBusinessDayAt10();\n        }\n      } else {\n        // — DEMais DIAS ÚTEIS —\n        if (hour < 16) {\n          // antes das 16h: soma 2h\n          deadline = now.plus({ hours: 2 });\n        } else if (hour < 17) {\n          // entre 16h e 17h: fixa 18h\n          deadline = now.set({ hour: 18, minute: 0, second: 0, millisecond: 0 });\n        } else {\n          // a partir de 17h: próximo dia útil às 10h\n          deadline = nextBusinessDayAt10();\n        }\n      }\n\n      return deadline.toISO();\n    })() }}\",\n    \"TAGS\": [\"ESPERANZA\"],\n    \"UF_CRM_TASK\": [\n      \"T42e_{{ $json.id }}\"\n    ]\n  }\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          4360,
+          140
+        ],
+        "id": "1efc50fc-46ed-40d5-8992-cd159c3c76f1",
+        "name": "Criar Tarefa Bitrix1"
+      },
+      {
+        "parameters": {
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/user.get.json",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "ID",
+                "value": "={{ $json.result.item.assignedById }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          3860,
+          220
+        ],
+        "id": "4bd48270-943e-4197-a41c-ad1986535ac6",
+        "name": "Get id resp1"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "600297fe-52e8-4acc-b1c9-7885a5e67d20",
+                "name": "id",
+                "value": "={{ $json.result.item.id }}",
+                "type": "number"
+              },
+              {
+                "id": "dac474ed-ef3c-49bd-8737-977851989219",
+                "name": "dias",
+                "value": "={{ $json.result.item.ufCrm55_1741802551914 }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3860,
+          20
+        ],
+        "id": "229eed63-e45f-42fd-86f6-3aa8daa6d05d",
+        "name": "Id + dias"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.bq.isEmpty() }}",
+                      "rightValue": 0,
+                      "operator": {
+                        "type": "boolean",
+                        "operation": "true",
+                        "singleValue": true
+                      },
+                      "id": "0725f1f6-ac21-4c3d-ac58-130f2a097c9b"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Ganho"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "6034c723-6cd3-4b70-adb5-9f4bf9760d69",
+                      "leftValue": "={{ $json.bq.length === 1 && $json.bq[0].dias > 30 }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "boolean",
+                        "operation": "true",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Perda"
+              }
+            ]
+          },
+          "options": {
+            "fallbackOutput": "extra",
+            "renameFallbackOutput": "Verificar"
+          }
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          2120,
+          40
+        ],
+        "id": "0b47a42b-2c93-480e-8676-4fa6012b0b30",
+        "name": "Switch"
+      },
+      {
+        "parameters": {
+          "jsCode": "// obtém o objeto fields\nconst fields = $input.first().json.result.fields;\n\n// transforma em um array de { name, title }\nconst result = Object.entries(fields).map(([name, info]) => ({\n  name,\n  title: info.title,\n  tipo: info.type\n}));\n\nreturn { result };"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          520,
+          160
+        ],
+        "id": "e8cc017e-d8c1-49a3-8a52-8103a8fc0674",
+        "name": "Code"
+      },
+      {
+        "parameters": {
+          "mode": "combine",
+          "combineBy": "combineByPosition",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.1,
+        "position": [
+          4120,
+          140
+        ],
+        "id": "52391cac-343e-40c9-a864-fb525479059b",
+        "name": "Merge"
+      },
+      {
+        "parameters": {
+          "mode": "combine",
+          "combineBy": "combineByPosition",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.1,
+        "position": [
+          3620,
+          580
+        ],
+        "id": "863f75b1-5a2f-4007-977b-32c98462425d",
+        "name": "Merge1"
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 8
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          80,
+          -40
+        ],
+        "id": "72092791-f443-4f60-9560-2e2b50d3d78e",
+        "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {
+          "jsCode": "// 1. Recupera a lista de stages do nó \"Select Stages\"\nconst selectStages = $('Select Stages1').first().json.lista;\n\n// 2. Constrói um Map para lookup rápido por stageName → stageId\nconst stageMap = new Map(\n  selectStages.map(({ stageName, stageId }) => [stageName, stageId])\n);\n\n// 3. Constantes de fallback\nconst ERROR_STAGE_ID   = 'DT1070_93:UC_FW8HZW';\nconst ERROR_STAGE_NAME = 'Teste João Lucas';\n\n// 4. Função para obter {stageId, stageName} dado um nome\nfunction getStageByName(name) {\n  if (stageMap.has(name)) {\n    return { stageId: stageMap.get(name), stageName: name };\n  }\n  return { stageId: ERROR_STAGE_ID, stageName: ERROR_STAGE_NAME };\n}\n\n\nconst GANHO_AUTOMATICO = {\n  stageId:   'DT1070_93:UC_YWVXSI',\n  stageName: 'Ganho Automático - João Lucas'\n};\nconst PERDA_AUTOMATICO = {\n  stageId:   'DT1070_93:UC_7XSZ7D',\n  stageName: 'Perda Automática - João Lucas'\n};\n\n// 5. Regras de limites em dias (entre 7 e 30)\nconst STAGE_RULES = [\n  { maxDias: 11, name: 'Atendimento Humano (0 a 11 dias)' },\n  { maxDias: 15, name: '12 a 15 dias' },\n  { maxDias: 19, name: '16 a 19 dias' },\n  { maxDias: 25, name: '20 a 25 dias' },\n  { maxDias: 30, name: '26 a 30 dias' },\n];\n\n// 6. Determina o stage com base em item.json.bq.dias\nfunction qualRaia(item) {\n  const raw = item.json?.bq?.dias;\n  const dias = Number(raw);\n  \n  if (isNaN(dias)) {\n    return { stageId: ERROR_STAGE_ID, stageName: ERROR_STAGE_NAME };\n  }\n\n  // Ganho automático: menos de 7 dias\n  if (dias < 7) {\n    return GANHO_AUTOMATICO;\n  }\n\n  // Perda automática: mais de 30 dias\n  if (dias > 30) {\n    return PERDA_AUTOMATICO;\n  }\n\n  // Faixas entre 7 e 30 dias\n  for (const { maxDias, name } of STAGE_RULES) {\n    if (dias <= maxDias) {\n      return getStageByName(name);\n    }\n  }\n\n  // Fallback\n  return { stageId: ERROR_STAGE_ID, stageName: ERROR_STAGE_NAME };\n}\n\nconst bigqueryItems = $('Campos Bitrix').all();\nconst inputItems    = $input.all();\nconst novositems = [];\n\nfor (let i = 0; i < bigqueryItems.length && i < inputItems.length; i++) {\n\n  const stage = qualRaia(bigqueryItems[i].json.ufCrm55_1741802551914)\n  \n  const novoitem = {\n    fields: {\n      stageId: stage.stageId,\n      title: bigqueryItems[i].json.title,\n      assignedById: 2491\n    },\n    stage: stage,\n    id: inputItems[i].json.result.item.id,\n    dias: bigqueryItems[i].json.ufCrm55_1741802551914\n  }\n  \n  novositems[i] = novoitem\n}\n\nreturn novositems;\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          3800,
+          1280
+        ],
+        "id": "5808b580-e47c-47a3-a9cf-5413e1b77351",
+        "name": "Dados Update"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "e1c01e16-a709-44ef-80d4-f53e6d4226fc",
+                "leftValue": "={{ $json.MAX_DIAS_VENCIDOS.toNumber() + 24 }}",
+                "rightValue": 21,
+                "operator": {
+                  "type": "number",
+                  "operation": "equals"
+                }
+              },
+              {
+                "id": "93ea3ac6-ca93-4d79-ba41-d9d04cf14b75",
+                "leftValue": "={{ \n  $json.MAX_DIAS_VENCIDOS.toNumber() === 15 \n    && \n  !$json.interagiu \n}}",
+                "rightValue": 12,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "19e87749-2514-4e99-87a4-ee22348dfdb9",
+                "leftValue": "={{       \n  $json.MAX_DIAS_VENCIDOS.toNumber() === 12           \n    &&       \n  !$json.interagiu   \n}}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          3060,
+          1300
+        ],
+        "id": "255f6c95-f6aa-450f-a87d-ea9b1e33b622",
+        "name": "Criar Card?"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f6958779-b84c-4b33-ba51-04064395c8ac",
+                "name": "categoryId",
+                "value": 93,
+                "type": "number"
+              },
+              {
+                "id": "5067608f-47cd-4174-b7f0-f89468e9fe6c",
+                "name": "title",
+                "value": "={{ $json.CPF_CNPJ }}, {{ $json.MODALIDADE }}",
+                "type": "string"
+              },
+              {
+                "id": "061f9176-62df-4373-af64-d3a6391f5cc0",
+                "name": "stageId",
+                "value": "DT1070_93:UC_R9432I",
+                "type": "string"
+              },
+              {
+                "id": "48ff93ea-a453-44eb-8cab-f890f6433e53",
+                "name": "ufCrm55_1730401349",
+                "value": "={{ $json.CPF_CNPJ }}",
+                "type": "string"
+              },
+              {
+                "id": "10374727-a9dc-4ee7-862e-2a66e1d0ccfb",
+                "name": "ufCrm55ListaContratosCobranca",
+                "value": "={{ $json.NUMCONTRATO_ARRAY.split('|') }}",
+                "type": "array"
+              },
+              {
+                "id": "f9ef1254-21d1-4113-83b2-a9f5637e8939",
+                "name": "ufCrm55ListaNufinsCobranca",
+                "value": "={{ $json.NUFIN_ARRAY.split('|') }}",
+                "type": "array"
+              },
+              {
+                "id": "8ba2ce29-2318-47f9-9061-15f255256f40",
+                "name": "ufCrm55_1741802551914",
+                "value": "={{ $json.MAX_DIAS_VENCIDOS }}",
+                "type": "number"
+              },
+              {
+                "id": "41f59668-7e02-44d9-838a-88446df58bc1",
+                "name": "ufCrm55_1733922755389",
+                "value": "={{ $json.TELEFONE }}",
+                "type": "string"
+              },
+              {
+                "id": "d95a29a9-71a8-4e62-91ce-1e106cef2f4f",
+                "name": "opportunity",
+                "value": "={{ $json.VALOR_SUM }}",
+                "type": "string"
+              },
+              {
+                "id": "014e9492-31dd-4213-9e67-3686e96a37ff",
+                "name": "ufCrm55_1730401399",
+                "value": "={{ $json.NOMEPARC }}",
+                "type": "string"
+              },
+              {
+                "id": "1fcae20b-4db4-41ef-8807-ec56eb5767d0",
+                "name": "ufCrm55_1730401637",
+                "value": 2343,
+                "type": "number"
+              },
+              {
+                "id": "ffc0d2c4-a708-43e8-9bc4-e67eef909500",
+                "name": "ufCrm55CriadoEsperanza",
+                "value": true,
+                "type": "boolean"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3340,
+          1280
+        ],
+        "id": "0f5ba4a2-21d8-42af-9bbd-e5f13822747c",
+        "name": "Campos Bitrix"
+      },
+      {
+        "parameters": {
+          "jsCode": "/**\n * Verifica em um único `if` se houve interação válida:\n * - MSG_ENVIADA === 'SIM'\n * - LOG_ENVIO existe, é string não vazia e não é 'Abriu a mensagem'\n */\nfunction interacao(item) {\n  const { MSG_ENVIADA, LOG_ENVIO } = item.json;\n  const log = typeof LOG_ENVIO === 'string' ? LOG_ENVIO.trim() : '';\n  \n  if (\n    MSG_ENVIADA === 'SIM' &&\n    log !== '' &&\n    log !== 'Abriu a mensagem'\n  ) \n    return true;\n\n  else if(\n    MSG_ENVIADA === 'NÃO'\n  )\n    return true;\n  \n  return false;\n}\n\nconst output = $input.all().map(item => {\n  item.json.interagiu = interacao(item);\n  return item;\n});\n\nreturn output;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2320,
+          1200
+        ],
+        "id": "7cfddcc3-8418-474a-afc2-2528c225ec19",
+        "name": "Interação"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.item.list.json",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"entityTypeId\": 1070,\n  \"filter\": {\n    \"CATEGORY_ID\": 93,\n    \"title\": \"{{ $json.CPF_CNPJ }}, {{ $json.MODALIDADE }}\",\n    \"@stageId\": {{ $('Select Stages1').first().json.lista.map(item => item.stageId).toJsonString() }}\n  },\n  \"select\": [\n    \"*\"\n  ]\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1320,
+          1240
+        ],
+        "id": "c2bfadb5-18c3-4b05-9021-cf9cee0de02f",
+        "name": "Find Card"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.total }}",
+                      "rightValue": 0,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      },
+                      "id": "356e798f-b9bf-4116-983c-9cd3d5b8a06c"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "0"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "8fbe2e83-ca10-4caa-b298-e024bd796737",
+                      "leftValue": "={{ $json.total }}",
+                      "rightValue": 1,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "1"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "089e22bd-26e2-4f25-ab19-60b2580fb8af",
+                      "leftValue": "={{ $json.total }}",
+                      "rightValue": 1,
+                      "operator": {
+                        "type": "number",
+                        "operation": "gt"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "+1"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          1820,
+          1340
+        ],
+        "id": "6e16f59a-e3d9-418f-aa27-a7a5e80ad967",
+        "name": "Switch1"
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT\n  MSG_ENVIADA,\n  LOG_ENVIO\nFROM\n  `blips-bigdata.IA_E_AUTOMACAO.DADOS_COBRANCA_ESPERANZA`\nWHERE\n  DOCUMENTO = '{{ $json.CPF_CNPJ }}'\n  AND E_IDEAL = {{ $json.MODALIDADE === 'VENDA' ? 1 : 0 }}\nORDER BY\n  INDEX_LINHA DESC\nLIMIT 1",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          2040,
+          1200
+        ],
+        "id": "c6def646-795b-4c21-b4cd-23f1bbdc577e",
+        "name": "Dados Esperanza",
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.item.add.json",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"entityTypeId\": 1070,\n  \"fields\": {{ JSON.stringify($json, null, 4) }}\n}",
+          "options": {}
+        },
+        "id": "aff99ec1-463e-498d-98a3-04ad517721c5",
+        "name": "Create Card",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          3580,
+          1280
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.item.update",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"entityTypeId\": \"1070\",\n  \"id\": \"{{ $json.id }}\",\n  \"fields\": {{ JSON.stringify($json.fields, null, 4) }}\n}",
+          "options": {}
+        },
+        "id": "82407494-e7d8-4fdd-bf66-425404380b5f",
+        "name": "Update Card",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          4040,
+          1280
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.status.list.json",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {}
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\n  \"filter\": {\n    \"ENTITY_ID\": \"DYNAMIC_1070_STAGE_93\"\n  },\n  \"select\": [\n    \"STATUS_ID\",\n    \"NAME\",\n    \"SEMANTICS\"\n  ]\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          560,
+          1360
+        ],
+        "id": "912b16a1-a464-4c09-9238-aa8248d039ce",
+        "name": "Get all Raias1"
+      },
+      {
+        "parameters": {
+          "jsCode": "// 1. Pega o array de stages\nconst stages = $input.first().json.result;\n\n// 2. Lista de nomes exatos que queremos capturar\nconst validNames = [\n  'Atendimento Humano (0 a 11 dias)',\n  'Teste João Lucas',\n  '12 a 15 dias',\n  '16 a 19 dias',\n  '20 a 25 dias',\n  '26 a 30 dias'\n];\n\n// 3. Filtra somente pelos nomes exatos da lista e mapeia para o formato desejado\nconst lista = stages\n  .filter(item => validNames.includes(item.NAME))\n  .map(item => ({\n    stageId:   item.STATUS_ID,\n    stageName: item.NAME\n  }));\n\n// 4. Retorna o resultado\nreturn { lista };"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          780,
+          1360
+        ],
+        "id": "6fffcc4d-532c-45a1-89d1-d763f6f7cffb",
+        "name": "Select Stages1"
+      },
+      {
+        "parameters": {
+          "jsCode": "return $(\"Execute\").all()"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1020,
+          1360
+        ],
+        "id": "9e9fc7c8-3578-49b6-8a9b-2278a73246b9",
+        "name": "Mock"
+      },
+      {
+        "parameters": {
+          "resource": "message",
+          "guildId": {
+            "__rl": true,
+            "value": "1258059672171319316",
+            "mode": "list",
+            "cachedResultName": "Bot Teste",
+            "cachedResultUrl": "https://discord.com/channels/1258059672171319316"
+          },
+          "channelId": {
+            "__rl": true,
+            "value": "1278683051869863936",
+            "mode": "list",
+            "cachedResultName": "log",
+            "cachedResultUrl": "https://discord.com/channels/1258059672171319316/1278683051869863936"
+          },
+          "content": "=Validar porque tem mais de um card.",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.discord",
+        "typeVersion": 2,
+        "position": [
+          2040,
+          1480
+        ],
+        "id": "476efd36-206d-47b0-811e-06ccd366eb96",
+        "name": "Discord",
+        "webhookId": "50caca0a-0658-4299-ba04-ce874fb3dbe7",
+        "credentials": {
+          "discordBotApi": {
+            "id": "PRgFSK6234S63UKh",
+            "name": "Luan Discord Bot"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "inputSource": "passthrough"
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          340,
+          1360
+        ],
+        "id": "91d0dc1f-9994-45b8-bd06-c23a5b35a58a",
+        "name": "Execute"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "0229e39c-bf50-4b68-be84-e1cb049b15cb",
+                "name": "condicional.dias",
+                "value": "={{ $json.MAX_DIAS_VENCIDOS }}",
+                "type": "string"
+              },
+              {
+                "id": "b0609ff0-0164-4d60-ab9b-48477d99b172",
+                "name": "condicional.interacao.msg_enviada",
+                "value": "={{ $json.MSG_ENVIADA }}",
+                "type": "string"
+              },
+              {
+                "id": "078828f4-4cb8-4c33-97df-504f6de19d72",
+                "name": "condicional.interacao.log",
+                "value": "={{ $json.LOG_ENVIO }}",
+                "type": "string"
+              },
+              {
+                "id": "0ce4492d-39c9-406e-8958-ece77e5afef0",
+                "name": "condicional.interagiu",
+                "value": "={{ $json.interagiu }}",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2840,
+          1300
+        ],
+        "id": "ebb7b4f2-d47f-471b-a273-a41f51f9587c",
+        "name": "Dados Condicional"
+      },
+      {
+        "parameters": {
+          "mode": "combine",
+          "combineBy": "combineByPosition",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.1,
+        "position": [
+          1580,
+          1340
+        ],
+        "id": "1829dc29-efc7-46d0-941d-166641e1c09d",
+        "name": "Merge2"
+      },
+      {
+        "parameters": {
+          "mode": "combine",
+          "combineBy": "combineByPosition",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.1,
+        "position": [
+          2600,
+          1300
+        ],
+        "id": "79c19520-0f6e-4dbe-b5f6-cbc814418013",
+        "name": "Merge3"
+      }
+    ],
+    "connections": {
+      "Get All Cards": {
+        "main": [
+          [
+            {
+              "node": "Pega Titulo",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Compacta objeto",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get all Raias": {
+        "main": [
+          [
+            {
+              "node": "Select Stages",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Select Stages": {
+        "main": [
+          [
+            {
+              "node": "Get All Cards",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Fileds": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Consulta Dados BQ": {
+        "main": [
+          [
+            {
+              "node": "Campos BQ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Campos BQ": {
+        "main": [
+          [
+            {
+              "node": "Match Title",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "1 Card?": {
+        "main": [
+          [
+            {
+              "node": "Dados de Cada Card1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Dados de Cada Card",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Iguais?": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Campos Update",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Criar Card": {
+        "main": [
+          [
+            {
+              "node": "Merge1",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Dados de Cada Card": {
+        "main": [
+          [
+            {
+              "node": "Calcular Raia",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Calcular Raia": {
+        "main": [
+          [
+            {
+              "node": "Campos Criação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dar Ganho": {
+        "main": [
+          [
+            {
+              "node": "Comentário1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dar Perda": {
+        "main": [
+          [
+            {
+              "node": "Comentário2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Calcular Raia1": {
+        "main": [
+          [
+            {
+              "node": "Iguais?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados de Cada Card1": {
+        "main": [
+          [
+            {
+              "node": "Calcular Raia1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Separa Cards": {
+        "main": [
+          [
+            {
+              "node": "Match Title",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Match Title": {
+        "main": [
+          [
+            {
+              "node": "Agrupa Dados",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Pega Titulo": {
+        "main": [
+          [
+            {
+              "node": "Consulta Dados BQ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Compacta objeto": {
+        "main": [
+          [
+            {
+              "node": "Separa Cards",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Agrupa Dados": {
+        "main": [
+          [
+            {
+              "node": "Switch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Atualizar Card": {
+        "main": [
+          [
+            {
+              "node": "Get id resp1",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Id + dias",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get id resp1": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Id + dias": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch": {
+        "main": [
+          [],
+          [],
+          [
+            {
+              "node": "1 Card?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          [
+            {
+              "node": "Criar Tarefa Bitrix1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge1": {
+        "main": [
+          [
+            {
+              "node": "Comentário",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Get all Raias",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados Update": {
+        "main": [
+          [
+            {
+              "node": "Update Card",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Criar Card?": {
+        "main": [
+          [
+            {
+              "node": "Campos Bitrix",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Interação": {
+        "main": [
+          [
+            {
+              "node": "Merge3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Find Card": {
+        "main": [
+          [
+            {
+              "node": "Merge2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch1": {
+        "main": [
+          [
+            {
+              "node": "Dados Esperanza",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Merge3",
+              "type": "main",
+              "index": 1
+            }
+          ],
+          [],
+          [
+            {
+              "node": "Discord",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados Esperanza": {
+        "main": [
+          [
+            {
+              "node": "Interação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Create Card": {
+        "main": [
+          [
+            {
+              "node": "Dados Update",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get all Raias1": {
+        "main": [
+          [
+            {
+              "node": "Select Stages1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Select Stages1": {
+        "main": [
+          [
+            {
+              "node": "Mock",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Mock": {
+        "main": [
+          [
+            {
+              "node": "Find Card",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Merge2",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Execute": {
+        "main": [
+          [
+            {
+              "node": "Get all Raias1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados Condicional": {
+        "main": [
+          [
+            {
+              "node": "Criar Card?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge2": {
+        "main": [
+          [
+            {
+              "node": "Switch1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge3": {
+        "main": [
+          [
+            {
+              "node": "Dados Condicional",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "callerPolicy": "workflowsFromSameOwner",
+      "timezone": "America/Sao_Paulo"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Execute": [
+        {
+          "json": {
+            "NOMEPARC": "Teste João Lucas",
+            "TELEFONE": "34984448484",
+            "CPF_CNPJ": "24894759000123",
+            "EMAIL": "joao.freitas@blips.com.br",
+            "MODALIDADE": "LOCACAO",
+            "TIPO_FLUXO": "PREVENTIVO",
+            "INATIVO": "0",
+            "LINHA_DIGITAVEL_ARRAY": "75691.40333  01061.921308  00232.610014  4 99690000130000",
+            "NUFIN_ARRAY": "117524",
+            "NUMCONTRATO_ARRAY": "9",
+            "VALOR_ARRAY": "1300",
+            "MAX_DIAS_VENCIDOS": "-3",
+            "VALOR_SUM": "1300.0",
+            "IS_FIDC": "0",
+            "dias_vencidos_contrato": "-3.0",
+            "NUFIN_ARRAY_DT_VENC": "117524/2025-05-22 00:00:00"
+          }
+        },
+        {
+          "json": {
+            "NOMEPARC": "Teste João Lucas",
+            "TELEFONE": "34984448484",
+            "CPF_CNPJ": "44318155000146",
+            "EMAIL": "joao.freitas@blips.com.br",
+            "MODALIDADE": "VENDA",
+            "TIPO_FLUXO": "PREVENTIVO",
+            "INATIVO": "0",
+            "LINHA_DIGITAVEL_ARRAY": "75691.40275  01290.586815  07642.220060  1 10860000031404",
+            "NUFIN_ARRAY": "763599",
+            "NUMCONTRATO_ARRAY": "12404086",
+            "VALOR_ARRAY": "314.04",
+            "MAX_DIAS_VENCIDOS": "0",
+            "VALOR_SUM": "314.04",
+            "IS_FIDC": "0",
+            "dias_vencidos_contrato": "0.0",
+            "NUFIN_ARRAY_DT_VENC": "763599/2025-05-19 00:00:00"
+          }
+        },
+        {
+          "json": {
+            "NOMEPARC": "Teste João Lucas",
+            "TELEFONE": "34984448484",
+            "CPF_CNPJ": "48806139000153",
+            "EMAIL": "joao.freitas@blips.com.br",
+            "MODALIDADE": "VENDA",
+            "TIPO_FLUXO": "PREVENTIVO",
+            "INATIVO": "0",
+            "LINHA_DIGITAVEL_ARRAY": "75691.40275  01290.586815  07861.130065  8 99670000051334",
+            "NUFIN_ARRAY": "746256",
+            "NUMCONTRATO_ARRAY": "12403263",
+            "VALOR_ARRAY": "513.34",
+            "MAX_DIAS_VENCIDOS": "0",
+            "VALOR_SUM": "513.34",
+            "IS_FIDC": "0",
+            "dias_vencidos_contrato": "0.0",
+            "NUFIN_ARRAY_DT_VENC": "746256/2025-05-19 00:00:00"
+          }
+        },
+        {
+          "json": {
+            "NOMEPARC": "Teste João Lucas",
+            "TELEFONE": "34984448484",
+            "CPF_CNPJ": "50047076000140",
+            "EMAIL": "joao.freitas@blips.com.br",
+            "MODALIDADE": "VENDA",
+            "TIPO_FLUXO": "PREVENTIVO",
+            "INATIVO": "0",
+            "LINHA_DIGITAVEL_ARRAY": "75691.40275  01290.586815  03508.900168  8 10860000027467",
+            "NUFIN_ARRAY": "644234",
+            "NUMCONTRATO_ARRAY": "2311251001",
+            "VALOR_ARRAY": "274.67",
+            "MAX_DIAS_VENCIDOS": "0",
+            "VALOR_SUM": "274.67",
+            "IS_FIDC": "0",
+            "dias_vencidos_contrato": "0.0",
+            "NUFIN_ARRAY_DT_VENC": "644234/2025-05-19 00:00:00"
+          }
+        },
+        {
+          "json": {
+            "NOMEPARC": "Teste João Lucas",
+            "TELEFONE": "34984448484",
+            "CPF_CNPJ": "39574888000101",
+            "EMAIL": "joao.freitas@blips.com.br",
+            "MODALIDADE": "VENDA",
+            "TIPO_FLUXO": "COBRANCA",
+            "INATIVO": "0",
+            "LINHA_DIGITAVEL_ARRAY": "75691.40275  01290.586815  07024.600087  1 10790000084185",
+            "NUFIN_ARRAY": "775172",
+            "NUMCONTRATO_ARRAY": "12404570",
+            "VALOR_ARRAY": "841.85",
+            "MAX_DIAS_VENCIDOS": "7",
+            "VALOR_SUM": "841.85",
+            "IS_FIDC": "0",
+            "dias_vencidos_contrato": "7.0",
+            "NUFIN_ARRAY_DT_VENC": "775172/2025-05-12 00:00:00"
+          }
+        },
+        {
+          "json": {
+            "NOMEPARC": "Teste João Lucas",
+            "TELEFONE": "34984448484",
+            "CPF_CNPJ": "34465568000108",
+            "EMAIL": "joao.freitas@blips.com.br",
+            "MODALIDADE": "VENDA",
+            "TIPO_FLUXO": "COBRANCA",
+            "INATIVO": "0",
+            "LINHA_DIGITAVEL_ARRAY": "13696.31104 00428.304000 00000.424200 4 10790000220166",
+            "NUFIN_ARRAY": "769777",
+            "NUMCONTRATO_ARRAY": "12404503",
+            "VALOR_ARRAY": "2201.66",
+            "MAX_DIAS_VENCIDOS": "7",
+            "VALOR_SUM": "2201.66",
+            "IS_FIDC": "0",
+            "dias_vencidos_contrato": "7.0",
+            "NUFIN_ARRAY_DT_VENC": "769777/2025-05-12 00:00:00"
+          }
+        },
+        {
+          "json": {
+            "NOMEPARC": "Teste João Lucas",
+            "TELEFONE": "34984448484",
+            "CPF_CNPJ": "34681696000180",
+            "EMAIL": "joao.freitas@blips.com.br",
+            "MODALIDADE": "VENDA",
+            "TIPO_FLUXO": "COBRANCA",
+            "INATIVO": "0",
+            "LINHA_DIGITAVEL_ARRAY": "75691.40275  01290.586815  06451.180092  6 10490000068052",
+            "NUFIN_ARRAY": "734969",
+            "NUMCONTRATO_ARRAY": "12402579",
+            "VALOR_ARRAY": "680.52",
+            "MAX_DIAS_VENCIDOS": "7",
+            "VALOR_SUM": "680.52",
+            "IS_FIDC": "0",
+            "dias_vencidos_contrato": "7.0",
+            "NUFIN_ARRAY_DT_VENC": "734969/2025-05-12 00:00:00"
+          }
+        },
+        {
+          "json": {
+            "NOMEPARC": "Teste João Lucas",
+            "TELEFONE": "34984448484",
+            "CPF_CNPJ": "31898464000190",
+            "EMAIL": "joao.freitas@blips.com.br",
+            "MODALIDADE": "VENDA",
+            "TIPO_FLUXO": "COBRANCA",
+            "INATIVO": "0",
+            "LINHA_DIGITAVEL_ARRAY": "75691.40275  01290.586815  08086.020016  1 99590000051334",
+            "NUFIN_ARRAY": "752735",
+            "NUMCONTRATO_ARRAY": "12403545",
+            "VALOR_ARRAY": "513.34",
+            "MAX_DIAS_VENCIDOS": "7",
+            "VALOR_SUM": "513.34",
+            "IS_FIDC": "0",
+            "dias_vencidos_contrato": "7.0",
+            "NUFIN_ARRAY_DT_VENC": "752735/2025-05-12 00:00:00"
+          }
+        },
+        {
+          "json": {
+            "NOMEPARC": "Teste João Lucas",
+            "TELEFONE": "34984448484",
+            "CPF_CNPJ": "22250081000110",
+            "EMAIL": "joao.freitas@blips.com.br",
+            "MODALIDADE": "VENDA",
+            "TIPO_FLUXO": "COBRANCA",
+            "INATIVO": "0",
+            "LINHA_DIGITAVEL_ARRAY": "13696.31104 00428.304000 00000.416966 1 10790000030320",
+            "NUFIN_ARRAY": "765610",
+            "NUMCONTRATO_ARRAY": "12404343",
+            "VALOR_ARRAY": "303.2",
+            "MAX_DIAS_VENCIDOS": "7",
+            "VALOR_SUM": "303.2",
+            "IS_FIDC": "0",
+            "dias_vencidos_contrato": "7.0",
+            "NUFIN_ARRAY_DT_VENC": "765610/2025-05-12 00:00:00"
+          }
+        },
+        {
+          "json": {
+            "NOMEPARC": "Teste João Lucas",
+            "TELEFONE": "34984448484",
+            "CPF_CNPJ": "51471681000107",
+            "EMAIL": "joao.freitas@blips.com.br",
+            "MODALIDADE": "VENDA",
+            "TIPO_FLUXO": "COBRANCA",
+            "INATIVO": "0",
+            "LINHA_DIGITAVEL_ARRAY": "34191.09008 00640.277679 73991.930006 7 10790000200742",
+            "NUFIN_ARRAY": "737338",
+            "NUMCONTRATO_ARRAY": "12402785",
+            "VALOR_ARRAY": "2007.42",
+            "MAX_DIAS_VENCIDOS": "7",
+            "VALOR_SUM": "2007.42",
+            "IS_FIDC": "0",
+            "dias_vencidos_contrato": "7.0",
+            "NUFIN_ARRAY_DT_VENC": "737338/2025-05-12 00:00:00"
+          }
+        },
+        {
+          "json": {
+            "NOMEPARC": "Teste João Lucas",
+            "TELEFONE": "34984448484",
+            "CPF_CNPJ": "43058657000112",
+            "EMAIL": "joao.freitas@blips.com.br",
+            "MODALIDADE": "LOCACAO",
+            "TIPO_FLUXO": "COBRANCA",
+            "INATIVO": "0",
+            "LINHA_DIGITAVEL_ARRAY": "03399.04997 44800.000000 01647.501012 6 10850000228135|03399.04997 44800.000000 01647.401015 8 10550000228135",
+            "NUFIN_ARRAY": "901041|901004",
+            "NUMCONTRATO_ARRAY": "12501539|12501539",
+            "VALOR_ARRAY": "2281.35|2281.35",
+            "MAX_DIAS_VENCIDOS": "31",
+            "VALOR_SUM": "4562.7",
+            "IS_FIDC": "0",
+            "dias_vencidos_contrato": "31.0",
+            "NUFIN_ARRAY_DT_VENC": "901041/2025-05-18 00:00:00|901004/2025-04-18 00:00:00"
+          }
+        },
+        {
+          "json": {
+            "NOMEPARC": "Teste João Lucas",
+            "TELEFONE": "34984448484",
+            "CPF_CNPJ": "44356439000127",
+            "EMAIL": "joao.freitas@blips.com.br",
+            "MODALIDADE": "VENDA",
+            "TIPO_FLUXO": "COBRANCA",
+            "INATIVO": "0",
+            "LINHA_DIGITAVEL_ARRAY": "34191.09008 00864.347679 73991.930006 1 10850000092688|03399.04997 44500.000003 01122.801010 4 10550000121737|03399.04997 44500.000003 01122.901018 2 10850000121737",
+            "NUFIN_ARRAY": "719700|719725|719726",
+            "NUMCONTRATO_ARRAY": "12401538|12401539|12401539",
+            "VALOR_ARRAY": "926.88|1217.37|1217.37",
+            "MAX_DIAS_VENCIDOS": "31",
+            "VALOR_SUM": "3361.62",
+            "IS_FIDC": "0",
+            "dias_vencidos_contrato": "31.0",
+            "NUFIN_ARRAY_DT_VENC": "719700/2025-05-18 00:00:00|719725/2025-04-18 00:00:00|719726/2025-05-18 00:00:00"
+          }
+        },
+        {
+          "json": {
+            "NOMEPARC": "Teste João Lucas",
+            "TELEFONE": "34984448484",
+            "CPF_CNPJ": "20099932000140",
+            "EMAIL": "joao.freitas@blips.com.br",
+            "MODALIDADE": "VENDA",
+            "TIPO_FLUXO": "COBRANCA",
+            "INATIVO": "0",
+            "LINHA_DIGITAVEL_ARRAY": "75691.40275  01290.586815  08455.880024  6 10550000042496|75691.40275  01290.586815  04769.750136  6 10820000134036|75691.40275  01290.586815  08455.950033  6 10850000042496",
+            "NUFIN_ARRAY": "917707|722805|917708",
+            "NUMCONTRATO_ARRAY": "12400794|12400794|12400794",
+            "VALOR_ARRAY": "424.96|1340.36|424.96",
+            "MAX_DIAS_VENCIDOS": "31",
+            "VALOR_SUM": "2190.28",
+            "IS_FIDC": "0",
+            "dias_vencidos_contrato": "31.0",
+            "NUFIN_ARRAY_DT_VENC": "917707/2025-04-18 00:00:00|722805/2025-05-15 00:00:00|917708/2025-05-18 00:00:00"
+          }
+        },
+        {
+          "json": {
+            "NOMEPARC": "Teste João Lucas",
+            "TELEFONE": "34984448484",
+            "CPF_CNPJ": "51052588000168",
+            "EMAIL": "joao.freitas@blips.com.br",
+            "MODALIDADE": "VENDA",
+            "TIPO_FLUXO": "COBRANCA",
+            "INATIVO": "0",
+            "LINHA_DIGITAVEL_ARRAY": "03399.04997 44500.000003 01072.101015 2 10550000147693|03399.04997 44500.000003 01072.201013 1 10850000147693",
+            "NUFIN_ARRAY": "593468|593469",
+            "NUMCONTRATO_ARRAY": "2310161020|2310161020",
+            "VALOR_ARRAY": "1476.93|1476.93",
+            "MAX_DIAS_VENCIDOS": "31",
+            "VALOR_SUM": "2953.86",
+            "IS_FIDC": "0",
+            "dias_vencidos_contrato": "31.0",
+            "NUFIN_ARRAY_DT_VENC": "593468/2025-04-18 00:00:00|593469/2025-05-18 00:00:00"
+          }
+        },
+        {
+          "json": {
+            "NOMEPARC": "Teste João Lucas",
+            "TELEFONE": "34984448484",
+            "CPF_CNPJ": "47036680000167",
+            "EMAIL": "joao.freitas@blips.com.br",
+            "MODALIDADE": "VENDA",
+            "TIPO_FLUXO": "COBRANCA",
+            "INATIVO": "0",
+            "LINHA_DIGITAVEL_ARRAY": "75691.40275  01290.586815  07612.590047  1 10360000034543|75691.40275  01290.586815  07612.660055  7 10670000034543",
+            "NUFIN_ARRAY": "775551|775552",
+            "NUMCONTRATO_ARRAY": "12405258|12405258",
+            "VALOR_ARRAY": "345.43|345.43",
+            "MAX_DIAS_VENCIDOS": "50",
+            "VALOR_SUM": "690.86",
+            "IS_FIDC": "0",
+            "dias_vencidos_contrato": "50.0",
+            "NUFIN_ARRAY_DT_VENC": "775551/2025-03-30 00:00:00|775552/2025-04-30 00:00:00"
+          }
+        },
+        {
+          "json": {
+            "NOMEPARC": "Teste João Lucas",
+            "TELEFONE": "34984448484",
+            "CPF_CNPJ": "35609400000183",
+            "EMAIL": "joao.freitas@blips.com.br",
+            "MODALIDADE": "VENDA",
+            "TIPO_FLUXO": "COBRANCA",
+            "INATIVO": "1",
+            "LINHA_DIGITAVEL_ARRAY": "42297.13104 00058.551912 00000.413328 1 99950000181482|03399.04997 44500.000003 01422.401016 1 10840000181482|03399.04997 44500.000003 01422.301018 2 10540000181482|03399.04997 44500.000003 01422.201010 9 10230000181482",
+            "NUFIN_ARRAY": "778042|778045|778044|778043",
+            "NUMCONTRATO_ARRAY": "12405467|12405467|12405467|12405467",
+            "VALOR_ARRAY": "1814.82|1814.82|1814.82|1814.82",
+            "MAX_DIAS_VENCIDOS": "91",
+            "VALOR_SUM": "7259.28",
+            "IS_FIDC": "0",
+            "dias_vencidos_contrato": "91.0",
+            "NUFIN_ARRAY_DT_VENC": "778042/2025-02-17 00:00:00|778045/2025-05-17 00:00:00|778044/2025-04-17 00:00:00|778043/2025-03-17 00:00:00"
+          }
+        }
+      ]
+    },
+    "versionId": "01e44602-ef36-4769-8ac5-52f8e41eb475",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-09T15:07:56.880Z",
+        "updatedAt": "2024-07-09T15:07:56.880Z",
+        "id": "10AfOz2oKmpgqhM9",
+        "name": "Cobranca"
+      }
+    ]
+  }
+}
