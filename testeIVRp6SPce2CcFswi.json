@@ -1,0 +1,1550 @@
+{
+  "data": {
+    "createdAt": "2024-08-07T13:04:50.680Z",
+    "updatedAt": "2024-09-05T13:53:46.277Z",
+    "id": "IVRp6SPce2CcFswi",
+    "name": "Auxiliar JL - arquivos",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "d936f0dd-8500-45c4-9a78-307dab727422",
+        "name": "When clicking ‘Test workflow’",
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -920,
+          3060
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://n8n-assistants.blips-labs.com/webhook-test/esperanza-passivo",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\n    \"id\": \"5534984448484\",\n    \"content\": \"Olá\\nTudo bem?\\n\",\n    \"audios\": \"\"\n}",
+          "options": {}
+        },
+        "id": "861a186b-b892-4bc9-9b7d-1475a2262278",
+        "name": "HTTP Request",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1820,
+          1060
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "0641fb01-ba30-45b2-a2d4-e0fc789394c7",
+                "name": "teste",
+                "value": "teste",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "49ef5b73-dbe3-4440-b169-5fc94065233a",
+        "name": "Edit Fields",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2060,
+          1580
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "deactivate",
+          "workflowId": {
+            "__rl": true,
+            "value": "dkosPKpfgtTsYQG6",
+            "mode": "list",
+            "cachedResultName": "[COBRANÇA] Gerar Lista de Envio (BQ -> Planilha) (#dkosPKpfgtTsYQG6)"
+          },
+          "requestOptions": {}
+        },
+        "id": "a020b984-8771-4b23-a345-17341c1d1c5b",
+        "name": "n8n",
+        "type": "n8n-nodes-base.n8n",
+        "typeVersion": 1,
+        "position": [
+          1440,
+          1060
+        ],
+        "credentials": {
+          "n8nApi": {
+            "id": "entFgaJ2Qm4tUcIO",
+            "name": "n8n account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "0753ef53-ce3a-4188-89bf-d4d85cfe17e8",
+                "name": "files",
+                "value": ",,https://storage.hyperflow.global/whatsapp/518168524072160,,",
+                "type": "string"
+              },
+              {
+                "id": "1c932ec3-6d8c-4f23-8081-8d3078976ae3",
+                "name": "images",
+                "value": ",,https://storage.hyperflow.global/whatsapp/518168524072160,,",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "8080939e-4aa0-41fa-b5cc-79ebfab3cc3f",
+        "name": "Edit Fields1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1000,
+          1360
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "8da597c5-5657-46f3-aab0-2aa7fa70efb4",
+                "name": "files",
+                "value": "={{ $json.files.split(',').filter(item => item.length > 0) }}",
+                "type": "array"
+              },
+              {
+                "id": "86eeff8b-e11f-49ec-a2b5-890542937908",
+                "name": "images",
+                "value": "={{ $json.images.split(',').filter(item => item.length > 0) }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "679c16e5-b6b8-421f-aa73-9084213df1a4",
+        "name": "Teste",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1220,
+          1360
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "02811183-9029-4f76-ade8-f16ab6db14ca",
+                "name": "teste",
+                "value": "teste",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "a27abdc1-39c6-4aa1-8f61-6e351bc8627d",
+        "name": "Edit Fields2",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1440,
+          1360
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "dce7f532-b12b-4eb3-957d-cf0879b0cdda",
+                "leftValue": "={{ $('Teste').item.json.files }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "array",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "b0793b45-39df-4f7c-a53f-fe884a740631",
+                "leftValue": "={{ $('Teste').item.json.images }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "array",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "id": "b4d8d5d6-4849-4493-aa1a-001593441c3b",
+        "name": "If",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          1660,
+          1360
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/threads",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "ae33db1c-cc33-482f-b2f6-6f2f2eb2775d",
+        "name": "Criar Thread",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -60,
+          1040
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "erBLFgb3zHf0C8ux",
+            "name": "Open Ai - Cobrança"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "url": "https://api.openai.com/v1/threads/thread_AZAa3MCxvav0cGcE6ApHQR1J",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "765c9daf-486b-4126-b91d-477f5fd5bbab",
+        "name": "Get Thread",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          200,
+          1040
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "trONZBLzM3mWPjKv",
+            "name": "OpenAi - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://api.openai.com/v1/threads/{{ $json.id }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\n  \"metadata\": {\n    \"modified\": \"true\",\n    \"user\": \"abc123\"\n  }\n}",
+          "options": {}
+        },
+        "id": "5ac737fd-aa0c-4d63-837d-ce3616fea936",
+        "name": "Modifica thread",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          460,
+          1040
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "download",
+          "fileId": {
+            "__rl": true,
+            "value": "1X54ONyS5pp3FXqPLwHomzB4t5Ef8fQR3",
+            "mode": "list",
+            "cachedResultName": "Trabalho 1 - TC - João Lucas.pdf",
+            "cachedResultUrl": "https://drive.google.com/file/d/1X54ONyS5pp3FXqPLwHomzB4t5Ef8fQR3/view?usp=drivesdk"
+          },
+          "options": {}
+        },
+        "id": "1321d67d-4522-49e1-92a6-e041f9d97fa0",
+        "name": "Google Drive",
+        "type": "n8n-nodes-base.googleDrive",
+        "typeVersion": 3,
+        "position": [
+          -1260,
+          1400
+        ],
+        "credentials": {
+          "googleDriveOAuth2Api": {
+            "id": "R1bqxAOxeHcnmU8n",
+            "name": "Drive - João Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/vector_stores",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "name",
+                "value": "Teste PDF - JL"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "b9f3a831-7f31-4bf5-9050-c4bc293476c3",
+        "name": "Criar Vector Store",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -60,
+          1240
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "trONZBLzM3mWPjKv",
+            "name": "OpenAi - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/files",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendBody": true,
+          "contentType": "multipart-form-data",
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "purpose",
+                "value": "assistants"
+              },
+              {
+                "parameterType": "formBinaryData",
+                "name": "file",
+                "inputDataFieldName": "data"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "855c9f19-2576-4509-a7a8-33b1b9f55005",
+        "name": "Upload file",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -640,
+          1400
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "erBLFgb3zHf0C8ux",
+            "name": "Open Ai - Cobrança"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://api.openai.com/v1/vector_stores/vs_YlvrNGjj1r2Yir0L2uro2zjs/files",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "file_id",
+                "value": "file-nKWve3u5UKRePGLBIGfrBpsc"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "525c3d4d-ddbe-493a-806d-574bc6300c6b",
+        "name": "Upload file vector Store",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -60,
+          1440
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "trONZBLzM3mWPjKv",
+            "name": "OpenAi - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "url": "=https://api.openai.com/v1/vector_stores/vs_YlvrNGjj1r2Yir0L2uro2zjs",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "614f73d6-3c66-458a-852c-581e75a122b6",
+        "name": "get vector store",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          200,
+          1440
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "trONZBLzM3mWPjKv",
+            "name": "OpenAi - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "87134b17-cb59-48f1-82b9-b410c0c07d07",
+        "name": "When chat message received",
+        "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -760,
+          1960
+        ],
+        "webhookId": "9abfd9ea-21d5-4d45-84a7-39230c0d437e"
+      },
+      {
+        "parameters": {
+          "url": "=https://api.openai.com/v1/threads/{{ $('Mensagem').item.json.thread_id }}/runs/{{ $json[\"id\"] }}",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 10000
+          }
+        },
+        "id": "5682be55-c2bb-4c59-a2bd-436cd9d688c8",
+        "name": "Get Run Status",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          380,
+          1960
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "erBLFgb3zHf0C8ux",
+            "name": "Open Ai - Cobrança"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "amount": 2,
+          "unit": "seconds"
+        },
+        "id": "03d2964b-b74d-41ae-863e-bd1503042d0a",
+        "name": "Wait",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1,
+        "position": [
+          960,
+          2200
+        ],
+        "webhookId": "8811742f-db12-48ec-a589-b4fe235ebc7b"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://api.openai.com/v1/threads/{{ $('Mensagem').item.json.thread_id }}/messages",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "=json",
+          "bodyParameters": {
+            "parameters": [
+              {}
+            ]
+          },
+          "jsonBody": "={\n    \"role\": \"user\",\n    \"content\": \"{{ $json.mensagem }}\",\n    \"attachments\": [\n        {\n            \"file_id\": \"{{ $json.file }}\",\n            \"tools\": [\n                {\n                    \"type\": \"file_search\"\n                }\n            ]\n        }\n    ]\n}",
+          "options": {}
+        },
+        "id": "e436b42b-dbaf-46eb-a65f-9501ea1f9c64",
+        "name": "Criar a Mensagem",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          -160,
+          1960
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "erBLFgb3zHf0C8ux",
+            "name": "Open Ai - Cobrança"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "98a5af91-f163-4672-9d53-9bee20c97303",
+                "leftValue": "={{ $json.last_error.code }}",
+                "rightValue": "rate_limit_exceeded",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "266286ba-94a1-4575-93a9-312ffe7b28d0",
+        "name": "Se for rate_limit_exceeded",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          1240,
+          2060
+        ]
+      },
+      {
+        "parameters": {
+          "url": "=https://api.openai.com/v1/threads/{{ $('Mensagem').item.json.thread_id }}/runs",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "32091409-7296-41a5-b7d1-04e001c1e6c5",
+        "name": "Lista Runs",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          80,
+          2180
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "erBLFgb3zHf0C8ux",
+            "name": "Open Ai - Cobrança"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://api.openai.com/v1/threads/{{ $('Mensagem').item.json.thread_id }}/runs",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "assistant_id",
+                "value": "={{ $('Mensagem').item.json.assistant_id }}"
+              },
+              {
+                "name": "tool_choice",
+                "value": "required"
+              },
+              {
+                "name": "parallel_tool_calls",
+                "value": "={{ false }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "80663058-d88c-4d0f-8bc0-588dd21ed6cd",
+        "name": "Run Assistant",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          80,
+          1960
+        ],
+        "executeOnce": false,
+        "retryOnFail": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "erBLFgb3zHf0C8ux",
+            "name": "Open Ai - Cobrança"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "amount": "={{ parseInt($json.last_error.message.match(/(\\d+(\\.\\d+)?)s/)[1]) * 2}}"
+        },
+        "id": "e3cee798-b976-46f2-8ad0-1f536e05388a",
+        "name": "Espera o tempo determinado",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          980,
+          2400
+        ],
+        "webhookId": "89b3350b-829b-4d43-98f4-cfbbfdf7a131"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "9be99488-b9db-4adf-bd48-7d7109f34e01",
+                "name": "message",
+                "value": "={{ $('Concatena todas mensagens').item.json.message }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "5cd3e7bd-7b4b-45c8-ae0d-569985f26885",
+        "name": "Coloca novamente a mensagem para re-processar",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          1460,
+          2500
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.status }}",
+                      "rightValue": "queued",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "queued"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "ecd44d0c-b93e-4977-ae74-8c87eae4cf20",
+                      "leftValue": "={{ $json.status }}",
+                      "rightValue": "in_progress",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "in_progress"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "6f6841ae-8845-4659-9e06-06e5bd4843df",
+                      "leftValue": "={{ $json.status }}",
+                      "rightValue": "failed",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "failed"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "6cc26ecf-79af-4d91-bb3f-a617646e3fc8",
+                      "leftValue": "={{ $json.status }}",
+                      "rightValue": "completed",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "completed"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "0f93b1ee-1a9c-4586-86f8-55e0a180ca04",
+                      "leftValue": "={{ $json.status }}",
+                      "rightValue": "expired",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "expired"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "5e7ecc7f-ecee-439c-aa0e-80a7e110726a",
+                      "leftValue": "={{ $json.status }}",
+                      "rightValue": "=requires_action",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "requires_action"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "9f3cd220-b944-4c94-a287-5588ca9c011a",
+        "name": "Switch",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          620,
+          1940
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://api.openai.com/v1/threads/{{ $('Mensagem').item.json.thread_id }}/runs/{{ $('Lista Runs').first().json.first_id }}/cancel ",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "91084c47-7cd8-495d-9026-8f83b846ecd0",
+        "name": "Cancel Run",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          80,
+          2400
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "erBLFgb3zHf0C8ux",
+            "name": "Open Ai - Cobrança"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "303c1752-c985-409c-88af-294c58e07484",
+                "leftValue": "={{!! $json.data[0].cancelled_at }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "false",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "4896b830-155f-45df-9a56-f0327651cbd5",
+        "name": "If1",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -120,
+          2420
+        ]
+      },
+      {
+        "parameters": {
+          "url": "=https://api.openai.com/v1/threads/{{ $('Mensagem').item.json.thread_id }}/messages?order=desc",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d92f8510-f6a0-4520-bb31-8943e574a155",
+        "name": "Pega resposta",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          1240,
+          1900
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "erBLFgb3zHf0C8ux",
+            "name": "Open Ai - Cobrança"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "38d9ddb8-e1a7-4a95-88b4-a5d8a7cea556",
+                "name": "mensagem",
+                "value": "={{ $json.chatInput }}",
+                "type": "string"
+              },
+              {
+                "id": "23c41579-58af-449b-8bda-f9ee4e066a82",
+                "name": "thread_id",
+                "value": "thread_qdwZfEgQiIbGjyIL2wVNg9NO",
+                "type": "string"
+              },
+              {
+                "id": "4b2eacd3-9651-4822-ad8f-39967c1e7e01",
+                "name": "file",
+                "value": "file-vqUGjncdHKLGQivxrY979NFD",
+                "type": "string"
+              },
+              {
+                "id": "c4b984e6-5b84-4c27-bec6-6413a071bb83",
+                "name": "assistant_id",
+                "value": "asst_ngvAj1G1sFXQMPkPyJJEMQIp",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "ac18aeff-f18d-41b7-80e3-553dbb713cb7",
+        "name": "Mensagem",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -480,
+          1960
+        ]
+      },
+      {
+        "parameters": {
+          "url": "https://api.openai.com/v1/files/file-aiIWcpleUQNzyLWLfethmY5Q",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "options": {}
+        },
+        "id": "8b06374e-1e65-4830-b3d5-98be0acf7109",
+        "name": "Pega o file",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          480,
+          1460
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "trONZBLzM3mWPjKv",
+            "name": "OpenAi - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "a4f67e36-5596-441d-8f2c-e26efc57409a",
+                "name": "chat",
+                "value": "={{ $json.data[0].content[0].text.value }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "454533b6-e8dc-4940-9621-ce61783c0573",
+        "name": "Resposta Chat",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1460,
+          1900
+        ]
+      },
+      {
+        "parameters": {
+          "language": "python",
+          "pythonCode": "# Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor item in _input.all():\n  tipo = item.binary.data.fileExtension\n  item.binary.data.fileName = 'Arquivo.' + tipo\nreturn _input.all()"
+        },
+        "id": "a47b37b8-e716-4e1f-8782-8377cbcd03e5",
+        "name": "Code",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1060,
+          1620
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "pdf",
+          "options": {}
+        },
+        "id": "b7602225-0945-4bba-a567-7011c28f3735",
+        "name": "Extract from File",
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          -1060,
+          1400
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "toJson",
+          "options": {
+            "fileName": "Arquivo.json"
+          }
+        },
+        "id": "25c94518-5f53-4ca7-b8c0-89cb26bc8917",
+        "name": "Convert to File",
+        "type": "n8n-nodes-base.convertToFile",
+        "typeVersion": 1.1,
+        "position": [
+          -840,
+          1400
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/files",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendBody": true,
+          "contentType": "multipart-form-data",
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "purpose",
+                "value": "assistants"
+              },
+              {
+                "parameterType": "formBinaryData",
+                "name": "file",
+                "inputDataFieldName": "data"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "7c8c21ab-eb1d-486e-9b58-9a774067baab",
+        "name": "Upload file1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -840,
+          1620
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "erBLFgb3zHf0C8ux",
+            "name": "Open Ai - Cobrança"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "url": "https://storage.hyperflow.global/whatsapp/1631697170726415",
+          "options": {}
+        },
+        "id": "1691ed2c-a04e-49a6-8bd7-c45ca9f4f8d5",
+        "name": "HTTP Request1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1760,
+          1840
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "cd81e961-877c-4b99-975b-faa0ff271940",
+                "name": "a",
+                "value": "a",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "4f54622e-4603-4a9c-9f43-9ac75ebb67c4",
+        "name": "Edit Fields4",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -480,
+          3060
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "return $('kkkkkkkkkk').last().json"
+        },
+        "id": "597bb189-5cc6-497d-b9d2-317ca015a503",
+        "name": "Code1",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -260,
+          3060
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "037c3967-1500-4ee9-a2f4-ac76eb52ef97",
+                "name": "sdsad",
+                "value": "sdasd",
+                "type": "string"
+              },
+              {
+                "id": "03537cc7-b9e1-4059-838f-c057889dd0ff",
+                "name": "sadsadsad",
+                "value": "sadasd",
+                "type": "string"
+              },
+              {
+                "id": "30cd1e16-8e99-401c-8104-a05032523fcd",
+                "name": "asdasdasdadadsda",
+                "value": "={{ {\n  \"teste\": {\n\"teste\": 1,\n\"opa\": 2\n  }\n} }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "fbb2fff1-215c-4d63-b3e4-06c64a98cfe3",
+        "name": "kkkkkkkkkk",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -700,
+          3060
+        ]
+      }
+    ],
+    "connections": {
+      "Edit Fields1": {
+        "main": [
+          [
+            {
+              "node": "Teste",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Teste": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields2": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get Run Status": {
+        "main": [
+          [
+            {
+              "node": "Switch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "Get Run Status",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Criar a Mensagem": {
+        "main": [
+          [
+            {
+              "node": "Run Assistant",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Se for rate_limit_exceeded": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Coloca novamente a mensagem para re-processar",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Lista Runs": {
+        "main": [
+          [
+            {
+              "node": "If1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Run Assistant": {
+        "main": [
+          [
+            {
+              "node": "Get Run Status",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Espera o tempo determinado": {
+        "main": [
+          [
+            {
+              "node": "Get Run Status",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Coloca novamente a mensagem para re-processar": {
+        "main": [
+          [
+            {
+              "node": "Criar a Mensagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch": {
+        "main": [
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Se for rate_limit_exceeded",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Pega resposta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Cancel Run": {
+        "main": [
+          [
+            {
+              "node": "Criar a Mensagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If1": {
+        "main": [
+          [
+            {
+              "node": "Cancel Run",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When chat message received": {
+        "main": [
+          [
+            {
+              "node": "Mensagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Mensagem": {
+        "main": [
+          [
+            {
+              "node": "Criar a Mensagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Pega resposta": {
+        "main": [
+          [
+            {
+              "node": "Resposta Chat",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "kkkkkkkkkk",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Drive": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "Upload file1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract from File": {
+        "main": [
+          [
+            {
+              "node": "Convert to File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Convert to File": {
+        "main": [
+          [
+            {
+              "node": "Upload file",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields4": {
+        "main": [
+          [
+            {
+              "node": "Code1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "kkkkkkkkkk": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields4",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "6adf358b-485a-473a-a626-beafca5a1ae0",
+    "triggerCount": 1,
+    "tags": []
+  }
+}
