@@ -1,0 +1,286 @@
+{
+  "data": {
+    "createdAt": "2025-04-01T16:48:37.326Z",
+    "updatedAt": "2025-05-06T14:44:27.250Z",
+    "id": "YpcOLlFynjVO0eaY",
+    "name": "Envia e-mail Dados - Victor Lorran copy",
+    "active": true,
+    "nodes": [
+      {
+        "parameters": {
+          "pollTimes": {
+            "item": [
+              {
+                "mode": "everyMinute"
+              }
+            ]
+          },
+          "documentId": {
+            "__rl": true,
+            "value": "1GBSaZlY7KVMy9fjzkfFA8lLZsdoXpckMIXPlarf4Mrk",
+            "mode": "list",
+            "cachedResultName": "Demandas - Time de Dados (respostas)",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GBSaZlY7KVMy9fjzkfFA8lLZsdoXpckMIXPlarf4Mrk/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 1116105915,
+            "mode": "list",
+            "cachedResultName": "Respostas ao formulário 1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GBSaZlY7KVMy9fjzkfFA8lLZsdoXpckMIXPlarf4Mrk/edit#gid=1116105915"
+          },
+          "event": "rowAdded",
+          "options": {}
+        },
+        "id": "62b451d9-feb2-4570-b1e0-ef54f7a5963f",
+        "name": "Google Sheets Trigger",
+        "type": "n8n-nodes-base.googleSheetsTrigger",
+        "typeVersion": 1,
+        "position": [
+          520,
+          460
+        ],
+        "credentials": {
+          "googleSheetsTriggerOAuth2Api": {
+            "id": "zpSKCSoIVVsz5LPD",
+            "name": "Google Sheets Trigger account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "project": {
+            "__rl": true,
+            "value": "10018",
+            "mode": "list",
+            "cachedResultName": "DataAnalytics"
+          },
+          "issueType": {
+            "__rl": true,
+            "value": "10069",
+            "mode": "list",
+            "cachedResultName": "Tarefa"
+          },
+          "summary": "=Demanda: {{ $('Google Sheets Trigger').item.json['Área'] }}",
+          "additionalFields": {
+            "description": "=Área: {{ $('Google Sheets Trigger').item.json['Área'] }}\nEscopo: {{ $('Google Sheets Trigger').item.json.Escopo }}\nEndereço de e-mail: {{ $('Google Sheets Trigger').item.json['Endereço de e-mail'] }}\nData de Entrega desejada:{{ $('Google Sheets Trigger').item.json['Data de Entrega desejada'] }}\nWhathsApp do Solicitante:{{ $('Google Sheets Trigger').item.json['WhatsApp do solicitante:'] }}\n",
+            "customFieldsUi": {
+              "customFieldsValues": [
+                {
+                  "fieldId": {
+                    "__rl": true,
+                    "value": "customfield_10131",
+                    "mode": "list",
+                    "cachedResultName": "Solicitado por"
+                  },
+                  "fieldValue": "={{ $('Google Sheets Trigger').item.json.Solicitante }}"
+                }
+              ]
+            }
+          }
+        },
+        "id": "f36b2475-e122-4e46-b373-42e6b7217761",
+        "name": "Jira Software",
+        "type": "n8n-nodes-base.jira",
+        "typeVersion": 1,
+        "position": [
+          800,
+          320
+        ],
+        "executeOnce": false,
+        "credentials": {
+          "jiraSoftwareCloudApi": {
+            "id": "q31vtHHpsP1o74uz",
+            "name": "Jira SW Cloud account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "sendTo": "=victor.lima@blips.com.br, david.ferreira@blips.com.br, bruno.oliveira@blips.com.br, vinicius.cunha@blips.com.br, flavia.bertarini@blips.com.br",
+          "subject": "={{ $json.Escopo }} adicionado ao backlog prazo estimado: {{ $json['Data de Entrega desejada'] }} ",
+          "message": "=Área: {{ $json[\"Área\"] }}<br>\nEscopo: {{ $json[\"Escopo\"] }}<br>\nSolicitante: {{ $json[\"Solicitante\"] }}<br>\nEndereço de e-mail:{{ $json['Endereço de e-mail'] }}<br>\n<br>\nData de Entrega desejada: {{ $json[\"Data de Entrega desejada\"] }}\n\n",
+          "options": {}
+        },
+        "id": "b11a9b3e-06e8-4e60-a4ba-e094f5f1d603",
+        "name": "Gmail",
+        "type": "n8n-nodes-base.gmail",
+        "typeVersion": 2.1,
+        "position": [
+          800,
+          580
+        ],
+        "webhookId": "be4fcf77-d225-4326-8b65-9d16de708219",
+        "credentials": {
+          "gmailOAuth2": {
+            "id": "WCOsU9skviBSa7Rp",
+            "name": "DashBoard account"
+          }
+        },
+        "notes": "Esse trigger vai realizar um envio de e-mail toda vez que for adicionado  uma linha no google sheets para informar que a demanda foi criada "
+      },
+      {
+        "parameters": {
+          "sendTo": "={{ $('Google Sheets Trigger').item.json.Solicitante }}",
+          "subject": "=Atualização sobre: {{ $('Google Sheets Trigger').item.json.Escopo }}",
+          "message": "=Status da sua demanda foi atualizada status: {{ $json.fields.status.statusCategory.name }}",
+          "options": {}
+        },
+        "id": "0d53e4fa-22cd-4163-a812-3f6fa4fa6ea5",
+        "name": "Envia Status",
+        "type": "n8n-nodes-base.gmail",
+        "typeVersion": 2.1,
+        "position": [
+          1360,
+          840
+        ],
+        "webhookId": "acb8e1c1-51e9-4acd-942b-01c22cb85d22",
+        "credentials": {
+          "gmailOAuth2": {
+            "id": "NwK6kDRbsqElBmMK",
+            "name": "Rodolfo - Gmail"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "issueKey": "={{ $json.key }}",
+          "additionalFields": {}
+        },
+        "id": "6554c98b-79b2-4346-83d7-98496d6427d6",
+        "name": "Jira Software1",
+        "type": "n8n-nodes-base.jira",
+        "typeVersion": 1,
+        "position": [
+          1120,
+          320
+        ],
+        "credentials": {
+          "jiraSoftwareCloudApi": {
+            "id": "q31vtHHpsP1o74uz",
+            "name": "Jira SW Cloud account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://new-api.zapsterapi.com/v1/wa/messages",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTc2MTE5MjQsImlzcyI6InphcHN0ZXJhcGkiLCJzdWIiOiJiZDg4ZWI0YS02ZjdkLTRlYzUtYTk5MS1hYWUzMWMxOGMzMDQiLCJqdGkiOiJhNTBiNzdiNC0yNDdmLTQ2ZDEtYTIyOS1jMDZiOWQ1NGI3YjMifQ.Ql1H5JTcgbV48Mgj18IJCfreD8bdxgybNtmW6BOuWS0"
+              },
+              {
+                "name": "accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "recipient",
+                "value": "={{ $('Google Sheets Trigger').item.json.Telefone }}"
+              },
+              {
+                "name": "text",
+                "value": "=A sua demanda do time de dados foi atualizada:  {{ $json.fields.status.name }}"
+              },
+              {
+                "name": "instance_id",
+                "value": "w4aimfkcaltxlavvvyqu6"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "neverError": true
+              }
+            }
+          }
+        },
+        "id": "2ae57ff0-8e3a-4091-877f-0ffb0f2bf481",
+        "name": "Avisar erro output1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          1140,
+          840
+        ]
+      }
+    ],
+    "connections": {
+      "Google Sheets Trigger": {
+        "main": [
+          [
+            {
+              "node": "Gmail",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Jira Software",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Jira Software": {
+        "main": [
+          [
+            {
+              "node": "Jira Software1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Jira Software1": {
+        "main": [
+          []
+        ]
+      },
+      "Envia Status": {
+        "main": [
+          []
+        ]
+      },
+      "Gmail": {
+        "main": [
+          []
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "callerPolicy": "workflowsFromSameOwner",
+      "executionTimeout": 300,
+      "saveDataErrorExecution": "none"
+    },
+    "staticData": {
+      "node:Google Sheets Trigger": {
+        "documentId": "1GBSaZlY7KVMy9fjzkfFA8lLZsdoXpckMIXPlarf4Mrk",
+        "sheetId": 1116105915,
+        "lastIndexChecked": 51
+      },
+      "node:Schedule Trigger": {
+        "recurrenceRules": []
+      }
+    },
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "6a849e3f-24a1-41dc-96fb-7a617a675e32",
+    "triggerCount": 1,
+    "tags": []
+  }
+}
