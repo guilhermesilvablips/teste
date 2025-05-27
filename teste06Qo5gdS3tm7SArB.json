@@ -1,0 +1,229 @@
+{
+  "data": {
+    "createdAt": "2024-10-25T15:32:34.504Z",
+    "updatedAt": "2024-10-25T16:09:12.361Z",
+    "id": "06Qo5gdS3tm7SArB",
+    "name": "FIDUCIA API",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://scr.fiducia.digital/fiducia/srcwebservice",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "text/xml"
+              },
+              {
+                "name": "Authorization",
+                "value": "Basic YW5kcmVAaWRlYWxkaXN0cmlidWlkb3JhLmNvbTpAQmxpcHMyMDIz"
+              },
+              {
+                "name": "charset",
+                "value": "utf-8"
+              }
+            ]
+          },
+          "sendBody": true,
+          "contentType": "raw",
+          "rawContentType": "=text/xml",
+          "body": "=<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:web=\"http://webservice.operacional.scr2.bcb.gov.br/\">\n    <soapenv:Header/>\n    <soapenv:Body>\n        <web:getResumoDoCliente>\n            <codCliente>{{ $json.doc }}</codCliente>\n            <tpCliente>{{ $json.type }}</tpCliente>\n            <dataBase>{{ $json.date }}</dataBase>\n            <autorizacao>S</autorizacao>\n        </web:getResumoDoCliente>\n    </soapenv:Body>\n</soapenv:Envelope>",
+          "options": {}
+        },
+        "id": "57e5a139-1efb-423d-9fca-d6e355df86f6",
+        "name": "HTTP Request",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1200,
+          540
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "11be4cae-8af6-49e9-89e5-8e84f0df01ac",
+        "name": "Execute Workflow Trigger",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          940,
+          540
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "2d9e239a-8b3d-40d3-b363-f4b2f5782658",
+                "name": "cnpj_if_solicitante",
+                "value": "={{ $json.cnpjDaIFSolicitante }}",
+                "type": "string"
+              },
+              {
+                "id": "c27bfb3f-7752-44e2-95a7-7216fe87fda4",
+                "name": "codigo_do_cliente",
+                "value": "={{ $json.codigoDoCliente }}",
+                "type": "string"
+              },
+              {
+                "id": "dff20f5c-512b-45bd-8b42-750fae3e9064",
+                "name": "coobrigacao_assumida",
+                "value": "={{ $json.coobrigacaoAssumida }}",
+                "type": "string"
+              },
+              {
+                "id": "7ea5b86d-0613-482a-929e-fb0001c1f7fa",
+                "name": "coobrigacao_recebida",
+                "value": "={{ $json.coobrigacaoRecebida }}",
+                "type": "string"
+              },
+              {
+                "id": "6d311efd-f1b2-4b87-b749-8a745d5b2423",
+                "name": "data_base_consultada",
+                "value": "={{ $json.dataBaseConsultada }}",
+                "type": "string"
+              },
+              {
+                "id": "93c7ddba-7277-451d-818d-64c8717eace1",
+                "name": "data_inicio_relacionamento",
+                "value": "={{ $json.dataInicioRelacionamento }}",
+                "type": "string"
+              },
+              {
+                "id": "1b00adc9-b068-4917-8710-698f766cd8a4",
+                "name": "lista_resumo_operacoes",
+                "value": "={{ $json.listaDeResumoDasOperacoes }}",
+                "type": "string"
+              },
+              {
+                "id": "f3175a12-c6a3-4057-b7bc-fc172fc8bad0",
+                "name": "percentual_documentos_processados",
+                "value": "={{ $json.percentualDocumentosProcessados }}",
+                "type": "string"
+              },
+              {
+                "id": "00b975fb-ed60-47ca-afa7-b8338f4594fc",
+                "name": "percentual_volume_processado",
+                "value": "={{ $json.percentualVolumeProcessado }}",
+                "type": "string"
+              },
+              {
+                "id": "68564d78-fe79-4994-84a2-447cc547bfd2",
+                "name": "quantidade_instituicoes",
+                "value": "={{ $json.quantidadeDeInstituicoes }}",
+                "type": "string"
+              },
+              {
+                "id": "fb888a0d-43f6-41f2-a33c-6c04eabab43e",
+                "name": "quantidade_operacoes",
+                "value": "={{ $json.quantidadeDeOperacoes }}",
+                "type": "string"
+              },
+              {
+                "id": "a53ce811-cc07-4eb9-9675-e37ebc848fc9",
+                "name": "quantidade_operacoes_discordancia",
+                "value": "={{ $json.quantidadeOperacoesDiscordancia }}",
+                "type": "string"
+              },
+              {
+                "id": "d9be5818-5348-48c8-8c72-c9bf18144755",
+                "name": "quantidade_operacoes_sub_judice",
+                "value": "={{ $json.quantidadeOperacoesSubJudice }}",
+                "type": "string"
+              },
+              {
+                "id": "9f95962f-c84c-4ba4-baf6-ea7c20937e24",
+                "name": "responsabilidade_total_discordancia",
+                "value": "={{ $json.responsabilidadeTotalDiscordancia }}",
+                "type": "string"
+              },
+              {
+                "id": "a01e5095-b321-4b0b-8ebf-308309686849",
+                "name": "responsabilidade_total_sub_judice",
+                "value": "={{ $json.responsabilidadeTotalSubJudice }}",
+                "type": "string"
+              },
+              {
+                "id": "eb6beb8e-4fa3-4377-a232-40c815c07b74",
+                "name": "risco_indireto_vendor",
+                "value": "={{ $json.riscoIndiretoVendor }}",
+                "type": "string"
+              },
+              {
+                "id": "eed17747-ac73-41ff-96df-991e872b4dba",
+                "name": "tipo_cliente",
+                "value": "={{ $json.tipoDoCliente }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "c626a0bb-6de3-4831-82ca-82f6c410cc2e",
+        "name": "Edit Fields",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1420,
+          540
+        ]
+      }
+    ],
+    "connections": {
+      "Execute Workflow Trigger": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Execute Workflow Trigger": [
+        {
+          "json": {
+            "doc": "10778899683",
+            "type": "1",
+            "date": "2021-07"
+          }
+        }
+      ]
+    },
+    "versionId": "818ffd23-4fa4-4959-87e7-ecf6f2def351",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-31T16:22:41.803Z",
+        "updatedAt": "2024-07-31T16:22:41.803Z",
+        "id": "mmaXbyiWhptUXaTd",
+        "name": "New Motor"
+      }
+    ]
+  }
+}
