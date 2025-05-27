@@ -1,0 +1,4926 @@
+{
+  "data": {
+    "createdAt": "2025-03-06T23:03:01.909Z",
+    "updatedAt": "2025-05-23T17:31:06.603Z",
+    "id": "gKzkI2qOB8kecMTs",
+    "name": "Análise Feira",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "5a295f05-f660-40e5-b42a-ba512b99ca5a",
+        "name": "lead",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          -20,
+          -20
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('lead').first().json.document }}",
+                      "rightValue": "CNPJ",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "CNPJ"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "33be5d33-87f1-472a-8ee3-cd43f0c820b5",
+                      "leftValue": "={{ $('lead').first().json.document }}",
+                      "rightValue": "CPF",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "CPF"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "edb25ea4-44f6-4c2a-97b2-ab50a890f9ac",
+        "name": "CPF ou CNPJ ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          240,
+          -20
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7b2f5ede-51d7-4334-b431-69df9cda7856",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              },
+              {
+                "id": "bb34f180-0211-4498-893f-d02caa7f7089",
+                "name": "endpoint",
+                "value": "companies",
+                "type": "string"
+              },
+              {
+                "id": "ea8bb1ed-a9f5-4959-81d1-39248d000e46",
+                "name": "type",
+                "value": "kyc",
+                "type": "string"
+              },
+              {
+                "id": "ec9bd1c5-cc19-4dc7-8913-6102b1c23936",
+                "name": "catalogo_de_variaveis",
+                "value": "={{ $('lead').first().json.catalogo_de_variaveis }}",
+                "type": "object"
+              },
+              {
+                "id": "813ce0b9-3f89-480a-865c-f18f19143f5d",
+                "name": "doc",
+                "value": "={{ $('lead').first().json.cnpjCliente }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "8693250f-ec48-409c-84d5-f80c257ffefb",
+        "name": "set_kyc_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          520,
+          -360
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "sSGZczbG1UA4RX3g",
+            "mode": "list",
+            "cachedResultName": "3 - Recuperação de Dados"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          740,
+          -360
+        ],
+        "id": "d280a394-260d-4df5-9a0a-29d6118db90e",
+        "name": "RD_KYC_CNPJ"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7b2f5ede-51d7-4334-b431-69df9cda7856",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              },
+              {
+                "id": "bb34f180-0211-4498-893f-d02caa7f7089",
+                "name": "endpoint",
+                "value": "peoplev2",
+                "type": "string"
+              },
+              {
+                "id": "ea8bb1ed-a9f5-4959-81d1-39248d000e46",
+                "name": "type",
+                "value": "kyc",
+                "type": "string"
+              },
+              {
+                "id": "ec9bd1c5-cc19-4dc7-8913-6102b1c23936",
+                "name": "catalogo_de_variaveis",
+                "value": "={{ $('lead').first().json.catalogo_de_variaveis }}",
+                "type": "object"
+              },
+              {
+                "id": "813ce0b9-3f89-480a-865c-f18f19143f5d",
+                "name": "doc",
+                "value": "={{ $('lead').first().json.cpfCliente }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "51576175-8e58-4ba3-84d2-09d37c8ec14e",
+        "name": "set_kyc_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          520,
+          280
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "9d2200a4-f5fb-4544-8e62-729a0946781f",
+                "leftValue": "={{ $json.kyc.sansao.tipo[0] }}",
+                "rightValue": "Nada",
+                "operator": {
+                  "type": "string",
+                  "operation": "notExists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "id": "f545bbb6-baed-418c-afed-e6e9ad057655",
+        "name": "TEM KYC CNPJ ?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          940,
+          -360
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "a9697692-01d9-41f1-8dd6-e426fec2f86f",
+                "name": "kyc",
+                "value": "SIM",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "1cf00a28-7a05-41f7-9317-15e703248332",
+        "name": "reprovado_kyc_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1140,
+          -240
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7b2f5ede-51d7-4334-b431-69df9cda7856",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              },
+              {
+                "id": "bb34f180-0211-4498-893f-d02caa7f7089",
+                "name": "endpoint",
+                "value": "companies",
+                "type": "string"
+              },
+              {
+                "id": "ea8bb1ed-a9f5-4959-81d1-39248d000e46",
+                "name": "type",
+                "value": "processos",
+                "type": "string"
+              },
+              {
+                "id": "ec9bd1c5-cc19-4dc7-8913-6102b1c23936",
+                "name": "catalogo_de_variaveis",
+                "value": "={{ $('lead').first().json.catalogo_de_variaveis }}",
+                "type": "object"
+              },
+              {
+                "id": "813ce0b9-3f89-480a-865c-f18f19143f5d",
+                "name": "doc",
+                "value": "={{ $('lead').first().json.cnpjCliente }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "2e170c70-0f30-4fa0-8c52-da9bac42c076",
+        "name": "set_processos_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1340,
+          -380
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "sSGZczbG1UA4RX3g",
+            "mode": "list",
+            "cachedResultName": "3 - Recuperação de Dados"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          1580,
+          -380
+        ],
+        "id": "dfc9461c-516c-4472-927e-9b969ae00dbc",
+        "name": "RD_Processos_CNPJ"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7b2f5ede-51d7-4334-b431-69df9cda7856",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              },
+              {
+                "id": "bb34f180-0211-4498-893f-d02caa7f7089",
+                "name": "endpoint",
+                "value": "companies",
+                "type": "string"
+              },
+              {
+                "id": "ea8bb1ed-a9f5-4959-81d1-39248d000e46",
+                "name": "type",
+                "value": "basic_data",
+                "type": "string"
+              },
+              {
+                "id": "ec9bd1c5-cc19-4dc7-8913-6102b1c23936",
+                "name": "catalogo_de_variaveis",
+                "value": "={{ $('lead').first().json.catalogo_de_variaveis }}",
+                "type": "object"
+              },
+              {
+                "id": "9e4cee9d-7bf2-4210-9252-72f74fac611a",
+                "name": "doc",
+                "value": "={{ $('lead').first().json.cnpjCliente }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "894a9672-5f32-47e2-a7e0-6ed5570a62e3",
+        "name": "set_basic_data_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2180,
+          -400
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "sSGZczbG1UA4RX3g",
+            "mode": "list",
+            "cachedResultName": "3 - Recuperação de Dados"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          2400,
+          -400
+        ],
+        "id": "90760ec6-640a-403e-a061-3763ace13f8b",
+        "name": "RD_basic_data_CNPJ"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "78403caf-d089-48ef-bdc3-f371f9205d73",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              },
+              {
+                "id": "7ac37d72-6cd0-4dde-b380-900648d0b54c",
+                "name": "func",
+                "value": "calcula_meses_fundacao",
+                "type": "string"
+              },
+              {
+                "id": "b194be5c-c81e-4da4-ba04-d7c8482516e9",
+                "name": "basic_data",
+                "value": "={{ $json.basic_data.basic_data }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "e0125ec9-b893-4639-8455-a8dc89662436",
+        "name": "set_calc_mes_fund",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2620,
+          -400
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "W7TZJTMfuBtih4l1",
+            "mode": "list",
+            "cachedResultName": "Utils"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          2840,
+          -400
+        ],
+        "id": "a70cd0d3-93de-4aec-8ea5-6d24b571449b",
+        "name": "Utils_BDC_calcula_meses_fundacao"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "496aa52f-f271-42b5-a354-1dc25e25f1ba",
+                "leftValue": "={{ $json.processos.tipo[0] }}",
+                "rightValue": "NÃO",
+                "operator": {
+                  "type": "string",
+                  "operation": "notExists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "id": "70af6747-236c-4a8b-a60e-7fbacafb7c72",
+        "name": "Tem Processos CNPJ ?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          1780,
+          -380
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "f9c2de6e-741b-420e-8a77-260bf6f2a7c5",
+                "leftValue": "={{ $json.data_fundacao_meses_total }}",
+                "rightValue": 24,
+                "operator": {
+                  "type": "number",
+                  "operation": "gte"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "496bd9ee-f7a8-4e1a-9fb6-de83574f0720",
+        "name": "Fundação > 2 Anos ? CNPJ",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          3060,
+          -400
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ed87a61a-21a3-4f3e-96ac-7c00189b9893",
+                "name": "resultadoRejeicaoAutoCNPJ",
+                "value": "SIM",
+                "type": "string"
+              },
+              {
+                "id": "2b8d8e31-e03d-4fb6-b796-0ad6b48f12d9",
+                "name": "fundacaoMaior",
+                "value": "=NÃO",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "fcaaff20-f13d-4dbe-a3f4-0ab3f2a3768b",
+        "name": "FORM. TEMP. FUND.",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3300,
+          -300
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "86516d70-85f4-435d-aa0c-f222fc651cbf",
+                "name": "fundacaoMaior",
+                "value": "SIM",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "097e9c83-b20d-4988-bae2-73965574d589",
+        "name": "fundacaoMaior",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3300,
+          -520
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7b2f5ede-51d7-4334-b431-69df9cda7856",
+                "name": "api",
+                "value": "BMP",
+                "type": "string"
+              },
+              {
+                "id": "bb34f180-0211-4498-893f-d02caa7f7089",
+                "name": "endpoint",
+                "value": "N/A",
+                "type": "string"
+              },
+              {
+                "id": "ea8bb1ed-a9f5-4959-81d1-39248d000e46",
+                "name": "type",
+                "value": "2",
+                "type": "string"
+              },
+              {
+                "id": "ec9bd1c5-cc19-4dc7-8913-6102b1c23936",
+                "name": "catalogo_de_variaveis",
+                "value": "={{ $('lead').first().json.catalogo_de_variaveis }}",
+                "type": "object"
+              },
+              {
+                "id": "76391c58-b80a-4ef2-8da0-672177dbb71d",
+                "name": "doc",
+                "value": "={{ $('lead').first().json.cnpjCliente }}",
+                "type": "string"
+              },
+              {
+                "id": "26972990-fa21-421e-81e7-4f490422b160",
+                "name": "bacen_fundacao",
+                "value": "={{ $('Utils_BDC_calcula_meses_fundacao').first().json.data_fundacao_meses_total > 24  ? 5000 : $('Utils_BDC_calcula_meses_fundacao').first().json.data_fundacao_meses_total > 12 ? 3000 : 2000 }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "1f058a84-a41e-4d23-96b9-3fcea89c5d42",
+        "name": "set_bmp_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3520,
+          -520
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "sSGZczbG1UA4RX3g",
+            "mode": "list",
+            "cachedResultName": "3 - Recuperação de Dados"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          3720,
+          -520
+        ],
+        "id": "3f1cc77a-fd3f-4152-84f2-cd886456a83b",
+        "name": "RD_BMP_CNPJ"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "9b9219cb-ea49-4737-b457-46e772488319",
+                "name": "api",
+                "value": "BMP",
+                "type": "string"
+              },
+              {
+                "id": "019d1f4b-929f-476e-8f10-d39b57311fea",
+                "name": "func",
+                "value": "sum_debtors_cnpj",
+                "type": "string"
+              },
+              {
+                "id": "72fecb19-2b69-43c3-82b9-f6abdb5b7efa",
+                "name": "scr_cnpj",
+                "value": "={{ $json.scr_cnpj }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "e3b950d3-3cfb-4bf3-9c9d-5d9e7cdeab92",
+        "name": "sum_debtors_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3940,
+          -520
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "W7TZJTMfuBtih4l1",
+            "mode": "list",
+            "cachedResultName": "Utils"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          4160,
+          -520
+        ],
+        "id": "7b0f1dc8-427b-414c-87f1-05a5b0eec624",
+        "name": "Utils_BMP_bacen_cnpj"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "c4b78e75-4943-479a-8b53-416d3e265127",
+                "name": "temLimiteBacen",
+                "value": "={{ $json.prej_bacen_cnpj > 0 || $json.bacen_vencido_cnpj > 0 ? \"NÃO\" : \"SIM\" }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "c8270e3d-6280-481d-a800-43c149e92883",
+        "name": "temLimiteBacen_CNPJ",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          4380,
+          -520
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "a7f326a5-d67c-4dbf-afc8-be0e9969ee17",
+                "name": "processos",
+                "value": "=SIM",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "a717c38e-6677-4031-b530-d3b943632644",
+        "name": "reprov_processos_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1980,
+          -260
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7b2f5ede-51d7-4334-b431-69df9cda7856",
+                "name": "api",
+                "value": "Serasa",
+                "type": "string"
+              },
+              {
+                "id": "bb34f180-0211-4498-893f-d02caa7f7089",
+                "name": "endpoint",
+                "value": "protesto_cnpj",
+                "type": "string"
+              },
+              {
+                "id": "ea8bb1ed-a9f5-4959-81d1-39248d000e46",
+                "name": "type",
+                "value": "J",
+                "type": "string"
+              },
+              {
+                "id": "ec9bd1c5-cc19-4dc7-8913-6102b1c23936",
+                "name": "catalogo_de_variaveis",
+                "value": "={{ $('lead').first().json.catalogo_de_variaveis }}",
+                "type": "object"
+              },
+              {
+                "id": "afb99bdd-1d3d-4e68-bd8e-c63b8df52c23",
+                "name": "doc",
+                "value": "={{ $('lead').first().json.cnpjCliente }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "02dcd4de-1193-4871-8e56-0845b6da1f6b",
+        "name": "set_serasa_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          4600,
+          -520
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "sSGZczbG1UA4RX3g",
+            "mode": "list",
+            "cachedResultName": "3 - Recuperação de Dados"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          4820,
+          -520
+        ],
+        "id": "13fdc506-e55b-45f9-a8e3-a0e65bb2c884",
+        "name": "RD_Serasa_CNPJ"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "5914d38e-dc2b-46b0-9b68-ee334c34a38e",
+                "name": "api",
+                "value": "Serasa",
+                "type": "string"
+              },
+              {
+                "id": "91af1755-a505-4a19-9cf2-3ec14a820e73",
+                "name": "func",
+                "value": "protesto_cnpj",
+                "type": "string"
+              },
+              {
+                "id": "8ecb8755-a06b-4648-8538-bc55991c1521",
+                "name": "protesto",
+                "value": "={{ $('Utils_BMP_bacen_cnpj').all()[0].json }}",
+                "type": "object"
+              },
+              {
+                "id": "9dd734e6-db61-41f7-85b5-b8ce8298468a",
+                "name": "serasa_cnpj",
+                "value": "={{ $json.serasa_cnpj }}",
+                "type": "object"
+              },
+              {
+                "id": "b749ddcf-79cf-4fac-b98b-817b401722fb",
+                "name": "valor_equipamento",
+                "value": "={{ $('lead').first().json.equipment_value }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "9c92cdf0-0dfb-483b-a21a-21236706623e",
+        "name": "serasa_protesto_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          5040,
+          -520
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "W7TZJTMfuBtih4l1",
+            "mode": "list",
+            "cachedResultName": "Utils"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          5260,
+          -520
+        ],
+        "id": "86a0047a-99b4-46ff-ae2c-b0ef880c31e7",
+        "name": "Utils_Serasa_protesto_cnpj"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "W7TZJTMfuBtih4l1",
+            "mode": "list",
+            "cachedResultName": "Utils"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          5720,
+          -520
+        ],
+        "id": "62ae5c30-f7d9-4fea-9fa1-3b7d9c3a991f",
+        "name": "Utils_Serasa_verificar_avaliacao_cheque_sem_fundo_cnpj"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "5914d38e-dc2b-46b0-9b68-ee334c34a38e",
+                "name": "api",
+                "value": "Serasa",
+                "type": "string"
+              },
+              {
+                "id": "91af1755-a505-4a19-9cf2-3ec14a820e73",
+                "name": "func",
+                "value": "verificar_avaliacao_cheque_sem_fundo_cnpj",
+                "type": "string"
+              },
+              {
+                "id": "f3621381-36a9-4505-956b-5981948e39ba",
+                "name": "serasa_cnpj",
+                "value": "={{ $('RD_Serasa_CNPJ').first().json.serasa_cnpj }}",
+                "type": "object"
+              },
+              {
+                "id": "1016e80b-cdb6-41df-8fed-df612cb84318",
+                "name": "data_fundacao_anos",
+                "value": "={{ $('Utils_BDC_calcula_meses_fundacao').first().json.data_fundacao_anos }}",
+                "type": "string"
+              },
+              {
+                "id": "4c70d1a0-8f0c-4547-8e76-46de08d75d75",
+                "name": "data_fundacao_meses",
+                "value": "={{ $('Utils_BDC_calcula_meses_fundacao').first().json.data_fundacao_meses }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "a2388dc0-28bb-44de-99cd-8ee7c19146a3",
+        "name": "serasa_cheque_sem_fundo",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          5480,
+          -520
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "da8b98c2-7da1-428d-885f-72ed81966103",
+                "name": "vlr_original_total",
+                "value": "={{ $('lead').first().json.equipment_value }}",
+                "type": "number"
+              },
+              {
+                "id": "e8fb7b48-1b07-4467-88c1-2c1cbbb7498e",
+                "name": "SEGMENTO",
+                "value": "={{ \n  $('lead').first().json.segment === '637f91facd9338cdf74d1fe3' ? 'Estética' : \n  $('lead').first().json.segment === '658c859d9b32a07e5ac04b23' ? 'Sorvete' : \n  $('lead').first().json.segment === '6617e3f46c820dd9d7fac410' ? 'Fitness' : \n  $('lead').first().json.segment === '6258261a133743e4deadee8d' ? 'Comunicação Visual' : \n  $('lead').first().json.segment === '6658920c5b90e9398b1f5b0d' ? 'Confecção' : \n  $('lead').first().json.segment === '662a68b3214ac40ce1cac3a9' ? 'Construção' : \n  $('lead').first().json.segment === '682e1857e7994e95d9e66e40' ? 'Sorvete' : \n  $('lead').first().json.segment === '682e187be7994e95d9e66e4a' ? 'Sorvete' : \n'Desconhecido'\n}}",
+                "type": "string"
+              },
+              {
+                "id": "f2d698c1-70e2-47e1-947a-b542af2f38b0",
+                "name": "grupo_maquina",
+                "value": "={{ $('lead').first().json.equip }}",
+                "type": "string"
+              },
+              {
+                "id": "f656930a-a851-4037-909f-a8353abc3bae",
+                "name": "MODALIDADE",
+                "value": "VENDA",
+                "type": "string"
+              },
+              {
+                "id": "39329f52-68bc-41cf-90e4-8be464a457a3",
+                "name": "UF",
+                "value": "={{ $('RD_basic_data_CNPJ').first().json.basic_data.basic_data.state }}",
+                "type": "string"
+              },
+              {
+                "id": "d26f0a0e-3a8f-4211-858c-001186e5ef9a",
+                "name": "protestovalorcnpj",
+                "value": "={{ $('Utils_Serasa_protesto_cnpj').first().json.protesto_valor_cnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "2a434d8d-e450-4657-af9f-3b955057cab7",
+                "name": "bacenlimitecnpj",
+                "value": "={{ $('Utils_BMP_bacen_cnpj').first().json.bacen_limite_cnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "f846bb4e-057f-437a-b4c7-f05f950eb9f1",
+                "name": "bacenprejcnpj",
+                "value": "={{ $('Utils_BMP_bacen_cnpj').first().json.prej_bacen_cnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "97aba74c-161f-44ea-915a-da57b0139bf7",
+                "name": "bacenvencidocnpj",
+                "value": "={{ $('Utils_BMP_bacen_cnpj').first().json.bacen_vencido_cnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "fc3d78d6-f944-444e-911b-6dd1ff94f1ef",
+                "name": "bacenutlcnpj",
+                "value": "={{ $('Utils_Serasa_protesto_cnpj').first().json.bacen_limite_utilizado_cnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "56e7da5f-b6a5-43d0-91f3-b8a8d245184d",
+                "name": "chqqtdcnpj",
+                "value": "={{ $('Utils_Serasa_verificar_avaliacao_cheque_sem_fundo_cnpj').first().json.chqQtdCnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "7034b7e4-e73a-4e77-8052-002729ba69b3",
+                "name": "refinValorCnpj",
+                "value": "={{ $('RD_Serasa_CNPJ').first().json.serasa_cnpj.refin_valor }}",
+                "type": "number"
+              },
+              {
+                "id": "130db906-996e-4842-8f95-c9e423ba4bd6",
+                "name": "cnae_fiscal_principal",
+                "value": "={{ $('lead').first().json.cnae_fiscal_principal }}",
+                "type": "string"
+              },
+              {
+                "id": "8d2db674-5285-4045-aded-94f22998cb4e",
+                "name": "Idade_Empresa",
+                "value": "={{ $('Utils_BDC_calcula_meses_fundacao').first().json.data_fundacao_anos }}",
+                "type": "number"
+              },
+              {
+                "id": "0a2793b8-28df-4f20-b64e-29c091168e83",
+                "name": "porte_empresa",
+                "value": "={{ $('lead').first().json.receita_federal_emp.porte_empresa }}",
+                "type": "number"
+              },
+              {
+                "id": "fdb55f3f-5720-4ad7-bb23-e66e43a08da9",
+                "name": "qualificacao_responsavel",
+                "value": "={{ $('lead').first().json.receita_federal_emp.qualificacao_responsavel }}",
+                "type": "number"
+              },
+              {
+                "id": "6d38b5fd-069c-4032-aae8-ed229708fdb9",
+                "name": "catalogo_de_variaveis",
+                "value": "={{ $('lead').first().json.catalogo_de_variaveis }}",
+                "type": "object"
+              },
+              {
+                "id": "663e0b67-5dc7-4e44-8e4c-515504a50025",
+                "name": "type",
+                "value": "CNPJ",
+                "type": "string"
+              },
+              {
+                "id": "6f724d11-2a38-421d-8f8c-43acdcc08dc2",
+                "name": "dataset",
+                "value": "score",
+                "type": "string"
+              },
+              {
+                "id": "1f1d3e57-d330-4d0c-a55f-283239918e1f",
+                "name": "doc",
+                "value": "={{ $('lead').first().json.cnpjCliente }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "7aea16c6-8373-49a8-a785-a2db54d35123",
+        "name": "set_blips_score",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          5960,
+          -520
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "5EOWGZtdS3OQeSUG",
+            "mode": "list",
+            "cachedResultName": "RD Blips API"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          6200,
+          -520
+        ],
+        "id": "3dac1b5a-39c1-4169-bc19-203604fb86bc",
+        "name": "RD Blips API Score"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "43db5b0a-897c-4233-b0d8-00dd8555ee9c",
+                "name": "avaliacaoProtesto",
+                "value": "={{ $('Utils_Serasa_protesto_cnpj').first().json.protesto_valor_cnpj > 0 ? \"NÃO\" : \"SIM\" }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "1d778e73-171d-495e-8b65-2b11e699d5b9",
+        "name": "avaliacaoProtesto_CNPJ",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          6460,
+          -520
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ae329a80-9656-41b3-9e36-62ec5816fb41",
+                "name": "avaliacaoChequeSemFundo",
+                "value": "={{ $('Utils_Serasa_verificar_avaliacao_cheque_sem_fundo_cnpj').first().json.chqQtdCnpj > 0 && $('Utils_Serasa_verificar_avaliacao_cheque_sem_fundo_cnpj').first().json.mesesChequeCnpj <= 24 ? \"NÃO\" : \"SIM\" }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "0b189aee-8f88-4807-8f74-4a9f6d9845e7",
+        "name": "avaliacaoChequeSemFundo_CNPJ",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          6720,
+          -520
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "IpUkbgfrYtfnK0as",
+            "mode": "list",
+            "cachedResultName": "Utils Blips API"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          7160,
+          -520
+        ],
+        "id": "f90ea7a0-3607-41cd-8d43-c95e63ae212b",
+        "name": "Utils Blips API Taxa Score",
+        "retryOnFail": false,
+        "alwaysOutputData": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "cbdf44b6-9685-47d7-9f72-08bfd9fef195",
+                "name": "score",
+                "value": "={{ $('RD Blips API Score').item.json.blips_score_cnpj.score }}",
+                "type": "string"
+              },
+              {
+                "id": "70d9152a-96b0-46d4-931c-e2464e56a3ee",
+                "name": "rating",
+                "value": "={{ $('RD Blips API Score').item.json.blips_score_cnpj.rating }}",
+                "type": "string"
+              },
+              {
+                "id": "17cb3c59-4acc-41c5-8a12-20d8b40d12fb",
+                "name": "func",
+                "value": "format_taxa_scoragem",
+                "type": "string"
+              },
+              {
+                "id": "35d82427-90aa-45ac-89b3-a3a225d5c1c3",
+                "name": "segment",
+                "value": "={{ $('lead').first().json.segment }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          6920,
+          -520
+        ],
+        "id": "ee6dbc28-17b6-4110-aa50-335653da1a5a",
+        "name": "set_blips_taxa_score"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ed87a61a-21a3-4f3e-96ac-7c00189b9893",
+                "name": "resultadoAprovacaoAutoCNPJ",
+                "value": "SIM",
+                "type": "string"
+              },
+              {
+                "id": "a9a6f1c2-a6a2-488e-bbd8-bd08e6bcebab",
+                "name": "data_fundacao_anos",
+                "value": "={{ $('Utils_BDC_calcula_meses_fundacao').first().json.data_fundacao_anos }}",
+                "type": "string"
+              },
+              {
+                "id": "65f456c1-a430-4f6f-a375-70cda541e7c6",
+                "name": "data_fundacao_meses",
+                "value": "={{ $('Utils_BDC_calcula_meses_fundacao').first().json.data_fundacao_meses }}",
+                "type": "string"
+              },
+              {
+                "id": "d2d8797c-e02c-417a-b640-a8bbe5af6bfb",
+                "name": "data_fundacao_meses_total",
+                "value": "={{ $('Utils_BDC_calcula_meses_fundacao').first().json.data_fundacao_meses_total }}",
+                "type": "string"
+              },
+              {
+                "id": "900f931b-0526-46de-99d3-21213ba1cf80",
+                "name": "basic_data_CNPJ",
+                "value": "={{ $('RD_basic_data_CNPJ').first().json.basic_data }}",
+                "type": "object"
+              },
+              {
+                "id": "335d6049-dc7b-44e7-8df7-5790fdb5e919",
+                "name": "serasa_cnpj",
+                "value": "={{ $('RD_Serasa_CNPJ').first().json.serasa_cnpj }}",
+                "type": "object"
+              },
+              {
+                "id": "b9577383-c93a-4011-80fb-b2f586b63d46",
+                "name": "serasa_chq_cnpj",
+                "value": "={{ $('Utils_Serasa_verificar_avaliacao_cheque_sem_fundo_cnpj').first().json }}",
+                "type": "object"
+              },
+              {
+                "id": "5ddfa2f6-3a1f-4aff-9cea-4c25b5393e48",
+                "name": "bacen",
+                "value": "={{ $('Utils_BMP_bacen_cnpj').first().json }}",
+                "type": "object"
+              },
+              {
+                "id": "636f848e-7f5e-4a78-a462-b049bec829a2",
+                "name": "protesto",
+                "value": "={{ $('Utils_Serasa_protesto_cnpj').first().json }}",
+                "type": "object"
+              },
+              {
+                "id": "398d6450-d322-4610-8323-a819b59b61ee",
+                "name": "obsAprovacao",
+                "value": "={\n  \"avaliacao_cnpj\": {\n    \"strMotivoAprovCNPJ\": {\n      \"Pefin + Refin > 1000?\" : \"NÃO\",\n      \"Cheques Sem Fundo > 3 em 24m?\" : \"NÃO\",\n      \"PROTESTO > 1000?\" : \"NÃO\",\n       \"avaliacaoPefin\" : \"{{ $('strMotivoCNPJ').first().json.avaliacaoPefin }}\",\n      \"avaliacaoChequeSemFundo\" : \"{{ $('avaliacaoChequeSemFundo_CNPJ').item.json.avaliacaoChequeSemFundo }}\",\n      \"avaliacaoProtesto\" : \"{{ $('avaliacaoProtesto_CNPJ').first().json.avaliacaoProtesto }}\",\n      \"temLimiteBacen\" : \"{{ $('temLimiteBacen_CNPJ').first().json.temLimiteBacen }}\",\n      \"fundacaoMaior24M\" : \"{{ $('fundacaoMaior').isExecuted ? $('fundacaoMaior').first().json.fundacaoMaior : $('FORM. TEMP. FUND.').first().json.fundacaoMaior }}\",\n      \"Processos\" : \"{{ $('reprov_processos_cnpj').isExecuted ? $('reprov_processos_cnpj').first().json.processos : \"NÃO\"  }}\",\n      \"KYC\" : \"{{ $('reprovado_kyc_cnpj').isExecuted ? $('reprovado_kyc_cnpj').first().json.kyc : \"NÃO\"  }}\",\n      \"Plano Balão > Permitido?\" : \"{{ $('Inconclusivo').isExecuted ? $('Inconclusivo').first().json.matriz_planos : \"NÃO\"  }}\"\n      },\n    \"strMotivoCNPJ\": {\n       \"PERFIL EMPRESA NOVA\" : \"{{ $('strMotivoCNPJ').first().json.perfil_empresa_nova }}\",\n       \"EMPRESA < 12 MESES\" : \"{{ $('strMotivoCNPJ').first().json.emp_12_m }}\",\n       \"PERFIL EMPRESA INVISIVEL\" : \"{{ $('strMotivoCNPJ').first().json.perfil_emp_inv }}\",\n       \"PERFIL EMPRESA C/ PEFIN\" : \"{{ $('strMotivoCNPJ').first().json.perfil_emp_pefin }}\"\n    },\n    \"resultadoAprovacaoAutoCNPJ\": \"SIM\"\n  }\n}",
+                "type": "object"
+              },
+              {
+                "id": "014418f5-a072-45dd-a771-1d0e6ef3dd2b",
+                "name": "blips_cnpj",
+                "value": "={{ $('RD Blips API Score').first().json }}",
+                "type": "object"
+              },
+              {
+                "id": "fb128339-a5df-4eba-8dc8-4758ddf41b36",
+                "name": "taxa_final",
+                "value": "={{ $('Utils Blips API Taxa Score').first().json.taxa_final }}",
+                "type": "number"
+              },
+              {
+                "id": "a5c9ef45-8c0c-4474-81bb-53c88a3c8d33",
+                "name": "processos",
+                "value": "={{ $('RD_Processos_CNPJ').first().json.processos }}",
+                "type": "object"
+              },
+              {
+                "id": "45e87b55-e392-4dcb-8790-e71ef0e748a6",
+                "name": "kyc",
+                "value": "={{ $('RD_KYC_CNPJ').first().json.kyc }}",
+                "type": "object"
+              },
+              {
+                "id": "86661e6a-2985-49ca-a608-853af8c8a7be",
+                "name": "matriz_planos",
+                "value": "={{ $('Utils Blips API Risco Final').first().json.matriz_planos }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "cd86dd47-24fb-420b-9dc8-0fc8c4841221",
+        "name": "aprovado_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          9020,
+          -560
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "IpUkbgfrYtfnK0as",
+            "mode": "list",
+            "cachedResultName": "Utils Blips API"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          7640,
+          -520
+        ],
+        "id": "e5bb1ce8-ed68-44fd-bc6e-ff5840ee889d",
+        "name": "Utils Blips API Risco Final"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "bc88f766-7f82-4350-a5a7-f74dbb870d65",
+                "name": "pefin_valor",
+                "value": "={{ $('RD_Serasa_CNPJ').item.json.serasa_cnpj.pefin_valor }}",
+                "type": "number"
+              },
+              {
+                "id": "33d8780a-37a7-4407-8ca4-7e23bbad25bc",
+                "name": "pefin_data",
+                "value": "={{ $('RD_Serasa_CNPJ').item.json.serasa_cnpj.pefin_data }}",
+                "type": "string"
+              },
+              {
+                "id": "907f6434-1297-468d-aba9-6fb83dd4c32c",
+                "name": "refin_valor",
+                "value": "={{ $('RD_Serasa_CNPJ').item.json.serasa_cnpj.refin_valor }}",
+                "type": "number"
+              },
+              {
+                "id": "de4b96ac-8ae0-4414-88f0-e86fea652b47",
+                "name": "refin_data",
+                "value": "={{ $('RD_Serasa_CNPJ').item.json.serasa_cnpj.refin_data }}",
+                "type": "string"
+              },
+              {
+                "id": "962284fb-7a5d-4dc3-8897-e91f5149640b",
+                "name": "protesto_valor",
+                "value": "={{ $('RD_Serasa_CNPJ').item.json.serasa_cnpj.protesto_valor }}",
+                "type": "number"
+              },
+              {
+                "id": "77ef5ecb-94c4-4026-b8db-7270b5bff0df",
+                "name": "protesto_data",
+                "value": "={{ $('RD_Serasa_CNPJ').item.json.serasa_cnpj.protesto_data }}",
+                "type": "string"
+              },
+              {
+                "id": "1d92db9f-0552-46a8-ba1a-ce5864f55df8",
+                "name": "data_fundacao_meses_total",
+                "value": "={{ $('Utils_BDC_calcula_meses_fundacao').item.json.data_fundacao_meses_total }}",
+                "type": "number"
+              },
+              {
+                "id": "cbdf44b6-9685-47d7-9f72-08bfd9fef195",
+                "name": "score",
+                "value": "={{ $('RD Blips API Score').item.json.blips_score_cnpj.score }}",
+                "type": "string"
+              },
+              {
+                "id": "70d9152a-96b0-46d4-931c-e2464e56a3ee",
+                "name": "rating",
+                "value": "={{ $('RD Blips API Score').item.json.blips_score_cnpj.rating }}",
+                "type": "string"
+              },
+              {
+                "id": "17cb3c59-4acc-41c5-8a12-20d8b40d12fb",
+                "name": "func",
+                "value": "format_blips_risco",
+                "type": "string"
+              },
+              {
+                "id": "90ead5ca-bf30-41bb-a3ea-cd081807cf79",
+                "name": "bacen_vencido",
+                "value": "={{ $('Utils_BMP_bacen_cnpj').item.json.bacen_vencido_cnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "2baf8ed5-cd1b-4975-9c68-0d1eb3ff56a5",
+                "name": "prej_bacen",
+                "value": "={{ $('Utils_BMP_bacen_cnpj').item.json.prej_bacen_cnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "282e31f8-2185-47b4-9854-0c65e4b2fc7e",
+                "name": "bacen_a_vencer",
+                "value": "={{ $('Utils_BMP_bacen_cnpj').item.json.bacen_a_vencer_cnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "d71be1e1-10ea-4cfa-bef7-bef9bc1bd2f2",
+                "name": "scr",
+                "value": "={{ $('RD_BMP_CNPJ').item.json.scr_cnpj }}",
+                "type": "object"
+              },
+              {
+                "id": "2494c4ce-c53c-4ac0-a8bc-d09f2b729612",
+                "name": "equip",
+                "value": "={{ $('lead').item.json.client.equipment_value }}",
+                "type": "number"
+              },
+              {
+                "id": "5b76f6f6-b2c2-45ec-876f-0f2eb1c3f97e",
+                "name": "documento",
+                "value": "={{ $('lead').item.json.client.document }}",
+                "type": "string"
+              },
+              {
+                "id": "a7d00bd3-65fa-4dc4-810b-8508f07939d1",
+                "name": "segmento",
+                "value": "={{ $('lead').item.json.segment }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          7400,
+          -520
+        ],
+        "id": "c27a6559-8e33-47d9-a1a5-6709daa91203",
+        "name": "set_blips_risco_final"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "sSGZczbG1UA4RX3g",
+            "mode": "list",
+            "cachedResultName": "3 - Recuperação de Dados"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          760,
+          280
+        ],
+        "id": "dba268ea-a120-4317-89fd-ba7a81a9df02",
+        "name": "RD_KYC_CPF"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "9d2200a4-f5fb-4544-8e62-729a0946781f",
+                "leftValue": "={{ $json.kyc.sansao.tipo[0] }}",
+                "rightValue": "Nada",
+                "operator": {
+                  "type": "string",
+                  "operation": "notExists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "id": "35b0bbfe-9bd6-4c47-9af8-56aebd0f425d",
+        "name": "TEM KYC ?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          1000,
+          280
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "a9697692-01d9-41f1-8dd6-e426fec2f86f",
+                "name": "kyc",
+                "value": "SIM",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "2975aff9-bc16-4211-8039-eff11f378898",
+        "name": "reprovado_kyc",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1220,
+          440
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7b2f5ede-51d7-4334-b431-69df9cda7856",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              },
+              {
+                "id": "bb34f180-0211-4498-893f-d02caa7f7089",
+                "name": "endpoint",
+                "value": "peoplev2",
+                "type": "string"
+              },
+              {
+                "id": "ea8bb1ed-a9f5-4959-81d1-39248d000e46",
+                "name": "type",
+                "value": "processos",
+                "type": "string"
+              },
+              {
+                "id": "ec9bd1c5-cc19-4dc7-8913-6102b1c23936",
+                "name": "catalogo_de_variaveis",
+                "value": "={{ $('lead').first().json.catalogo_de_variaveis }}",
+                "type": "object"
+              },
+              {
+                "id": "813ce0b9-3f89-480a-865c-f18f19143f5d",
+                "name": "doc",
+                "value": "={{ $('lead').first().json.cpfCliente }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "9991af57-0424-46b5-a3ac-d4d9eebb0486",
+        "name": "set_processos",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1420,
+          260
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "sSGZczbG1UA4RX3g",
+            "mode": "list",
+            "cachedResultName": "3 - Recuperação de Dados"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          1660,
+          260
+        ],
+        "id": "279f3607-3323-49c5-ad7f-6c616529aa24",
+        "name": "RD_Processos_CPF"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "496aa52f-f271-42b5-a354-1dc25e25f1ba",
+                "leftValue": "={{ $json.processos.tipo[0] }}",
+                "rightValue": "NÃO",
+                "operator": {
+                  "type": "string",
+                  "operation": "notExists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "id": "6bde0fa4-86b6-46ba-92d0-a3f7834d02a9",
+        "name": "Tem Processos CPF ?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          1880,
+          260
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "a7f326a5-d67c-4dbf-afc8-be0e9969ee17",
+                "name": "processos",
+                "value": "=SIM",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d5c3b240-2d91-479b-b9e2-79abcc1d86c1",
+        "name": "reprovado_processos",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2080,
+          420
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7b2f5ede-51d7-4334-b431-69df9cda7856",
+                "name": "api",
+                "value": "BMP",
+                "type": "string"
+              },
+              {
+                "id": "bb34f180-0211-4498-893f-d02caa7f7089",
+                "name": "endpoint",
+                "value": "N/A",
+                "type": "string"
+              },
+              {
+                "id": "ea8bb1ed-a9f5-4959-81d1-39248d000e46",
+                "name": "type",
+                "value": "1",
+                "type": "string"
+              },
+              {
+                "id": "ec9bd1c5-cc19-4dc7-8913-6102b1c23936",
+                "name": "catalogo_de_variaveis",
+                "value": "={{ $('lead').first().json.catalogo_de_variaveis }}",
+                "type": "object"
+              },
+              {
+                "id": "76391c58-b80a-4ef2-8da0-672177dbb71d",
+                "name": "doc",
+                "value": "={{ $('lead').first().json.cpfCliente }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "c265a4db-d405-424b-be54-7727b1ce6af9",
+        "name": "set_bmp_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2240,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "sSGZczbG1UA4RX3g",
+            "mode": "list",
+            "cachedResultName": "3 - Recuperação de Dados"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          2440,
+          240
+        ],
+        "id": "48325da7-4081-463d-93e9-75fe4cd5b04b",
+        "name": "RD_BMP_CPF"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "9b9219cb-ea49-4737-b457-46e772488319",
+                "name": "api",
+                "value": "BMP",
+                "type": "string"
+              },
+              {
+                "id": "019d1f4b-929f-476e-8f10-d39b57311fea",
+                "name": "func",
+                "value": "sum_debtors_cpf",
+                "type": "string"
+              },
+              {
+                "id": "bd297c56-9bd3-482b-8a72-183a34937d01",
+                "name": "scr_cpf",
+                "value": "={{ $json.src_cpf }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "75473876-f9af-45f4-bf2f-a54a258c6238",
+        "name": "bmp_sum_debtors_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2680,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "W7TZJTMfuBtih4l1",
+            "mode": "list",
+            "cachedResultName": "Utils"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          2900,
+          240
+        ],
+        "id": "70b889f6-2bc1-4d13-b23d-8fa54767d976",
+        "name": "Utils_BMP_bacen_cpf"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b8f4f0ff-a30c-4961-a4e0-559c8a74ee2b",
+                "name": "temLimiteBacen",
+                "value": "={{ $json.prej_bacen_cpf > 0 || $json.bacen_vencido_cpf > 0 ? \"NÃO\" : \"SIM\" }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "a8d19b9d-1d89-4a75-b6f9-062485981460",
+        "name": "temLimiteBacen",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3160,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7b2f5ede-51d7-4334-b431-69df9cda7856",
+                "name": "api",
+                "value": "Serasa",
+                "type": "string"
+              },
+              {
+                "id": "bb34f180-0211-4498-893f-d02caa7f7089",
+                "name": "endpoint",
+                "value": "N/A",
+                "type": "string"
+              },
+              {
+                "id": "ea8bb1ed-a9f5-4959-81d1-39248d000e46",
+                "name": "type",
+                "value": "F",
+                "type": "string"
+              },
+              {
+                "id": "ec9bd1c5-cc19-4dc7-8913-6102b1c23936",
+                "name": "catalogo_de_variaveis",
+                "value": "={{ $('lead').first().json.catalogo_de_variaveis }}",
+                "type": "object"
+              },
+              {
+                "id": "76391c58-b80a-4ef2-8da0-672177dbb71d",
+                "name": "doc",
+                "value": "={{ $('lead').item.json.cpfCliente }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "75b8b9c4-0d10-4983-aa99-a20904215b84",
+        "name": "set_serasa_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3400,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "sSGZczbG1UA4RX3g",
+            "mode": "list",
+            "cachedResultName": "3 - Recuperação de Dados"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          3640,
+          240
+        ],
+        "id": "11a8eeb1-a169-4995-b7c1-78dbbd9985bd",
+        "name": "RD_Serasa_CPF"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "5914d38e-dc2b-46b0-9b68-ee334c34a38e",
+                "name": "api",
+                "value": "Serasa",
+                "type": "string"
+              },
+              {
+                "id": "91af1755-a505-4a19-9cf2-3ec14a820e73",
+                "name": "func",
+                "value": "protesto_cpf",
+                "type": "string"
+              },
+              {
+                "id": "8ecb8755-a06b-4648-8538-bc55991c1521",
+                "name": "protesto",
+                "value": "={{ $('Utils_BMP_bacen_cpf').all()[0].json }}",
+                "type": "object"
+              },
+              {
+                "id": "5d2d62cc-4fa6-4c68-89e7-a35544198c3f",
+                "name": "serasa_cpf",
+                "value": "={{ $json.serasa_cpf }}",
+                "type": "object"
+              },
+              {
+                "id": "ef715361-0ba3-4ecd-a12a-48f4898f7ade",
+                "name": "valor_equipamento",
+                "value": "={{ $('lead').first().json.equipment_value }}",
+                "type": "number"
+              },
+              {
+                "id": "19a8fc66-3da8-4055-8b1e-3c6ad33d6edc",
+                "name": "protesto_cnpj",
+                "value": "={{ $('lead').first().json.resultado_cnpj ? $('lead').first().json.resultado_cnpj.serasa_cnpj.protesto_valor : 0 }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "7864106b-863b-4565-ac54-4bc0ebef88e7",
+        "name": "serasa_protesto_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3900,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "W7TZJTMfuBtih4l1",
+            "mode": "list",
+            "cachedResultName": "Utils"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          4140,
+          240
+        ],
+        "id": "36157c4b-101f-49f3-bd69-e96df89141a0",
+        "name": "Utils_Serasa_protesto_cpf"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "9a54171f-e64a-43bf-9b36-88ecc6a96319",
+                "name": "avaliacaoProtesto",
+                "value": "={{ $json.protesto_valor_cpf > 0 ? \"NÃO\" : \"SIM\" }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "05400634-a5cf-4130-bdab-0b0b6d75013b",
+        "name": "avaliacaoProtesto",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          4380,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "5914d38e-dc2b-46b0-9b68-ee334c34a38e",
+                "name": "api",
+                "value": "Serasa",
+                "type": "string"
+              },
+              {
+                "id": "91af1755-a505-4a19-9cf2-3ec14a820e73",
+                "name": "func",
+                "value": "verificar_avaliacao_cheque_sem_fundo_cpf",
+                "type": "string"
+              },
+              {
+                "id": "f3621381-36a9-4505-956b-5981948e39ba",
+                "name": "serasa_cpf",
+                "value": "={{ $('RD_Serasa_CPF').first().json.serasa_cpf }}",
+                "type": "object"
+              },
+              {
+                "id": "1016e80b-cdb6-41df-8fed-df612cb84318",
+                "name": "data_fundacao_anos",
+                "value": "={{ $('lead').first().json.resultado_cnpj.data_fundacao_anos }}",
+                "type": "number"
+              },
+              {
+                "id": "4c70d1a0-8f0c-4547-8e76-46de08d75d75",
+                "name": "data_fundacao_meses",
+                "value": "={{ $('lead').first().json.resultado_cnpj.data_fundacao_meses }}",
+                "type": "number"
+              },
+              {
+                "id": "57112ae6-c0c2-444a-86e3-ecc005d6ca55",
+                "name": "data_fundacao_meses_total",
+                "value": "={{ $('lead').first().json.resultado_cnpj.data_fundacao_meses_total }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "89e6572b-2204-4a5a-95fb-acdb2dc181bb",
+        "name": "serasa_cheque_sem_fundo_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          4640,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "W7TZJTMfuBtih4l1",
+            "mode": "list",
+            "cachedResultName": "Utils"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          4900,
+          240
+        ],
+        "id": "37f3a65a-fc18-4142-b6d4-1961c726544a",
+        "name": "Utils_Serasa_verificar_avaliacao_cheque_sem_fundo_cpf"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "1584defe-654c-4285-bc8f-66007c4fdee7",
+                "name": "avaliacaoChequeSemFundo",
+                "value": "={{ $json.chqQtdCpf > 0 && $json.mesesChequeCpf <= 24 ? \"FORMULARIO\" : \"SIM\" }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "191c5ca7-c3bb-4441-940f-4b47d900fdf6",
+        "name": "avaliacaoChequeSemFundo_CPF",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          5140,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "17e1af31-33d4-482a-9551-62b333cb4529",
+                "name": "protesto_str_motivo",
+                "value": "={{ $('Utils_Serasa_protesto_cpf').first().json.protesto_valor_cpf > 0 ? \"SIM\" : \"NÃO\" }}",
+                "type": "string"
+              },
+              {
+                "id": "e06c5f33-ba1f-4791-b271-a1536ae5d664",
+                "name": "tem_pefin",
+                "value": "={{ $('RD_Serasa_CPF').first().json.serasa_cpf.pefin_valor > 0 ? \"SIM\" : \"NÃO\" }}",
+                "type": "string"
+              },
+              {
+                "id": "d6d3115d-f2ef-4e5b-9168-cb55f93e921e",
+                "name": "avaliacaoPefin",
+                "value": "={{ $('RD_Serasa_CPF').first().json.serasa_cpf.pefin_valor + $('RD_Serasa_CPF').first().json.serasa_cpf.refin_valor > 0 ? \"NÃO\" : \"SIM\" }}",
+                "type": "string"
+              },
+              {
+                "id": "68dd26d0-4f1d-45f6-8fd4-af69d6441a8d",
+                "name": "avaliacaoScore",
+                "value": "={{ $('RD_Serasa_CPF').first().json.serasa_cpf.serasa_score <= 2 ? \"NÃO\" : \"SIM\" }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "fd97a24e-a083-4a01-9629-73841c9d2c26",
+        "name": "strMotivoCPF",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          7720,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ed87a61a-21a3-4f3e-96ac-7c00189b9893",
+                "name": "resultadoAprovacaoAutoCPF",
+                "value": "SIM",
+                "type": "string"
+              },
+              {
+                "id": "6e3cf1a6-6816-4df6-a372-283d085091d5",
+                "name": "serasa_cpf",
+                "value": "={{ $('RD_Serasa_CPF').first().json.serasa_cpf }}",
+                "type": "object"
+              },
+              {
+                "id": "1a20ab88-3450-4236-b5db-d45821f1bbbc",
+                "name": "bacen",
+                "value": "={{ $('Utils_BMP_bacen_cpf').first().json }}",
+                "type": "object"
+              },
+              {
+                "id": "36f7b606-3b4b-4d72-aed8-66a4a54395da",
+                "name": "processos",
+                "value": "={{ $('RD_Processos_CPF').first().json.processos }}",
+                "type": "object"
+              },
+              {
+                "id": "39756ece-280a-4670-9e44-cbae6d7adc05",
+                "name": "kyc",
+                "value": "={{ $('RD_KYC_CPF').first().json.kyc }}",
+                "type": "object"
+              },
+              {
+                "id": "16ba43dd-6c91-4750-8d7a-872a7be41790",
+                "name": "protesto",
+                "value": "={{ $('Utils_Serasa_protesto_cpf').first().json }}",
+                "type": "object"
+              },
+              {
+                "id": "f6b94c51-3f44-4a3e-bcca-689b9cb7546e",
+                "name": "obsAprovacao",
+                "value": "={\n  \"avaliacao_cpf\": {\n    \"strMotivoAprovCPF\": {\n      \"Score Serasa <= 300?\" : \"NÃO\",\n      \"Pefin + Refin > 2000?\" : \"NÃO\",\n      \"Cheques > 2 em 24m?\" : \"NÃO\",\n      \"PROTESTO > 2000?\" : \"NÃO\",\n      \"avaliacaoPefin\" : \"{{ $('strMotivoCPF').first().json.avaliacaoPefin }}\",\n       \"avaliacaoChequeSemFundo\" : \"{{ $('avaliacaoChequeSemFundo_CPF').item.json.avaliacaoChequeSemFundo }}\",\n      \"avaliacaoProtesto\" : \"{{ $('avaliacaoProtesto').first().json.avaliacaoProtesto }}\",\n      \"avaliacaoSerasa\": \"{{ $('strMotivoCPF').first().json.avaliacaoScore }}\",\n      \"temLimiteBacen\" : \"{{ $('temLimiteBacen').isExecuted ? $('temLimiteBacen').first().json.temLimiteBacen : \"NÃO\" }}\",\n      \"Processos\" : \"{{ $('reprovado_processos').isExecuted ? $('reprovado_processos').first().json.processos : \"NÃO\"  }}\",\n      \"KYC\" : \"{{ $('reprovado_kyc').isExecuted ? $('reprovado_kyc').first().json.kyc : \"NÃO\"  }}\",\n      \"Plano Balão > Permitido?\" : \"{{ $('Inconclusivo CPF').isExecuted ? $('Inconclusivo CPF').first().json.matriz_planos : \"NÃO\"  }}\"\n    },\n    \"strMotivoCPF\": {\n       \"Protesto\" : \"{{ $json.protesto_str_motivo }}\",\n       \"Pefin\" : \"{{ $json.tem_pefin }}\"\n    },\n    \"resultadoAprovacaoAutoCPF\": \"SIM\"\n  }\n}",
+                "type": "object"
+              },
+              {
+                "id": "64dcc5e6-e381-45a9-883d-1003f1276b48",
+                "name": "matriz_planos",
+                "value": "={{ 'Plano Balão ' +  $('Utils Blips API Risco Final CPF').first().json.matriz_planos }}",
+                "type": "string"
+              },
+              {
+                "id": "1c0a0b87-2275-4df0-956c-b96c7e9a7730",
+                "name": "taxa_final",
+                "value": "={{ $('Utils Blips API Taxa Score CPF').first().json.taxa_final }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "56c42cb0-f840-473c-b26e-d3f3dc69e1bf",
+        "name": "aprovado_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          7940,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "80d3a79e-f729-4e93-ae92-0d59966729c3",
+                "name": "perfil_empresa_nova",
+                "value": "={{ $('Utils_BDC_calcula_meses_fundacao').first().json.data_fundacao_meses_total < 6 ? \"SIM\" : \"NÃO\" }}",
+                "type": "string"
+              },
+              {
+                "id": "17e1af31-33d4-482a-9551-62b333cb4529",
+                "name": "emp_12_m",
+                "value": "={{ $('Utils_BDC_calcula_meses_fundacao').first().json.data_fundacao_meses_total < 12 ? \"SIM\" : \"NÃO\" }}",
+                "type": "string"
+              },
+              {
+                "id": "e06c5f33-ba1f-4791-b271-a1536ae5d664",
+                "name": "perfil_emp_inv",
+                "value": "={{ [\"não\", \"\", \"N/A\"].includes($('Utils_Serasa_protesto_cnpj').first().json.bacen_limite_cnpj ) || parseFloat($('Utils_Serasa_protesto_cnpj').first().json.bacen_limite_cnpj) <= 0 ? \"SIM\" : \"NÃO\" }}",
+                "type": "string"
+              },
+              {
+                "id": "25fe71bf-5318-424f-b4ff-28f6b01205c5",
+                "name": "perfil_emp_pefin",
+                "value": "={{ parseFloat($('RD_Serasa_CNPJ').first().json.serasa_cnpj.pefin_valor) > 0 ? \"SIM\" : \"NÃO\" }}",
+                "type": "string"
+              },
+              {
+                "id": "3d382f6d-e560-4cfb-a3b1-dc8e585ac26f",
+                "name": "avaliacaoPefin",
+                "value": "=SIM",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "08a5ee46-fdf6-4dfb-b60a-dba938cfdd41",
+        "name": "strMotivoCNPJ",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          8840,
+          -560
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('lead').first().json.tipo_analise }}",
+                      "rightValue": "Ideal",
+                      "operator": {
+                        "type": "string",
+                        "operation": "contains"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Ideal"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "0dfac027-b79b-4a1c-9139-5fc10b6dd0c7",
+                      "leftValue": "={{ $('lead').first().json.tipo_analise }}",
+                      "rightValue": "Blips",
+                      "operator": {
+                        "type": "string",
+                        "operation": "contains"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Blips"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "7d2261a1-de42-46ea-9e97-fb9e2a204969",
+        "name": "Cliente Ideal ou Blips ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          7880,
+          -520
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Aprovado"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "823931bf-cd31-4b65-98b6-045378b8c14e",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.1,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Aprovado"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "2e92c91d-222b-427c-9b04-1014b569e2dc",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.15,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Aprovado"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "252cb3a6-970d-40e0-bf0c-d458d3df1c16",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.2,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Inconclusivo"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "a78bc31b-a825-43a6-b9c3-b1ba82a2ff81",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.25,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Inconclusivo"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "77dbebb8-d798-45b8-911e-1126da4e42d1",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.3,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Inconclusivo"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "47379e7f-f7a9-4412-8676-96752e242fc9",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.4,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Reprovado"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "70b41712-4cad-478d-8ee7-0ff074c26bcd",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.5,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Reprovado"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          8180,
+          -320
+        ],
+        "id": "405b3e37-3550-40e7-aa7f-c7d7b82f17ab",
+        "name": "Resultado Planos ? Blips"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "78e901de-6822-4923-b6b7-1038f65a8183",
+                "name": "matriz_planos",
+                "value": "FORMULARIO",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          8620,
+          -200
+        ],
+        "id": "9ae60fb9-e9a7-40c4-8ee5-c24abcdfea54",
+        "name": "Inconclusivo"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Aprovado"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "823931bf-cd31-4b65-98b6-045378b8c14e",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.1,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Aprovado"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "2e92c91d-222b-427c-9b04-1014b569e2dc",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.15,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Aprovado"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "252cb3a6-970d-40e0-bf0c-d458d3df1c16",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.2,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Aprovado"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "a78bc31b-a825-43a6-b9c3-b1ba82a2ff81",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.25,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Aprovado"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "77dbebb8-d798-45b8-911e-1126da4e42d1",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.3,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Aprovado"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "47379e7f-f7a9-4412-8676-96752e242fc9",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.4,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Reprovado"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "70b41712-4cad-478d-8ee7-0ff074c26bcd",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.5,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Reprovado"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          8180,
+          -880
+        ],
+        "id": "d55e413a-368f-4c18-8508-192162b52bf5",
+        "name": "Resultado Planos ? Ideal"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "da8b98c2-7da1-428d-885f-72ed81966103",
+                "name": "vlr_original_total",
+                "value": "={{ $('lead').first().json.equipment_value }}",
+                "type": "number"
+              },
+              {
+                "id": "e8fb7b48-1b07-4467-88c1-2c1cbbb7498e",
+                "name": "SEGMENTO",
+                "value": "={{ \n  $('lead').first().json.segment === '637f91facd9338cdf74d1fe3' ? 'Estética' : \n  $('lead').first().json.segment === '658c859d9b32a07e5ac04b23' ? 'Sorvete' : \n  $('lead').first().json.segment === '6617e3f46c820dd9d7fac410' ? 'Fitness' : \n  $('lead').first().json.segment === '6258261a133743e4deadee8d' ? 'Comunicação Visual' : \n  $('lead').first().json.segment === '6658920c5b90e9398b1f5b0d' ? 'Confecção' : \n  $('lead').first().json.segment === '662a68b3214ac40ce1cac3a9' ? 'Construção' : 'Desconhecido'\n}}",
+                "type": "string"
+              },
+              {
+                "id": "f2d698c1-70e2-47e1-947a-b542af2f38b0",
+                "name": "grupo_maquina",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "f656930a-a851-4037-909f-a8353abc3bae",
+                "name": "MODALIDADE",
+                "value": "VENDA",
+                "type": "string"
+              },
+              {
+                "id": "39329f52-68bc-41cf-90e4-8be464a457a3",
+                "name": "UF",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "d26f0a0e-3a8f-4211-858c-001186e5ef9a",
+                "name": "protestovalorcnpj",
+                "value": "={{ $('Utils_Serasa_protesto_cpf').first().json.protesto_valor_cpf }}",
+                "type": "number"
+              },
+              {
+                "id": "2a434d8d-e450-4657-af9f-3b955057cab7",
+                "name": "bacenlimitecnpj",
+                "value": "={{ $('Utils_BMP_bacen_cpf').first().json.bacen_limite_cpf }}",
+                "type": "number"
+              },
+              {
+                "id": "f846bb4e-057f-437a-b4c7-f05f950eb9f1",
+                "name": "bacenprejcnpj",
+                "value": "={{ $('Utils_BMP_bacen_cpf').first().json.prej_bacen_cpf }}",
+                "type": "number"
+              },
+              {
+                "id": "97aba74c-161f-44ea-915a-da57b0139bf7",
+                "name": "bacenvencidocnpj",
+                "value": "={{ $('Utils_BMP_bacen_cpf').first().json.bacen_vencido_cpf }}",
+                "type": "number"
+              },
+              {
+                "id": "fc3d78d6-f944-444e-911b-6dd1ff94f1ef",
+                "name": "bacenutlcnpj",
+                "value": "=",
+                "type": "number"
+              },
+              {
+                "id": "56e7da5f-b6a5-43d0-91f3-b8a8d245184d",
+                "name": "chqqtdcnpj",
+                "value": "={{ $('Utils_Serasa_verificar_avaliacao_cheque_sem_fundo_cpf').first().json.chqQtdCpf }}",
+                "type": "number"
+              },
+              {
+                "id": "7034b7e4-e73a-4e77-8052-002729ba69b3",
+                "name": "refinValorCnpj",
+                "value": "={{ $('RD_Serasa_CPF').first().json.serasa_cpf.refin_valor }}",
+                "type": "number"
+              },
+              {
+                "id": "130db906-996e-4842-8f95-c9e423ba4bd6",
+                "name": "cnae_fiscal_principal",
+                "value": "=",
+                "type": "string"
+              },
+              {
+                "id": "8d2db674-5285-4045-aded-94f22998cb4e",
+                "name": "Idade_Empresa",
+                "value": "=",
+                "type": "number"
+              },
+              {
+                "id": "0a2793b8-28df-4f20-b64e-29c091168e83",
+                "name": "porte_empresa",
+                "value": "=",
+                "type": "number"
+              },
+              {
+                "id": "fdb55f3f-5720-4ad7-bb23-e66e43a08da9",
+                "name": "qualificacao_responsavel",
+                "value": "=",
+                "type": "number"
+              },
+              {
+                "id": "6d38b5fd-069c-4032-aae8-ed229708fdb9",
+                "name": "catalogo_de_variaveis",
+                "value": "={{ $('lead').first().json.catalogo_de_variaveis }}",
+                "type": "object"
+              },
+              {
+                "id": "663e0b67-5dc7-4e44-8e4c-515504a50025",
+                "name": "type",
+                "value": "CPF",
+                "type": "string"
+              },
+              {
+                "id": "6f724d11-2a38-421d-8f8c-43acdcc08dc2",
+                "name": "dataset",
+                "value": "score",
+                "type": "string"
+              },
+              {
+                "id": "1f1d3e57-d330-4d0c-a55f-283239918e1f",
+                "name": "doc",
+                "value": "={{ $('lead').first().json.cpfCliente }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "634541d2-f8a9-446c-b7ae-206c6cd87229",
+        "name": "set_blips_score CPF",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          5380,
+          240
+        ],
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "5EOWGZtdS3OQeSUG",
+            "mode": "list",
+            "cachedResultName": "RD Blips API"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          5600,
+          240
+        ],
+        "id": "953cf046-dad7-409e-8aa7-57e47293fe64",
+        "name": "RD Blips API Score CPF",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "IpUkbgfrYtfnK0as",
+            "mode": "list",
+            "cachedResultName": "Utils Blips API"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          6080,
+          240
+        ],
+        "id": "6c9de55d-937c-474a-9c39-1e137c401aef",
+        "name": "Utils Blips API Taxa Score CPF",
+        "alwaysOutputData": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "cbdf44b6-9685-47d7-9f72-08bfd9fef195",
+                "name": "score",
+                "value": "={{ $('lead').first().json.resultado_cnpj.blips_cnpj.blips_score_cnpj.score }}",
+                "type": "string"
+              },
+              {
+                "id": "70d9152a-96b0-46d4-931c-e2464e56a3ee",
+                "name": "rating",
+                "value": "={{ $('lead').first().json.resultado_cnpj.blips_cnpj.blips_score_cnpj.rating }}",
+                "type": "string"
+              },
+              {
+                "id": "17cb3c59-4acc-41c5-8a12-20d8b40d12fb",
+                "name": "func",
+                "value": "format_taxa_scoragem",
+                "type": "string"
+              },
+              {
+                "id": "7e4cdd86-5a4c-486a-b1df-c6aaa5c6a131",
+                "name": "segment",
+                "value": "={{ $('lead').item.json.segment }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          5840,
+          240
+        ],
+        "id": "3db8bf6c-f3e5-4ade-8a5e-d7376ee05f0e",
+        "name": "set_blips_taxa_score_cpf"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "bc88f766-7f82-4350-a5a7-f74dbb870d65",
+                "name": "pefin_valor",
+                "value": "={{ $('RD_Serasa_CPF').first().json.serasa_cpf.pefin_valor }}",
+                "type": "number"
+              },
+              {
+                "id": "33d8780a-37a7-4407-8ca4-7e23bbad25bc",
+                "name": "pefin_data",
+                "value": "={{ $('RD_Serasa_CPF').first().json.serasa_cpf.pefin_data }}",
+                "type": "string"
+              },
+              {
+                "id": "907f6434-1297-468d-aba9-6fb83dd4c32c",
+                "name": "refin_valor",
+                "value": "={{ $('RD_Serasa_CPF').first().json.serasa_cpf.refin_valor }}",
+                "type": "number"
+              },
+              {
+                "id": "de4b96ac-8ae0-4414-88f0-e86fea652b47",
+                "name": "refin_data",
+                "value": "={{ $('RD_Serasa_CPF').first().json.serasa_cpf.refin_data }}",
+                "type": "string"
+              },
+              {
+                "id": "962284fb-7a5d-4dc3-8897-e91f5149640b",
+                "name": "protesto_valor",
+                "value": "={{ $('RD_Serasa_CPF').first().json.serasa_cpf.protesto_valor }}",
+                "type": "number"
+              },
+              {
+                "id": "77ef5ecb-94c4-4026-b8db-7270b5bff0df",
+                "name": "protesto_data",
+                "value": "={{ $('RD_Serasa_CPF').first().json.serasa_cpf.protesto_data }}",
+                "type": "string"
+              },
+              {
+                "id": "1d92db9f-0552-46a8-ba1a-ce5864f55df8",
+                "name": "data_fundacao_meses_total",
+                "value": "={{ $('lead').first().json.resultado_cnpj.data_fundacao_meses_total }}",
+                "type": "number"
+              },
+              {
+                "id": "cbdf44b6-9685-47d7-9f72-08bfd9fef195",
+                "name": "score",
+                "value": "={{ $('lead').first().json.resultado_cnpj.blips_cnpj.blips_score_cnpj.score }}",
+                "type": "string"
+              },
+              {
+                "id": "70d9152a-96b0-46d4-931c-e2464e56a3ee",
+                "name": "rating",
+                "value": "={{ $('lead').first().json.resultado_cnpj.blips_cnpj.blips_score_cnpj.rating }}",
+                "type": "string"
+              },
+              {
+                "id": "17cb3c59-4acc-41c5-8a12-20d8b40d12fb",
+                "name": "func",
+                "value": "format_blips_risco",
+                "type": "string"
+              },
+              {
+                "id": "90ead5ca-bf30-41bb-a3ea-cd081807cf79",
+                "name": "bacen_vencido",
+                "value": "={{ $('Utils_BMP_bacen_cpf').first().json.bacen_vencido_cpf }}",
+                "type": "number"
+              },
+              {
+                "id": "2baf8ed5-cd1b-4975-9c68-0d1eb3ff56a5",
+                "name": "prej_bacen",
+                "value": "={{ $('Utils_BMP_bacen_cpf').first().json.prej_bacen_cpf }}",
+                "type": "number"
+              },
+              {
+                "id": "282e31f8-2185-47b4-9854-0c65e4b2fc7e",
+                "name": "bacen_a_vencer",
+                "value": "={{ $('Utils_BMP_bacen_cpf').first().json.bacen_a_vencer_cpf }}",
+                "type": "number"
+              },
+              {
+                "id": "d71be1e1-10ea-4cfa-bef7-bef9bc1bd2f2",
+                "name": "scr",
+                "value": "={{ $('RD_BMP_CPF').first().json.src_cpf }}",
+                "type": "object"
+              },
+              {
+                "id": "2494c4ce-c53c-4ac0-a8bc-d09f2b729612",
+                "name": "equip",
+                "value": "={{ $('lead').first().json.equipment_value }}",
+                "type": "number"
+              },
+              {
+                "id": "5b76f6f6-b2c2-45ec-876f-0f2eb1c3f97e",
+                "name": "documento",
+                "value": "={{ $('lead').first().json.cpfCliente }}",
+                "type": "string"
+              },
+              {
+                "id": "a7d00bd3-65fa-4dc4-810b-8508f07939d1",
+                "name": "segmento",
+                "value": "={{ $('lead').item.json.segment }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          6300,
+          240
+        ],
+        "id": "1545ebd1-bbcf-4e7e-b4aa-1667703f7b2d",
+        "name": "set_blips_risco_final_cpf"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "IpUkbgfrYtfnK0as",
+            "mode": "list",
+            "cachedResultName": "Utils Blips API"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          6540,
+          240
+        ],
+        "id": "b02517f9-4a56-40e0-b838-ce4d2a1bdc7e",
+        "name": "Utils Blips API Risco Final CPF",
+        "alwaysOutputData": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('lead').first().json.tipo_analise }}",
+                      "rightValue": "Ideal",
+                      "operator": {
+                        "type": "string",
+                        "operation": "contains"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Ideal"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "0dfac027-b79b-4a1c-9139-5fc10b6dd0c7",
+                      "leftValue": "={{ $('lead').first().json.tipo_analise }}",
+                      "rightValue": "Blips",
+                      "operator": {
+                        "type": "string",
+                        "operation": "contains"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Blips"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "f3fe97a1-ab2b-44e1-b97d-1896dc72d3a3",
+        "name": "Cliente Ideal ou Blips ? CPF",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          6780,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Aprovado"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "823931bf-cd31-4b65-98b6-045378b8c14e",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.1,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Aprovado"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "2e92c91d-222b-427c-9b04-1014b569e2dc",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.15,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Aprovado"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "252cb3a6-970d-40e0-bf0c-d458d3df1c16",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.2,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Aprovado"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "a78bc31b-a825-43a6-b9c3-b1ba82a2ff81",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.25,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Aprovado"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "77dbebb8-d798-45b8-911e-1126da4e42d1",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.3,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Aprovado"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "47379e7f-f7a9-4412-8676-96752e242fc9",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.4,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Reprovado"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "70b41712-4cad-478d-8ee7-0ff074c26bcd",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.5,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Reprovado"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          7080,
+          -120
+        ],
+        "id": "2ea9c7d7-e6cc-4a5b-a252-623b929028c2",
+        "name": "Resultado Planos ? Ideal CPF"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Aprovado"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "823931bf-cd31-4b65-98b6-045378b8c14e",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.1,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Aprovado"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "2e92c91d-222b-427c-9b04-1014b569e2dc",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.15,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Aprovado"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "252cb3a6-970d-40e0-bf0c-d458d3df1c16",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.2,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Inconclusivo"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "a78bc31b-a825-43a6-b9c3-b1ba82a2ff81",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.25,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Inconclusivo"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "77dbebb8-d798-45b8-911e-1126da4e42d1",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.3,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Inconclusivo"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "47379e7f-f7a9-4412-8676-96752e242fc9",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.4,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Reprovado"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "70b41712-4cad-478d-8ee7-0ff074c26bcd",
+                      "leftValue": "={{ $json.matriz_planos }}",
+                      "rightValue": 0.5,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Reprovado"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          7080,
+          440
+        ],
+        "id": "07c61495-61c1-4749-ab99-103136b22a82",
+        "name": "Resultado Planos ? Blips CPF"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "78e901de-6822-4923-b6b7-1038f65a8183",
+                "name": "matriz_planos",
+                "value": "FORMULARIO",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          7500,
+          240
+        ],
+        "id": "37af4b6d-87e9-4f08-a3b9-ff5c0e34ab3c",
+        "name": "Inconclusivo CPF"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ed87a61a-21a3-4f3e-96ac-7c00189b9893",
+                "name": "resultadoRejeicaoAutoCNPJ",
+                "value": "SIM",
+                "type": "string"
+              },
+              {
+                "id": "a9a6f1c2-a6a2-488e-bbd8-bd08e6bcebab",
+                "name": "data_fundacao_anos",
+                "value": "={{ $('Utils_BDC_calcula_meses_fundacao').first().json.data_fundacao_anos }}",
+                "type": "string"
+              },
+              {
+                "id": "65f456c1-a430-4f6f-a375-70cda541e7c6",
+                "name": "data_fundacao_meses",
+                "value": "={{ $('Utils_BDC_calcula_meses_fundacao').first().json.data_fundacao_meses }}",
+                "type": "string"
+              },
+              {
+                "id": "d2d8797c-e02c-417a-b640-a8bbe5af6bfb",
+                "name": "data_fundacao_meses_total",
+                "value": "={{ $('Utils_BDC_calcula_meses_fundacao').first().json.data_fundacao_meses_total }}",
+                "type": "string"
+              },
+              {
+                "id": "900f931b-0526-46de-99d3-21213ba1cf80",
+                "name": "basic_data_CNPJ",
+                "value": "={{ $('RD_basic_data_CNPJ').first().json.basic_data }}",
+                "type": "object"
+              },
+              {
+                "id": "335d6049-dc7b-44e7-8df7-5790fdb5e919",
+                "name": "serasa_cnpj",
+                "value": "={{ $('RD_Serasa_CNPJ').first().json.serasa_cnpj }}",
+                "type": "object"
+              },
+              {
+                "id": "5ddfa2f6-3a1f-4aff-9cea-4c25b5393e48",
+                "name": "bacen",
+                "value": "={{ $('Utils_BMP_bacen_cnpj').first().json }}",
+                "type": "object"
+              },
+              {
+                "id": "00bdef5f-37b3-493b-8c66-e44568dc00c4",
+                "name": "strMotivoReprov",
+                "value": "={\n  \"avaliacao_cnpj\": {\n    \"strMotivoReprovCNPJ\": {\n      \"PROTESTO > 1000?\" : \"SIM\",\n      \"temLimiteBacen\" : \"{{ $('temLimiteBacen_CNPJ').first().json.temLimiteBacen }}\",\n      \"fundacaoMaior24M\" : \"{{ $('fundacaoMaior').isExecuted ? $('fundacaoMaior').first().json.fundacaoMaior : $('FORM. TEMP. FUND.').first().json.fundacaoMaior }}\",\n      \"Processos\" : \"{{ $('reprov_processos_cnpj').isExecuted ?$('reprovado_processos_cnpj').first().json.processos : \"NÃO\"  }}\",\n      \"KYC\" : \"{{ $('reprovado_kyc_cnpj').isExecuted ? $('reprovado_kyc_cnpj').first().json.kyc : \"NÃO\"  }}\",\n      \"Plano Balão > Permitido?\" : \"SIM\"\n    },\n    \"resultadoRejeicaoAutoCNPJ\": \"SIM\"\n  }\n}",
+                "type": "object"
+              },
+              {
+                "id": "325840ce-cbf8-4953-af51-0d53529a2be6",
+                "name": "protesto",
+                "value": "={{ $('Utils_Serasa_protesto_cnpj').first().json }}",
+                "type": "object"
+              },
+              {
+                "id": "aba6c829-eb6e-4fdb-b7b4-85c6fc32f8fa",
+                "name": "motivoReprov",
+                "value": "=Plano Balão {{ $('Utils Blips API Risco Final').first().json.matriz_planos }}",
+                "type": "string"
+              },
+              {
+                "id": "ce5194f1-bb78-42bc-946e-4b5d6f2cc758",
+                "name": "blips_cnpj",
+                "value": "={{ $('RD Blips API Score').first().json }}",
+                "type": "object"
+              },
+              {
+                "id": "2eb76e7e-56a0-4ca6-b0a8-a864d0376cda",
+                "name": "processos",
+                "value": "={{ $('RD_Processos_CNPJ').first().json }}",
+                "type": "object"
+              },
+              {
+                "id": "b119215b-6c12-41b9-bd0a-fbfccf0d8965",
+                "name": "kyc",
+                "value": "={{ $('RD_KYC_CNPJ').first().json }}",
+                "type": "object"
+              },
+              {
+                "id": "5af72e46-2a40-4d56-b12e-79d59c5a7541",
+                "name": "matriz_planos",
+                "value": "={{ $('Utils Blips API Risco Final').first().json.matriz_planos }}",
+                "type": "string"
+              },
+              {
+                "id": "e21f14ef-b85c-481d-800c-aa44835fc355",
+                "name": "taxa_final",
+                "value": "={{ $('Utils Blips API Taxa Score').first().json.taxa_final }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "b5dde149-92f7-4978-85c5-8ad84a1fa054",
+        "name": "reprovado_planos_CNPJ",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          8620,
+          -900
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ed87a61a-21a3-4f3e-96ac-7c00189b9893",
+                "name": "resultadoRejeicaoAutoCPF",
+                "value": "SIM",
+                "type": "string"
+              },
+              {
+                "id": "77a4e22f-e20b-40ff-8b93-0ad2d66c7e05",
+                "name": "strMotivoReprov",
+                "value": "={\n  \"avaliacao_cpf\": {\n    \"strMotivoReprovCPF\": {\n      \"Protesto > 2000?\" : \"SIM\",\n      \"temLimiteBacen\" : \"{{ $('temLimiteBacen').first().json.temLimiteBacen }}\",\n      \"Processos\" : \"{{ $('reprovado_processos').isExecuted ?$('reprovado_processos').first().json.processos : \"NÃO\"  }}\",\n      \"KYC\" : \"{{ $('reprovado_kyc').isExecuted ? $('reprovado_kyc').first().json.kyc : \"NÃO\"  }}\",\n      \"Plano Balão > Permitido?\" : \"SIM\"\n    },\n    \"resultadoRejeicaoAutoCPF\": \"SIM\"\n  }\n}",
+                "type": "object"
+              },
+              {
+                "id": "7701976e-5f70-4948-bbd1-00c67df96a13",
+                "name": "serasa_cpf",
+                "value": "={{ $('RD_Serasa_CPF').first().json.serasa_cpf }}",
+                "type": "object"
+              },
+              {
+                "id": "b695f138-c67d-456c-b46d-63f53d739458",
+                "name": "bacen",
+                "value": "={{ $('Utils_BMP_bacen_cpf').first().json }}",
+                "type": "object"
+              },
+              {
+                "id": "e7bb37b9-147b-4f0c-b716-089722800ddd",
+                "name": "processos",
+                "value": "={{ $('RD_Processos_CPF').first().json.processos }}",
+                "type": "object"
+              },
+              {
+                "id": "f078748f-34f6-40de-941d-77d1cf84cc4c",
+                "name": "kyc",
+                "value": "={{ $('RD_KYC_CPF').first().json.kyc }}",
+                "type": "object"
+              },
+              {
+                "id": "b615e774-55a8-412e-8d98-57486a4d0d45",
+                "name": "protesto",
+                "value": "={{ $('Utils_Serasa_protesto_cpf').first().json }}",
+                "type": "object"
+              },
+              {
+                "id": "3f0a77ce-4322-475a-81ac-dd337e88b28d",
+                "name": "motivoReprov",
+                "value": "={{ 'Plano Balão ' +  $('Utils Blips API Risco Final CPF').first().json.matriz_planos }}",
+                "type": "string"
+              },
+              {
+                "id": "50fa446d-2af7-4793-b9a9-472ddd05595d",
+                "name": "taxa_final",
+                "value": "={{ $('Utils Blips API Taxa Score CPF').first().json.taxa_final }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "a8eb2a67-6700-4271-90b1-ae28cb5f2830",
+        "name": "reprovado_planos_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          7520,
+          -140
+        ]
+      }
+    ],
+    "connections": {
+      "lead": {
+        "main": [
+          [
+            {
+              "node": "CPF ou CNPJ ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "CPF ou CNPJ ?": {
+        "main": [
+          [
+            {
+              "node": "set_kyc_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "set_kyc_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_kyc_cnpj": {
+        "main": [
+          [
+            {
+              "node": "RD_KYC_CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "RD_KYC_CNPJ": {
+        "main": [
+          [
+            {
+              "node": "TEM KYC CNPJ ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_kyc_cpf": {
+        "main": [
+          [
+            {
+              "node": "RD_KYC_CPF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "TEM KYC CNPJ ?": {
+        "main": [
+          [
+            {
+              "node": "set_processos_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "reprovado_kyc_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "reprovado_kyc_cnpj": {
+        "main": [
+          [
+            {
+              "node": "set_processos_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_processos_cnpj": {
+        "main": [
+          [
+            {
+              "node": "RD_Processos_CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "RD_Processos_CNPJ": {
+        "main": [
+          [
+            {
+              "node": "Tem Processos CNPJ ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_basic_data_cnpj": {
+        "main": [
+          [
+            {
+              "node": "RD_basic_data_CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "RD_basic_data_CNPJ": {
+        "main": [
+          [
+            {
+              "node": "set_calc_mes_fund",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_calc_mes_fund": {
+        "main": [
+          [
+            {
+              "node": "Utils_BDC_calcula_meses_fundacao",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils_BDC_calcula_meses_fundacao": {
+        "main": [
+          [
+            {
+              "node": "Fundação > 2 Anos ? CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tem Processos CNPJ ?": {
+        "main": [
+          [
+            {
+              "node": "set_basic_data_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "reprov_processos_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Fundação > 2 Anos ? CNPJ": {
+        "main": [
+          [
+            {
+              "node": "fundacaoMaior",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "FORM. TEMP. FUND.",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "FORM. TEMP. FUND.": {
+        "main": [
+          [
+            {
+              "node": "set_bmp_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "fundacaoMaior": {
+        "main": [
+          [
+            {
+              "node": "set_bmp_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_bmp_cnpj": {
+        "main": [
+          [
+            {
+              "node": "RD_BMP_CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "RD_BMP_CNPJ": {
+        "main": [
+          [
+            {
+              "node": "sum_debtors_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "sum_debtors_cnpj": {
+        "main": [
+          [
+            {
+              "node": "Utils_BMP_bacen_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils_BMP_bacen_cnpj": {
+        "main": [
+          [
+            {
+              "node": "temLimiteBacen_CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "temLimiteBacen_CNPJ": {
+        "main": [
+          [
+            {
+              "node": "set_serasa_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "reprov_processos_cnpj": {
+        "main": [
+          [
+            {
+              "node": "set_basic_data_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_serasa_cnpj": {
+        "main": [
+          [
+            {
+              "node": "RD_Serasa_CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "RD_Serasa_CNPJ": {
+        "main": [
+          [
+            {
+              "node": "serasa_protesto_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "serasa_protesto_cnpj": {
+        "main": [
+          [
+            {
+              "node": "Utils_Serasa_protesto_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils_Serasa_protesto_cnpj": {
+        "main": [
+          [
+            {
+              "node": "serasa_cheque_sem_fundo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils_Serasa_verificar_avaliacao_cheque_sem_fundo_cnpj": {
+        "main": [
+          [
+            {
+              "node": "set_blips_score",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "serasa_cheque_sem_fundo": {
+        "main": [
+          [
+            {
+              "node": "Utils_Serasa_verificar_avaliacao_cheque_sem_fundo_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_blips_score": {
+        "main": [
+          [
+            {
+              "node": "RD Blips API Score",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "RD Blips API Score": {
+        "main": [
+          [
+            {
+              "node": "avaliacaoProtesto_CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "avaliacaoProtesto_CNPJ": {
+        "main": [
+          [
+            {
+              "node": "avaliacaoChequeSemFundo_CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "avaliacaoChequeSemFundo_CNPJ": {
+        "main": [
+          [
+            {
+              "node": "set_blips_taxa_score",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils Blips API Taxa Score": {
+        "main": [
+          [
+            {
+              "node": "set_blips_risco_final",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_blips_taxa_score": {
+        "main": [
+          [
+            {
+              "node": "Utils Blips API Taxa Score",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils Blips API Risco Final": {
+        "main": [
+          [
+            {
+              "node": "Cliente Ideal ou Blips ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_blips_risco_final": {
+        "main": [
+          [
+            {
+              "node": "Utils Blips API Risco Final",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "RD_KYC_CPF": {
+        "main": [
+          [
+            {
+              "node": "TEM KYC ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "TEM KYC ?": {
+        "main": [
+          [
+            {
+              "node": "set_processos",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "reprovado_kyc",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "reprovado_kyc": {
+        "main": [
+          [
+            {
+              "node": "set_processos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_processos": {
+        "main": [
+          [
+            {
+              "node": "RD_Processos_CPF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "RD_Processos_CPF": {
+        "main": [
+          [
+            {
+              "node": "Tem Processos CPF ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tem Processos CPF ?": {
+        "main": [
+          [
+            {
+              "node": "set_bmp_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "reprovado_processos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "reprovado_processos": {
+        "main": [
+          [
+            {
+              "node": "set_bmp_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_bmp_cpf": {
+        "main": [
+          [
+            {
+              "node": "RD_BMP_CPF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "RD_BMP_CPF": {
+        "main": [
+          [
+            {
+              "node": "bmp_sum_debtors_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "bmp_sum_debtors_cpf": {
+        "main": [
+          [
+            {
+              "node": "Utils_BMP_bacen_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils_BMP_bacen_cpf": {
+        "main": [
+          [
+            {
+              "node": "temLimiteBacen",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "temLimiteBacen": {
+        "main": [
+          [
+            {
+              "node": "set_serasa_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_serasa_cpf": {
+        "main": [
+          [
+            {
+              "node": "RD_Serasa_CPF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "RD_Serasa_CPF": {
+        "main": [
+          [
+            {
+              "node": "serasa_protesto_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "serasa_protesto_cpf": {
+        "main": [
+          [
+            {
+              "node": "Utils_Serasa_protesto_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils_Serasa_protesto_cpf": {
+        "main": [
+          [
+            {
+              "node": "avaliacaoProtesto",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "avaliacaoProtesto": {
+        "main": [
+          [
+            {
+              "node": "serasa_cheque_sem_fundo_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "serasa_cheque_sem_fundo_cpf": {
+        "main": [
+          [
+            {
+              "node": "Utils_Serasa_verificar_avaliacao_cheque_sem_fundo_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils_Serasa_verificar_avaliacao_cheque_sem_fundo_cpf": {
+        "main": [
+          [
+            {
+              "node": "avaliacaoChequeSemFundo_CPF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "avaliacaoChequeSemFundo_CPF": {
+        "main": [
+          [
+            {
+              "node": "set_blips_taxa_score_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "strMotivoCPF": {
+        "main": [
+          [
+            {
+              "node": "aprovado_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "strMotivoCNPJ": {
+        "main": [
+          [
+            {
+              "node": "aprovado_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Cliente Ideal ou Blips ?": {
+        "main": [
+          [
+            {
+              "node": "Resultado Planos ? Ideal",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Resultado Planos ? Blips",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Resultado Planos ? Blips": {
+        "main": [
+          [
+            {
+              "node": "strMotivoCNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "strMotivoCNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "strMotivoCNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Inconclusivo",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Inconclusivo",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Inconclusivo",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "reprovado_planos_CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "reprovado_planos_CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Inconclusivo": {
+        "main": [
+          [
+            {
+              "node": "strMotivoCNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Resultado Planos ? Ideal": {
+        "main": [
+          [
+            {
+              "node": "strMotivoCNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "strMotivoCNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "strMotivoCNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "strMotivoCNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "strMotivoCNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "strMotivoCNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "reprovado_planos_CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "reprovado_planos_CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_blips_score CPF": {
+        "main": [
+          []
+        ]
+      },
+      "RD Blips API Score CPF": {
+        "main": [
+          []
+        ]
+      },
+      "Utils Blips API Taxa Score CPF": {
+        "main": [
+          [
+            {
+              "node": "set_blips_risco_final_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_blips_taxa_score_cpf": {
+        "main": [
+          [
+            {
+              "node": "Utils Blips API Taxa Score CPF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_blips_risco_final_cpf": {
+        "main": [
+          [
+            {
+              "node": "Utils Blips API Risco Final CPF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils Blips API Risco Final CPF": {
+        "main": [
+          [
+            {
+              "node": "Cliente Ideal ou Blips ? CPF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Cliente Ideal ou Blips ? CPF": {
+        "main": [
+          [
+            {
+              "node": "Resultado Planos ? Ideal CPF",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Resultado Planos ? Blips CPF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Resultado Planos ? Ideal CPF": {
+        "main": [
+          [
+            {
+              "node": "strMotivoCPF",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "strMotivoCPF",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "strMotivoCPF",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "strMotivoCPF",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "strMotivoCPF",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "strMotivoCPF",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "reprovado_planos_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "reprovado_planos_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Resultado Planos ? Blips CPF": {
+        "main": [
+          [
+            {
+              "node": "strMotivoCPF",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "strMotivoCPF",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "strMotivoCPF",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Inconclusivo CPF",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Inconclusivo CPF",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Inconclusivo CPF",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "reprovado_planos_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "reprovado_planos_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Inconclusivo CPF": {
+        "main": [
+          [
+            {
+              "node": "strMotivoCPF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {
+      "lead": [
+        {
+          "json": {
+            "situacao_cadastral": "INCONCLUSIVO",
+            "catalogo_de_variaveis": {},
+            "cnpjCliente": "95562213000113",
+            "cpfCliente": null,
+            "client": {
+              "integration": "CREDIT_ANALYSIS_BQ_N8N",
+              "url_webhook": "https://blips-backend-staging-25jdzzxqga-uc.a.run.app/v2/leads/credit-query-gcp/webhook",
+              "id": "6830a65e99709f9e5d88199f",
+              "segments": [
+                {
+                  "id": "682e187be7994e95d9e66e4a",
+                  "disabled": false,
+                  "name": "Food",
+                  "description": "Food",
+                  "create_user": {
+                    "id": "67e2a275080ee4dd72afbbf6",
+                    "name": "MARCOS "
+                  },
+                  "historical": [
+                    {
+                      "id": "67ae74ac27357774711051e2",
+                      "date": "2025-02-13T22:39:40.92Z",
+                      "type": "SYSTEM",
+                      "description": "Criação de um novo segmento. Nome: Food",
+                      "justification": "",
+                      "backoffice_user": {
+                        "id": "646fb9ec57c07b0d00c4d408",
+                        "name": "Haquila "
+                      }
+                    },
+                    {
+                      "id": "67b8b81fc99ced6be65d9fc9",
+                      "date": "2025-02-21T17:30:07.59Z",
+                      "type": "SYSTEM",
+                      "description": "Atualização de segmento - nome: Sorvete e descrição: um sabor",
+                      "justification": "",
+                      "backoffice_user": {
+                        "id": "62791438052674b89a419567",
+                        "name": "izaltino.neto@blips.com.br"
+                      }
+                    },
+                    {
+                      "id": "682f5da9d36533ce167049d9",
+                      "date": "2025-05-22T17:23:53.00Z",
+                      "type": "SYSTEM",
+                      "description": "Atualização de segmento - nome: Food e descrição: Food",
+                      "justification": "",
+                      "backoffice_user": {
+                        "id": "67e2a275080ee4dd72afbbf6",
+                        "name": "MARCOS "
+                      }
+                    }
+                  ],
+                  "niches": [],
+                  "created_at": "2025-02-13T22:39:40.00Z",
+                  "updated_at": "2025-02-13T22:39:40.00Z"
+                }
+              ],
+              "type_all": true,
+              "personal_document": "",
+              "document": "95562213000113",
+              "responsible_id": "67e2a275080ee4dd72afbbf6",
+              "responsible_name": "MARCOS ",
+              "responsible_type": "SELLER",
+              "business_rule_type": "LOCACAO",
+              "equipment_value": 24681,
+              "is_with_sale": false,
+              "machine_type": "Máquina de Sorvete Vuze Artic Banc 28L Touch- Pré Venda ",
+              "organization_ref": "Blips",
+              "address_final": {},
+              "origin": "FEIRA",
+              "monthly_earnings": "",
+              "number_employees": "",
+              "created_at": "2025-05-23T16:46:24.64Z"
+            },
+            "document": "CNPJ",
+            "equipment_value": 24681,
+            "tipo_analise": "Blips",
+            "segment": "682e187be7994e95d9e66e4a",
+            "equip": "Máquina de Sorvete Vuze Artic Banc 28L Touch- Pré Venda ",
+            "receita_federal_emp": {},
+            "cnae_fiscal_principal": null,
+            "plano_balao": "false"
+          }
+        }
+      ]
+    },
+    "versionId": "3af87217-a53d-44ae-9c31-f00e110e3547",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-31T16:22:41.803Z",
+        "updatedAt": "2024-07-31T16:22:41.803Z",
+        "id": "mmaXbyiWhptUXaTd",
+        "name": "New Motor"
+      }
+    ]
+  }
+}
