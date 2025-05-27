@@ -1,0 +1,2261 @@
+{
+  "data": {
+    "createdAt": "2025-05-14T18:00:57.290Z",
+    "updatedAt": "2025-05-19T20:39:27.425Z",
+    "id": "Qfxw6M0DAvtaKwDC",
+    "name": "Reprocessamento de Leads",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -40,
+          -40
+        ],
+        "id": "4462d249-9d54-4e75-bc2f-05308eb7891c",
+        "name": "When clicking ‘Test workflow’"
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "documentId": {
+            "__rl": true,
+            "value": "1FL-Sy29zNSritB-aDObwV27HZAcEYftxlIh0WDMap1Q",
+            "mode": "list",
+            "cachedResultName": "LISTA CNPJ's",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FL-Sy29zNSritB-aDObwV27HZAcEYftxlIh0WDMap1Q/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 575196804,
+            "mode": "list",
+            "cachedResultName": "Folha1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FL-Sy29zNSritB-aDObwV27HZAcEYftxlIh0WDMap1Q/edit#gid=575196804"
+          },
+          "filtersUI": {
+            "values": [
+              {
+                "lookupColumn": "Score Blips"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          220,
+          -40
+        ],
+        "id": "1dc1c73b-c825-4e07-8de1-5aa2a5e8e719",
+        "name": "Google Sheets",
+        "retryOnFail": true,
+        "credentials": {
+          "googleApi": {
+            "id": "KvFeNUBUHv7uR0PF",
+            "name": "Google BigQuery account - New Motor"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "options": {
+            "reset": "={{ $('Loop Over Items').context['done'] }}"
+          }
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          540,
+          -40
+        ],
+        "id": "906680af-15b8-4461-ae6c-0f5663fca5f4",
+        "name": "Loop Over Items"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.noOp",
+        "typeVersion": 1,
+        "position": [
+          860,
+          -300
+        ],
+        "id": "bb1ef11e-031d-4ba8-8ce3-f85da90667b3",
+        "name": "No Operation, do nothing"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "616af14c-5307-4ae9-a956-19d8773f81b7",
+                "name": "documento",
+                "value": "={{ $('BDC - companies - relationships').first().json.cpf }}",
+                "type": "string"
+              },
+              {
+                "id": "b3454c95-6e1a-4fac-a3c6-86b1923e3b01",
+                "name": "type",
+                "value": "1",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "b840a0ee-0049-4c9c-9945-b4a17983e257",
+        "name": "request_bmp_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2520,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "m5W8ruT52JLwbTDD",
+          "options": {}
+        },
+        "id": "0b834d59-014c-4997-8620-cfe97ac3b112",
+        "name": "SERASA - CPF",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          3680,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "84399af4-3bef-40db-97ef-fb84c4a05ad8",
+                "name": "doc",
+                "value": "={{ $('BDC - companies - relationships').first().json.cpf }}",
+                "type": "string"
+              },
+              {
+                "id": "72e469a6-670b-4df2-a6d0-f90912701603",
+                "name": "type",
+                "value": "=F",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "5d629d35-a1c3-4b60-ba1f-946cdb39ae74",
+        "name": "request_format_serasa_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3460,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "operation": "update",
+          "documentId": {
+            "__rl": true,
+            "value": "1FL-Sy29zNSritB-aDObwV27HZAcEYftxlIh0WDMap1Q",
+            "mode": "list",
+            "cachedResultName": "LISTA CNPJ's",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FL-Sy29zNSritB-aDObwV27HZAcEYftxlIh0WDMap1Q/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 575196804,
+            "mode": "list",
+            "cachedResultName": "Folha1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FL-Sy29zNSritB-aDObwV27HZAcEYftxlIh0WDMap1Q/edit#gid=575196804"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "row_number": "={{ $('Loop Over Items').first().json.row_number }}",
+              "Estado": "={{ $('BDC - companies - basic_data').item.json.state }}",
+              "Carteira de Crédito": "={{ $('Utils_BMP_bacen_cnpj_Ideal').isExecuted ? $('Utils_BMP_bacen_cnpj_Ideal').item.json.carteira_de_credito : '' }}",
+              "A vencer": "={{ $('Utils_BMP_bacen_cnpj_Ideal').isExecuted ? $('Utils_BMP_bacen_cnpj_Ideal').item.json.bacen_a_vencer_cnpj : '' }}",
+              "Vencido": "={{ $('Utils_BMP_bacen_cnpj_Ideal').isExecuted ? $('Utils_BMP_bacen_cnpj_Ideal').item.json.bacen_vencido_cnpj : '' }}",
+              "Prejuízo": "={{ $('Utils_BMP_bacen_cnpj_Ideal').isExecuted ? $('Utils_BMP_bacen_cnpj_Ideal').item.json.prej_bacen_cnpj : '' }}",
+              "Pefin Data": "={{ $('SERASA - CNPJ').isExecuted ? $('SERASA - CNPJ').item.json.pefin_data : '' }}",
+              "Pefin Valor": "={{ $('SERASA - CNPJ').isExecuted ? $('SERASA - CNPJ').item.json.pefin_valor : '' }}",
+              "Refin Data": "={{ $('SERASA - CNPJ').isExecuted ? $('SERASA - CNPJ').item.json.refin_data : '' }}",
+              "Refin Valor": "={{ $('SERASA - CNPJ').isExecuted ? $('SERASA - CNPJ').item.json.refin_valor : '' }}",
+              "ProtestoData": "={{ \n  (() => {\n    const raw = $('SERASA - CNPJ').isExecuted ? $('SERASA - CNPJ').item.json.protesto_data : '';\n    if (!raw || raw.length < 7) return 'N/A';\n    const str = raw.padStart(8, '0');\n    return `${str.substring(0,2)}/${str.substring(2,4)}/${str.substring(4)}`;\n  })() \n}}",
+              "Protesto  Valor": "={{ $('SERASA - CNPJ').isExecuted ? $('SERASA - CNPJ').item.json.protesto_valor : '' }}",
+              "Tempo de Fundação": "={{ $('Utils_BDC_calcula_meses_fundacao_Ideal').item.json.data_fundacao_meses_total }}",
+              "Taxa de Juros": "={{ $json.taxa_final }}",
+              "Matriz Balão": "={{ $('Utils Blips API Risco Final').item.json.matriz_planos }}",
+              "Score Blips": "={{ $('Blips Score Locação').first().json.score ? $('Blips Score Locação').first().json.score : '-' }}",
+              "Rating Blips": "={{ $('Blips Score Locação').first().json.rating ? $('Blips Score Locação').first().json.rating : '-' }}",
+              "Cidade": "={{ $('motor_analise_credito').item.json.cidadeEmpresa }}"
+            },
+            "matchingColumns": [
+              "row_number"
+            ],
+            "schema": [
+              {
+                "id": "CNPJ",
+                "displayName": "CNPJ",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Cidade",
+                "displayName": "Cidade",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Estado",
+                "displayName": "Estado",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Carteira de Crédito",
+                "displayName": "Carteira de Crédito",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "A vencer",
+                "displayName": "A vencer",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Vencido",
+                "displayName": "Vencido",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Prejuízo",
+                "displayName": "Prejuízo",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Pefin Data",
+                "displayName": "Pefin Data",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Pefin Valor",
+                "displayName": "Pefin Valor",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Refin Data",
+                "displayName": "Refin Data",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Refin Valor",
+                "displayName": "Refin Valor",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "ProtestoData",
+                "displayName": "ProtestoData",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Protesto  Valor",
+                "displayName": "Protesto  Valor",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Tempo de Fundação",
+                "displayName": "Tempo de Fundação",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Taxa de Juros",
+                "displayName": "Taxa de Juros",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Matriz Balão",
+                "displayName": "Matriz Balão",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "CPF",
+                "displayName": "CPF",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Idade",
+                "displayName": "Idade",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Carteira de Crédito CPF",
+                "displayName": "Carteira de Crédito CPF",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "A vencer CPF",
+                "displayName": "A vencer CPF",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Vencido CPF",
+                "displayName": "Vencido CPF",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Prejuízo CPF",
+                "displayName": "Prejuízo CPF",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Pefin Data CPF",
+                "displayName": "Pefin Data CPF",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Pefin Valor CPF",
+                "displayName": "Pefin Valor CPF",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Refin Data CPF",
+                "displayName": "Refin Data CPF",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Refin Valor CPF",
+                "displayName": "Refin Valor CPF",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Protesto Data CPF",
+                "displayName": "Protesto Data CPF",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Protesto Valor CPF",
+                "displayName": "Protesto Valor CPF",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Score Blips",
+                "displayName": "Score Blips",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Rating Blips",
+                "displayName": "Rating Blips",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "readOnly": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          5320,
+          -20
+        ],
+        "id": "12d0ee6b-08d4-4ae4-b8cf-e65fb216749c",
+        "name": "Google Sheets Update",
+        "retryOnFail": true,
+        "credentials": {
+          "googleApi": {
+            "id": "KvFeNUBUHv7uR0PF",
+            "name": "Google BigQuery account - New Motor"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "endpoint",
+                "value": "peoplev2",
+                "type": "string"
+              },
+              {
+                "id": "5db45c71-e6af-4aad-b4cd-5138c8e796cc",
+                "name": "dataset",
+                "value": "basic_data",
+                "type": "string"
+              },
+              {
+                "id": "616af14c-5307-4ae9-a956-19d8773f81b7",
+                "name": "CPF",
+                "value": "={{ $('BDC - companies - relationships').first().json.cpf }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "36936f3c-c1d9-42e5-b7c8-49a161a5b172",
+        "name": "request_bdc_peoplev2_basic_data",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3940,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "71HfwsVdQvHtbqLi",
+          "options": {}
+        },
+        "id": "ce72d0d1-a682-4b25-99c2-8349f360bf77",
+        "name": "BDC - peoplev2 - basic_data",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          4180,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "amount": 1
+        },
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          5540,
+          -20
+        ],
+        "id": "2fdc5a98-37a7-4879-babc-8dfc174e9a15",
+        "name": "Wait",
+        "webhookId": "12ea1a57-18a7-4766-9875-79624c86b54b"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "78403caf-d089-48ef-bdc3-f371f9205d73",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              },
+              {
+                "id": "7ac37d72-6cd0-4dde-b380-900648d0b54c",
+                "name": "func",
+                "value": "calcula_meses_fundacao",
+                "type": "string"
+              },
+              {
+                "id": "b194be5c-c81e-4da4-ba04-d7c8482516e9",
+                "name": "basic_data",
+                "value": "={{ $json }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "9c10342b-bf70-4ac2-95c9-5b3cddd39c16",
+        "name": "set_calc_mes_fund_Ideal",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1300,
+          -20
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "W7TZJTMfuBtih4l1",
+            "mode": "list",
+            "cachedResultName": "Utils"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          1540,
+          -20
+        ],
+        "id": "0e88cf21-f396-4225-ac8c-11e2cee6d4ef",
+        "name": "Utils_BDC_calcula_meses_fundacao_Ideal"
+      },
+      {
+        "parameters": {
+          "workflowId": "71HfwsVdQvHtbqLi",
+          "options": {}
+        },
+        "id": "41f5a0fb-7ade-4f2f-b56a-244dde4a8a3d",
+        "name": "BDC - companies - basic_data",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          1080,
+          -20
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "endpoint",
+                "value": "companies",
+                "type": "string"
+              },
+              {
+                "id": "5db45c71-e6af-4aad-b4cd-5138c8e796cc",
+                "name": "dataset",
+                "value": "basic_data",
+                "type": "string"
+              },
+              {
+                "id": "7192c77e-a81e-4d6b-8204-7bd8d7539e8f",
+                "name": "CNPJ",
+                "value": "={{ $json.CNPJ }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "3bafcb3e-4086-47c7-8656-61919031ab05",
+        "name": "request_bdc_companies_basic_data",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          860,
+          -20
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "Wn8zfhykCCyP3mLK",
+          "options": {}
+        },
+        "id": "9430909e-3f36-401d-8606-fe542aef0b72",
+        "name": "BMP - CPF",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          2760,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "616af14c-5307-4ae9-a956-19d8773f81b7",
+                "name": "documento",
+                "value": "={{ $('Loop Over Items').first().json['CNPJ'] }}",
+                "type": "string"
+              },
+              {
+                "id": "b3454c95-6e1a-4fac-a3c6-86b1923e3b01",
+                "name": "type",
+                "value": "2",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "f848ac5e-c131-435a-a420-4e1b7beed4a9",
+        "name": "request_bmp_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2000,
+          -40
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "Wn8zfhykCCyP3mLK",
+          "options": {}
+        },
+        "id": "d0bc07f7-ef5b-40cd-9a6d-ce5c7442bd99",
+        "name": "BMP - CNPJ",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          2240,
+          -40
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "84399af4-3bef-40db-97ef-fb84c4a05ad8",
+                "name": "doc",
+                "value": "={{ $('Loop Over Items').first().json['CNPJ'] }}",
+                "type": "string"
+              },
+              {
+                "id": "72e469a6-670b-4df2-a6d0-f90912701603",
+                "name": "type",
+                "value": "=J",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "773c3356-680d-466f-92a0-0c1e93f385b2",
+        "name": "request_format_serasa_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2520,
+          -20
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "m5W8ruT52JLwbTDD",
+          "options": {}
+        },
+        "id": "eaabdb22-be8e-4862-a26a-b308e95f675b",
+        "name": "SERASA - CNPJ",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          2760,
+          -20
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "bc88f766-7f82-4350-a5a7-f74dbb870d65",
+                "name": "pefin_valor",
+                "value": "={{ $('SERASA - CNPJ').first().json.pefin_valor }}",
+                "type": "number"
+              },
+              {
+                "id": "33d8780a-37a7-4407-8ca4-7e23bbad25bc",
+                "name": "pefin_data",
+                "value": "={{ $('SERASA - CNPJ').first().json.pefin_data }}",
+                "type": "string"
+              },
+              {
+                "id": "907f6434-1297-468d-aba9-6fb83dd4c32c",
+                "name": "refin_valor",
+                "value": "={{ $('SERASA - CNPJ').first().json.refin_valor }}",
+                "type": "number"
+              },
+              {
+                "id": "de4b96ac-8ae0-4414-88f0-e86fea652b47",
+                "name": "refin_data",
+                "value": "={{ $('SERASA - CNPJ').first().json.refin_data }}",
+                "type": "string"
+              },
+              {
+                "id": "962284fb-7a5d-4dc3-8897-e91f5149640b",
+                "name": "protesto_valor",
+                "value": "={{ $('SERASA - CNPJ').first().json.protesto_valor }}",
+                "type": "number"
+              },
+              {
+                "id": "77ef5ecb-94c4-4026-b8db-7270b5bff0df",
+                "name": "protesto_data",
+                "value": "={{ $('SERASA - CNPJ').first().json.protesto_data }}",
+                "type": "string"
+              },
+              {
+                "id": "1d92db9f-0552-46a8-ba1a-ce5864f55df8",
+                "name": "data_fundacao_meses_total",
+                "value": "={{ $('Utils_BDC_calcula_meses_fundacao_Ideal').first().json.data_fundacao_meses_total }}",
+                "type": "number"
+              },
+              {
+                "id": "cbdf44b6-9685-47d7-9f72-08bfd9fef195",
+                "name": "score",
+                "value": "={{ $json.score }}",
+                "type": "string"
+              },
+              {
+                "id": "70d9152a-96b0-46d4-931c-e2464e56a3ee",
+                "name": "rating",
+                "value": "={{ $json.rating }}",
+                "type": "string"
+              },
+              {
+                "id": "17cb3c59-4acc-41c5-8a12-20d8b40d12fb",
+                "name": "func",
+                "value": "format_blips_risco",
+                "type": "string"
+              },
+              {
+                "id": "90ead5ca-bf30-41bb-a3ea-cd081807cf79",
+                "name": "bacen_vencido",
+                "value": "={{ $('Utils_BMP_bacen_cnpj_Ideal').first().json.bacen_vencido_cnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "2baf8ed5-cd1b-4975-9c68-0d1eb3ff56a5",
+                "name": "prej_bacen",
+                "value": "={{ $('Utils_BMP_bacen_cnpj_Ideal').first().json.prej_bacen_cnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "282e31f8-2185-47b4-9854-0c65e4b2fc7e",
+                "name": "bacen_a_vencer",
+                "value": "={{ $('Utils_BMP_bacen_cnpj_Ideal').first().json.bacen_a_vencer_cnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "d71be1e1-10ea-4cfa-bef7-bef9bc1bd2f2",
+                "name": "scr",
+                "value": "={{ $('BMP - CNPJ').first().json }}",
+                "type": "object"
+              },
+              {
+                "id": "2494c4ce-c53c-4ac0-a8bc-d09f2b729612",
+                "name": "equip",
+                "value": "={{ $('motor_analise_credito').first().json.valorEquip }}",
+                "type": "number"
+              },
+              {
+                "id": "e7d2a9d5-3411-478e-bdc5-75418758dccc",
+                "name": "documento",
+                "value": "={{ $('Loop Over Items').first().json['CNPJ'] }}",
+                "type": "string"
+              },
+              {
+                "id": "190a8f6b-fe05-48dc-bfd0-07252005daef",
+                "name": "segmento",
+                "value": "={{ $('motor_analise_credito').first().json.segmento }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {
+            "ignoreConversionErrors": true
+          }
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          4200,
+          -20
+        ],
+        "id": "50e862ed-92f5-4c1a-b77f-d442969f6c80",
+        "name": "set_blips_risco_final",
+        "alwaysOutputData": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "IpUkbgfrYtfnK0as",
+            "mode": "list",
+            "cachedResultName": "Utils Blips API"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          4460,
+          -20
+        ],
+        "id": "f3475b07-687f-47bb-a997-b54405c9c95e",
+        "name": "Utils Blips API Risco Final"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "cbdf44b6-9685-47d7-9f72-08bfd9fef195",
+                "name": "score",
+                "value": "={{ $('Blips Score Locação').first().json.score }}",
+                "type": "string"
+              },
+              {
+                "id": "70d9152a-96b0-46d4-931c-e2464e56a3ee",
+                "name": "rating",
+                "value": "={{ $('Blips Score Locação').first().json.rating }}",
+                "type": "string"
+              },
+              {
+                "id": "17cb3c59-4acc-41c5-8a12-20d8b40d12fb",
+                "name": "func",
+                "value": "format_taxa_scoragem",
+                "type": "string"
+              },
+              {
+                "id": "4311d296-bd8d-47a4-afca-d55bbce5a2f6",
+                "name": "segment",
+                "value": "={{ $('motor_analise_credito').first().json.segmento }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          4720,
+          -20
+        ],
+        "id": "ae8df529-41ee-4725-83f9-69cc5eeaa46f",
+        "name": "set_blips_taxa_scor"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "IpUkbgfrYtfnK0as",
+            "mode": "list",
+            "cachedResultName": "Utils Blips API"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          5040,
+          -20
+        ],
+        "id": "0b502e12-0ede-45cb-88d0-6800b2bad280",
+        "name": "Utils Blips API Taxa Score",
+        "alwaysOutputData": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "f9c2de6e-741b-420e-8a77-260bf6f2a7c5",
+                "leftValue": "={{ $json.data_fundacao_meses_total }}",
+                "rightValue": 24,
+                "operator": {
+                  "type": "number",
+                  "operation": "gte"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "69edadde-6c0f-459d-9d21-f26071f3ab5c",
+        "name": "Fundação > 2 Anos ? CNPJ Ideal",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1740,
+          -20
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "9b9219cb-ea49-4737-b457-46e772488319",
+                "name": "api",
+                "value": "BMP",
+                "type": "string"
+              },
+              {
+                "id": "019d1f4b-929f-476e-8f10-d39b57311fea",
+                "name": "func",
+                "value": "sum_debtors_cnpj",
+                "type": "string"
+              },
+              {
+                "id": "72fecb19-2b69-43c3-82b9-f6abdb5b7efa",
+                "name": "scr_cnpj",
+                "value": "={{ $json }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "52ec5d79-97aa-4bb0-a607-9195b742ab72",
+        "name": "sum_debtors_cnpj_Ideal",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2260,
+          -280
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "W7TZJTMfuBtih4l1",
+            "mode": "list",
+            "cachedResultName": "Utils"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          2480,
+          -280
+        ],
+        "id": "48da2420-c1ae-411c-a9a8-aa0e05cd0ef8",
+        "name": "Utils_BMP_bacen_cnpj_Ideal"
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "projectId": {
+            "__rl": true,
+            "value": "blips-prod-v2",
+            "mode": "list",
+            "cachedResultName": "blips-prod-v2",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-prod-v2"
+          },
+          "sqlQuery": "SELECT *\nFROM `blips-prod-v2.analise_de_credito.motor_analise_credito_n8n`\nWHERE\n  cnpjCliente = \"{{ $('Loop Over Items').item.json.CNPJ }}\"\nORDER BY PARSE_DATETIME('%d/%m/%Y %H:%M:%S', dataProcessamento) DESC\nLIMIT 1;",
+          "options": {
+            "maxResults": 1,
+            "timeoutMs": 60000
+          }
+        },
+        "id": "5db2a442-899f-4b0e-b3ac-6a7a34bf525d",
+        "name": "motor_analise_credito",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          3020,
+          -20
+        ],
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleApi": {
+            "id": "KvFeNUBUHv7uR0PF",
+            "name": "Google BigQuery account - New Motor"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "da8b98c2-7da1-428d-885f-72ed81966103",
+                "name": "vlr_original_total",
+                "value": "={{ $('motor_analise_credito').first().json.valorEquip }}",
+                "type": "number"
+              },
+              {
+                "id": "e8fb7b48-1b07-4467-88c1-2c1cbbb7498e",
+                "name": "SEGMENTO",
+                "value": "={{ $('motor_analise_credito').first().json.segmento }}",
+                "type": "string"
+              },
+              {
+                "id": "f2d698c1-70e2-47e1-947a-b542af2f38b0",
+                "name": "grupo_maquina",
+                "value": "={{ $('motor_analise_credito').first().json.equip }}",
+                "type": "string"
+              },
+              {
+                "id": "f656930a-a851-4037-909f-a8353abc3bae",
+                "name": "MODALIDADE",
+                "value": "VENDA",
+                "type": "string"
+              },
+              {
+                "id": "39329f52-68bc-41cf-90e4-8be464a457a3",
+                "name": "UF",
+                "value": "={{ $('BDC - companies - basic_data').first().json.state }}",
+                "type": "string"
+              },
+              {
+                "id": "d26f0a0e-3a8f-4211-858c-001186e5ef9a",
+                "name": "protestovalorcnpj",
+                "value": "={{ $('SERASA - CNPJ').first().json.protesto_valor }}",
+                "type": "number"
+              },
+              {
+                "id": "2a434d8d-e450-4657-af9f-3b955057cab7",
+                "name": "bacenlimitecnpj",
+                "value": "={{ $('Utils_BMP_bacen_cnpj_Ideal').first().json.bacen_limite_cnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "f846bb4e-057f-437a-b4c7-f05f950eb9f1",
+                "name": "bacenprejcnpj",
+                "value": "={{ $('Utils_BMP_bacen_cnpj_Ideal').first().json.prej_bacen_cnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "97aba74c-161f-44ea-915a-da57b0139bf7",
+                "name": "bacenvencidocnpj",
+                "value": "={{ $('Utils_BMP_bacen_cnpj_Ideal').first().json.bacen_vencido_cnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "fc3d78d6-f944-444e-911b-6dd1ff94f1ef",
+                "name": "bacenutlcnpj",
+                "value": "={{ $('Utils_BMP_bacen_cnpj_Ideal').first().json.bacen_limite_utilizado_cnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "56e7da5f-b6a5-43d0-91f3-b8a8d245184d",
+                "name": "chqqtdcnpj",
+                "value": "={{ $('SERASA - CNPJ').first().json.chq_qtd }}",
+                "type": "number"
+              },
+              {
+                "id": "7034b7e4-e73a-4e77-8052-002729ba69b3",
+                "name": "refinValorCnpj",
+                "value": "={{ $('SERASA - CNPJ').first().json.refin_valor }}",
+                "type": "number"
+              },
+              {
+                "id": "130db906-996e-4842-8f95-c9e423ba4bd6",
+                "name": "cnae_fiscal_principal",
+                "value": "={{ $('RECEITA_FEDERAL - CNPJ').first().json.cnae_fiscal_principal }}",
+                "type": "string"
+              },
+              {
+                "id": "8d2db674-5285-4045-aded-94f22998cb4e",
+                "name": "Idade_Empresa",
+                "value": "={{ $('Utils_BDC_calcula_meses_fundacao_Ideal').first().json.data_fundacao_anos }}",
+                "type": "number"
+              },
+              {
+                "id": "0a2793b8-28df-4f20-b64e-29c091168e83",
+                "name": "porte_empresa",
+                "value": "={{ $json.porte_empresa }}",
+                "type": "number"
+              },
+              {
+                "id": "fdb55f3f-5720-4ad7-bb23-e66e43a08da9",
+                "name": "qualificacao_responsavel",
+                "value": "={{ $json.qualificacao_responsavel }}",
+                "type": "number"
+              },
+              {
+                "id": "663e0b67-5dc7-4e44-8e4c-515504a50025",
+                "name": "type",
+                "value": "CNPJ",
+                "type": "string"
+              },
+              {
+                "id": "6f724d11-2a38-421d-8f8c-43acdcc08dc2",
+                "name": "dataset",
+                "value": "score",
+                "type": "string"
+              },
+              {
+                "id": "1f1d3e57-d330-4d0c-a55f-283239918e1f",
+                "name": "doc",
+                "value": "={{ $('Loop Over Items').first().json['CNPJ'] }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "7f230150-5a9c-49ec-a34a-825bdec4b7a3",
+        "name": "set_blips_score_ideal",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3720,
+          -20
+        ],
+        "alwaysOutputData": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT\n    *\n  FROM\n    `blips-bigdata.RECEITA_FEDERAL.empresas`\n  WHERE\n    cnpj_basico = SUBSTR(\"{{ $('Loop Over Items').first().json['CNPJ'] }}\", 1, 8)\nLIMIT 1;\n",
+          "options": {
+            "maxResults": 1
+          }
+        },
+        "id": "b24e7122-add0-4fd1-9d09-9e5e20ad101e",
+        "name": "RECEITA_FEDERAL - CNPJ EMP",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          3500,
+          -20
+        ],
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "wF0SkgkLunwtcUYi",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "id": "8eecc998-0fd0-4e75-ad08-954828343eb5",
+        "name": "Blips Score Locação",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          3960,
+          -20
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "WITH latest_data AS (\n  SELECT\n    cnpj_basico,\n    cnpj_ordem,\n    cnpj_dv,\n    cnae_fiscal_principal,\n    cnae_fiscal_secundaria,\n    data_situacao_cadastral,\n    situacao_cadastral,\n    email_contribuinte,\n    ddd1,\n    telefone1,\n    RANK() OVER (PARTITION BY cnpj_basico, cnpj_ordem, cnpj_dv ORDER BY data_situacao_cadastral DESC) AS rank_data\n  FROM\n    `blips-bigdata.RECEITA_FEDERAL.estabelecimentos`\n  WHERE\n    cnpj_basico = SUBSTR(\"{{ $('Loop Over Items').first().json['CNPJ'] }}\", 1, 8)\n    AND cnpj_ordem = SUBSTR(\"{{ $('Loop Over Items').first().json['CNPJ'] }}\", 9, 4)\n    AND cnpj_dv = CAST(SUBSTR(\"{{ $('Loop Over Items').first().json['CNPJ'] }}\", 13, 2) AS INT64)\n)\nSELECT *\nFROM latest_data\nWHERE rank_data = 1\nLIMIT 10;",
+          "options": {
+            "maxResults": 10
+          }
+        },
+        "id": "21d725e5-17b5-4819-8614-50b52552d862",
+        "name": "RECEITA_FEDERAL - CNPJ",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          3280,
+          -20
+        ],
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "credentials": {
+          "googleApi": {
+            "id": "KvFeNUBUHv7uR0PF",
+            "name": "Google BigQuery account - New Motor"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "9b9219cb-ea49-4737-b457-46e772488319",
+                "name": "api",
+                "value": "BMP",
+                "type": "string"
+              },
+              {
+                "id": "019d1f4b-929f-476e-8f10-d39b57311fea",
+                "name": "func",
+                "value": "sum_debtors_cpf",
+                "type": "string"
+              },
+              {
+                "id": "72fecb19-2b69-43c3-82b9-f6abdb5b7efa",
+                "name": "scr_cpf",
+                "value": "={{ $json }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "f0b3fe75-1c7c-4d7f-a067-345fd8dbd878",
+        "name": "sum_debtors_cnpj_Ideal1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3000,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "W7TZJTMfuBtih4l1",
+            "mode": "list",
+            "cachedResultName": "Utils"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          3220,
+          200
+        ],
+        "id": "e309fcc4-77bc-487f-9a5d-ad6215285a0a",
+        "name": "Utils_BMP_bacen_cpf"
+      },
+      {
+        "parameters": {
+          "workflowId": "71HfwsVdQvHtbqLi",
+          "options": {}
+        },
+        "id": "39ce5af6-920f-4c82-b4f9-7000fa4cd89e",
+        "name": "BDC - companies - relationships",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          2260,
+          200
+        ],
+        "alwaysOutputData": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "endpoint",
+                "value": "companies",
+                "type": "string"
+              },
+              {
+                "id": "5db45c71-e6af-4aad-b4cd-5138c8e796cc",
+                "name": "dataset",
+                "value": "relationships",
+                "type": "string"
+              },
+              {
+                "id": "7192c77e-a81e-4d6b-8204-7bd8d7539e8f",
+                "name": "CNPJ",
+                "value": "={{ $('Loop Over Items').first().json['CNPJ'] }}",
+                "type": "string"
+              },
+              {
+                "id": "a7b7c12b-5cfb-4cfe-ac74-79261b2e7275",
+                "name": "cpfCliente",
+                "value": "=",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "66402fc3-9bb9-40b6-9978-3aaff532985b",
+        "name": "request_bdc_companies_relationships",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2040,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "operation": "update",
+          "documentId": {
+            "__rl": true,
+            "value": "1FL-Sy29zNSritB-aDObwV27HZAcEYftxlIh0WDMap1Q",
+            "mode": "list",
+            "cachedResultName": "LISTA CNPJ's",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FL-Sy29zNSritB-aDObwV27HZAcEYftxlIh0WDMap1Q/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 575196804,
+            "mode": "list",
+            "cachedResultName": "Folha1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FL-Sy29zNSritB-aDObwV27HZAcEYftxlIh0WDMap1Q/edit#gid=575196804"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "row_number": "={{ $('Loop Over Items').first().json.row_number }}",
+              "CPF": "={{ $('BDC - companies - relationships').isExecuted ? $('BDC - companies - relationships').first().json.cpf : '' }}",
+              "Idade": "={{ $('BDC - peoplev2 - basic_data').isExecuted ? $('BDC - peoplev2 - basic_data').first().json.age : '' }}",
+              "Carteira de Crédito CPF": "={{ $('Utils_BMP_bacen_cpf').item.json.carteira_de_credito }}",
+              "A vencer CPF": "={{ $('Utils_BMP_bacen_cpf').item.json.bacen_a_vencer_cpf }}",
+              "Vencido CPF": "={{ $('Utils_BMP_bacen_cpf').item.json.bacen_vencido_cpf }}",
+              "Prejuízo CPF": "={{ $('Utils_BMP_bacen_cpf').item.json.prej_bacen_cpf }}",
+              "Pefin Data CPF": "={{ $('SERASA - CPF').isExecuted ? $('SERASA - CPF').item.json.pefin_data : '' }}",
+              "Pefin Valor CPF": "={{ $('SERASA - CPF').isExecuted ? $('SERASA - CPF').item.json.pefin_valor : '' }}",
+              "Refin Data CPF": "={{ $('SERASA - CPF').isExecuted ? $('SERASA - CPF').item.json.refin_data : '' }}",
+              "Refin Valor CPF": "={{ $('SERASA - CPF').isExecuted ? $('SERASA - CPF').item.json.refin_valor : '' }}",
+              "Protesto Data CPF": "={{ \n  (() => {\n    const raw = $('SERASA - CPF').isExecuted ? $('SERASA - CPF').item.json.protesto_data : '';\n    if (!raw || raw.length < 7) return 'N/A';\n    const str = raw.padStart(8, '0');\n    return `${str.substring(0,2)}/${str.substring(2,4)}/${str.substring(4)}`;\n  })() \n}}",
+              "Protesto Valor CPF": "={{ $('SERASA - CPF').isExecuted ? $('SERASA - CPF').item.json.protesto_valor : '' }}"
+            },
+            "matchingColumns": [
+              "row_number"
+            ],
+            "schema": [
+              {
+                "id": "CNPJ",
+                "displayName": "CNPJ",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Cidade",
+                "displayName": "Cidade",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Estado",
+                "displayName": "Estado",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Carteira de Crédito",
+                "displayName": "Carteira de Crédito",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "A vencer",
+                "displayName": "A vencer",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Vencido",
+                "displayName": "Vencido",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Prejuízo",
+                "displayName": "Prejuízo",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Pefin Data",
+                "displayName": "Pefin Data",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Pefin Valor",
+                "displayName": "Pefin Valor",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Refin Data",
+                "displayName": "Refin Data",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Refin Valor",
+                "displayName": "Refin Valor",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "ProtestoData",
+                "displayName": "ProtestoData",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Protesto  Valor",
+                "displayName": "Protesto  Valor",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Tempo de Fundação",
+                "displayName": "Tempo de Fundação",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Taxa de Juros",
+                "displayName": "Taxa de Juros",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Matriz Balão",
+                "displayName": "Matriz Balão",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "CPF",
+                "displayName": "CPF",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Idade",
+                "displayName": "Idade",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Carteira de Crédito CPF",
+                "displayName": "Carteira de Crédito CPF",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "A vencer CPF",
+                "displayName": "A vencer CPF",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Vencido CPF",
+                "displayName": "Vencido CPF",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Prejuízo CPF",
+                "displayName": "Prejuízo CPF",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Pefin Data CPF",
+                "displayName": "Pefin Data CPF",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Pefin Valor CPF",
+                "displayName": "Pefin Valor CPF",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Refin Data CPF",
+                "displayName": "Refin Data CPF",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Refin Valor CPF",
+                "displayName": "Refin Valor CPF",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Protesto Data CPF",
+                "displayName": "Protesto Data CPF",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Protesto Valor CPF",
+                "displayName": "Protesto Valor CPF",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Score Blips",
+                "displayName": "Score Blips",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Rating Blips",
+                "displayName": "Rating Blips",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "readOnly": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          4420,
+          200
+        ],
+        "id": "10339b47-0871-48f7-b7bd-8d5a5f7adc2b",
+        "name": "Google Sheets Update1",
+        "retryOnFail": true,
+        "credentials": {
+          "googleApi": {
+            "id": "KvFeNUBUHv7uR0PF",
+            "name": "Google BigQuery account - New Motor"
+          }
+        },
+        "onError": "continueRegularOutput"
+      }
+    ],
+    "connections": {
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "Google Sheets",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Sheets": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [
+            {
+              "node": "No Operation, do nothing",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "request_bdc_companies_basic_data",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "request_bmp_cpf": {
+        "main": [
+          [
+            {
+              "node": "BMP - CPF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "request_format_serasa_cpf": {
+        "main": [
+          [
+            {
+              "node": "SERASA - CPF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "SERASA - CPF": {
+        "main": [
+          [
+            {
+              "node": "request_bdc_peoplev2_basic_data",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Sheets Update": {
+        "main": [
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "request_bdc_peoplev2_basic_data": {
+        "main": [
+          [
+            {
+              "node": "BDC - peoplev2 - basic_data",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "BDC - peoplev2 - basic_data": {
+        "main": [
+          [
+            {
+              "node": "Google Sheets Update1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_calc_mes_fund_Ideal": {
+        "main": [
+          [
+            {
+              "node": "Utils_BDC_calcula_meses_fundacao_Ideal",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "request_bdc_companies_basic_data": {
+        "main": [
+          [
+            {
+              "node": "BDC - companies - basic_data",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "BDC - companies - basic_data": {
+        "main": [
+          [
+            {
+              "node": "set_calc_mes_fund_Ideal",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "BMP - CPF": {
+        "main": [
+          [
+            {
+              "node": "sum_debtors_cnpj_Ideal1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils_BDC_calcula_meses_fundacao_Ideal": {
+        "main": [
+          [
+            {
+              "node": "Fundação > 2 Anos ? CNPJ Ideal",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "request_bmp_cnpj": {
+        "main": [
+          [
+            {
+              "node": "BMP - CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "BMP - CNPJ": {
+        "main": [
+          [
+            {
+              "node": "sum_debtors_cnpj_Ideal",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "request_format_serasa_cnpj": {
+        "main": [
+          [
+            {
+              "node": "SERASA - CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "SERASA - CNPJ": {
+        "main": [
+          [
+            {
+              "node": "motor_analise_credito",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_blips_risco_final": {
+        "main": [
+          [
+            {
+              "node": "Utils Blips API Risco Final",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils Blips API Risco Final": {
+        "main": [
+          [
+            {
+              "node": "set_blips_taxa_scor",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_blips_taxa_scor": {
+        "main": [
+          [
+            {
+              "node": "Utils Blips API Taxa Score",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils Blips API Taxa Score": {
+        "main": [
+          [
+            {
+              "node": "Google Sheets Update",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Fundação > 2 Anos ? CNPJ Ideal": {
+        "main": [
+          [
+            {
+              "node": "request_bmp_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "request_bdc_companies_relationships",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "sum_debtors_cnpj_Ideal": {
+        "main": [
+          [
+            {
+              "node": "Utils_BMP_bacen_cnpj_Ideal",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils_BMP_bacen_cnpj_Ideal": {
+        "main": [
+          [
+            {
+              "node": "request_format_serasa_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "motor_analise_credito": {
+        "main": [
+          [
+            {
+              "node": "RECEITA_FEDERAL - CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_blips_score_ideal": {
+        "main": [
+          [
+            {
+              "node": "Blips Score Locação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "RECEITA_FEDERAL - CNPJ EMP": {
+        "main": [
+          [
+            {
+              "node": "set_blips_score_ideal",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Blips Score Locação": {
+        "main": [
+          [
+            {
+              "node": "set_blips_risco_final",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "RECEITA_FEDERAL - CNPJ": {
+        "main": [
+          [
+            {
+              "node": "RECEITA_FEDERAL - CNPJ EMP",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "sum_debtors_cnpj_Ideal1": {
+        "main": [
+          [
+            {
+              "node": "Utils_BMP_bacen_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils_BMP_bacen_cpf": {
+        "main": [
+          [
+            {
+              "node": "request_format_serasa_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "request_bdc_companies_relationships": {
+        "main": [
+          [
+            {
+              "node": "BDC - companies - relationships",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "BDC - companies - relationships": {
+        "main": [
+          [
+            {
+              "node": "request_bmp_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Sheets Update1": {
+        "main": [
+          [
+            {
+              "node": "request_bmp_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "e00ad7f9-f0fb-48ee-ad93-9adadee9f9a4",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-31T16:22:41.803Z",
+        "updatedAt": "2024-07-31T16:22:41.803Z",
+        "id": "mmaXbyiWhptUXaTd",
+        "name": "New Motor"
+      }
+    ]
+  }
+}
