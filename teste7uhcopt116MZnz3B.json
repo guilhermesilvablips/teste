@@ -1,0 +1,298 @@
+{
+  "data": {
+    "createdAt": "2025-03-06T14:20:28.581Z",
+    "updatedAt": "2025-04-10T11:15:26.759Z",
+    "id": "7uhcopt116MZnz3B",
+    "name": "Cron - Mergear usuarios Bitrix e Hyper (DEV)",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          560,
+          -100
+        ],
+        "id": "2e1e5654-aac9-492f-919d-b29953f53d46",
+        "name": "When clicking ‘Test workflow’"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://desk-ext.hyperflowapis.global/graphql",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "={\n  \"accept\": \"*/*\",\n  \"accept-language\": \"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7\",\n  \"content-type\": \"application/json\",\n  \"origin\": \"https://desk.hyperflow.global\",\n  \"priority\": \"u=1, i\",\n  \"referer\": \"https://desk.hyperflow.global/\",\n  \"sec-ch-ua\": \"\\\"Not)A;Brand\\\";v=\\\"99\\\", \\\"Google Chrome\\\";v=\\\"127\\\", \\\"Chromium\\\";v=\\\"127\\\"\",\n  \"sec-ch-ua-mobile\": \"?0\",\n  \"sec-ch-ua-platform\": \"\\\"Windows\\\"\",\n  \"sec-fetch-dest\": \"empty\",\n  \"sec-fetch-mode\": \"cors\",\n  \"sec-fetch-site\": \"cross-site\",\n  \"user-agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36\"\n}",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"operationName\": \"SIGN_IN\",\n  \"variables\": {\n    \"username\": \"mateus@blips.com.br\",\n    \"password\": \"Zxc,.;123\"\n  },\n  \"query\": \"mutation SIGN_IN($username: String!, $password: String!) {\\n  login(data: {username: $username, password: $password}) {\\n    token\\n    refreshToken\\n    user {\\n      name\\n      tenants {\\n        name\\n        _id\\n        __typename\\n      }\\n      __typename\\n    }\\n    __typename\\n  }\\n}\\n\"\n}",
+          "options": {}
+        },
+        "id": "63b85e38-9b21-4bbd-903c-eaebe09e2381",
+        "name": "Renovar token",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1100,
+          0
+        ],
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "const fetch = require('node-fetch')\nconst token = $input.first().json.data.login.token\nconst tenantId = \"642eb86c0cd915bc8137a05d\";\nconst apiUrl = \"https://desk-ext.hyperflowapis.global/graphql\";\n\n// Define a query GraphQL com LIST_AGENTS_FULL\nconst query = `\n  query LIST_AGENTS_FULL(\n    $search: String = \"\", \n    $departments: [ObjectId!], \n    $page: Int, \n    $limit: Int, \n    $sort: String, \n    $type: UserTypeEnum, \n    $status: [String!]\n  ) {\n    listAgents(\n      query: {\n        search: $search, \n        role: \"agent\", \n        departments: $departments, \n        status: $status, \n        type: $type, \n        includeEmpty: false\n      }\n      page: $page\n      limit: $limit\n      sort: $sort\n    ) {\n      docs {\n        _id\n        name\n        email\n        tenantMember {\n          status\n          departments {\n            _id\n            name\n            __typename\n          }\n        }\n        createdAt\n      }\n      totalDocs\n      totalPages\n      __typename\n    }\n  }\n`;\n\n// Faz a requisição POST para o GraphQL\nasync function fetchAgents(page, limit) {\n    const response = await fetch(apiUrl, {\n        method: 'POST',\n        headers: {\n            'Content-Type': 'application/json',\n            'tenant': tenantId,\n            'Authorization': token,\n        },\n        body: JSON.stringify({\n            query,\n            variables: {\n                search: \"\",\n                departments: [],\n                page,\n                limit,\n                sort: null,\n                type: null,\n                status: []\n            }\n        })\n    });\n\n    const jsonData = await response.json();\n    return jsonData\n}\n\nconst initialData = await fetchAgents(1, 1)\nconst totalDocs = initialData.data.listAgents.totalDocs;\nconst totalPages = Math.ceil(totalDocs / 50);\n\nlet allAgents = [];\n\n// Busca todos os agentes, iterando pelas páginas\nfor (let page = 1; page <= totalPages; page++) {\n    const pageData = await fetchAgents(page, 50);\n    allAgents.push(...pageData.data.listAgents.docs);\n}\n\n// Retorna os dados\nreturn [{ allAgents }];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1340,
+          0
+        ],
+        "id": "b09b82a0-fff2-45e2-b6bd-38b971789682",
+        "name": "get_data_hyperflow"
+      },
+      {
+        "parameters": {
+          "jsCode": "const fetch = require('node-fetch');\n\nconst baseUrl = 'https://blips.bitrix24.com.br/rest/2523/ig8o1y8lj8o3avdm/user.get.json';\nconst params = 'FILTER[ACTIVE]=1&SELECT[]=ID&SELECT[]=NAME&SELECT[]=LAST_NAME&SELECT[]=EMAIL&SELECT[]=DATE_REGISTER';\n\nconst initialResponse = await fetch(`${baseUrl}?${params}`);\nconst initialData = await initialResponse.json();\nconst totalPages = Math.ceil(initialData.total / 50);\n\nlet allResults = [];\n\n// Função para buscar usuários paginados\nasync function fetchPage(start) {\n    const response = await fetch(`${baseUrl}?${params}&start=${start}`);\n    const data = await response.json();\n    return (data.result || []).map(user => ({\n        id: user.ID,\n        name: `${user.NAME || ''} ${user.LAST_NAME || ''}`.trim(),\n        email: user.EMAIL || null,\n        date_register: user.DATE_REGISTER.split('T')[0] || null\n    }));;\n}\n\n// Loop para buscar todas as páginas\nfor (let page = 0; page < totalPages; page++) {\n    const start = page * 50;\n    const pageResults = await fetchPage(start);\n    allResults.push(...pageResults);\n}\n\nreturn [{ allResults }];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          880,
+          0
+        ],
+        "id": "0487b7e9-140d-4e98-ae3b-36a6df82d52b",
+        "name": "get_data_bitrix"
+      },
+      {
+        "parameters": {
+          "jsCode": "const bitrixUsers = $('get_data_bitrix').first().json.allResults;\nconst hyperUsers = $('get_data_hyperflow').first().json.allAgents;\n\n// Cria um mapa para facilitar a busca por email na lista do Hyper\nconst hyperMap = new Map(hyperUsers.map(user => [user.email, user]));\n\n// Faz o merge das informações verificando se o usuário do Bitrix também existe no Hyper\nconst mergedUsers = bitrixUsers.map(user => {\n    const hyperUser = hyperMap.get(user.email);\n\n    return {\n        id_bitrix: user.id,\n        name: user.name,\n        email: user.email,\n        department_hyper: hyperUser ? hyperUser.tenantMember?.departments?.map(dep => dep.name).join(', ') || null : null,\n        has_hyper: !!hyperUser, // Se encontrou no Hyper, define como true\n        email_register: user.email\n    };\n});\n\n// Retorna a lista completa dos usuários\nreturn [{ mergedUsers }];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1560,
+          0
+        ],
+        "id": "0697fc45-4f99-4a48-85e6-81c5fda36aa9",
+        "name": "Code"
+      },
+      {
+        "parameters": {
+          "schema": {
+            "__rl": true,
+            "mode": "list",
+            "value": "public"
+          },
+          "table": {
+            "__rl": true,
+            "mode": "list",
+            "value": ""
+          }
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.5,
+        "position": [
+          2500,
+          100
+        ],
+        "id": "a6127cc7-9d63-410d-bf5e-ecbbff69b795",
+        "name": "Postgres",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          2000,
+          0
+        ],
+        "id": "45fb7b70-f688-4392-8e9f-41e81656c4a3",
+        "name": "Loop Over Items"
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "mergedUsers",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          1780,
+          0
+        ],
+        "id": "cce82dcb-6dab-4eb8-ac9f-ad1e17d1933b",
+        "name": "Split Out"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://n8n-auditoria.blips-labs.com/webhook/blips_users",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ $json }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2220,
+          100
+        ],
+        "id": "44aa536d-c8b1-45c0-99f8-716ae16bb181",
+        "name": "HTTP Request"
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 4
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          560,
+          100
+        ],
+        "id": "ee3689ca-0757-4986-87a1-421d4b175443",
+        "name": "Schedule Trigger"
+      }
+    ],
+    "connections": {
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "get_data_bitrix",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Renovar token": {
+        "main": [
+          [
+            {
+              "node": "get_data_hyperflow",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "get_data_bitrix": {
+        "main": [
+          [
+            {
+              "node": "Renovar token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "get_data_hyperflow": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "Split Out",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [],
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Postgres": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request": {
+        "main": [
+          [
+            {
+              "node": "Postgres",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "get_data_bitrix",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "America/Sao_Paulo",
+      "callerPolicy": "workflowsFromSameOwner"
+    },
+    "staticData": {
+      "node:Schedule Trigger": {
+        "recurrenceRules": []
+      }
+    },
+    "meta": null,
+    "pinData": {},
+    "versionId": "37d18c8c-4aa2-47ea-8171-606a5fc7056e",
+    "triggerCount": 1,
+    "tags": []
+  }
+}
