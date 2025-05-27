@@ -1,0 +1,709 @@
+{
+  "data": {
+    "createdAt": "2025-03-25T18:18:42.970Z",
+    "updatedAt": "2025-04-10T12:59:25.763Z",
+    "id": "nfjS1ZdJfUgucCRA",
+    "name": "Atualizar Prompts Clara",
+    "active": true,
+    "nodes": [
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "owner": {
+            "__rl": true,
+            "value": "blips-ai",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "assistant-onboarding",
+            "mode": "list",
+            "cachedResultName": "assistant-onboarding",
+            "cachedResultUrl": "https://github.com/blips-ai/assistant-onboarding"
+          },
+          "events": [
+            "push"
+          ],
+          "options": {}
+        },
+        "type": "n8n-nodes-base.githubTrigger",
+        "typeVersion": 1,
+        "position": [
+          -600,
+          -20
+        ],
+        "id": "784673d1-bed2-4623-8156-27c65570cb5b",
+        "name": "Github Trigger",
+        "webhookId": "b8d610a6-8900-4d51-9cc0-57b4fd9eff05",
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "get",
+          "owner": {
+            "__rl": true,
+            "value": "blips-ai",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "assistant-onboarding",
+            "mode": "list",
+            "cachedResultName": "assistant-onboarding",
+            "cachedResultUrl": "https://github.com/blips-ai/assistant-onboarding"
+          },
+          "filePath": "={{ $json.arquivo }}",
+          "additionalParameters": {}
+        },
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          -160,
+          -20
+        ],
+        "id": "0cfd60c5-0d45-4bd3-be1e-2aba00c02d18",
+        "name": "Baixa file",
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "69d1c638-4ed2-4500-b9cc-4f50345197dd",
+                "name": "nome_arquivo",
+                "value": "={{ $json.arquivo.split('/')[2].split('.')[0] }}",
+                "type": "string"
+              },
+              {
+                "id": "9b76436b-7cb5-413d-ba0d-531d762ee9c5",
+                "name": "prompt",
+                "value": "={{ $json.data }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          280,
+          -20
+        ],
+        "id": "6dbdc381-f7e2-4eb4-8d14-1d4044a03e92",
+        "name": "Dados Prompt"
+      },
+      {
+        "parameters": {
+          "operation": "text",
+          "options": {
+            "keepSource": "json"
+          }
+        },
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          60,
+          -20
+        ],
+        "id": "eed78476-9780-4a6c-8bd8-42ba2faece20",
+        "name": "Extrai Texto"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.nome_arquivo }}",
+                      "rightValue": "entrada",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "entrada"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "64127775-3dd9-4113-8224-4fe2ed5d030b",
+                      "leftValue": "={{ $json.nome_arquivo }}",
+                      "rightValue": "processamento",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "processamento"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "3e5236a5-062c-4bd3-9aff-0ad0d192946d",
+                      "leftValue": "={{ $json.nome_arquivo }}",
+                      "rightValue": "saída",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "saída"
+              }
+            ]
+          },
+          "options": {
+            "fallbackOutput": "extra"
+          }
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          500,
+          -40
+        ],
+        "id": "4ac9cfbf-fa73-4c9a-a002-720044aaa314",
+        "name": "Switch"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/assistants/asst_TAtlVaegEN6Zio2UD3VUQrkd",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "instructions",
+                "value": "={{ $json.prompt }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          820,
+          -60
+        ],
+        "id": "5f279c71-b217-4dc9-8150-05b44a12ab74",
+        "name": "Att Prompt - Saída",
+        "retryOnFail": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "utH6piS62wyaw3eE",
+            "name": "1Clara - DEV"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/assistants/asst_IPW6v1xGl5e82OUke4OUqjH0",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "instructions",
+                "value": "={{ $json.prompt }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          820,
+          -240
+        ],
+        "id": "2542d8a6-e00d-4104-93d9-4501f767f4fe",
+        "name": "Att Prompt - Processamento",
+        "retryOnFail": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "utH6piS62wyaw3eE",
+            "name": "1Clara - DEV"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/assistants/asst_aPi4jx8bf25VOgxCgKRRemoi",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "instructions",
+                "value": "={{ $json.prompt }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          820,
+          -400
+        ],
+        "id": "73e90207-547f-48fd-8b4d-e23a2e96962d",
+        "name": "Att - Prompt - Entrada",
+        "retryOnFail": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "utH6piS62wyaw3eE",
+            "name": "1Clara - DEV"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "body.head_commit.modified",
+          "options": {
+            "destinationFieldName": "arquivo"
+          }
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          -380,
+          -20
+        ],
+        "id": "fb0c5611-f743-499a-ba18-c432b7ca8a9e",
+        "name": "Itens modificados"
+      }
+    ],
+    "connections": {
+      "Github Trigger": {
+        "main": [
+          [
+            {
+              "node": "Itens modificados",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Baixa file": {
+        "main": [
+          [
+            {
+              "node": "Extrai Texto",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados Prompt": {
+        "main": [
+          [
+            {
+              "node": "Switch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extrai Texto": {
+        "main": [
+          [
+            {
+              "node": "Dados Prompt",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch": {
+        "main": [
+          [
+            {
+              "node": "Att - Prompt - Entrada",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Att Prompt - Processamento",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Att Prompt - Saída",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Att - Prompt - Entrada": {
+        "main": [
+          []
+        ]
+      },
+      "Itens modificados": {
+        "main": [
+          [
+            {
+              "node": "Baixa file",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": {
+      "node:Github Trigger": {
+        "webhookId": 540256087,
+        "webhookEvents": [
+          "push"
+        ]
+      }
+    },
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Github Trigger": [
+        {
+          "json": {
+            "body": {
+              "ref": "refs/heads/main",
+              "before": "c32e35db1fc0acf645c77e4cc1c1b26b4a81c184",
+              "after": "c43ba3bd8c0f7ec023f0e309cc1ca84f672f9411",
+              "repository": {
+                "id": 884468701,
+                "node_id": "R_kgDONLfr3Q",
+                "name": "assistant-onboarding",
+                "full_name": "blips-ai/assistant-onboarding",
+                "private": true,
+                "owner": {
+                  "name": "blips-ai",
+                  "email": null,
+                  "login": "blips-ai",
+                  "id": 168130406,
+                  "node_id": "O_kgDOCgV3Zg",
+                  "avatar_url": "https://avatars.githubusercontent.com/u/168130406?v=4",
+                  "gravatar_id": "",
+                  "url": "https://api.github.com/users/blips-ai",
+                  "html_url": "https://github.com/blips-ai",
+                  "followers_url": "https://api.github.com/users/blips-ai/followers",
+                  "following_url": "https://api.github.com/users/blips-ai/following{/other_user}",
+                  "gists_url": "https://api.github.com/users/blips-ai/gists{/gist_id}",
+                  "starred_url": "https://api.github.com/users/blips-ai/starred{/owner}{/repo}",
+                  "subscriptions_url": "https://api.github.com/users/blips-ai/subscriptions",
+                  "organizations_url": "https://api.github.com/users/blips-ai/orgs",
+                  "repos_url": "https://api.github.com/users/blips-ai/repos",
+                  "events_url": "https://api.github.com/users/blips-ai/events{/privacy}",
+                  "received_events_url": "https://api.github.com/users/blips-ai/received_events",
+                  "type": "Organization",
+                  "user_view_type": "public",
+                  "site_admin": false
+                },
+                "html_url": "https://github.com/blips-ai/assistant-onboarding",
+                "description": "assistent-onboarding-Clara",
+                "fork": false,
+                "url": "https://github.com/blips-ai/assistant-onboarding",
+                "forks_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/forks",
+                "keys_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/keys{/key_id}",
+                "collaborators_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/collaborators{/collaborator}",
+                "teams_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/teams",
+                "hooks_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/hooks",
+                "issue_events_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/issues/events{/number}",
+                "events_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/events",
+                "assignees_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/assignees{/user}",
+                "branches_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/branches{/branch}",
+                "tags_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/tags",
+                "blobs_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/git/blobs{/sha}",
+                "git_tags_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/git/tags{/sha}",
+                "git_refs_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/git/refs{/sha}",
+                "trees_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/git/trees{/sha}",
+                "statuses_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/statuses/{sha}",
+                "languages_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/languages",
+                "stargazers_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/stargazers",
+                "contributors_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/contributors",
+                "subscribers_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/subscribers",
+                "subscription_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/subscription",
+                "commits_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/commits{/sha}",
+                "git_commits_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/git/commits{/sha}",
+                "comments_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/comments{/number}",
+                "issue_comment_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/issues/comments{/number}",
+                "contents_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/contents/{+path}",
+                "compare_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/compare/{base}...{head}",
+                "merges_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/merges",
+                "archive_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/{archive_format}{/ref}",
+                "downloads_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/downloads",
+                "issues_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/issues{/number}",
+                "pulls_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/pulls{/number}",
+                "milestones_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/milestones{/number}",
+                "notifications_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/notifications{?since,all,participating}",
+                "labels_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/labels{/name}",
+                "releases_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/releases{/id}",
+                "deployments_url": "https://api.github.com/repos/blips-ai/assistant-onboarding/deployments",
+                "created_at": 1730923505,
+                "updated_at": "2025-03-25T18:46:54Z",
+                "pushed_at": 1742928795,
+                "git_url": "git://github.com/blips-ai/assistant-onboarding.git",
+                "ssh_url": "git@github.com:blips-ai/assistant-onboarding.git",
+                "clone_url": "https://github.com/blips-ai/assistant-onboarding.git",
+                "svn_url": "https://github.com/blips-ai/assistant-onboarding",
+                "homepage": "",
+                "size": 7813,
+                "stargazers_count": 0,
+                "watchers_count": 0,
+                "language": null,
+                "has_issues": true,
+                "has_projects": true,
+                "has_downloads": true,
+                "has_wiki": false,
+                "has_pages": false,
+                "has_discussions": false,
+                "forks_count": 0,
+                "mirror_url": null,
+                "archived": false,
+                "disabled": false,
+                "open_issues_count": 0,
+                "license": null,
+                "allow_forking": false,
+                "is_template": false,
+                "web_commit_signoff_required": false,
+                "topics": [],
+                "visibility": "private",
+                "forks": 0,
+                "open_issues": 0,
+                "watchers": 0,
+                "default_branch": "main",
+                "stargazers": 0,
+                "master_branch": "main",
+                "organization": "blips-ai",
+                "custom_properties": {}
+              },
+              "pusher": {
+                "name": "Joao-Lucas-Freitas",
+                "email": "joao.freitas@blips.com.br"
+              },
+              "organization": {
+                "login": "blips-ai",
+                "id": 168130406,
+                "node_id": "O_kgDOCgV3Zg",
+                "url": "https://api.github.com/orgs/blips-ai",
+                "repos_url": "https://api.github.com/orgs/blips-ai/repos",
+                "events_url": "https://api.github.com/orgs/blips-ai/events",
+                "hooks_url": "https://api.github.com/orgs/blips-ai/hooks",
+                "issues_url": "https://api.github.com/orgs/blips-ai/issues",
+                "members_url": "https://api.github.com/orgs/blips-ai/members{/member}",
+                "public_members_url": "https://api.github.com/orgs/blips-ai/public_members{/member}",
+                "avatar_url": "https://avatars.githubusercontent.com/u/168130406?v=4",
+                "description": null
+              },
+              "sender": {
+                "login": "Joao-Lucas-Freitas",
+                "id": 169810475,
+                "node_id": "U_kgDOCh8aKw",
+                "avatar_url": "https://avatars.githubusercontent.com/u/169810475?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/Joao-Lucas-Freitas",
+                "html_url": "https://github.com/Joao-Lucas-Freitas",
+                "followers_url": "https://api.github.com/users/Joao-Lucas-Freitas/followers",
+                "following_url": "https://api.github.com/users/Joao-Lucas-Freitas/following{/other_user}",
+                "gists_url": "https://api.github.com/users/Joao-Lucas-Freitas/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/Joao-Lucas-Freitas/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/Joao-Lucas-Freitas/subscriptions",
+                "organizations_url": "https://api.github.com/users/Joao-Lucas-Freitas/orgs",
+                "repos_url": "https://api.github.com/users/Joao-Lucas-Freitas/repos",
+                "events_url": "https://api.github.com/users/Joao-Lucas-Freitas/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/Joao-Lucas-Freitas/received_events",
+                "type": "User",
+                "user_view_type": "public",
+                "site_admin": false
+              },
+              "created": false,
+              "deleted": false,
+              "forced": false,
+              "base_ref": null,
+              "compare": "https://github.com/blips-ai/assistant-onboarding/compare/c32e35db1fc0...c43ba3bd8c0f",
+              "commits": [
+                {
+                  "id": "c43ba3bd8c0f7ec023f0e309cc1ca84f672f9411",
+                  "tree_id": "0e1e0a22ec7d6402fa9b42705a30793c90c7899c",
+                  "distinct": true,
+                  "message": "teste",
+                  "timestamp": "2025-03-25T15:53:11-03:00",
+                  "url": "https://github.com/blips-ai/assistant-onboarding/commit/c43ba3bd8c0f7ec023f0e309cc1ca84f672f9411",
+                  "author": {
+                    "name": "unknown",
+                    "email": "joao.freitas@blips.com.br",
+                    "username": "Joao-Lucas-Freitas"
+                  },
+                  "committer": {
+                    "name": "unknown",
+                    "email": "joao.freitas@blips.com.br",
+                    "username": "Joao-Lucas-Freitas"
+                  },
+                  "added": [],
+                  "removed": [],
+                  "modified": [
+                    "prompts/estrutura 3 em 1/entrada.md",
+                    "prompts/estrutura 3 em 1/processamento.md",
+                    "prompts/estrutura 3 em 1/saída.md"
+                  ]
+                }
+              ],
+              "head_commit": {
+                "id": "c43ba3bd8c0f7ec023f0e309cc1ca84f672f9411",
+                "tree_id": "0e1e0a22ec7d6402fa9b42705a30793c90c7899c",
+                "distinct": true,
+                "message": "teste",
+                "timestamp": "2025-03-25T15:53:11-03:00",
+                "url": "https://github.com/blips-ai/assistant-onboarding/commit/c43ba3bd8c0f7ec023f0e309cc1ca84f672f9411",
+                "author": {
+                  "name": "unknown",
+                  "email": "joao.freitas@blips.com.br",
+                  "username": "Joao-Lucas-Freitas"
+                },
+                "committer": {
+                  "name": "unknown",
+                  "email": "joao.freitas@blips.com.br",
+                  "username": "Joao-Lucas-Freitas"
+                },
+                "added": [],
+                "removed": [],
+                "modified": [
+                  "prompts/estrutura 3 em 1/entrada.md",
+                  "prompts/estrutura 3 em 1/processamento.md",
+                  "prompts/estrutura 3 em 1/saída.md"
+                ]
+              }
+            },
+            "headers": {
+              "host": "n8n-dev.blips-labs.com",
+              "user-agent": "GitHub-Hookshot/fbec131",
+              "content-length": "8800",
+              "accept": "*/*",
+              "content-type": "application/json",
+              "x-forwarded-for": "140.82.115.200",
+              "x-forwarded-host": "n8n-dev.blips-labs.com",
+              "x-forwarded-proto": "https",
+              "x-github-delivery": "68daa1a2-09aa-11f0-84b3-00109dbfb6d0",
+              "x-github-event": "push",
+              "x-github-hook-id": "537331380",
+              "x-github-hook-installation-target-id": "884468701",
+              "x-github-hook-installation-target-type": "repository",
+              "x-railway-edge": "railway/us-east4",
+              "x-railway-request-id": "JQUrDe28TGiUK29eOzwENw_2020806880",
+              "x-real-ip": "140.82.115.200",
+              "x-request-start": "1742928796006",
+              "accept-encoding": "gzip"
+            },
+            "query": {}
+          }
+        }
+      ]
+    },
+    "versionId": "0c5dc587-52a2-42db-b143-cc7272e97437",
+    "triggerCount": 1,
+    "tags": [
+      {
+        "createdAt": "2024-11-22T13:13:26.514Z",
+        "updatedAt": "2024-11-22T13:13:26.514Z",
+        "id": "owb3cfmzFRbqjP06",
+        "name": "Clara"
+      }
+    ]
+  }
+}
