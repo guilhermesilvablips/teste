@@ -1,0 +1,204 @@
+{
+  "data": {
+    "createdAt": "2024-09-18T16:40:35.193Z",
+    "updatedAt": "2024-10-08T21:11:16.684Z",
+    "id": "jtXlpxMAvdgG4Vy1",
+    "name": "buscar_historico_semanal",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "1bEXdRys0ZVCIRsuwsjdTlN18hTjITeI8DB5GXL8bi2Q",
+            "mode": "list",
+            "cachedResultName": "Hisotrico Olivetto",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bEXdRys0ZVCIRsuwsjdTlN18hTjITeI8DB5GXL8bi2Q/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Historico de insights",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bEXdRys0ZVCIRsuwsjdTlN18hTjITeI8DB5GXL8bi2Q/edit#gid=0"
+          },
+          "options": {}
+        },
+        "id": "debf25ae-a46c-4625-b7e1-02784b906364",
+        "name": "Google Sheets",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          1000,
+          380
+        ],
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "f53eDeTWUXii9mLz",
+            "name": "Google Sheets Mateus"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "9fef0cf4-3bcd-4678-aef5-a263bc15ab53",
+                "leftValue": "={{ $json.data }}",
+                "rightValue": "={{ $now.minus(7,'days') }}",
+                "operator": {
+                  "type": "dateTime",
+                  "operation": "after"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "4192998b-cbc9-46a1-8f7b-93c59a068d5d",
+        "name": "If",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          1360,
+          380
+        ]
+      },
+      {
+        "parameters": {
+          "fieldsToAggregate": {
+            "fieldToAggregate": [
+              {
+                "fieldToAggregate": "historico"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "728464b7-d533-4d4d-a755-a5a351b0a88e",
+        "name": "Aggregate",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          1880,
+          380
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Captura todos os itens de entrada\nconst items = $input.all();\n\nitems.forEach(item => {\n  // Verifique se o campo 'data' existe no item\n  if (item.json.hasOwnProperty('data')) {\n    const dataString = item.json.data;\n\n    // Verifica se o valor do campo 'data' é uma string\n    if (typeof dataString === 'string') {\n      // Tente converter a string em um objeto Date\n      const dataDate = new Date(dataString);\n\n      // Verifica se a conversão foi bem-sucedida\n      if (!isNaN(dataDate.getTime())) {\n        \n        // Formata a data no padrão ISO (ou o que você precisar)\n         // Você pode formatar como desejar\n        item.json.data = dataDate;\n      } else {\n        // Caso a conversão falhe, adicione uma mensagem de erro\n        item.json.dataError = 'Data inválida';\n      }\n    }\n  }\n});\n\n// Retorna todos os itens alterados\nreturn items;\n"
+        },
+        "id": "d84a644c-5d89-4b2d-8445-789bf60ce1e3",
+        "name": "Code",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1180,
+          380
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "83be29d5-19e0-49cf-8e34-9f28d8631b5a",
+        "name": "Historico_semanal",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          820,
+          380
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Limite de itens que você quer passar para frente\nconst maxItems = 50;\n\n// Retorna apenas os primeiros 50 itens\nreturn items.slice(0, maxItems);"
+        },
+        "id": "8103f3cf-1d77-4ce6-b385-6233860ee770",
+        "name": "Code1",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1640,
+          380
+        ]
+      }
+    ],
+    "connections": {
+      "Google Sheets": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "Code1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Historico_semanal": {
+        "main": [
+          [
+            {
+              "node": "Google Sheets",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code1": {
+        "main": [
+          [
+            {
+              "node": "Aggregate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "America/Sao_Paulo",
+      "saveManualExecutions": true,
+      "callerPolicy": "workflowsFromSameOwner"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "6f065f62-5732-402f-ab9a-b8681dd3b5ab",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
