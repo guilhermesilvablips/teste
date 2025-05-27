@@ -1,0 +1,460 @@
+{
+  "data": {
+    "createdAt": "2024-10-25T15:28:37.332Z",
+    "updatedAt": "2024-10-25T16:00:51.822Z",
+    "id": "NBKwSyg9tF672Z0M",
+    "name": "Séries Temporais Taxas de Juros",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "documentId": {
+            "__rl": true,
+            "value": "1OQd1ouktAi7KULNjDnOI1maDiPPhVYxe5URireQWgN0",
+            "mode": "list",
+            "cachedResultName": "Taxas",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1OQd1ouktAi7KULNjDnOI1maDiPPhVYxe5URireQWgN0/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Página1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1OQd1ouktAi7KULNjDnOI1maDiPPhVYxe5URireQWgN0/edit#gid=0"
+          },
+          "options": {}
+        },
+        "id": "98756671-5118-407c-a470-d03aa2a77e94",
+        "name": "GET TAXAS",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          -160,
+          460
+        ],
+        "credentials": {
+          "googleApi": {
+            "id": "KvFeNUBUHv7uR0PF",
+            "name": "Google BigQuery account - New Motor"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "132b707b-afce-40fc-8475-5d8a156b74db",
+                "name": "cod",
+                "value": "={{ $json.cod }}",
+                "type": "string"
+              },
+              {
+                "id": "eb1810f8-065f-4c4b-9ea9-908efa98a9c3",
+                "name": "unid",
+                "value": "={{ $json.unid }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "9ab3ca49-0695-4805-82b6-a2ce7af74b23",
+        "name": "Format Taxa",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          420,
+          480
+        ]
+      },
+      {
+        "parameters": {
+          "url": "=https://api.bcb.gov.br/dados/serie/bcdata.sgs.{{$json['cod']}}/dados/ultimos/0?formato=json",
+          "options": {}
+        },
+        "id": "ec4ffbf6-e41a-4999-adf9-061b992920a4",
+        "name": "Banco Central do Brasil",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          900,
+          480
+        ],
+        "alwaysOutputData": false,
+        "retryOnFail": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {},
+        "id": "53755b26-3507-4c09-8cd9-a89eb1ca8f58",
+        "name": "Wait",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          660,
+          480
+        ],
+        "webhookId": "2d9b7b83-a1df-4320-83e4-27827766e325"
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1Hp10b7vGw1mHwph-9xDZEqTiNegNtg_OueyLEW_htW4",
+            "mode": "list",
+            "cachedResultName": "Taxas Valores",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Hp10b7vGw1mHwph-9xDZEqTiNegNtg_OueyLEW_htW4/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Página1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Hp10b7vGw1mHwph-9xDZEqTiNegNtg_OueyLEW_htW4/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "data": "={{ $json.data }}",
+              "unid": "={{ $json.unid }}",
+              "valor": "={{ $json.valor }}",
+              "cod": "={{ $json.cod }}",
+              "taxa_ref": "={{ $json.taxa_ref }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "cod",
+                "displayName": "cod",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "valor",
+                "displayName": "valor",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "unid",
+                "displayName": "unid",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "data",
+                "displayName": "data",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "taxa_ref",
+                "displayName": "taxa_ref",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ]
+          },
+          "options": {
+            "useAppend": true
+          }
+        },
+        "id": "b32ec2a4-9bf1-4a7f-89c2-823ec904917c",
+        "name": "SAVE TAXAS",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          420,
+          280
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "googleApi": {
+            "id": "KvFeNUBUHv7uR0PF",
+            "name": "Google BigQuery account - New Motor"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "2f6211c8-6b75-44a7-aacd-60c30e884a4f",
+        "name": "Loop Over Items",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          120,
+          460
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "336e35f0-fb9c-4e43-8c2c-e99fcee51b3f",
+                "name": "data",
+                "value": "={{ $json.data }}",
+                "type": "string"
+              },
+              {
+                "id": "68cb08aa-3c42-422f-8090-e536af000783",
+                "name": "valor",
+                "value": "={{ $json.valor }}",
+                "type": "number"
+              },
+              {
+                "id": "132b707b-afce-40fc-8475-5d8a156b74db",
+                "name": "cod",
+                "value": "={{ $('Format Taxa').first().json.cod }}",
+                "type": "string"
+              },
+              {
+                "id": "eb1810f8-065f-4c4b-9ea9-908efa98a9c3",
+                "name": "unid",
+                "value": "={{ $('Format Taxa').first().json.unid }}",
+                "type": "string"
+              },
+              {
+                "id": "91ba313c-d8f7-4555-97dc-55f13135e899",
+                "name": "taxa_ref",
+                "value": "={{ $('Format Taxa').first().json.unid == \"% a.a.\" ?(Math.pow((1 + $json.valor / 100), 1 / 12) - 1) * 100 : $json.valor }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "acfb9c3d-d439-432f-bc22-3edc880b8032",
+        "name": "set valor ON",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1420,
+          460
+        ],
+        "retryOnFail": true
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "months",
+                "triggerAtDayOfMonth": 8
+              }
+            ]
+          }
+        },
+        "id": "12153415-ac56-4bec-ae19-d4bc71d41c8a",
+        "name": "Schedule Trigger",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          -420,
+          460
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "35719ea5-8679-4ff5-9136-ac07155e1556",
+        "name": "Wait Retry",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          1140,
+          720
+        ],
+        "webhookId": "2d9b7b83-a1df-4320-83e4-27827766e325"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "6d310337-c4e6-493f-a1e8-b17d4177b19c",
+                "leftValue": "={{ $json.valor }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "97771b4a-deeb-42b2-8875-852744d6abba",
+        "name": "If",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          1120,
+          480
+        ]
+      }
+    ],
+    "connections": {
+      "GET TAXAS": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Format Taxa": {
+        "main": [
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Banco Central do Brasil": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "Banco Central do Brasil",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [
+            {
+              "node": "SAVE TAXAS",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Format Taxa",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set valor ON": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "GET TAXAS",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait Retry": {
+        "main": [
+          [
+            {
+              "node": "Format Taxa",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "set valor ON",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Wait Retry",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "3100c894-2656-42e2-9f67-b181b4148a4e",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-31T16:22:41.803Z",
+        "updatedAt": "2024-07-31T16:22:41.803Z",
+        "id": "mmaXbyiWhptUXaTd",
+        "name": "New Motor"
+      }
+    ]
+  }
+}
