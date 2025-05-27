@@ -1,0 +1,1116 @@
+{
+  "data": {
+    "createdAt": "2025-04-23T18:26:56.573Z",
+    "updatedAt": "2025-05-02T12:15:34.735Z",
+    "id": "aps4OMXLuzdawwES",
+    "name": "Gerar Pagamento - Lista Nufins",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips-backend-prod-yc62attz3a-uc.a.run.app/v2/user/login/624b373210c6fc7fcb4b7e0b",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\n    \"email\": \"mkt@blips.com.br\",\n    \"password\": \"0H8tZkYpoE\"\n}",
+          "options": {}
+        },
+        "id": "5f68cfbd-037d-4408-89e7-38025c2eeecb",
+        "name": "Token Plataforma",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -1940,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "74fab5d0-6935-494f-a689-addf7dcac9c1",
+                "name": "installmentsBLIPS",
+                "value": "={{ $('Cobrança Atualizada').item.json.BLIPS.installments }}",
+                "type": "array"
+              },
+              {
+                "id": "3404e62d-20c2-4aae-87b4-66f1ff11eed5",
+                "name": "installmentsIDEAL",
+                "value": "={{ $('Cobrança Atualizada').item.json.IDEAL.installments }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "f4fa037a-6e79-4e1c-b3da-fabf1f236f67",
+        "name": "Separa instalações",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1460,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "2ddf5971-80cd-4d1d-b8ff-b2e6ecfeaa44",
+                "leftValue": "={{ $json.pixCOde }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "e86f9e17-bd1f-4c29-89fe-27452b808d9a",
+        "name": "Já tem pix?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          560,
+          280
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d484817e-0fb3-49dd-acb0-79cff6b3ea8e",
+                "name": "Erro",
+                "value": "Não foi possível gerar o pagamento",
+                "type": "string"
+              },
+              {
+                "id": "89d44717-abf8-4b18-ad0b-13fa891408f9",
+                "name": "sucesso",
+                "value": false,
+                "type": "boolean"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "0a59d24b-19d3-4a42-94d1-bd92caa6591f",
+        "name": "Vazio",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -320,
+          -60
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "fe69cebc-2b43-4835-a059-b5abf2291e76",
+                "name": "nufin",
+                "value": "={{ $('Dados título').last().json.financialNumber }}",
+                "type": "string"
+              },
+              {
+                "id": "dd0d25dc-f433-45f6-ae08-d6e8faccdf63",
+                "name": "pagamento.method",
+                "value": "link pix",
+                "type": "string"
+              },
+              {
+                "id": "be850939-eb7c-4c64-82f1-d195be745ed2",
+                "name": "pagamento.chave",
+                "value": "=https://pagamento.blips.com.br/v1/payment/{{$('Gera key da página').item.json.s3_key}}",
+                "type": "string"
+              },
+              {
+                "id": "c7660ede-f824-437b-b2f5-ef749c3e3f5d",
+                "name": "sucesso",
+                "value": true,
+                "type": "boolean"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "f9dd81da-b9b8-47bc-b4fa-6fdb1ad5ec35",
+        "name": "Link do pix",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1840,
+          80
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Obtenha os dados dos nodes anteriores\nconst installmentsBLIPS = items[0].json.installmentsBLIPS || [];\nconst installmentsIDEAL = items[0].json.installmentsIDEAL || [];\n\n// Combine os arrays\nconst combinedInstallments = [...installmentsBLIPS, ...installmentsIDEAL];\n\n// Crie um array para os resultados\nconst result = [];\n\nfunction formatarData(data){\n  const nova = data.split(' ')[0];\n  const resultado = nova.split('/');\n  return `${resultado[2]}-${resultado[1]}-${resultado[0]}`;\n}\n\nfunction formatarNome(slug){\n  const org = slug.split('-')[0];\n  return org.toUpperCase();\n}\n\nfunction calculoDias(data) {\n  const venc = data.split(' ')[0];\n  const [dia, mes, ano] = venc.split('/');\n  const dataVenc = new Date(`${ano}-${mes}-${dia}`);\n  const dataHoje = new Date();\n  const diferencaEmMilissegundos = dataHoje - dataVenc;\n  const diferencaEmDias = Math.floor(diferencaEmMilissegundos / (1000 * 60 * 60 * 24));\n\n  return diferencaEmDias;\n}\n\n// Para cada item no array combinado, crie um novo item\ncombinedInstallments.forEach(installment => {\n    result.push({\n        json: {\n            contractNumber: installment.contractNumber,\n            financialNumber: installment.financialNumber,\n            installmentValue: installment.installmentValue,\n            organizationSlug: installment.organizationSlug,\n            pixCOde: installment.pixCode,\n            data: formatarData(installment.dueDate),\n            nome: formatarNome(installment.organizationSlug),\n            dias: calculoDias(installment.dueDate),\n            boleto: installment.bankSlipCode,\n            dataPagamento: installment.paymentDate,\n            \n        }\n    });\n});\n\n// Retorne o resultado\nreturn result;\n"
+        },
+        "id": "96ef93e9-1f85-4c68-8973-80b892fb3464",
+        "name": "Code Títulos",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -980,
+          260
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "bbc82606-00be-4a02-b7f7-565eb3256d67",
+                "name": "contractNumber",
+                "value": "={{ $json.contractNumber }}",
+                "type": "number"
+              },
+              {
+                "id": "99be65cf-3c9f-4823-beb5-ac131710a1ff",
+                "name": "financialNumber",
+                "value": "={{ $json.financialNumber }}",
+                "type": "number"
+              },
+              {
+                "id": "ac301428-6619-446a-8329-6e47ed5d284b",
+                "name": "installmentValue",
+                "value": "={{ $json.installmentValue }}",
+                "type": "number"
+              },
+              {
+                "id": "bcd2a287-36f1-4a6c-912e-f9e177cde621",
+                "name": "organizationSlug",
+                "value": "={{ $json.organizationSlug }}",
+                "type": "string"
+              },
+              {
+                "id": "4f8cf3c3-f4fb-4fc8-9f0c-cf1e2ef077d8",
+                "name": "pixCOde",
+                "value": "={{ $json.pixCOde }}",
+                "type": "string"
+              },
+              {
+                "id": "04c46482-afe6-47ab-8b54-86b535ab9513",
+                "name": "data",
+                "value": "={{ $json.data }}",
+                "type": "string"
+              },
+              {
+                "id": "ab272def-ba48-4896-873f-84d711e653f5",
+                "name": "nome",
+                "value": "={{ $json.nome }}",
+                "type": "string"
+              },
+              {
+                "id": "78a02f16-8c61-48d9-95b7-68aeadfec272",
+                "name": "dias",
+                "value": "={{ $json.dias }}",
+                "type": "number"
+              },
+              {
+                "id": "933d20c0-1ead-4766-b8de-41df4cc7d6f8",
+                "name": "boleto",
+                "value": "={{ $json.boleto }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "b40638b8-aec5-4722-a09f-713289df2938",
+        "name": "Dados título",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          20,
+          260
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "a451bca1-9597-4f70-8878-0b614c8a19a7",
+                "leftValue": "={{ $json.installmentsBLIPS }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "array",
+                  "operation": "notExists",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "23053479-24e4-43b4-839e-8fbd12943a3f",
+                "leftValue": "={{$json.installmentsIDEAL}}",
+                "rightValue": "",
+                "operator": {
+                  "type": "array",
+                  "operation": "notExists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "dfdadc4f-3683-4b9f-8cc5-8b214ab893fc",
+        "name": "Se não tiver installments",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -1240,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "options": {}
+        },
+        "id": "2a1043ff-5f96-4fb6-807d-a021843a310a",
+        "name": "Retorno vazio",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          -80,
+          -60
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4f4f8b25-080f-4e08-bdb2-606a9d63f0a9",
+                "name": "nufin",
+                "value": "={{ $json.financialNumber }}",
+                "type": "string"
+              },
+              {
+                "id": "435f2a82-c75d-480e-a80e-62ad58547a8b",
+                "name": "pagamento.method",
+                "value": "boleto",
+                "type": "string"
+              },
+              {
+                "id": "443b8678-24b5-48c7-8ca3-263f3cd7f507",
+                "name": "pagamento.chave",
+                "value": "={{ $json.boleto }}",
+                "type": "string"
+              },
+              {
+                "id": "c9ff6870-8c74-48cc-8c68-97990cd21eaf",
+                "name": "sucesso",
+                "value": true,
+                "type": "boolean"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "3c03a3dd-b5d6-4fe4-9a39-962c185fe8bd",
+        "name": "Boleto",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          560,
+          80
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "11f758f9-e846-418d-b6bd-6d21f42daef6",
+                "leftValue": "={{ $json.pixCOde === null && $json.boleto !== null && $json.dias < 0 }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "35682cf3-4f44-4951-b66c-7fb6bf1d3e4c",
+        "name": "É por boleto?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          280,
+          260
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "13508869-cbb7-4fa6-b0db-7cbee5381b86",
+                "name": "pix",
+                "value": "={{ $json.pixCOde || $json.textImageQrcode }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "1aaf8c04-20d8-4e22-af53-46184fa885c8",
+        "name": "Código pix",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1060,
+          260
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://pagamento.blips.com.br/v1/payment/create_page",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer gbaChsbOyaqmvYWxqi4AYvZIo7Huvx8ObPyEfA6HznNmWNCsCEK8Z8ddUu0pzeJ5Azo3cnNYAnyFCe6bcFez0TdN0kDGbNbHdu8WbsOzHMwpihJRXMcx33VUUVc2dNqNU3DJlLNnRwicjf89gxwB7irfC79pNdpVwG6Wwc2ZsWwEETyKK0t0EL6vkOaAhR8L52j285oqyhISqrgILuYqtHrg8NIo4vhwNJnAZaTYGQr6OSR9Nggk9c9GHm"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"value\": \"{{ $('Dados título').item.json.installmentValue }}\",\n  \"due_date\": \"{{ $('Dados título').item.json.data }}\",\n  \"pix_key\": \"{{ $json.pix }}\",\n  \"organization_name\": \"{{ $('Dados título').item.json.nome }}\"\n}",
+          "options": {}
+        },
+        "id": "c731dd4c-df5a-4ae9-89ab-c786aef4b030",
+        "name": "Gera key da página",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1300,
+          260
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 1000,
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "url": "=https://blips-backend-prod-yc62attz3a-uc.a.run.app/v2/chatbot/open-installments/{{ $('Args').first().json.cnpj }}",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {}
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "=Authorization",
+                "value": "={{ 'Bearer ' + $json.accessToken }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "45424cee-f3fb-4229-8602-ca3a65fcce6d",
+        "name": "Cobrança Atualizada",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -1700,
+          180
+        ],
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 3000,
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "02f240eb-95a2-4707-9a15-ca582f10c5f3",
+                "name": "Erro",
+                "value": "Não foi possível gerar o pagamento",
+                "type": "string"
+              },
+              {
+                "id": "0a4234da-0994-481d-9135-0d1f056ff18a",
+                "name": "sucesso",
+                "value": false,
+                "type": "boolean"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "1245191f-0c8b-4628-8083-f499541fda26",
+        "name": "Erro",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1460,
+          360
+        ]
+      },
+      {
+        "parameters": {
+          "url": "=https://pagamento.blips.com.br/v1/payment/{{ $json.s3_key }}",
+          "options": {}
+        },
+        "id": "f3e65ba5-3414-44bc-885b-8d2e1607bcec",
+        "name": "Gera página de pagamento",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1560,
+          260
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 3000,
+        "maxTries": 3,
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "options": {}
+        },
+        "id": "55f0ca59-6c60-492c-9aaf-e5a0b5d8c5a7",
+        "name": "Retorno Erro",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          -1240,
+          360
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips-backend-prod-yc62attz3a-uc.a.run.app/v2/adm/624b373210c6fc7fcb4b7e0b/bank/payment-pix-code/noauth",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"contract_number\": \"{{ $json.contractNumber }}\",\n  \"financial_number\": \"{{ $json.financialNumber }}\",\n  \"installment_value\": {{ $json.installmentValue }},\n  \"organization_slug\": \"{{ $json.organizationSlug }}\"\n}  ",
+          "options": {}
+        },
+        "id": "9ddb8bd2-b5ba-416a-b8ad-4a042633deb3",
+        "name": "Gerar PIX",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          820,
+          380
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {},
+        "id": "17d609c5-ca00-4efb-9e4a-be086dbe5a47",
+        "name": "Execute",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          -2380,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ae484211-707c-466f-8a0c-125e03ec0e83",
+                "name": "cnpj",
+                "value": "={{ $json.cnpj }}",
+                "type": "string"
+              },
+              {
+                "id": "d9b4725b-28b5-4093-89a5-11b7886a8d77",
+                "name": "nufins",
+                "value": "={{ $json.nufins }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -2160,
+          180
+        ],
+        "id": "ab30d29f-0c26-45d0-bd93-c8f684068ebc",
+        "name": "Args"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "0f7d634f-b520-4975-a7db-40aace28fa46",
+                "leftValue": "={{ $('Args').first().json.nufins.includes($json.financialNumber.toString()) }}",
+                "rightValue": "={{ $json.financialNumber.toString() }}",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "0f821897-a21f-4ada-a927-49a92e06f5f7",
+                "leftValue": "={{ !!$json.dataPagamento }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "false",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.2,
+        "position": [
+          -760,
+          260
+        ],
+        "id": "7c862e66-f35e-4732-859d-df371f8b35b4",
+        "name": "Filter",
+        "retryOnFail": false,
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          -260,
+          280
+        ],
+        "id": "04cc9f88-2060-4ee4-af75-33eeb35f82e9",
+        "name": "Loop Over Items"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "ea7999e6-50e7-45b0-b98a-93681eea6441",
+                "leftValue": "={{ $json }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "object",
+                  "operation": "empty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -540,
+          260
+        ],
+        "id": "4c4a8364-4b04-4eb3-8ab8-8ed2f584166a",
+        "name": "Vazio?"
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          280,
+          -60
+        ],
+        "id": "72558adf-4b20-496d-a0cd-7d6f24353a62",
+        "name": "Return Pagmentos"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b20c7010-1e38-4f06-9fac-3f87d6f8fe9c",
+                "name": "nufin",
+                "value": "={{ $('Dados título').last().json.financialNumber }}",
+                "type": "string"
+              },
+              {
+                "id": "5e156697-7e4a-490e-853a-44d98bf39f2a",
+                "name": "Erro",
+                "value": "Não foi possível gerar o pagamento",
+                "type": "string"
+              },
+              {
+                "id": "c34cd0c0-f0b1-4078-a488-14abfc1f1782",
+                "name": "sucesso",
+                "value": false,
+                "type": "boolean"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1060,
+          460
+        ],
+        "id": "fcab19c0-cbaa-4467-b71e-ce567b0d5fc1",
+        "name": "Erro Pix"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "eca1c10d-39ff-4d61-a302-e86bc0759aae",
+                "name": "nufin",
+                "value": "={{ $('Dados título').last().json.financialNumber }}",
+                "type": "string"
+              },
+              {
+                "id": "a07b0ec0-85d6-4827-b33e-d84fcf68827e",
+                "name": "pagamento.method",
+                "value": "código pix",
+                "type": "string"
+              },
+              {
+                "id": "e3462539-10a9-418b-b319-06515a3b8598",
+                "name": "pagamento.chave",
+                "value": "={{ $('Código pix').item.json.pix }}",
+                "type": "string"
+              },
+              {
+                "id": "0c06ab05-6ceb-4ed3-b757-0abcced751d4",
+                "name": "sucesso",
+                "value": true,
+                "type": "boolean"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "97a33301-1ee1-4e2b-a5b8-7320376a6897",
+        "name": "Código pix em caso de erro",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1740,
+          460
+        ]
+      }
+    ],
+    "connections": {
+      "Token Plataforma": {
+        "main": [
+          [
+            {
+              "node": "Cobrança Atualizada",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Separa instalações": {
+        "main": [
+          [
+            {
+              "node": "Se não tiver installments",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Já tem pix?": {
+        "main": [
+          [
+            {
+              "node": "Código pix",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Gerar PIX",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Vazio": {
+        "main": [
+          [
+            {
+              "node": "Retorno vazio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Link do pix": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code Títulos": {
+        "main": [
+          [
+            {
+              "node": "Filter",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados título": {
+        "main": [
+          [
+            {
+              "node": "É por boleto?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Se não tiver installments": {
+        "main": [
+          [
+            {
+              "node": "Vazio",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Code Títulos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Boleto": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "É por boleto?": {
+        "main": [
+          [
+            {
+              "node": "Boleto",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Já tem pix?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Código pix": {
+        "main": [
+          [
+            {
+              "node": "Gera key da página",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gera key da página": {
+        "main": [
+          [
+            {
+              "node": "Gera página de pagamento",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Código pix em caso de erro",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Cobrança Atualizada": {
+        "main": [
+          [
+            {
+              "node": "Separa instalações",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Erro": {
+        "main": [
+          [
+            {
+              "node": "Retorno Erro",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gera página de pagamento": {
+        "main": [
+          [
+            {
+              "node": "Link do pix",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Código pix em caso de erro",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gerar PIX": {
+        "main": [
+          [
+            {
+              "node": "Código pix",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro Pix",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute": {
+        "main": [
+          [
+            {
+              "node": "Args",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Args": {
+        "main": [
+          [
+            {
+              "node": "Token Plataforma",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter": {
+        "main": [
+          [
+            {
+              "node": "Vazio?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [
+            {
+              "node": "Return Pagmentos",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Dados título",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Vazio?": {
+        "main": [
+          [
+            {
+              "node": "Vazio",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Erro Pix": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Código pix em caso de erro": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {
+      "Execute": [
+        {
+          "json": {
+            "nufins": [
+              "738914",
+              "738916",
+              "738915"
+            ],
+            "cnpj": "54555451000114"
+          }
+        }
+      ]
+    },
+    "versionId": "f2264695-d9fe-43cb-9568-43de73b27cf7",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-09T15:07:56.880Z",
+        "updatedAt": "2024-07-09T15:07:56.880Z",
+        "id": "10AfOz2oKmpgqhM9",
+        "name": "Cobranca"
+      }
+    ]
+  }
+}
