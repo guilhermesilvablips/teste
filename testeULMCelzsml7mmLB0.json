@@ -1,0 +1,338 @@
+{
+  "data": {
+    "createdAt": "2025-01-02T16:44:21.189Z",
+    "updatedAt": "2025-01-02T21:01:22.650Z",
+    "id": "ULMCelzsml7mmLB0",
+    "name": "Teste iteração datas",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "706e4546-2039-404f-98fc-e483a434793b",
+        "name": "When clicking ‘Test workflow’",
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          580,
+          780
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "getTimeBetweenDates",
+          "startDate": "12/03/2024",
+          "endDate": "01/01/2025",
+          "options": {}
+        },
+        "id": "76d82e38-c1d7-4714-bee4-f393086eef47",
+        "name": "Date & Time",
+        "type": "n8n-nodes-base.dateTime",
+        "typeVersion": 2,
+        "position": [
+          1120,
+          140
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "aba2e1e0-78ac-40d7-9336-05940673a6ce",
+        "name": "Execution Data",
+        "type": "n8n-nodes-base.executionData",
+        "typeVersion": 1,
+        "position": [
+          1380,
+          -80
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "6b8bdcb3-dc18-4eed-a8ee-7b59aaf84da3",
+                "name": "d1",
+                "value": "={{ DateTime.fromFormat(\"03/12/2024\", \"dd/MM/yyyy\") }}",
+                "type": "string"
+              },
+              {
+                "id": "7fb3ef23-e5bd-4897-8dbe-2ddc38f4d8a0",
+                "name": "d2",
+                "value": "={{ DateTime.fromFormat(\"01/01/2025\", \"dd/MM/yyyy\") }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "4dd6249f-18f3-413a-81c6-6ce84b593312",
+        "name": "Datas",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          820,
+          780
+        ]
+      },
+      {
+        "parameters": {
+          "fieldsToSummarize": {
+            "values": [
+              {}
+            ]
+          },
+          "options": {}
+        },
+        "id": "af614e37-ae0f-48f1-81e1-fe4d14be0d3f",
+        "name": "Summarize",
+        "type": "n8n-nodes-base.summarize",
+        "typeVersion": 1,
+        "position": [
+          1520,
+          100
+        ]
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "01c0e482-a170-4dcd-badb-348012699e3a",
+        "name": "Loop Over Items",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          1260,
+          380
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "7dabca87-5ce8-4c00-8e8f-1be9860b4f2a",
+        "name": "Replace Me",
+        "type": "n8n-nodes-base.noOp",
+        "typeVersion": 1,
+        "position": [
+          1960,
+          100
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "loose"
+            },
+            "conditions": [
+              {
+                "id": "571ec8cd-1b90-41ea-9e64-a07ab2d8856b",
+                "leftValue": "={{ $json.timeDifference.days }}",
+                "rightValue": "=0",
+                "operator": {
+                  "type": "number",
+                  "operation": "gt"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "looseTypeValidation": true,
+          "options": {}
+        },
+        "id": "d5ef2291-8de6-462a-9f64-2a623c34116f",
+        "name": "If",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          1880,
+          600
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "6b8bdcb3-dc18-4eed-a8ee-7b59aaf84da3",
+                "name": "x",
+                "value": "=1",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "2c058223-5290-41bf-b688-9053a8cadc41",
+        "name": "Datas1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1560,
+          380
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "var lista = [];\n  const tam = $('Date & Time1').item.json.timeDifference.days\nfor (var i = 0; i<tam;i++) {\n  lista.push(i);\n}\n\nreturn {lista}\n\n"
+        },
+        "id": "9bbd50ff-03b9-4040-a9e4-d16e3a583632",
+        "name": "Code",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1240,
+          780
+        ]
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "lista",
+          "options": {}
+        },
+        "id": "9bd979b4-e681-4635-aa98-7a0d87c96114",
+        "name": "Split Out",
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          1440,
+          780
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "getTimeBetweenDates",
+          "startDate": "={{ $json.d1 }}",
+          "endDate": "={{ $json.d2 }}",
+          "options": {}
+        },
+        "id": "d1574911-667e-4bf5-8b43-c9ca19150ba3",
+        "name": "Date & Time1",
+        "type": "n8n-nodes-base.dateTime",
+        "typeVersion": 2,
+        "position": [
+          1060,
+          780
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "getTimeBetweenDates",
+          "startDate": "={{ $('Datas').first().json.d1 }}",
+          "endDate": "={{ $('Datas').first().json.d1.toDateTime().minus($json.lista, 'days') }}",
+          "options": {}
+        },
+        "id": "ce25fbaa-8a50-4c5a-9afa-eb990e635545",
+        "name": "Date & Time2",
+        "type": "n8n-nodes-base.dateTime",
+        "typeVersion": 2,
+        "position": [
+          1700,
+          780
+        ]
+      }
+    ],
+    "connections": {
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "Datas",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execution Data": {
+        "main": [
+          []
+        ]
+      },
+      "Summarize": {
+        "main": [
+          []
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [],
+          []
+        ]
+      },
+      "Replace Me": {
+        "main": [
+          []
+        ]
+      },
+      "Datas": {
+        "main": [
+          [
+            {
+              "node": "Date & Time1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [],
+          []
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "Split Out",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out": {
+        "main": [
+          [
+            {
+              "node": "Date & Time2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Date & Time1": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "161e59a4-ec0e-4ac5-9300-082e48548f78",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-08-08T16:17:37.968Z",
+        "updatedAt": "2024-08-08T16:17:37.968Z",
+        "id": "tv6Ov4En3lT5oHhf",
+        "name": "pedro"
+      }
+    ]
+  }
+}
