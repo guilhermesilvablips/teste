@@ -1,0 +1,538 @@
+{
+  "data": {
+    "createdAt": "2025-01-22T12:37:34.424Z",
+    "updatedAt": "2025-01-22T12:37:34.424Z",
+    "id": "OM7kIUgwcWl1y3WL",
+    "name": "Gera Lista Dias - DEV",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "43859c38-d711-4459-8bdd-9884d612edcb",
+        "name": "Loop Over Items",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          680,
+          320
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\n\n// fechado = 3\n// fechado a esquerda = 2\n// fechado a direita = 1\n// aberto = 0\n\nconst separador = $('Formatacao').item.json.separador;\nconst inicio = $('Formatacao').item.json.inicio_formatado;\nconst intervalo = $('Modo').item.json.tipo;\nvar min; \nvar i;\n\nif(intervalo > 0){\n  if(intervalo == 1){min = 1; i = 1;}\n  else if(intervalo == 2){min = 0; i = 0;}\n  else if(intervalo == 3){min = 0; i = 1;}}\nelse if(intervalo == 0){min = 1; i = 0;}\n \nvar cont = [];\nconst max = $('Intervalo').item.json.timeDifference.days;\nfor (min; min < max+i ; min++) {\n  cont.push(min)\n}\n\nreturn {cont,inicio,separador}"
+        },
+        "id": "6fe44a73-a0cf-4557-b2c9-d6289cd9f7c0",
+        "name": "Code",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          260,
+          320
+        ],
+        "executeOnce": true
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "cont",
+          "include": "selectedOtherFields",
+          "fieldsToInclude": "inicio,separador",
+          "options": {}
+        },
+        "id": "2bf0aa5b-e395-4306-b173-2883be2fc878",
+        "name": "Split Out",
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          460,
+          320
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "getTimeBetweenDates",
+          "startDate": "={{ $json.inicio_formatado }}",
+          "endDate": "={{ $json.fim_formatado }}",
+          "options": {}
+        },
+        "id": "c7ad802b-11d6-489c-9ece-bb683049e19c",
+        "name": "Intervalo",
+        "type": "n8n-nodes-base.dateTime",
+        "typeVersion": 2,
+        "position": [
+          -160,
+          320
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "658bf4d3-6b99-4252-aa3f-8d071a32db0e",
+                "name": "tipo",
+                "value": "={{ $('Formatacao').item.json.tipo_modo || 3}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "9a55ab06-71b4-4ed5-a06a-81834bb9c382",
+        "name": "Modo",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          40,
+          320
+        ]
+      },
+      {
+        "parameters": {
+          "content": "# Intervalo\n\n## Fechado\n\n### total: 3\n### a esquerda: 2\n### a direita: 1\n\n## Aberto 0\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+          "height": 471.5318361466496,
+          "width": 185.14857473505822,
+          "color": 3
+        },
+        "id": "31846df0-2181-4c91-a11b-162cdb85fca6",
+        "name": "Sticky Note",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "addToDate",
+          "magnitude": "={{ $json.inicio }}",
+          "duration": "={{ $('Split Out').item.json.cont }}",
+          "options": {}
+        },
+        "id": "964f76e3-caac-4809-b93a-c7e1ad7f5096",
+        "name": "DataComparada",
+        "type": "n8n-nodes-base.dateTime",
+        "typeVersion": 2,
+        "position": [
+          1100,
+          340
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "formatDate",
+          "date": "={{ $json.newDate }}",
+          "format": "custom",
+          "customFormat": "=dd{{ $('Dados_data').item.json.separador }}MM{{ $('Dados_data').item.json.separador }}yyyy",
+          "options": {}
+        },
+        "id": "c7f5202c-fffe-4309-9611-3b514e8c5021",
+        "name": "DataFormatada",
+        "type": "n8n-nodes-base.dateTime",
+        "typeVersion": 2,
+        "position": [
+          1280,
+          340
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "eeda3e04-6a47-4446-8da5-cb52331596d5",
+                "name": "dia",
+                "value": "=03",
+                "type": "number"
+              },
+              {
+                "id": "01ece8fa-d3de-4cf3-8ffe-8d69770ffed4",
+                "name": "mes",
+                "value": 12,
+                "type": "number"
+              },
+              {
+                "id": "be4b67b4-b231-4b5d-9c99-2fe2f4119d42",
+                "name": "ano",
+                "value": 2024,
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "6d69f9b7-9d81-4ed4-827d-f7db2e4572b7",
+        "name": "Inicio",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -840,
+          320
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "eeda3e04-6a47-4446-8da5-cb52331596d5",
+                "name": "dia",
+                "value": "=05",
+                "type": "number"
+              },
+              {
+                "id": "01ece8fa-d3de-4cf3-8ffe-8d69770ffed4",
+                "name": "mes",
+                "value": 12,
+                "type": "number"
+              },
+              {
+                "id": "be4b67b4-b231-4b5d-9c99-2fe2f4119d42",
+                "name": "ano",
+                "value": 2024,
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "9bdb250a-72b9-4cb9-bd62-baf0f0d725e7",
+        "name": "Fim",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -680,
+          320
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "01ece8fa-d3de-4cf3-8ffe-8d69770ffed4",
+                "name": "inicio_formatado",
+                "value": "={{ $json.inicio.toDateTime() }}",
+                "type": "string"
+              },
+              {
+                "id": "be9e7c43-9a91-427c-a4da-28954d210dd5",
+                "name": "fim_formatado",
+                "value": "={{ $json.fim.toDateTime() }}",
+                "type": "string"
+              },
+              {
+                "id": "ba517515-f3b8-4b95-a542-2220cd29172f",
+                "name": "separador",
+                "value": "={{ $json.separador || '/'}}",
+                "type": "string"
+              },
+              {
+                "id": "c7325f0c-05e8-44f4-b780-a04f38993363",
+                "name": "tipo_modo",
+                "value": "={{ $json.tipo_modo}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "10e16668-cbec-495e-b475-5ca7b1d8aab7",
+        "name": "Formatacao",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -340,
+          320
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "658bf4d3-6b99-4252-aa3f-8d071a32db0e",
+                "name": "cont",
+                "value": "={{ $json.cont }}",
+                "type": "string"
+              },
+              {
+                "id": "07d4e0b8-5062-44e2-9e1b-304d0f36dc4c",
+                "name": "inicio",
+                "value": "={{ $json.inicio }}",
+                "type": "string"
+              },
+              {
+                "id": "eb7158e2-4673-4921-b45d-72094050ba73",
+                "name": "separador",
+                "value": "={{ $json.separador }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "7caec153-1102-4396-a768-8ec4944f3172",
+        "name": "Dados_data",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          920,
+          340
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "601f5518-8a34-42e0-8dbc-c06211dd646c",
+        "name": "Manual",
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -1040,
+          320
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "68697667-6b86-4f16-aeed-1545c4570cfa",
+                "name": "inicio",
+                "value": "={{$('Inicio').item.json.ano}},{{$('Inicio').item.json.mes}},{{ $('Inicio').item.json.dia }}",
+                "type": "string"
+              },
+              {
+                "id": "b6430ca9-d52b-43f1-b6fc-83742aa3127d",
+                "name": "fim",
+                "value": "={{$('Fim').item.json.ano}},{{$('Fim').item.json.mes}},{{ $('Fim').item.json.dia }}",
+                "type": "string"
+              },
+              {
+                "id": "09e6da75-36b0-4663-b1ef-71d12aaf574b",
+                "name": "separador",
+                "value": "",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "3a912bbb-28d1-455b-926f-4f0e33beac52",
+        "name": "Inicio&Fim",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -520,
+          320
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "813fb2a1-b4d0-4863-8d0a-65265d0ba06d",
+        "name": "Execute Workflow Trigger",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          -520,
+          540
+        ]
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "0283bfa9-71b3-4230-ad78-b5e58c406284",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -520,
+          120
+        ],
+        "id": "175b490b-c92b-4e44-a46a-fddb7f2eebe6",
+        "name": "Webhook",
+        "webhookId": "0283bfa9-71b3-4230-ad78-b5e58c406284"
+      }
+    ],
+    "connections": {
+      "Loop Over Items": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Dados_data",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "Split Out",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Intervalo": {
+        "main": [
+          [
+            {
+              "node": "Modo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Modo": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "DataComparada": {
+        "main": [
+          [
+            {
+              "node": "DataFormatada",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "DataFormatada": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Inicio": {
+        "main": [
+          [
+            {
+              "node": "Fim",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Fim": {
+        "main": [
+          [
+            {
+              "node": "Inicio&Fim",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Formatacao": {
+        "main": [
+          [
+            {
+              "node": "Intervalo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados_data": {
+        "main": [
+          [
+            {
+              "node": "DataComparada",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Manual": {
+        "main": [
+          [
+            {
+              "node": "Inicio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Inicio&Fim": {
+        "main": [
+          [
+            {
+              "node": "Formatacao",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute Workflow Trigger": {
+        "main": [
+          [
+            {
+              "node": "Formatacao",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Formatacao",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {},
+    "versionId": "b7926976-2525-448b-8f66-91f625a9d202",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
