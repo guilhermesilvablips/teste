@@ -1,0 +1,533 @@
+{
+  "data": {
+    "createdAt": "2024-08-12T16:42:07.379Z",
+    "updatedAt": "2024-12-19T11:33:48.948Z",
+    "id": "HbEscclVj1ABNpmI",
+    "name": "Backup GitHub - Pedro",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "operation": "formatDate",
+          "date": "={{ $json['-3GMT'] }}",
+          "format": "custom",
+          "customFormat": "dd-MM-yyyy/H:mm",
+          "options": {}
+        },
+        "id": "50dd708e-af96-47dd-ad34-00c24df8c922",
+        "name": "Format date",
+        "type": "n8n-nodes-base.dateTime",
+        "typeVersion": 2,
+        "position": [
+          -1200,
+          680
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "list",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $json.name }}",
+            "mode": "name"
+          },
+          "filePath": "={{ $json.path }}"
+        },
+        "id": "fa84a3e8-4ca8-4e40-8a55-9c7f7e63b483",
+        "name": "List files from repository [GITHUB]",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          -780,
+          680
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "aggregateItems",
+          "fieldsToAggregate": {
+            "fieldToAggregate": [
+              {
+                "fieldToAggregate": "name"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "1ba7113f-a240-428f-9bd7-794ba8b54c5b",
+        "name": "Combine file names [GITHUB]",
+        "type": "n8n-nodes-base.itemLists",
+        "typeVersion": 2.1,
+        "position": [
+          -580,
+          680
+        ]
+      },
+      {
+        "parameters": {
+          "filters": {},
+          "requestOptions": {}
+        },
+        "id": "a11e7aaa-7145-4b4e-8fb3-adf89b516681",
+        "name": "Retrieve workflows [N8N]",
+        "type": "n8n-nodes-base.n8n",
+        "typeVersion": 1,
+        "position": [
+          -380,
+          680
+        ],
+        "credentials": {
+          "n8nApi": {
+            "id": "xhoakxkuKHeW1q6m",
+            "name": "n8n account 2"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "jsonToBinary",
+          "options": {
+            "fileName": "={{ $json.name.replace(/\\s+/g, '-').toLowerCase() }}-{{ $json.id }}.json"
+          }
+        },
+        "id": "7c474102-b340-4a17-9292-f91d60347242",
+        "name": "Move JSON to binary",
+        "type": "n8n-nodes-base.moveBinaryData",
+        "typeVersion": 1,
+        "position": [
+          -180,
+          680
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "owner": {
+            "__rl": true,
+            "value": "blips-ai",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "https://github.com/blips-ai/test-env-pedro",
+            "mode": "url"
+          },
+          "filePath": "=workflow-n8n-test/{{ $binary.data.fileName }}",
+          "binaryData": true,
+          "commitMessage": "=backup-{{ $node['SET_PARAM_GITHUB'].json.commitDate }}"
+        },
+        "id": "1d8ebf16-cf79-456e-ba37-55f9b1c99654",
+        "name": "Upload file [GITHUB]",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          540,
+          780
+        ],
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {},
+              {
+                "triggerAtHour": 6
+              },
+              {
+                "triggerAtHour": 12
+              },
+              {
+                "triggerAtHour": 18
+              }
+            ]
+          }
+        },
+        "id": "5e8421c7-7eb4-4b57-b2d3-1a70697ddc34",
+        "name": "Schedule Trigger",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          -1680,
+          600
+        ]
+      },
+      {
+        "parameters": {
+          "amount": 2
+        },
+        "id": "f420ddba-df6e-4622-8934-db3c434a444a",
+        "name": "Wait1",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          720,
+          780
+        ],
+        "webhookId": "8a9ee8c3-9495-4df3-9489-2ef218ec1ae2"
+      },
+      {
+        "parameters": {},
+        "id": "97567b9e-a659-4494-8506-855acb594ed3",
+        "name": "When clicking ‘Test workflow’",
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -1680,
+          760
+        ]
+      },
+      {
+        "parameters": {
+          "batchSize": 1,
+          "options": {}
+        },
+        "id": "f2ad1818-45fd-40da-8df3-c6f7ff9faba2",
+        "name": "Split to single items",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 2,
+        "position": [
+          60,
+          680
+        ]
+      },
+      {
+        "parameters": {
+          "amount": 2
+        },
+        "id": "613b275a-fe87-4445-9c82-1629eadb3ffe",
+        "name": "Wait",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          720,
+          400
+        ],
+        "webhookId": "84014f3d-7ae5-43f9-97eb-7c3a8a04b58c"
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "edit",
+          "owner": {
+            "__rl": true,
+            "value": "blips-ai",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "https://github.com/blips-ai/test-env-pedro",
+            "mode": "url"
+          },
+          "filePath": "=workflow-n8n-test/{{ $binary.data.fileName }}",
+          "binaryData": true,
+          "commitMessage": "=backup-{{ $node['SET_PARAM_GITHUB'].json.commitDate }}"
+        },
+        "id": "6876b431-54bc-4abb-90e3-6f5eef89778f",
+        "name": "Update file [GITHUB]",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          540,
+          400
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "string": [
+              {
+                "value1": "={{ $node['Combine file names [GITHUB]'].json.name }}",
+                "operation": "contains",
+                "value2": "={{ $binary.data.fileName }}"
+              }
+            ]
+          }
+        },
+        "id": "1227e318-66f7-463d-ad66-359e8917902a",
+        "name": "Check if file exists in repository",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 1,
+        "position": [
+          299,
+          610
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "GTySNiQIDDJqhYWE",
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        },
+        "id": "99d2631a-1f1d-4cc3-be20-05c9bf2baae8",
+        "name": "Horario de Brasília",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -1400,
+          680
+        ]
+      },
+      {
+        "parameters": {
+          "keepOnlySet": true,
+          "values": {
+            "string": [
+              {
+                "name": "name",
+                "value": "test-env-pedro"
+              },
+              {
+                "name": "commitDate",
+                "value": "={{ $json.formattedDate }}"
+              },
+              {
+                "name": "owner",
+                "value": "blips-ai"
+              },
+              {
+                "name": "path",
+                "value": "workflow-n8n-test/"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "bc6cc606-1936-472f-9329-1659d2d6f838",
+        "name": "SET_PARAM_GITHUB",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 2,
+        "position": [
+          -980,
+          680
+        ]
+      }
+    ],
+    "connections": {
+      "Format date": {
+        "main": [
+          [
+            {
+              "node": "SET_PARAM_GITHUB",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "List files from repository [GITHUB]": {
+        "main": [
+          [
+            {
+              "node": "Combine file names [GITHUB]",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Combine file names [GITHUB]": {
+        "main": [
+          [
+            {
+              "node": "Retrieve workflows [N8N]",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Retrieve workflows [N8N]": {
+        "main": [
+          [
+            {
+              "node": "Move JSON to binary",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Move JSON to binary": {
+        "main": [
+          [
+            {
+              "node": "Split to single items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Upload file [GITHUB]": {
+        "main": [
+          [
+            {
+              "node": "Wait1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Horario de Brasília",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait1": {
+        "main": [
+          [
+            {
+              "node": "Split to single items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "Horario de Brasília",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split to single items": {
+        "main": [
+          [
+            {
+              "node": "Check if file exists in repository",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "Split to single items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Update file [GITHUB]": {
+        "main": [
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Check if file exists in repository": {
+        "main": [
+          [
+            {
+              "node": "Update file [GITHUB]",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Upload file [GITHUB]",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Horario de Brasília": {
+        "main": [
+          [
+            {
+              "node": "Format date",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "SET_PARAM_GITHUB": {
+        "main": [
+          [
+            {
+              "node": "List files from repository [GITHUB]",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": {
+      "node:Schedule Trigger": {
+        "recurrenceRules": []
+      }
+    },
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "e7bb4cb9-6ee3-4f40-ac20-bc6a5408af64",
+    "triggerCount": 1,
+    "tags": [
+      {
+        "createdAt": "2024-08-08T16:17:37.968Z",
+        "updatedAt": "2024-08-08T16:17:37.968Z",
+        "id": "tv6Ov4En3lT5oHhf",
+        "name": "pedro"
+      }
+    ]
+  }
+}
