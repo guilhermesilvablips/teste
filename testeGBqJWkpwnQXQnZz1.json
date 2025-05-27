@@ -1,0 +1,152 @@
+{
+  "data": {
+    "createdAt": "2025-04-15T16:54:22.719Z",
+    "updatedAt": "2025-04-15T18:35:28.406Z",
+    "id": "GBqJWkpwnQXQnZz1",
+    "name": "MCP - Clara",
+    "active": true,
+    "nodes": [
+      {
+        "parameters": {
+          "path": "mcp-clara"
+        },
+        "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+        "typeVersion": 1,
+        "position": [
+          -460,
+          -80
+        ],
+        "id": "67fad88b-5cff-4bc3-92aa-c56a94c5b042",
+        "name": "MCP Server Trigger",
+        "webhookId": "0d94a359-ba85-4785-ae14-b4d78ced14ef"
+      },
+      {
+        "parameters": {
+          "toolDescription": "Função utilizada para buscar materiais de ajuda ou vídeos do blips educa dos equipamentos ou de empreendedorismo.",
+          "method": "POST",
+          "url": "https://n8n-dev.blips-labs.com/webhook/blips_educa",
+          "sendBody": true,
+          "parametersBody": {
+            "values": [
+              {
+                "name": "tema"
+              }
+            ]
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+        "typeVersion": 1.1,
+        "position": [
+          -100,
+          220
+        ],
+        "id": "476710a1-110a-4512-a0f8-323558af280e",
+        "name": "buscar_blips_educa"
+      },
+      {
+        "parameters": {
+          "toolDescription": "Função utilizada para buscar os termos do contrato cliente com base no número do contrato ou cnpj do cliente. ",
+          "method": "POST",
+          "url": "https://n8n-dev.blips-labs.com/webhook/termos_contrato",
+          "sendBody": true,
+          "parametersBody": {
+            "values": [
+              {
+                "name": "contrato"
+              }
+            ]
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+        "typeVersion": 1.1,
+        "position": [
+          -520,
+          220
+        ],
+        "id": "4379d61b-be46-4a5c-8fe3-3affa1b81912",
+        "name": "buscar_termos_contrato"
+      },
+      {
+        "parameters": {
+          "toolDescription": "Função utilizada para buscar os dados da negociação e os dados da plataforma com base no número do contrato ou cnpj do cliente.",
+          "method": "POST",
+          "url": "https://n8n-dev.blips-labs.com/webhook/dados-negoatiation",
+          "sendBody": true,
+          "parametersBody": {
+            "values": [
+              {
+                "name": "contrato",
+                "valueProvider": "modelOptional"
+              },
+              {
+                "name": "cnpj",
+                "valueProvider": "modelOptional"
+              }
+            ]
+          },
+          "optimizeResponse": true,
+          "responseType": "text"
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+        "typeVersion": 1.1,
+        "position": [
+          -320,
+          220
+        ],
+        "id": "8c7efa8b-e89a-4d05-bbe3-0baa33524a38",
+        "name": "buscar_negotiation"
+      }
+    ],
+    "connections": {
+      "buscar_termos_contrato": {
+        "ai_tool": [
+          [
+            {
+              "node": "MCP Server Trigger",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "buscar_blips_educa": {
+        "ai_tool": [
+          [
+            {
+              "node": "MCP Server Trigger",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "buscar_negotiation": {
+        "ai_tool": [
+          [
+            {
+              "node": "MCP Server Trigger",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {},
+    "versionId": "458eda78-2eb1-4006-a88e-35cdd7bf56f4",
+    "triggerCount": 1,
+    "tags": [
+      {
+        "createdAt": "2024-11-22T13:13:26.514Z",
+        "updatedAt": "2024-11-22T13:13:26.514Z",
+        "id": "owb3cfmzFRbqjP06",
+        "name": "Clara"
+      }
+    ]
+  }
+}
