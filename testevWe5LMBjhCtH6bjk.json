@@ -1,0 +1,264 @@
+{
+  "data": {
+    "createdAt": "2024-09-05T11:47:11.843Z",
+    "updatedAt": "2025-01-07T11:47:23.591Z",
+    "id": "vWe5LMBjhCtH6bjk",
+    "name": "Planilha Atendimento Socorro",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1vf-xSdkfWBuPu9fPTXUkUneOwkIem-OuXp9gEMaRK24",
+            "mode": "list",
+            "cachedResultName": "Atendimentos Socorro - Blips iA",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vf-xSdkfWBuPu9fPTXUkUneOwkIem-OuXp9gEMaRK24/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Página1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vf-xSdkfWBuPu9fPTXUkUneOwkIem-OuXp9gEMaRK24/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "Data Inicio": "={{ $now.setLocale('pt-br').format('dd/MM/yyyy - HH:mm') }}",
+              "Telefone": "={{ $json.body.id }}",
+              "Log Atendimento": "Atendimento Socorro",
+              "Chamou Esperanza": "0",
+              "Chamou Juarez": "0",
+              "Chamou Salvador": "0",
+              "Teste": "1",
+              "Telefone + Data Inicio": "={{ $json.body.id + ' - ' + $now.setLocale('pt-br').format('dd/MM/yyyy - HH:mm') }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "Data Inicio",
+                "displayName": "Data Inicio",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Telefone",
+                "displayName": "Telefone",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Data Atualização",
+                "displayName": "Data Atualização",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Log Atendimento",
+                "displayName": "Log Atendimento",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Chamou Juarez",
+                "displayName": "Chamou Juarez",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Chamou Esperanza",
+                "displayName": "Chamou Esperanza",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Chamou Salvador",
+                "displayName": "Chamou Salvador",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Teste",
+                "displayName": "Teste",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Telefone + Data Inicio",
+                "displayName": "Telefone + Data Inicio",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "491a7f12-2868-47b0-a527-df87df67accb",
+        "name": "Adicionar Registro Planilha",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.4,
+        "position": [
+          860,
+          360
+        ],
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "4HoAG3ZVDyUYbTpj",
+            "name": "Joao Lucas - Sheets"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "1vf-xSdkfWBuPu9fPTXUkUneOwkIem-OuXp9gEMaRK24",
+            "mode": "list",
+            "cachedResultName": "Atendimentos Socorro - Blips iA",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vf-xSdkfWBuPu9fPTXUkUneOwkIem-OuXp9gEMaRK24/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Página1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vf-xSdkfWBuPu9fPTXUkUneOwkIem-OuXp9gEMaRK24/edit#gid=0"
+          },
+          "filtersUI": {
+            "values": [
+              {
+                "lookupColumn": "Telefone + Data Inicio",
+                "lookupValue": "={{ $json['Telefone + Data Inicio'] }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "e88ab834-882e-4169-94e1-0beece940d90",
+        "name": "Google Sheets",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.4,
+        "position": [
+          1080,
+          360
+        ],
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "4HoAG3ZVDyUYbTpj",
+            "name": "Joao Lucas - Sheets"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "insere-planilha-socoroo",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "id": "7f84cba7-26a6-4501-b1b0-0f55d566e1c4",
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          640,
+          360
+        ],
+        "webhookId": "8c701fe6-8ac9-4435-bb00-15d0c5dca5b6"
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "={\n  \"row_number\": {{ $json.row_number }}\n} ",
+          "options": {}
+        },
+        "id": "ceafc1f7-77fe-41aa-9818-bcbfae4d1773",
+        "name": "Devolve row number",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          1300,
+          360
+        ]
+      }
+    ],
+    "connections": {
+      "Adicionar Registro Planilha": {
+        "main": [
+          [
+            {
+              "node": "Google Sheets",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Adicionar Registro Planilha",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Sheets": {
+        "main": [
+          [
+            {
+              "node": "Devolve row number",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "America/Sao_Paulo",
+      "saveManualExecutions": true,
+      "callerPolicy": "workflowsFromSameOwner"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "466d9666-9635-4dad-8e30-ae4c3b8bb303",
+    "triggerCount": 1,
+    "tags": []
+  }
+}
