@@ -1,0 +1,1480 @@
+{
+  "data": {
+    "createdAt": "2025-01-20T23:35:05.992Z",
+    "updatedAt": "2025-03-07T17:57:47.563Z",
+    "id": "5EOWGZtdS3OQeSUG",
+    "name": "RD Blips API",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "0a6eaac3-f5b2-4a13-b4b2-418cfaa082fc",
+        "name": "lead",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "62fbb523-704d-4986-92a9-87fb0d5fa4fa",
+                "name": "func",
+                "value": "format_blips_score",
+                "type": "string"
+              },
+              {
+                "id": "e4f3fb2b-ab65-4e10-a95c-6cf9441ba4b4",
+                "name": "QueryBlips_score",
+                "value": "={{ $json.catalogo_de_variaveis.QueryBlips_score.output_payload }}",
+                "type": "object"
+              },
+              {
+                "id": "bd5ca322-fb25-4215-af5d-3f6c6c2c55d6",
+                "name": "api",
+                "value": "Blips",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "b23da73a-5172-49f5-bfb8-104e00959f2c",
+        "name": "format_blips_score_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1160,
+          140
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "wF0SkgkLunwtcUYi",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "id": "9a013d9b-c2f1-4b0b-8cbe-15eb7f01b404",
+        "name": "Blips Score Locação",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          1380,
+          380
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.type }}",
+                      "rightValue": "CPF",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "CPF"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "808b7c24-8835-491a-902c-8119571e2fc0",
+                      "leftValue": "={{ $json.type }}",
+                      "rightValue": "CNPJ",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "CNPJ"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "1bf08bba-7a82-4df7-96e8-de8227fe8bdc",
+        "name": "Pessoa Física ou Jurídica ? Blips",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          280,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.dataset }}",
+                      "rightValue": "score",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "score"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "0f6e1d6f-b041-4822-a704-f06b73655456",
+        "name": "Qual Dataset ? CNPJ",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          620,
+          260
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4f2274bb-066e-4418-9487-49e640478ad5",
+                "name": "blips_score_cnpj",
+                "value": "={{ $json }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "3ec36f6a-81f2-4714-b271-22a08b3fc5cc",
+        "name": "blips_score_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1620,
+          260
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "da8b98c2-7da1-428d-885f-72ed81966103",
+                "name": "vlr_original_total",
+                "value": "={{ $json.vlr_original_total }}",
+                "type": "number"
+              },
+              {
+                "id": "e8fb7b48-1b07-4467-88c1-2c1cbbb7498e",
+                "name": "SEGMENTO",
+                "value": "={{ $json.SEGMENTO }}",
+                "type": "string"
+              },
+              {
+                "id": "f2d698c1-70e2-47e1-947a-b542af2f38b0",
+                "name": "grupo_maquina",
+                "value": "={{ $json.grupo_maquina }}",
+                "type": "string"
+              },
+              {
+                "id": "f656930a-a851-4037-909f-a8353abc3bae",
+                "name": "MODALIDADE",
+                "value": "={{ $json.MODALIDADE }}",
+                "type": "string"
+              },
+              {
+                "id": "39329f52-68bc-41cf-90e4-8be464a457a3",
+                "name": "UF",
+                "value": "={{ $json.UF }}",
+                "type": "string"
+              },
+              {
+                "id": "d26f0a0e-3a8f-4211-858c-001186e5ef9a",
+                "name": "protestovalorcnpj",
+                "value": "={{ $json.protestovalorcnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "2a434d8d-e450-4657-af9f-3b955057cab7",
+                "name": "bacenlimitecnpj",
+                "value": "={{ $json.bacenlimitecnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "f846bb4e-057f-437a-b4c7-f05f950eb9f1",
+                "name": "bacenprejcnpj",
+                "value": "={{ $json.bacenprejcnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "97aba74c-161f-44ea-915a-da57b0139bf7",
+                "name": "bacenvencidocnpj",
+                "value": "={{ $json.bacenvencidocnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "fc3d78d6-f944-444e-911b-6dd1ff94f1ef",
+                "name": "bacenutlcnpj",
+                "value": "={{ $json.bacenutlcnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "56e7da5f-b6a5-43d0-91f3-b8a8d245184d",
+                "name": "chqqtdcnpj",
+                "value": "={{ $json.chqqtdcnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "7034b7e4-e73a-4e77-8052-002729ba69b3",
+                "name": "refinValorCnpj",
+                "value": "={{ $json.refinValorCnpj }}",
+                "type": "number"
+              },
+              {
+                "id": "130db906-996e-4842-8f95-c9e423ba4bd6",
+                "name": "cnae_fiscal_principal",
+                "value": "={{ $json.cnae_fiscal_principal }}",
+                "type": "string"
+              },
+              {
+                "id": "8d2db674-5285-4045-aded-94f22998cb4e",
+                "name": "Idade_Empresa",
+                "value": "={{ $json.Idade_Empresa }}",
+                "type": "number"
+              },
+              {
+                "id": "0a2793b8-28df-4f20-b64e-29c091168e83",
+                "name": "porte_empresa",
+                "value": "={{ $json.porte_empresa }}",
+                "type": "number"
+              },
+              {
+                "id": "fdb55f3f-5720-4ad7-bb23-e66e43a08da9",
+                "name": "qualificacao_responsavel",
+                "value": "={{ $json.qualificacao_responsavel }}",
+                "type": "number"
+              },
+              {
+                "id": "caa0221b-52f9-4cb4-b065-7987b3ae2932",
+                "name": "type",
+                "value": "CNPJ",
+                "type": "string"
+              },
+              {
+                "id": "7f38c9bd-8a5b-4381-9ffc-ffe9ce9a4c8d",
+                "name": "dataset",
+                "value": "score",
+                "type": "string"
+              },
+              {
+                "id": "706a0743-a614-4de7-b01d-212291fe5d62",
+                "name": "doc",
+                "value": "={{ $('lead').item.json.doc }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "96cb3937-7c88-48b4-b37c-04dae345ca9e",
+        "name": "set_blips_score_locacao",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1160,
+          380
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "IpUkbgfrYtfnK0as",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "id": "eea19e58-ce1d-4254-b4cf-80220d26e158",
+        "name": "Utils Blips Score",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          1380,
+          140
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('lead').first().json.catalogo_de_variaveis.QueryBlips_score }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "exists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "sim"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "56858dc1-0f9d-41ad-80e8-8173f479e239",
+                      "leftValue": "={{ $('lead').first().json.catalogo_de_variaveis.QueryBlips_score }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "object",
+                        "operation": "notExists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Não"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "decfa7c8-ac90-4275-943c-95b95730c197",
+        "name": "O lead tem Score Blips CNPJ no Catálogo ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          880,
+          260
+        ]
+      }
+    ],
+    "connections": {
+      "lead": {
+        "main": [
+          [
+            {
+              "node": "Pessoa Física ou Jurídica ? Blips",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "format_blips_score_cnpj": {
+        "main": [
+          [
+            {
+              "node": "Utils Blips Score",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Blips Score Locação": {
+        "main": [
+          [
+            {
+              "node": "blips_score_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Pessoa Física ou Jurídica ? Blips": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Qual Dataset ? CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Qual Dataset ? CNPJ": {
+        "main": [
+          [
+            {
+              "node": "O lead tem Score Blips CNPJ no Catálogo ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_blips_score_locacao": {
+        "main": [
+          [
+            {
+              "node": "Blips Score Locação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Utils Blips Score": {
+        "main": [
+          [
+            {
+              "node": "blips_score_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "O lead tem Score Blips CNPJ no Catálogo ?": {
+        "main": [
+          [
+            {
+              "node": "format_blips_score_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "set_blips_score_locacao",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {
+      "lead": [
+        {
+          "json": {
+            "vlr_original_total": 25116,
+            "SEGMENTO": "Sorvete",
+            "grupo_maquina": "Máquina de Sorvete Vuze Artic Vert 38L- Pré Venda",
+            "MODALIDADE": "VENDA",
+            "UF": "SP",
+            "protestovalorcnpj": 0,
+            "bacenlimitecnpj": 0,
+            "bacenprejcnpj": 0,
+            "bacenvencidocnpj": 0,
+            "bacenutlcnpj": 0,
+            "chqqtdcnpj": 0,
+            "refinValorCnpj": 0,
+            "cnae_fiscal_principal": "4712100",
+            "Idade_Empresa": 30,
+            "porte_empresa": 1,
+            "qualificacao_responsavel": 49,
+            "catalogo_de_variaveis": {
+              "QueryBDC_ondemand_sintegra_company": {
+                "date": "2025-01-20T23:24:03",
+                "cpf_cnpj": "00695232000101",
+                "bureau": "QueryBDC",
+                "query": "ondemand_sintegra_company",
+                "input_payload": {
+                  "Datasets": "ondemand_sintegra_company",
+                  "q": "doc{00695232000101}"
+                },
+                "output_payload": {
+                  "ElapsedMilliseconds": 3248,
+                  "Evidences": {},
+                  "QueryDate": "2025-01-20T23:24:00.1896335Z",
+                  "QueryId": "56e1ba4c-339a-4dfe-849f-81d65437275e",
+                  "Result": [
+                    {
+                      "MatchKeys": "doc{00695232000101}",
+                      "OnlineQuery": [
+                        {
+                          "InputParameters": "doc{00695232000101}",
+                          "Origin": "Sintegra",
+                          "QueryDate": "2025-01-20T23:24:00.2429411Z",
+                          "QueryResultData": {
+                            "Address.AddressCore.0": "AVENIDA NOSSA SENHORA DOS NAVEGANTES",
+                            "Address.City.0": "Diadema",
+                            "Address.Complement.0": "829",
+                            "Address.Country.0": null,
+                            "Address.Neighborhood.0": "ELDORADO",
+                            "Address.Number.0": "829",
+                            "Address.State.0": "SP",
+                            "Address.ZipCode.0": "9972260",
+                            "BusinessName": "BELLAS FESTAS",
+                            "Companysize": "Não informado",
+                            "Docnumberstatus": "Sem restrição",
+                            "FoundingDate": "04/09/1995",
+                            "Historic.DocNumber.0": "00.695.232/0001-01",
+                            "Historic.DocNumber.1": "00.695.232/0001-01",
+                            "Historic.DocNumber.2": "00.695.232/0001-01",
+                            "Historic.DocNumber.3": "00.695.232/0001-01",
+                            "Historic.DocNumber.4": "00.695.232/0001-01",
+                            "Historic.DocNumber.5": "00.695.232/0001-01",
+                            "Historic.DocNumberStatus.0": "Sem restrição",
+                            "Historic.DocNumberStatus.1": "Sem restrição",
+                            "Historic.DocNumberStatus.2": "Sem restrição",
+                            "Historic.DocNumberStatus.3": "Sem restrição",
+                            "Historic.DocNumberStatus.4": "Sem restrição",
+                            "Historic.DocNumberStatus.5": "Sem restrição",
+                            "Historic.ICMSRule.0": "Simples Nacional",
+                            "Historic.ICMSRule.1": "Simples Nacional",
+                            "Historic.ICMSRule.2": "Simples Nacional",
+                            "Historic.ICMSRule.3": "Simples Nacional",
+                            "Historic.ICMSRule.4": "Simples Nacional",
+                            "Historic.ICMSRule.5": "Não informado",
+                            "Historic.Nsu.0": "122940661",
+                            "Historic.Nsu.1": "122701777",
+                            "Historic.Nsu.2": "95972855",
+                            "Historic.Nsu.3": "87980053",
+                            "Historic.Nsu.4": "53542918",
+                            "Historic.Nsu.5": "1783632",
+                            "Historic.Reason.0": "Alteração",
+                            "Historic.Reason.1": "Alteração",
+                            "Historic.Reason.2": "Alteração",
+                            "Historic.Reason.3": "Alteração",
+                            "Historic.Reason.4": "Alteração",
+                            "Historic.Reason.5": "Inclusão",
+                            "Historic.State.0": "SP - 35",
+                            "Historic.State.1": "SP - 35",
+                            "Historic.State.2": "SP - 35",
+                            "Historic.State.3": "SP - 35",
+                            "Historic.State.4": "SP - 35",
+                            "Historic.State.5": "SP - 35",
+                            "Historic.StateRegistrationNumber.0": "286131884110",
+                            "Historic.StateRegistrationNumber.1": "286131884110",
+                            "Historic.StateRegistrationNumber.2": "286131884110",
+                            "Historic.StateRegistrationNumber.3": "286131884110",
+                            "Historic.StateRegistrationNumber.4": "286131884110",
+                            "Historic.StateRegistrationNumber.5": "286131884110",
+                            "Historic.StateRegistrationStatus.0": "Habilitado",
+                            "Historic.StateRegistrationStatus.1": "Habilitado",
+                            "Historic.StateRegistrationStatus.2": "Habilitado",
+                            "Historic.StateRegistrationStatus.3": "Habilitado",
+                            "Historic.StateRegistrationStatus.4": "Habilitado",
+                            "Historic.StateRegistrationStatus.5": "Habilitado",
+                            "Historic.StatusDate.0": "04/09/1995",
+                            "Historic.StatusDate.1": "04/09/1995",
+                            "Historic.StatusDate.2": "04/09/1995",
+                            "Historic.StatusDate.3": "04/09/1995",
+                            "Historic.StatusDate.4": "04/09/1995",
+                            "Historic.StatusDate.5": "01/01/0001",
+                            "Historic.UpdateDate.0": "01/10/2020",
+                            "Historic.UpdateDate.1": "22/09/2020",
+                            "Historic.UpdateDate.2": "06/03/2019",
+                            "Historic.UpdateDate.3": "04/10/2018",
+                            "Historic.UpdateDate.4": "29/05/2017",
+                            "Historic.UpdateDate.5": "18/10/2012",
+                            "IdNumber": "00695232000101",
+                            "Maincnae": "4712100",
+                            "OfficialName": "MEDEIROS FESTAS E DOCES LTDA",
+                            "Presumedcredit": "Não informado",
+                            "Producertype": "Não",
+                            "RawResultFileType_MEDEIROS FESTAS E DOCES LTDA": "html",
+                            "RawResultFile_MEDEIROS FESTAS E DOCES LTDA": "https://s3.amazonaws.com/BigDataCorp/BigBoost/RawResults/On_Demand/56e1ba4c-339a-4dfe-849f-81d65437275e_ondemand_sintegra_company_20250120.html",
+                            "State": "SP (CCC)",
+                            "StateRegistration": "286131884110",
+                            "StateRegistrationEntry.SP.Number": "286131884110",
+                            "StateRegistrationEntry.SP.Status": "Habilitado",
+                            "StateRegistrationEntry.SP.Type": "IE Normal",
+                            "Stateregistrationinformationasrecipient": "Obrigatória",
+                            "Stateregistrationtype": "IE Normal",
+                            "StatesData.AddressState.0": "SP",
+                            "StatesData.DocNumber.0": "00.695.232/0001-01",
+                            "StatesData.DocNumberStatus.0": "Sem restrição",
+                            "StatesData.StateOfRegistration.0": "SP - 35",
+                            "StatesData.StateRegistrationNumber.0": "286131884110",
+                            "StatesData.StateRegistrationStatus.0": "Habilitado",
+                            "StatesData.StateRegistrationType.0": "IE Normal",
+                            "Status": "Habilitado",
+                            "Statusdate": "04/09/1995",
+                            "Tributationregime": "Simples Nacional"
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "Status": {
+                    "ondemand_sintegra_company": [
+                      {
+                        "Code": 0,
+                        "Message": "OK"
+                      }
+                    ]
+                  }
+                }
+              },
+              "QueryBDC_basic_data": {
+                "date": "2025-01-20T23:23:58",
+                "cpf_cnpj": "00695232000101",
+                "bureau": "QueryBDC",
+                "query": "basic_data",
+                "input_payload": {
+                  "Datasets": "basic_data",
+                  "q": "doc{00695232000101}"
+                },
+                "output_payload": {
+                  "ElapsedMilliseconds": 54,
+                  "Evidences": {},
+                  "QueryDate": "2025-01-20T23:23:58.4829058Z",
+                  "QueryId": "663c070a-0671-42a1-b3c0-39329947a83d",
+                  "Result": [
+                    {
+                      "BasicData": {
+                        "Activities": [
+                          {
+                            "Activity": "COMERCIO VAREJISTA DE MERCADORIAS EM GERAL, COM PREDOMINANCIA DE PRODUTOS ALIMENTICIOS - MINIMERCADOS, MERCEARIAS E ARMAZENS",
+                            "Code": "4712100",
+                            "IsMain": true
+                          },
+                          {
+                            "Activity": "COMERCIO VAREJISTA DE DOCES, BALAS, BOMBONS E SEMELHANTES",
+                            "Code": "4721104",
+                            "IsMain": false
+                          },
+                          {
+                            "Activity": "COMERCIO VAREJISTA DE ARTIGOS DE PAPELARIA",
+                            "Code": "4761003",
+                            "IsMain": false
+                          },
+                          {
+                            "Activity": "COMERCIO VAREJISTA DE OUTROS PRODUTOS NAO ESPECIFICADOS ANTERIORMENTE",
+                            "Code": "4789099",
+                            "IsMain": false
+                          }
+                        ],
+                        "AdditionalOutputData": {
+                          "COMEX": "PESSOA NAO HABILITADA A OPERAR NO COMERCIO EXTERIOR",
+                          "COMEXLastUpdate": "2020-10-11T12:00:00Z",
+                          "Capital": "VINTE MIL REAIS",
+                          "CapitalRS": "20000.00",
+                          "NIRE": "",
+                          "NIRECompanySize": "",
+                          "NIREHeadquartersCapital": "0",
+                          "NIREHeadquartersType": "",
+                          "NIRELastCaptureDate": "0001-01-01T12:00:00Z"
+                        },
+                        "Age": 29,
+                        "Aliases": {
+                          "UnstandardizedRFOfficialName": "MEDEIROS FESTAS E DOCES LTDA",
+                          "UnstandardizedRFTradeName": "BELLAS FESTAS"
+                        },
+                        "AlternativeIdNumbers": {
+                          "StateRegistration-SP": "286131884110"
+                        },
+                        "CompanyType_ReceitaFederal": "ME",
+                        "CreationDate": "2012-05-08T00:00:00Z",
+                        "FoundedDate": "1995-07-10T00:00:00Z",
+                        "HeadquarterState": "SP",
+                        "HistoricalData": {
+                          "HasChangedTaxRegime": false,
+                          "HasChangedTradeName": true,
+                          "HistoricalDataEvolution": {
+                            "TaxRegime": [
+                              {
+                                "StartDate": "2012-05-08T00:00:00Z",
+                                "Value": "SIMPLES"
+                              }
+                            ],
+                            "TradeName": [
+                              {
+                                "StartDate": "2020-10-01T00:00:00Z",
+                                "Value": "BELLAS FESTAS"
+                              },
+                              {
+                                "EndDate": "2020-10-01T00:00:00Z",
+                                "StartDate": "2012-05-08T00:00:00Z",
+                                "Value": ""
+                              }
+                            ]
+                          }
+                        },
+                        "IsConglomerate": false,
+                        "IsHeadquarter": true,
+                        "LastUpdateDate": "2025-01-11T00:00:00Z",
+                        "LegalNature": {
+                          "Activity": "SOCIEDADE EMPRESARIA LIMITADA",
+                          "Code": "2062"
+                        },
+                        "NameUniquenessScore": 1,
+                        "OfficialName": "MEDEIROS FESTAS E DOCES LTDA",
+                        "OfficialNameUniquenessScore": 1,
+                        "SpecialSituation": "",
+                        "TaxIdCountry": "Brazil",
+                        "TaxIdNumber": "00695232000101",
+                        "TaxIdOrigin": "Receita Federal",
+                        "TaxIdStatus": "ATIVA",
+                        "TaxIdStatusDate": "2025-01-11T00:00:00Z",
+                        "TaxIdStatusRegistrationDate": "2004-05-08T00:00:00Z",
+                        "TaxRegime": "SIMPLES",
+                        "TaxRegimes": {
+                          "Simples": true
+                        },
+                        "TradeName": "BELLAS FESTAS",
+                        "TradeNameUniquenessScore": 0.0625
+                      },
+                      "MatchKeys": "doc{00695232000101}"
+                    }
+                  ],
+                  "Status": {
+                    "basic_data": [
+                      {
+                        "Code": 0,
+                        "Message": "OK"
+                      }
+                    ]
+                  }
+                }
+              },
+              "QueryBDC_relationships.filter(relatedentitytaxidtype=cpf)": {
+                "date": "2025-01-20T23:23:56",
+                "cpf_cnpj": "00695232000101",
+                "bureau": "QueryBDC",
+                "query": "relationships.filter(relatedentitytaxidtype=cpf)",
+                "input_payload": {
+                  "Datasets": "relationships.filter(relatedentitytaxidtype=cpf)",
+                  "q": "doc{00695232000101}"
+                },
+                "output_payload": {
+                  "ElapsedMilliseconds": 73,
+                  "Evidences": {},
+                  "QueryDate": "2025-01-20T23:23:56.5067803Z",
+                  "QueryId": "df2bd4ce-8a78-4b5e-a521-8b89b845b79a",
+                  "Result": [
+                    {
+                      "MatchKeys": "doc{00695232000101}",
+                      "Relationships": {
+                        "CurrentRelationships": [
+                          {
+                            "CreationDate": "2020-09-27T00:00:00Z",
+                            "LastUpdateDate": "2025-01-11T00:00:00Z",
+                            "RelatedEntityName": "REGINA CELIA ALVES MEDEIROS",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "13150343879",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "RECEITA FEDERAL",
+                            "RelationshipEndDate": "9999-12-31T23:59:59.9999999",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "SOCIO-ADMINISTRADOR",
+                            "RelationshipStartDate": "2020-09-22T00:00:00Z",
+                            "RelationshipType": "QSA"
+                          },
+                          {
+                            "CreationDate": "2020-09-27T00:00:00Z",
+                            "LastUpdateDate": "2025-01-11T00:00:00Z",
+                            "RelatedEntityName": "DOUGLAS GUEDES ALVES MEDEIROS",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "40268769850",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "RECEITA FEDERAL",
+                            "RelationshipEndDate": "9999-12-31T23:59:59.9999999",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "SOCIO-ADMINISTRADOR",
+                            "RelationshipStartDate": "2020-09-22T00:00:00Z",
+                            "RelationshipType": "QSA"
+                          },
+                          {
+                            "CreationDate": "2023-05-24T00:00:00Z",
+                            "LastUpdateDate": "2023-05-24T00:00:00Z",
+                            "RelatedEntityName": "REGINA CELIA ALVES MEDEIROS",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "13150343879",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "RECEITA FEDERAL",
+                            "RelationshipEndDate": "9999-12-31T23:59:59.9999999",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "",
+                            "RelationshipStartDate": "2023-05-24T00:00:00Z",
+                            "RelationshipType": "REPRESENTANTELEGAL"
+                          },
+                          {
+                            "CreationDate": "2022-04-26T00:00:00Z",
+                            "LastUpdateDate": "2022-08-22T00:00:00Z",
+                            "RelatedEntityName": "JESSICA CAMPOS VIEIRA",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "23571531809",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "MTE",
+                            "RelationshipEndDate": "9999-12-31T23:59:59.9999999",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "",
+                            "RelationshipStartDate": "2019-03-08T00:00:00Z",
+                            "RelationshipType": "Employee"
+                          },
+                          {
+                            "CreationDate": "2022-09-05T00:00:00Z",
+                            "LastUpdateDate": "2022-09-05T00:00:00Z",
+                            "RelatedEntityName": "VANESSA SANTOS DE OLIVEIRA",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "38947449873",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "MTE",
+                            "RelationshipEndDate": "9999-12-31T23:59:59.9999999",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "",
+                            "RelationshipStartDate": "2020-03-25T00:00:00Z",
+                            "RelationshipType": "Employee"
+                          },
+                          {
+                            "CreationDate": "2021-08-31T00:00:00Z",
+                            "LastUpdateDate": "2022-08-23T00:00:00Z",
+                            "RelatedEntityName": "ANA PAULA SILVA",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "42764950837",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "MTE",
+                            "RelationshipEndDate": "9999-12-31T23:59:59.9999999",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "",
+                            "RelationshipStartDate": "2020-03-25T00:00:00Z",
+                            "RelationshipType": "Employee"
+                          },
+                          {
+                            "CreationDate": "2022-08-31T00:00:00Z",
+                            "LastUpdateDate": "2022-08-31T00:00:00Z",
+                            "RelatedEntityName": "SUELLEN BRENDA MARTINS",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "49274345836",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "MTE",
+                            "RelationshipEndDate": "9999-12-31T23:59:59.9999999",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "",
+                            "RelationshipStartDate": "2020-04-07T00:00:00Z",
+                            "RelationshipType": "Employee"
+                          }
+                        ],
+                        "HistoricalRelationships": [
+                          {
+                            "CreationDate": "2017-01-01T00:00:00Z",
+                            "LastUpdateDate": "2020-08-24T00:00:00Z",
+                            "RelatedEntityName": "JOAO RODRIGUES TORRES",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "00361890818",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "RECEITA FEDERAL",
+                            "RelationshipEndDate": "2020-08-24T00:00:00Z",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "SOCIO-ADMINISTRADOR",
+                            "RelationshipStartDate": "2017-01-01T00:00:00Z",
+                            "RelationshipType": "QSA"
+                          },
+                          {
+                            "CreationDate": "2017-01-01T00:00:00Z",
+                            "LastUpdateDate": "2020-08-24T00:00:00Z",
+                            "RelatedEntityName": "MARIA APARECIDA VILAS BOAS TORRES",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "06096200885",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "RECEITA FEDERAL",
+                            "RelationshipEndDate": "2020-08-24T00:00:00Z",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "SOCIO-ADMINISTRADOR",
+                            "RelationshipStartDate": "2017-01-01T00:00:00Z",
+                            "RelationshipType": "QSA"
+                          },
+                          {
+                            "CreationDate": "2019-07-01T00:00:00Z",
+                            "LastUpdateDate": "2021-10-12T00:00:00Z",
+                            "RelatedEntityName": "IRANI CRISTINA TEIXEIRA DOS REIS",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "13445938873",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "MTE",
+                            "RelationshipEndDate": "2020-09-10T00:00:00Z",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "",
+                            "RelationshipStartDate": "2002-01-14T00:00:00Z",
+                            "RelationshipType": "Employee"
+                          },
+                          {
+                            "CreationDate": "0001-01-01T00:00:00Z",
+                            "LastUpdateDate": "0001-01-01T00:00:00Z",
+                            "RelatedEntityName": "JOICE BATISTA MATOS",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "31329212894",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "MTE",
+                            "RelationshipEndDate": "2008-08-06T00:00:00Z",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "",
+                            "RelationshipStartDate": "2006-05-08T00:00:00Z",
+                            "RelationshipType": "Employee"
+                          },
+                          {
+                            "CreationDate": "2016-07-06T00:00:00Z",
+                            "LastUpdateDate": "2016-07-06T00:00:00Z",
+                            "RelatedEntityName": "ANA PAULA SILVA",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "42764950837",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "MTE",
+                            "RelationshipEndDate": "2014-02-19T00:00:00Z",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "",
+                            "RelationshipStartDate": "2013-06-03T00:00:00Z",
+                            "RelationshipType": "Employee"
+                          },
+                          {
+                            "CreationDate": "2017-07-24T00:00:00Z",
+                            "LastUpdateDate": "2017-07-24T00:00:00Z",
+                            "RelatedEntityName": "ANA PAULA SILVA",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "42764950837",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "MTE",
+                            "RelationshipEndDate": "2016-11-05T00:00:00Z",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "",
+                            "RelationshipStartDate": "2015-09-02T00:00:00Z",
+                            "RelationshipType": "Employee"
+                          },
+                          {
+                            "CreationDate": "2017-07-24T00:00:00Z",
+                            "LastUpdateDate": "2021-02-07T00:00:00Z",
+                            "RelatedEntityName": "ALICE CRISTINA VIEIRA ALVES",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "44938568829",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "MTE",
+                            "RelationshipEndDate": "2019-11-15T00:00:00Z",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "",
+                            "RelationshipStartDate": "2016-11-01T00:00:00Z",
+                            "RelationshipType": "Employee"
+                          },
+                          {
+                            "CreationDate": "2022-09-05T00:00:00Z",
+                            "LastUpdateDate": "2022-09-05T00:00:00Z",
+                            "RelatedEntityName": "BRUNA LEANDRO DA SILVA",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "45607096882",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "MTE",
+                            "RelationshipEndDate": "2021-08-16T00:00:00Z",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "",
+                            "RelationshipStartDate": "2021-05-19T00:00:00Z",
+                            "RelationshipType": "Employee"
+                          }
+                        ],
+                        "IsFamilyCompany": false,
+                        "IsFamilyOperated": false,
+                        "Relationships": [
+                          {
+                            "CreationDate": "2017-01-01T00:00:00Z",
+                            "LastUpdateDate": "2020-08-24T00:00:00Z",
+                            "RelatedEntityName": "JOAO RODRIGUES TORRES",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "00361890818",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "RECEITA FEDERAL",
+                            "RelationshipEndDate": "2020-08-24T00:00:00Z",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "SOCIO-ADMINISTRADOR",
+                            "RelationshipStartDate": "2017-01-01T00:00:00Z",
+                            "RelationshipType": "QSA"
+                          },
+                          {
+                            "CreationDate": "2017-01-01T00:00:00Z",
+                            "LastUpdateDate": "2020-08-24T00:00:00Z",
+                            "RelatedEntityName": "MARIA APARECIDA VILAS BOAS TORRES",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "06096200885",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "RECEITA FEDERAL",
+                            "RelationshipEndDate": "2020-08-24T00:00:00Z",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "SOCIO-ADMINISTRADOR",
+                            "RelationshipStartDate": "2017-01-01T00:00:00Z",
+                            "RelationshipType": "QSA"
+                          },
+                          {
+                            "CreationDate": "2020-09-27T00:00:00Z",
+                            "LastUpdateDate": "2025-01-11T00:00:00Z",
+                            "RelatedEntityName": "REGINA CELIA ALVES MEDEIROS",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "13150343879",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "RECEITA FEDERAL",
+                            "RelationshipEndDate": "9999-12-31T23:59:59.9999999",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "SOCIO-ADMINISTRADOR",
+                            "RelationshipStartDate": "2020-09-22T00:00:00Z",
+                            "RelationshipType": "QSA"
+                          },
+                          {
+                            "CreationDate": "2020-09-27T00:00:00Z",
+                            "LastUpdateDate": "2025-01-11T00:00:00Z",
+                            "RelatedEntityName": "DOUGLAS GUEDES ALVES MEDEIROS",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "40268769850",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "RECEITA FEDERAL",
+                            "RelationshipEndDate": "9999-12-31T23:59:59.9999999",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "SOCIO-ADMINISTRADOR",
+                            "RelationshipStartDate": "2020-09-22T00:00:00Z",
+                            "RelationshipType": "QSA"
+                          },
+                          {
+                            "CreationDate": "2023-05-24T00:00:00Z",
+                            "LastUpdateDate": "2023-05-24T00:00:00Z",
+                            "RelatedEntityName": "REGINA CELIA ALVES MEDEIROS",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "13150343879",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "RECEITA FEDERAL",
+                            "RelationshipEndDate": "9999-12-31T23:59:59.9999999",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "",
+                            "RelationshipStartDate": "2023-05-24T00:00:00Z",
+                            "RelationshipType": "REPRESENTANTELEGAL"
+                          },
+                          {
+                            "CreationDate": "2019-07-01T00:00:00Z",
+                            "LastUpdateDate": "2021-10-12T00:00:00Z",
+                            "RelatedEntityName": "IRANI CRISTINA TEIXEIRA DOS REIS",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "13445938873",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "MTE",
+                            "RelationshipEndDate": "2020-09-10T00:00:00Z",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "",
+                            "RelationshipStartDate": "2002-01-14T00:00:00Z",
+                            "RelationshipType": "Employee"
+                          },
+                          {
+                            "CreationDate": "0001-01-01T00:00:00Z",
+                            "LastUpdateDate": "0001-01-01T00:00:00Z",
+                            "RelatedEntityName": "JOICE BATISTA MATOS",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "31329212894",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "MTE",
+                            "RelationshipEndDate": "2008-08-06T00:00:00Z",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "",
+                            "RelationshipStartDate": "2006-05-08T00:00:00Z",
+                            "RelationshipType": "Employee"
+                          },
+                          {
+                            "CreationDate": "2016-07-06T00:00:00Z",
+                            "LastUpdateDate": "2016-07-06T00:00:00Z",
+                            "RelatedEntityName": "ANA PAULA SILVA",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "42764950837",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "MTE",
+                            "RelationshipEndDate": "2014-02-19T00:00:00Z",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "",
+                            "RelationshipStartDate": "2013-06-03T00:00:00Z",
+                            "RelationshipType": "Employee"
+                          },
+                          {
+                            "CreationDate": "2017-07-24T00:00:00Z",
+                            "LastUpdateDate": "2017-07-24T00:00:00Z",
+                            "RelatedEntityName": "ANA PAULA SILVA",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "42764950837",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "MTE",
+                            "RelationshipEndDate": "2016-11-05T00:00:00Z",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "",
+                            "RelationshipStartDate": "2015-09-02T00:00:00Z",
+                            "RelationshipType": "Employee"
+                          },
+                          {
+                            "CreationDate": "2017-07-24T00:00:00Z",
+                            "LastUpdateDate": "2021-02-07T00:00:00Z",
+                            "RelatedEntityName": "ALICE CRISTINA VIEIRA ALVES",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "44938568829",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "MTE",
+                            "RelationshipEndDate": "2019-11-15T00:00:00Z",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "",
+                            "RelationshipStartDate": "2016-11-01T00:00:00Z",
+                            "RelationshipType": "Employee"
+                          },
+                          {
+                            "CreationDate": "2022-04-26T00:00:00Z",
+                            "LastUpdateDate": "2022-08-22T00:00:00Z",
+                            "RelatedEntityName": "JESSICA CAMPOS VIEIRA",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "23571531809",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "MTE",
+                            "RelationshipEndDate": "9999-12-31T23:59:59.9999999",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "",
+                            "RelationshipStartDate": "2019-03-08T00:00:00Z",
+                            "RelationshipType": "Employee"
+                          },
+                          {
+                            "CreationDate": "2022-09-05T00:00:00Z",
+                            "LastUpdateDate": "2022-09-05T00:00:00Z",
+                            "RelatedEntityName": "VANESSA SANTOS DE OLIVEIRA",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "38947449873",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "MTE",
+                            "RelationshipEndDate": "9999-12-31T23:59:59.9999999",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "",
+                            "RelationshipStartDate": "2020-03-25T00:00:00Z",
+                            "RelationshipType": "Employee"
+                          },
+                          {
+                            "CreationDate": "2021-08-31T00:00:00Z",
+                            "LastUpdateDate": "2022-08-23T00:00:00Z",
+                            "RelatedEntityName": "ANA PAULA SILVA",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "42764950837",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "MTE",
+                            "RelationshipEndDate": "9999-12-31T23:59:59.9999999",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "",
+                            "RelationshipStartDate": "2020-03-25T00:00:00Z",
+                            "RelationshipType": "Employee"
+                          },
+                          {
+                            "CreationDate": "2022-08-31T00:00:00Z",
+                            "LastUpdateDate": "2022-08-31T00:00:00Z",
+                            "RelatedEntityName": "SUELLEN BRENDA MARTINS",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "49274345836",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "MTE",
+                            "RelationshipEndDate": "9999-12-31T23:59:59.9999999",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "",
+                            "RelationshipStartDate": "2020-04-07T00:00:00Z",
+                            "RelationshipType": "Employee"
+                          },
+                          {
+                            "CreationDate": "2022-09-05T00:00:00Z",
+                            "LastUpdateDate": "2022-09-05T00:00:00Z",
+                            "RelatedEntityName": "BRUNA LEANDRO DA SILVA",
+                            "RelatedEntityTaxIdCountry": "Brazil",
+                            "RelatedEntityTaxIdNumber": "45607096882",
+                            "RelatedEntityTaxIdType": "CPF",
+                            "RelationshipDataOrigin": "MTE",
+                            "RelationshipEndDate": "2021-08-16T00:00:00Z",
+                            "RelationshipLevel": "Direct",
+                            "RelationshipName": "",
+                            "RelationshipStartDate": "2021-05-19T00:00:00Z",
+                            "RelationshipType": "Employee"
+                          }
+                        ],
+                        "TotalEmployees": 10,
+                        "TotalOwned": 0,
+                        "TotalOwners": 4,
+                        "TotalRelationships": 15
+                      }
+                    }
+                  ],
+                  "Status": {
+                    "relationships": [
+                      {
+                        "Code": 0,
+                        "Message": "OK"
+                      }
+                    ]
+                  }
+                }
+              },
+              "QueryBDC_addresses_extended": {
+                "date": "2025-01-20T23:23:55",
+                "cpf_cnpj": "00695232000101",
+                "bureau": "QueryBDC",
+                "query": "addresses_extended",
+                "input_payload": {
+                  "Datasets": "addresses_extended",
+                  "q": "doc{00695232000101}"
+                },
+                "output_payload": {
+                  "ElapsedMilliseconds": 57,
+                  "Evidences": {},
+                  "QueryDate": "2025-01-20T23:23:55.121563Z",
+                  "QueryId": "9f163160-6436-4949-9e3b-37c2e04fae78",
+                  "Result": [
+                    {
+                      "ExtendedAddresses": {
+                        "Addresses": [
+                          {
+                            "AddressCurrentlyInRFSite": true,
+                            "AddressEntityAge": 1117,
+                            "AddressEntityBadPassages": 0,
+                            "AddressEntityCrawlingPassages": 2,
+                            "AddressEntityMonthAveragePassages": 0.05,
+                            "AddressEntityQueryPassages": -1,
+                            "AddressEntityTotalPassages": 2,
+                            "AddressEntityValidationPassages": 0,
+                            "AddressGlobalAge": 1117,
+                            "AddressGlobalBadPassages": 0,
+                            "AddressGlobalCrawlingPassages": 2,
+                            "AddressGlobalMonthAveragePassages": 0.05,
+                            "AddressGlobalQueryPassages": -1,
+                            "AddressGlobalTotalPassages": 2,
+                            "AddressGlobalValidationPassages": 0,
+                            "AddressMain": "DOS NAVEGANTES",
+                            "AddressNumberOfEntities": 1,
+                            "BuildCode": "E11EA905D7BDB2378B44A7A23A3FE8CC5BA39548AB5FD7690BB7A828DF5BCB23",
+                            "BuildingCode": "E11EA905D7BDB2378B44A7A23A3FE8CC5BA39548AB5FD7690BB7A828DF5BCB23",
+                            "City": "DIADEMA",
+                            "Complement": "",
+                            "ComplementType": "",
+                            "Country": "BRASIL",
+                            "CreationDate": "2021-12-21T00:00:00Z",
+                            "EntityFirstPassageDate": "2021-12-21T00:00:00Z",
+                            "EntityLastPassageDate": "2025-01-11T00:00:00Z",
+                            "GlobalFirstPassageDate": "2021-12-21T00:00:00Z",
+                            "GlobalLastPassageDate": "2025-01-11T00:00:00Z",
+                            "HasOptIn": false,
+                            "HouseholdCode": "E11EA905D7BDB2378B44A7A23A3FE8CC5BA39548AB5FD7690BB7A828DF5BCB23",
+                            "IsActive": true,
+                            "IsIndirectAssociation": false,
+                            "IsLikelyFromAccountant": false,
+                            "IsMainForEntity": true,
+                            "IsMainForOtherEntity": false,
+                            "IsRatified": false,
+                            "IsRecentForEntity": true,
+                            "IsRecentForOtherEntity": true,
+                            "LastUpdateDate": "2025-01-11T00:00:00Z",
+                            "LastValidationDate": "0001-01-01T00:00:00",
+                            "Latitude": -23.7208195,
+                            "Longitude": -46.6199229,
+                            "Neighborhood": "ELDORADO",
+                            "Number": "829",
+                            "OwnHeadquarters": true,
+                            "Priority": 1,
+                            "State": "SP",
+                            "Title": "N S",
+                            "Type": "OFFICIAL REGISTRATION",
+                            "Typology": "AV",
+                            "ZipCode": "09972385"
+                          },
+                          {
+                            "AddressCurrentlyInRFSite": false,
+                            "AddressEntityAge": 1,
+                            "AddressEntityBadPassages": 0,
+                            "AddressEntityCrawlingPassages": 1,
+                            "AddressEntityMonthAveragePassages": 1,
+                            "AddressEntityQueryPassages": -1,
+                            "AddressEntityTotalPassages": 1,
+                            "AddressEntityValidationPassages": 0,
+                            "AddressGlobalAge": 1,
+                            "AddressGlobalBadPassages": 0,
+                            "AddressGlobalCrawlingPassages": 1,
+                            "AddressGlobalMonthAveragePassages": 1,
+                            "AddressGlobalQueryPassages": -1,
+                            "AddressGlobalTotalPassages": 1,
+                            "AddressGlobalValidationPassages": 0,
+                            "AddressMain": "DOS NAVEGANTES",
+                            "AddressNumberOfEntities": 1,
+                            "BuildCode": "4526D8DB707F5E1EAF398EACA4F9C5FBC12A51DA87887BE981BC5C27DE18DD27",
+                            "BuildingCode": "4526D8DB707F5E1EAF398EACA4F9C5FBC12A51DA87887BE981BC5C27DE18DD27",
+                            "City": "DIADEMA",
+                            "Complement": "",
+                            "ComplementType": "",
+                            "Country": "BRASIL",
+                            "CreationDate": "2020-09-27T00:00:00Z",
+                            "EntityFirstPassageDate": "2012-01-01T00:00:00Z",
+                            "EntityLastPassageDate": "2012-01-01T00:00:00Z",
+                            "GlobalFirstPassageDate": "2012-01-01T00:00:00Z",
+                            "GlobalLastPassageDate": "2012-01-01T00:00:00Z",
+                            "HasOptIn": false,
+                            "HouseholdCode": "4526D8DB707F5E1EAF398EACA4F9C5FBC12A51DA87887BE981BC5C27DE18DD27",
+                            "IsActive": false,
+                            "IsIndirectAssociation": false,
+                            "IsLikelyFromAccountant": false,
+                            "IsMainForEntity": false,
+                            "IsMainForOtherEntity": false,
+                            "IsRatified": true,
+                            "IsRecentForEntity": false,
+                            "IsRecentForOtherEntity": false,
+                            "LastUpdateDate": "2023-12-14T00:00:00Z",
+                            "LastValidationDate": "0001-01-01T00:00:00",
+                            "Latitude": -23.7208195,
+                            "Longitude": -46.6199229,
+                            "Neighborhood": "ELDORADO",
+                            "Number": "829",
+                            "OwnHeadquarters": true,
+                            "Priority": 2,
+                            "State": "SP",
+                            "Title": "N S",
+                            "Type": "WORK",
+                            "Typology": "AV",
+                            "ZipCode": "09972260"
+                          },
+                          {
+                            "AddressCurrentlyInRFSite": false,
+                            "AddressEntityAge": 1,
+                            "AddressEntityBadPassages": 0,
+                            "AddressEntityCrawlingPassages": 1,
+                            "AddressEntityMonthAveragePassages": 1,
+                            "AddressEntityQueryPassages": -1,
+                            "AddressEntityTotalPassages": 1,
+                            "AddressEntityValidationPassages": 0,
+                            "AddressGlobalAge": 1,
+                            "AddressGlobalBadPassages": 0,
+                            "AddressGlobalCrawlingPassages": 1,
+                            "AddressGlobalMonthAveragePassages": 1,
+                            "AddressGlobalQueryPassages": -1,
+                            "AddressGlobalTotalPassages": 1,
+                            "AddressGlobalValidationPassages": 0,
+                            "AddressMain": "DOS NAVEGANTES",
+                            "AddressNumberOfEntities": 1,
+                            "BuildCode": "2A08F2AC3D4FBA1B680AFDA2AF30B118E14BEF1056652F01B579C94E6F8360D3",
+                            "BuildingCode": "2A08F2AC3D4FBA1B680AFDA2AF30B118E14BEF1056652F01B579C94E6F8360D3",
+                            "City": "DIADEMA",
+                            "Complement": "829",
+                            "ComplementType": "",
+                            "Country": "BRASIL",
+                            "CreationDate": "2012-01-01T00:00:00Z",
+                            "EntityFirstPassageDate": "2012-01-01T00:00:00Z",
+                            "EntityLastPassageDate": "2012-01-01T00:00:00Z",
+                            "GlobalFirstPassageDate": "2012-01-01T00:00:00Z",
+                            "GlobalLastPassageDate": "2012-01-01T00:00:00Z",
+                            "HasOptIn": false,
+                            "HouseholdCode": "B15359D05EDB6620580898030897537EB5AAD2180399AD41F7AC5593AD4FF236",
+                            "IsActive": false,
+                            "IsIndirectAssociation": false,
+                            "IsLikelyFromAccountant": false,
+                            "IsMainForEntity": false,
+                            "IsMainForOtherEntity": false,
+                            "IsRatified": true,
+                            "IsRecentForEntity": false,
+                            "IsRecentForOtherEntity": false,
+                            "LastUpdateDate": "2020-08-24T00:00:00Z",
+                            "LastValidationDate": "0001-01-01T00:00:00",
+                            "Latitude": -23.72066,
+                            "Longitude": -46.61984,
+                            "Neighborhood": "JD ELDORADO",
+                            "Number": "827",
+                            "OwnHeadquarters": false,
+                            "Priority": 3,
+                            "State": "SP",
+                            "Title": "N S",
+                            "Type": "WORK",
+                            "Typology": "AV",
+                            "ZipCode": "09972260"
+                          }
+                        ],
+                        "NewestAddressPassageDate": "2025-01-11T00:00:00Z",
+                        "OldestAddressPassageDate": "2012-01-01T00:00:00Z",
+                        "TotalActiveAddresses": 1,
+                        "TotalAddressPassages": 4,
+                        "TotalAddresses": 3,
+                        "TotalBadAddressPassages": 0,
+                        "TotalPersonalAddresses": 1,
+                        "TotalUniqueAddresses": 3,
+                        "TotalWorkAddresses": 2
+                      },
+                      "MatchKeys": "doc{00695232000101}"
+                    }
+                  ],
+                  "Status": {
+                    "addresses_extended": [
+                      {
+                        "Code": 0,
+                        "Message": "OK"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "type": "CNPJ",
+            "dataset": "score",
+            "doc": "00695232000101"
+          }
+        }
+      ]
+    },
+    "versionId": "e4cd7ce8-63bc-43a6-a650-f85b8e6d1208",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-31T16:22:41.803Z",
+        "updatedAt": "2024-07-31T16:22:41.803Z",
+        "id": "mmaXbyiWhptUXaTd",
+        "name": "New Motor"
+      }
+    ]
+  }
+}
