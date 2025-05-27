@@ -1,0 +1,1031 @@
+{
+  "data": {
+    "createdAt": "2024-12-27T11:11:10.970Z",
+    "updatedAt": "2025-02-21T20:03:39.997Z",
+    "id": "oXuqyVZjrnGmNbrt",
+    "name": "Análise de Documentos",
+    "active": true,
+    "nodes": [
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "484d7125-bfae-46a0-bb4a-9d2f204aa394",
+                "name": "frente_documento",
+                "value": "={{ $('Webhook').first().json.body.form.frente_documento[0] || $json.body.UrlDocFrente || null }}",
+                "type": "object"
+              },
+              {
+                "id": "d344e98a-6f05-481d-b526-6e3c469fcc24",
+                "name": "address",
+                "value": "={{ $('Webhook').first().json.body.form.dados_endereco }}",
+                "type": "object"
+              },
+              {
+                "id": "4e1d7ab2-f450-4013-bfe2-1284e31aea8a",
+                "name": "selfie",
+                "value": "={{ $('Webhook').first().json.body.form.selfie[0] || null }}",
+                "type": "object"
+              },
+              {
+                "id": "8b6d2fb5-5648-48b2-aaa6-9a4bc4cc7d32",
+                "name": "verso_documento",
+                "value": "={{ $('Webhook').first().json.body.form.verso_documento[0] || $json.body.UrlDocVerso || null }}",
+                "type": "object"
+              },
+              {
+                "id": "fa2e1b5a-6f48-4b21-a570-edbccd20202e",
+                "name": "audio",
+                "value": "={{ $('Webhook').first().json.body.audio }}",
+                "type": "string"
+              },
+              {
+                "id": "f2b1d41c-7422-4fab-ab55-28fcbd15987d",
+                "name": "assinatura",
+                "value": "={{ $('Webhook').first().json.body.assinatura }}",
+                "type": "string"
+              },
+              {
+                "id": "14a1f541-9d49-4544-ba37-971f76281445",
+                "name": "contrato",
+                "value": "={{ $('Webhook').first().json.body.contrato }}",
+                "type": "string"
+              },
+              {
+                "id": "1d22ed45-9ef9-43e8-b502-d5b49d5efab7",
+                "name": "item_id",
+                "value": "={{ $('Webhook').first().json.body.item_id }}",
+                "type": "string"
+              },
+              {
+                "id": "33a5f457-ff7c-4099-bea5-5abcfb4dd9aa",
+                "name": "token",
+                "value": "={{ $json.accessToken }}",
+                "type": "string"
+              },
+              {
+                "id": "5d5ec0a4-6845-4f3f-88d2-dc1f7fa3d042",
+                "name": "recoleta",
+                "value": "={{ $('Webhook').first().json.body.recoleta }}",
+                "type": "boolean"
+              },
+              {
+                "id": "fccd648d-e06c-44b7-a447-30dfd6f1dae9",
+                "name": "card_onboarding",
+                "value": "={{ $('Webhook').first().json.body.card_onboarding }}",
+                "type": "string"
+              },
+              {
+                "id": "876d4896-a2ee-459e-ae36-552eec6af5a1",
+                "name": "comprovante",
+                "value": "={{ $('Webhook').first().json.body.form.comprovante_endereco[0] }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "655108af-a3aa-469c-b89a-093ed4318276",
+        "name": "Input",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          0,
+          2000
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "a5924d61-26a9-43d5-9b7a-80b9ff5ac3a6",
+                "name": "address",
+                "value": "={{ $json.address }}",
+                "type": "object"
+              },
+              {
+                "id": "e0b0706e-0dfd-445a-a4da-5e93d38f8603",
+                "name": "contrato",
+                "value": "={{ $json.contrato }}",
+                "type": "string"
+              },
+              {
+                "id": "f19c51cf-38f8-4c4e-bd40-2818a13e5d21",
+                "name": "comprovante",
+                "value": "={{ $json.comprovante }}",
+                "type": "object"
+              },
+              {
+                "id": "91fab428-212a-410a-a704-201f85ac929b",
+                "name": "nome_responsavel",
+                "value": "Marcos Filipe Alves Vieira",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "453934e8-3345-40bc-af3f-a05ccb6ad009",
+        "name": "Comprovante Endereço - Responsável",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          200,
+          2000
+        ]
+      },
+      {
+        "parameters": {
+          "method": "PATCH",
+          "url": "=https://blips-backend-staging-25jdzzxqga-uc.a.run.app/v2/negotiation/{{ $('Input').first().json.contrato }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{ $('Input').first().json.token }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"phase\": {\n    \"name\": \"CHECKLIST\",\n    \"status\": \"IN_REGISTER\"\n  },\n  \"historicalItem\": {\n    \"type\": \"CHANGE_PHASE\",\n    \"description\": \"Alterando fase da negociação. justificativa: {{ $json.justificativa.replaceAll('\\n', '\\\\n') }}\",\n    \"justification\": \"{{ $json.justificativa.replaceAll('\\n', '\\\\n') }}\"\n  }\n}",
+          "options": {}
+        },
+        "id": "4899b4ad-79d4-4013-bcfe-bd8e53291271",
+        "name": "Fase - Checklist",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1600,
+          1940
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "aadcb025-03a3-4704-946f-2f2962b78bd9",
+                "leftValue": "={{ $('Analise Resultados').first().json.validacaoFinal }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "1f52c433-352f-41b9-b445-70ad565a0b51",
+        "name": "Aprovado?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          1400,
+          2220
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "3xmF6UV839aRoP4w",
+            "mode": "list",
+            "cachedResultName": "Analise de Documentos - Face Match"
+          },
+          "options": {}
+        },
+        "id": "14e0c4fe-970a-42e3-b604-45b2a3341a3e",
+        "name": "Face Match",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          400,
+          2180
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "LDaxsn4S9Xx0NuM6",
+            "mode": "list",
+            "cachedResultName": "Analise de Documentos - Endereço Pessoa Física"
+          },
+          "options": {}
+        },
+        "id": "b4324df7-d691-4bbe-949f-efc37f65df99",
+        "name": "Endereço - Responsável",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          400,
+          2000
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "SHEEYiaaLupegow2",
+            "mode": "list",
+            "cachedResultName": "Analise de Documentos - Identificação"
+          },
+          "options": {}
+        },
+        "id": "5e44df9b-8d41-4733-bcb9-efd7a5c3c5ae",
+        "name": "Identificação",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          400,
+          1820
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "0c3f3fd3-a024-417c-94bc-944d2621557d",
+                "name": "Identificacao",
+                "value": "={{ $('Identificação').first().json }}",
+                "type": "object"
+              },
+              {
+                "id": "b936e6f1-5cf4-4568-9b8c-9fa6b9de169c",
+                "name": "EnderecoEmpresa",
+                "value": "={{ $('Endereço - Empresa').first().json }}",
+                "type": "object"
+              },
+              {
+                "id": "3126174c-a5e4-471e-85cc-824503de1d9a",
+                "name": "EnderecoResponsavel",
+                "value": "={{ $('Endereço - Responsável').first().json }}",
+                "type": "object"
+              },
+              {
+                "id": "98d538f3-2300-43f6-bf51-98498febe428",
+                "name": "FaceMatch",
+                "value": "={{ $('Face Match').first().json }}",
+                "type": "object"
+              },
+              {
+                "id": "db8efba9-dcdc-4645-ad9f-912f93b72d2c",
+                "name": "Plataforma",
+                "value": "={{ $('Endpoints Plataforma').first().json.resultado.Resultado }}",
+                "type": "boolean"
+              },
+              {
+                "id": "c0541168-9642-49b9-8c40-49f6d777f5fe",
+                "name": "Similarity",
+                "value": "={{ $('Endpoints Plataforma').first().json.resultado.Assinatura ? $('Endpoints Plataforma').first().json.similarity : -1 }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "313071b9-7574-4c27-ac8e-0ebc953fab92",
+        "name": "Resultados",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          800,
+          2360
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "8d734e8c-3af8-4c15-b5cc-6b68ee1bd214",
+                "name": "frente",
+                "value": "={{ $json.frente_documento }}",
+                "type": "object"
+              },
+              {
+                "id": "73683f34-b069-4d5a-8757-e30b56961327",
+                "name": "contrato",
+                "value": "={{ $json.contrato }}",
+                "type": "string"
+              },
+              {
+                "id": "e381e3fe-c608-41bf-8b87-76f30cf8b3e6",
+                "name": "verso",
+                "value": "={{ $json.verso_documento }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "63edda62-f8ea-49f5-a939-45ea7e2d4633",
+        "name": "Documentos de Identificação",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          200,
+          1820
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "e78a12a6-5076-42d3-b40b-0ae2da6cc0af",
+                "name": "Selfie",
+                "value": "={{ $json.selfie }}",
+                "type": "object"
+              },
+              {
+                "id": "483cefc2-3c0a-4aa2-8b01-4f85347fb00f",
+                "name": "Frente",
+                "value": "={{ $json.frente_documento || $json.UrlDocFrente }}",
+                "type": "object"
+              },
+              {
+                "id": "a476fa0c-ac24-4472-9d17-b35c4534fafe",
+                "name": "Verso",
+                "value": "={{ $json.verso_documento || $json.UrlDocVerso }}",
+                "type": "object"
+              },
+              {
+                "id": "89a77409-ef4e-4201-8616-2e4f3f27a964",
+                "name": "foto",
+                "value": "={{ $('Identificação').first().json.foto }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d015217d-fd52-45d6-9433-6cbe943a4c2d",
+        "name": "Selfie + Documentos",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          200,
+          2180
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "93ebe6f7-091b-4b4a-b04d-1647992f48dc",
+                "leftValue": "={{ $('Resultados').first().json.Plataforma }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "1ae58c19-bd0a-420c-ad90-6a51a9f5f83d",
+        "name": "Plataforma deu certo?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          1200,
+          2360
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "h7rtIL2IkJiuA4Wa",
+            "mode": "list",
+            "cachedResultName": "Endpoints Plataforma"
+          },
+          "options": {}
+        },
+        "id": "489f03f2-c2c0-4a3a-98d0-b9fa0522913e",
+        "name": "Endpoints Plataforma",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          400,
+          2360
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const inputItem = $input.first().json\n\nconst FrenteDoc = inputItem.Identificacao?.output ?? {}\nconst EnderecoEmp = inputItem.EnderecoEmpresa?.output ?? {}\nconst EnderecoResp = inputItem.EnderecoResponsavel?.output ?? {}\nconst Selfie = inputItem.FaceMatch?.output ?? {}\nconst Assinatura = {\n  Similarity: inputItem.Similarity,\n  justificativa: ''\n}\n\nconst isRecoleta = $('Input').first().json.recoleta === true\n\nfunction checkValue(doc, isRecoleta) {\n  const { resultado, vazio, Similarity } = doc\n\n  if (resultado !== undefined) {\n    if (resultado === true) return true\n    else if (isRecoleta && vazio === true) return true\n    return false\n  } \n  else if (Similarity !== undefined) {\n    return Similarity > 50\n  }\n\n  return false\n}\n\n\nconst nodes = [\n  { nome: 'FrenteDoc', data: FrenteDoc },\n  { nome: 'EnderecoEmp', data: EnderecoEmp },\n  { nome: 'EnderecoResp', data: EnderecoResp },\n  { nome: 'Selfie', data: Selfie },\n  { nome: 'Assinatura', data: Assinatura }\n]\n\nconst results = {}\nfor (const node of nodes) {\n  results[node.nome] = checkValue(node.data, isRecoleta)\n}\n\nconst validacaoFinal = Object.values(results).every(Boolean)\n\nlet justificativa = validacaoFinal\n  ? 'Aprovação automática realizada com sucesso pela Clara.'\n  : 'Reprovação automática pela Clara, necessária análise manual.'\n\nfor (const node of nodes) {\n  const nome = node.nome\n  const ehTrue = results[nome]\n  justificativa += `\\n${nome}: ${ehTrue}`\n  if (!ehTrue) {\n    if (typeof node.data.Similarity !== 'undefined') {\n      justificativa += ' - Similaridade abaixo de 50%'\n    }\n    if (node.data.justificativa) {\n      justificativa += ` - ${node.data.justificativa}`\n    }\n  }\n}\n\nconst saida = {\n  FrenteDoc: results.FrenteDoc,\n  EnderecoEmp: results.EnderecoEmp,\n  EnderecoResp: results.EnderecoResp,\n  Selfie: results.Selfie,\n  Assinatura: results.Assinatura,\n  validacaoFinal,\n  justificativa\n}\n\nreturn saida\n"
+        },
+        "id": "a59e4561-4814-410d-bd70-f4ed299b66de",
+        "name": "Analise Resultados",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1000,
+          2360
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.item.update",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"entityTypeId\": \"1080\",\n  \"id\": \"{{ $('Input').first().json.item_id }}\",\n  \"fields\": \n  {\n    \"stageId\": \"DT1080_89:PREPARATION\"\n  }\n}",
+          "options": {}
+        },
+        "id": "b062ad8f-e29e-4932-a6d4-e44baf8b7712",
+        "name": "Aprovação Bitrix",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1800,
+          1940
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.timeline.comment.add",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"fields\": {\n    \"ENTITY_ID\": \"{{ $('Input').first().json.item_id }}\", \n    \"ENTITY_TYPE\": \"DYNAMIC_1080\", \n    \"COMMENT\": \"Documentação foi Aprovada. Por favor verificar manualmente\"\n  }\n}",
+          "options": {}
+        },
+        "id": "5c4acc38-a62c-4079-b803-8a0c547e817f",
+        "name": "Comentário",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1980,
+          2120
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.item.update",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"entityTypeId\": \"1080\",\n  \"id\": \"{{ $('Input').first().json.item_id }}\",\n  \"fields\": \n  {\n    \"stageId\": \"DT1080_89:PREPARATION\",\n    \"ufCrm59Erro\": true,\n    \"ufCrm59FrenteDocAnalise\": {{ $('Analise Resultados').first().json.FrenteDoc }},\n    \"ufCrm59VersoDocAnalise\": {{ $('Analise Resultados').first().json.FrenteDoc }},\n    \"ufCrm59EndEmpresaAnalise\": {{ $('Analise Resultados').first().json.EnderecoEmp }},\n    \"ufCrm59EndResponAnalise\": {{ $('Analise Resultados').first().json.EnderecoResp }},\n    \"ufCrm59SelfAnalise\": {{ $('Analise Resultados').first().json.Selfie }},\n    \"ufCrm59AudioAnalise\": {{ $('Analise Resultados').first().json.Assinatura }},\n    \"ufCrm59Justificativa\": \"{{ 'Erro ao subir os documentos para a plataforma.\\\\n' +  ($('Analise Resultados').first().json.resultado ? '' : $('Analise Resultados').first().json.justificativa.replaceAll('\\n', '\\\\n')) }}\"\n  }\n}",
+          "options": {}
+        },
+        "id": "a3e3d6bf-d6a0-4522-870e-d4222db235f3",
+        "name": "Aprov Manual - Bitrix",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1600,
+          2500
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.item.update",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"entityTypeId\": \"1080\",\n  \"id\": \"{{ $('Input').first().json.item_id }}\",\n  \"fields\": \n  {\n    \"stageId\": \"DT1080_89:PREPARATION\",\n    \"ufCrm59Erro\": true,\n    \"ufCrm59FrenteDocAnalise\": {{ $('Analise Resultados').first().json.FrenteDoc }},\n    \"ufCrm59VersoDocAnalise\": {{ $('Analise Resultados').first().json.FrenteDoc }},\n    \"ufCrm59EndEmpresaAnalise\": {{ $('Analise Resultados').first().json.EnderecoEmp }},\n    \"ufCrm59EndResponAnalise\": {{ $('Analise Resultados').first().json.EnderecoResp }},\n    \"ufCrm59SelfAnalise\": {{ $('Analise Resultados').first().json.Selfie }},\n    \"ufCrm59AudioAnalise\": {{ $('Analise Resultados').first().json.Assinatura }},\n    \"ufCrm59Justificativa\": \"{{ $('Analise Resultados').first().json.justificativa.replaceAll('\\n', '\\\\n') }}\"\n  }\n}",
+          "options": {}
+        },
+        "id": "fc23c49e-e5c8-4105-8976-1576b3da616d",
+        "name": "Aprov Manual - Bitrix1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1800,
+          2320
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.item.update",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"entityTypeId\": \"1080\",\n  \"id\": \"{{ $('Input').first().json.item_id }}\",\n  \"fields\": \n  {\n    \"stageId\": \"DT1080_89:PREPARATION\",\n    \"ufCrm59Erro\": false,\n    \"ufCrm59FrenteDocAnalise\": {{ $('Analise Resultados').first().json.FrenteDoc }},\n    \"ufCrm59VersoDocAnalise\": {{ $('Analise Resultados').first().json.FrenteDoc }},\n    \"ufCrm59EndEmpresaAnalise\": {{ $('Analise Resultados').first().json.EnderecoEmp }},\n    \"ufCrm59EndResponAnalise\": {{ $('Analise Resultados').first().json.EnderecoResp }},\n    \"ufCrm59SelfAnalise\": {{ $('Analise Resultados').first().json.Selfie }},\n    \"ufCrm59AudioAnalise\": {{ $('Analise Resultados').first().json.Assinatura }},\n    \"ufCrm59Justificativa\": \"Validar Manualmente\\n{{ $('Analise Resultados').first().json.justificativa.replaceAll('\\n', '\\\\n') }}\"\n  }\n}",
+          "options": {}
+        },
+        "id": "63041c8a-3faf-46c1-8d01-0201299f9591",
+        "name": "Aprov Manual - Bitrix2",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1800,
+          2120
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.item.update",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"entityTypeId\": \"1080\",\n  \"id\": \"{{ $('Input').first().json.item_id }}\",\n  \"fields\": \n  {\n    \"ufCrm59FrenteDocEnv\": {{ $json.resultado.FrenteDoc }},\n    \"ufCrm59VersoDocEnv\": {{ $json.resultado.VersoDoc }},\n    \"ufCrm59EndEmpresaEnv\": {{ $json.resultado.EnderecoEmp }},\n    \"ufCrm59EndResponEnv\": {{ $json.resultado.EnderecoResp }},\n    \"ufCrm59SelfEnv\": {{ $json.resultado.Selfie }},\n    \"ufCrm59AudioEnv\": {{ $json.resultado.Assinatura }},\n    \"ufCrm59AudioAnalise\": {{ $json.resultado.Assinatura }},\n    \"ufCrm59UrlDocFrente\": {{ $('Input').first().json.frente_documento.url }},\n    \"ufCrm59UrlDocVerso\": {{ $('Input').first().json.verso_documento.url }}\n  }\n}",
+          "options": {}
+        },
+        "id": "0fa34267-3864-41a4-9773-dcb040418b1d",
+        "name": "Update Bitrix - Status Envios",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          600,
+          2360
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "d11cc2e6-b1b8-4613-b66c-aedc20e694ee",
+        "name": "Execute",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          -200,
+          2180
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "eb178d04-72f0-477a-96c0-7974b1b3000f",
+                "name": "contrato",
+                "value": "={{ $json.contrato }}",
+                "type": "string"
+              },
+              {
+                "id": "d0817433-37b7-4c51-a604-156aeb845a68",
+                "name": "token",
+                "value": "={{ $json.token }}",
+                "type": "string"
+              },
+              {
+                "id": "c86dbff0-9047-4f15-98ee-b49ea0755ddf",
+                "name": "item_id",
+                "value": "={{ $json.item_id }}",
+                "type": "string"
+              },
+              {
+                "id": "5d7b7a48-0f3d-481e-b84c-8eefaa099127",
+                "name": "recoleta",
+                "value": "={{ $json.recoleta }}",
+                "type": "boolean"
+              },
+              {
+                "id": "f5872018-438e-4700-a155-a63098336e7b",
+                "name": "card_onboarding",
+                "value": "={{ $json.card_onboarding }}",
+                "type": "string"
+              },
+              {
+                "id": "ab456556-8e78-45ed-bc7d-33eb5972b062",
+                "name": "Endereço",
+                "value": "={{ $('Comprovante Endereço - Responsável').first().json }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "2007c88c-29cd-4417-9da9-9135719c117a",
+        "name": "Urls + Texto + Contrato + Token + Id + Recoleta",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          200,
+          2360
+        ]
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "iniciar-analise",
+          "options": {}
+        },
+        "id": "7ed6a814-1e71-4957-a485-2d04c56034f5",
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -420,
+          2000
+        ],
+        "webhookId": "48904f71-50c6-4931-b86a-78c79c81f13f"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "97c2b52e-f176-47a4-8bd3-0f4fd9726537",
+                "leftValue": "={{ $json.output.aprovado }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          600,
+          2000
+        ],
+        "id": "34b236c4-81a4-418d-b531-fb5cfddf8825",
+        "name": "Endereço Aprovado?"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "602500cb-0b31-4af6-9f7f-45ffe1edd699",
+                "leftValue": "={{ $('Input').first().json.recoleta }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          800,
+          2120
+        ],
+        "id": "cee6a461-89df-452b-a59d-be120c8d591b",
+        "name": "Recoleta"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips-backend-staging-25jdzzxqga-uc.a.run.app/v2/negotiation/address_validation/webhook",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{ $('Input').first().json.token }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify($json.output, null, 2) }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1000,
+          1980
+        ],
+        "id": "e3296744-e7cc-47a8-b6ef-6135d8566290",
+        "name": "Post - Endereco"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips-backend-staging-25jdzzxqga-uc.a.run.app/v2/user/login/624b373210c6fc7fcb4b7e0b",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\n    \"email\": \"joao.freitas@blips.com.br\",\n    \"password\": \"BlipsAI7\"\n}",
+          "options": {}
+        },
+        "id": "594fb3e7-ecaa-490f-a205-4e2e78bdca1b",
+        "name": "Gera token",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -200,
+          2000
+        ]
+      }
+    ],
+    "connections": {
+      "Comprovante Endereço - Responsável": {
+        "main": [
+          [
+            {
+              "node": "Endereço - Responsável",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Fase - Checklist": {
+        "main": [
+          [
+            {
+              "node": "Aprovação Bitrix",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aprovado?": {
+        "main": [
+          [],
+          []
+        ]
+      },
+      "Resultados": {
+        "main": [
+          [
+            {
+              "node": "Analise Resultados",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Documentos de Identificação": {
+        "main": [
+          []
+        ]
+      },
+      "Selfie + Documentos": {
+        "main": [
+          []
+        ]
+      },
+      "Plataforma deu certo?": {
+        "main": [
+          [
+            {
+              "node": "Aprovado?",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Aprov Manual - Bitrix",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          []
+        ]
+      },
+      "Endpoints Plataforma": {
+        "main": [
+          []
+        ]
+      },
+      "Analise Resultados": {
+        "main": [
+          [
+            {
+              "node": "Plataforma deu certo?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aprov Manual - Bitrix2": {
+        "main": [
+          [
+            {
+              "node": "Comentário",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Update Bitrix - Status Envios": {
+        "main": [
+          []
+        ]
+      },
+      "Execute": {
+        "main": [
+          [
+            {
+              "node": "Input",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Urls + Texto + Contrato + Token + Id + Recoleta": {
+        "main": [
+          [
+            {
+              "node": "Endpoints Plataforma",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Gera token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Input": {
+        "main": [
+          [
+            {
+              "node": "Comprovante Endereço - Responsável",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Urls + Texto + Contrato + Token + Id + Recoleta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Endereço - Responsável": {
+        "main": [
+          [
+            {
+              "node": "Endereço Aprovado?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Endereço Aprovado?": {
+        "main": [
+          [
+            {
+              "node": "Post - Endereco",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Recoleta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Recoleta": {
+        "main": [
+          [
+            {
+              "node": "Post - Endereco",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Post - Endereco",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gera token": {
+        "main": [
+          [
+            {
+              "node": "Input",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "callerPolicy": "workflowsFromSameOwner",
+      "errorWorkflow": "CPe8m95zjnd0NlyH"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Webhook": [
+        {
+          "json": {
+            "headers": {
+              "host": "n8n-dev.blips-labs.com",
+              "content-length": "557",
+              "accept": "application/json",
+              "content-type": "application/json",
+              "x-forwarded-for": "177.71.180.7",
+              "x-forwarded-host": "n8n-dev.blips-labs.com",
+              "x-forwarded-proto": "https",
+              "x-railway-request-id": "PzsQ_nRcQoOIoHYnca69Ww_882434190",
+              "x-real-ip": "177.71.180.7",
+              "x-request-start": "1740166140143",
+              "accept-encoding": "gzip"
+            },
+            "params": {},
+            "query": {},
+            "body": {
+              "contrato": "67b4ef96c6b2ca52d625f858",
+              "nome_responsavel": "João Lucas Pontes Freitas",
+              "card_onboarding": "107367",
+              "form": {
+                "comprovante_endereco": [
+                  {
+                    "id": 9219213828164200,
+                    "mime_type": "application/pdf",
+                    "sha256": "qRVweO/YBv1i2CBqgTReOmWDI2Bu3A6Rl4zEwgGQglU=",
+                    "file_name": "1VIA-00020451188161.pdf",
+                    "url": "https://storage.hyperflow.global/whatsapp/9219213828164200"
+                  }
+                ],
+                "dados_endereco": {
+                  "number": "1",
+                  "st_ave": "Teste",
+                  "state": "CE",
+                  "zip_code": "38411145",
+                  "city": "Uberkandia",
+                  "neighborhood": "Teste"
+                },
+                "flow_token": "@DX13nyxL-PIAGXDcmrQ"
+              },
+              "recoleta": false,
+              "item_id": 207
+            },
+            "webhookUrl": "https://n8n-dev.blips-labs.com/webhook/iniciar-analise",
+            "executionMode": "production"
+          }
+        }
+      ]
+    },
+    "versionId": "f7cfaefd-3716-455a-8271-928e1bc327e0",
+    "triggerCount": 1,
+    "tags": [
+      {
+        "createdAt": "2024-11-22T13:13:26.514Z",
+        "updatedAt": "2024-11-22T13:13:26.514Z",
+        "id": "owb3cfmzFRbqjP06",
+        "name": "Clara"
+      }
+    ]
+  }
+}
