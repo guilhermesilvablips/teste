@@ -1,0 +1,2922 @@
+{
+  "data": {
+    "createdAt": "2024-10-25T15:28:56.244Z",
+    "updatedAt": "2025-05-26T20:47:08.054Z",
+    "id": "pmE6bCkbsC2DIzvx",
+    "name": "2 - Big Query 2.2",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "language": "python",
+          "pythonCode": "catalogo_data = {}\n\ntry:\n  for item in _input.all():\n    data = item.json.bureau + \"_\" + item.json.query\n    catalogo_data[data] = item.json\n  return catalogo_data\nexcept:\n  return catalogo_data"
+        },
+        "id": "72cab32b-80e7-4e32-85cf-3039b0e14753",
+        "name": "format_cv_cnpj",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1300,
+          680
+        ]
+      },
+      {
+        "parameters": {
+          "language": "python",
+          "pythonCode": "catalogo_data = {}\ntry:\n  for item in _input.all():\n    data = item.json.bureau + \"_\" + item.json.query\n    catalogo_data[data] = item.json\n  return catalogo_data\nexcept:\n  return catalogo_data"
+        },
+        "id": "b773755f-a2bc-4ad2-b06e-5b7a81ecabe1",
+        "name": "format_cv_cpf",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          960,
+          1660
+        ]
+      },
+      {
+        "parameters": {
+          "content": "- Range 30 dias para C.V\n- Pegar CNPJ e CPF (Socio) juntos para usar em casos de calculos juntos exemplos tt_protesto ou pefin somado ou bacen somado\n- Pegar CPF separado para estetica",
+          "height": 139.97032713502313,
+          "width": 373.5311524331785
+        },
+        "id": "855567ca-56ae-40d4-937a-d40dea34c7d3",
+        "name": "Sticky Note",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -2180,
+          680
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "fa8dedf1-d082-4f40-93ed-b159a45fefbd",
+                "name": "catalogo_de_variaveis",
+                "value": "={{ $json }}",
+                "type": "object"
+              },
+              {
+                "id": "483a1ff4-e6e8-4c60-b939-b89d6b9f2e91",
+                "name": "equipment_value",
+                "value": "={{ $('lead').first().json.equipment_value }}",
+                "type": "number"
+              },
+              {
+                "id": "f6b29848-0ad7-48ae-9a01-674ac605554c",
+                "name": "name",
+                "value": "={{ $('get_lead_bq_cpf').first().json.name + \" \" + $('get_lead_bq_cpf').first().json.last_name }}",
+                "type": "string"
+              },
+              {
+                "id": "64f6f369-fb8f-49ec-88f5-02092565fcc3",
+                "name": "cellphone",
+                "value": "={{ $('get_lead_bq_cpf').first().json.cellphone }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "df922eab-f111-4ee2-bf51-dbf0a09b7686",
+        "name": "Response Cliente CPF",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1200,
+          1660
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7b2f5ede-51d7-4334-b431-69df9cda7856",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              },
+              {
+                "id": "bb34f180-0211-4498-893f-d02caa7f7089",
+                "name": "endpoint",
+                "value": "companies",
+                "type": "string"
+              },
+              {
+                "id": "ea8bb1ed-a9f5-4959-81d1-39248d000e46",
+                "name": "type",
+                "value": "relationships",
+                "type": "string"
+              },
+              {
+                "id": "ec9bd1c5-cc19-4dc7-8913-6102b1c23936",
+                "name": "catalogo_de_variaveis",
+                "value": "={{ $json }}",
+                "type": "object"
+              },
+              {
+                "id": "9e4cee9d-7bf2-4210-9252-72f74fac611a",
+                "name": "doc",
+                "value": "={{ $('lead').first().json.cnpjCliente }}",
+                "type": "string"
+              },
+              {
+                "id": "8895b5ed-7d09-4e78-a9a2-35607eed9cac",
+                "name": "cpfCliente",
+                "value": "={{ $('lead').first().json.cpfCliente }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "68b15074-099b-4318-916d-9256a63f7858",
+        "name": "set_relationships_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1520,
+          680
+        ]
+      },
+      {
+        "parameters": {
+          "language": "python",
+          "pythonCode": "catalogo_data = {}\ntry:\n  for item in _input.all():\n    data = item.json.bureau + \"_\" + item.json.query\n    catalogo_data[data] = item.json\n  return catalogo_data\nexcept:\n  return catalogo_data"
+        },
+        "id": "4ea44765-696e-46f1-ad1d-ce3abb2ae2a0",
+        "name": "format_cv_cpf_socio",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2200,
+          680
+        ]
+      },
+      {
+        "parameters": {
+          "language": "python",
+          "pythonCode": "# Acessa os dados de entrada (dois JSONs)\njson1 = _input.all()[0].json\njson2 = _('format_cv_cnpj').all()[0].json\n\n# Combina os dois JSONs\ncombined_json = {**json1, **json2}\n\n# Retorna os itens atualizados\nreturn combined_json\n"
+        },
+        "id": "9a2336fd-d2ad-44c6-b33c-06653b4b85db",
+        "name": "join_cvs",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2440,
+          680
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "fa8dedf1-d082-4f40-93ed-b159a45fefbd",
+                "name": "catalogo_de_variaveis",
+                "value": "={{ $json }}",
+                "type": "object"
+              },
+              {
+                "id": "d63d8146-754c-482c-841b-63c501e7213c",
+                "name": "avaliacaoFinal",
+                "value": "DEVE PARCELAS",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "48056a28-5e61-4be2-bcaf-6ea477532ea2",
+        "name": "Reprovado Parcelas",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1900,
+          880
+        ]
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-prod-v2",
+            "mode": "list",
+            "cachedResultName": "blips-prod-v2",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-prod-v2"
+          },
+          "sqlQuery": "SELECT *\nFROM `blips-prod-v2.analise_de_credito.catalogo_variaveis`\nWHERE\n  cpf_cnpj = \"{{ $('lead').first().json.cpfCliente }}\"\n  AND date >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)\nORDER BY date DESC",
+          "options": {
+            "timeoutMs": 60000
+          }
+        },
+        "id": "606f96d3-e7ad-433a-b665-8145956df583",
+        "name": "catalogo_variaveis_cpf",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          680,
+          1660
+        ],
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "05124a13-757f-4177-a151-e5d28f0ed809",
+                "name": "situacao_cadastral",
+                "value": "INATIVO",
+                "type": "string"
+              },
+              {
+                "id": "3ead3318-950c-4b4b-9b42-b4d016ef6b83",
+                "name": "avaliacaoFinal",
+                "value": "REPROVADO",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "e582577a-1cc2-4507-93e3-1bad342f5f75",
+        "name": "Response Cliente CNPJ Inativo",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          4040,
+          840
+        ]
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-prod-v2",
+            "mode": "list",
+            "cachedResultName": "blips-prod-v2",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-prod-v2"
+          },
+          "sqlQuery": "SELECT *\nFROM `blips-prod-v2.analise_de_credito.catalogo_variaveis`\nWHERE\n  cpf_cnpj = \"{{ $('lead').first().json.cnpjCliente }}\"\n  AND date >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)\nORDER BY date DESC",
+          "options": {
+            "timeoutMs": 60000
+          }
+        },
+        "id": "d90e7b95-dc59-420c-891c-22082f1b4f93",
+        "name": "catalogo_variaveis_cnpj",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          1040,
+          680
+        ],
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {},
+        "id": "f9d8f301-36f9-40f4-ad96-041e3ac8d400",
+        "name": "lead",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          -3140,
+          1080
+        ]
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-prod-v2",
+            "mode": "list",
+            "cachedResultName": "blips-prod-v2",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-prod-v2"
+          },
+          "sqlQuery": "SELECT *\nFROM `blips-prod-v2.analise_de_credito.catalogo_variaveis`\nWHERE\n  cpf_cnpj = \"{{ $json.relationships.cpf }}\"\n  AND date >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)\nORDER BY date DESC",
+          "options": {
+            "timeoutMs": 60000
+          }
+        },
+        "id": "d24bf402-47f3-4344-b6cf-48141e7b3aba",
+        "name": "catalogo_variaveis_cpf_socio",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          1980,
+          680
+        ],
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-prod-v2",
+            "mode": "list",
+            "cachedResultName": "blips-prod-v2",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-prod-v2"
+          },
+          "sqlQuery": "SELECT *\nFROM `blips-prod-v2.analise_de_credito.motor_analise_credito_n8n`\nWHERE\n  cnpjCliente = \"{{ $('lead').first().json.cnpjCliente }}\"\n  AND PARSE_DATETIME('%d/%m/%Y %H:%M:%S', dataProcessamento) >= DATETIME_SUB(CURRENT_DATETIME(), INTERVAL 90 DAY)\n  AND avaliacaoFinal = \"APROVADO\"\nORDER BY PARSE_DATETIME('%d/%m/%Y %H:%M:%S', dataProcessamento) DESC\nLIMIT 1;",
+          "options": {
+            "maxResults": 1,
+            "timeoutMs": 60000
+          }
+        },
+        "id": "c82918f7-c7a5-453f-92f5-7214dc984ce5",
+        "name": "motor_analise_credito",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          -1320,
+          640
+        ],
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "765e7d7b-6587-47cf-bdc4-c92b48c063d4",
+                "leftValue": "={{ $json.isNotEmpty() ? DateTime.fromISO($json.DT_MENOR_VENC_ABERTO).toMillis() < DateTime.now().toMillis() : false }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "8b03d300-75cd-48ae-bbdd-bfc76621eb38",
+                "leftValue": "={{ $json.isNotEmpty() ? $json.ULT_BAIXA === none : false }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "id": "f76dfc27-2ec3-4013-b1de-127436e9fb01",
+        "name": "É cliente com parcela em aberto ?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -2160,
+          1100
+        ]
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-prod-v2",
+            "mode": "list",
+            "cachedResultName": "blips-prod-v2",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-prod-v2"
+          },
+          "sqlQuery": "SELECT *\nFROM `blips-prod-v2.analise_de_credito.motor_analise_credito_n8n_dev`\nWHERE\n  cpfCliente = \"{{ $('lead').first().json.cpfCliente }}\"\n  AND PARSE_DATETIME('%d/%m/%Y %H:%M:%S', dataProcessamento) >= DATETIME_SUB(CURRENT_DATETIME(), INTERVAL 90 DAY)\n  AND avaliacaoFinal = \"APROVADO\"\nORDER BY PARSE_DATETIME('%d/%m/%Y %H:%M:%S', dataProcessamento) DESC\nLIMIT 1;",
+          "options": {
+            "maxResults": 1,
+            "timeoutMs": 60000
+          }
+        },
+        "id": "9332bb61-b971-4b58-8183-4ebc514f6168",
+        "name": "motor_analise_credito_cpf",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          -1280,
+          1600
+        ],
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('lead').item.json.cnpjCliente }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "string",
+                        "operation": "notEmpty",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "cnpj"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "b83dc2ab-7e39-4361-8171-e5d6d820ea43",
+                      "leftValue": "={{ $('lead').item.json.cpfCliente }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "string",
+                        "operation": "notEmpty",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "cpf"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "44c5cbd0-d8e7-4b41-a7d4-bb15dc0b4875",
+        "name": "CPF ou CNPJ ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          -1900,
+          1120
+        ]
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT\n  id, cellphone, machine_id, personal_document, document, name, last_name\nFROM\n  `blips-bigdata.PLATAFORMA.leads`\nWHERE id = '{{ $('lead').first().json.lead_id }}'\nLIMIT 1",
+          "options": {
+            "timeoutMs": 60000
+          }
+        },
+        "id": "ece003e2-452e-4e03-b342-603a7ae61134",
+        "name": "get_lead_bq_cpf",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          420,
+          1660
+        ],
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT\n  id, cellphone, machine_id, personal_document, document, name, last_name\nFROM\n  `blips-bigdata.PLATAFORMA.leads`\nWHERE id = '{{ $('lead').first().json.lead_id }}'\nLIMIT 1",
+          "options": {
+            "timeoutMs": 60000
+          }
+        },
+        "id": "0ea25f7c-8d3a-4fef-baa1-c16076f74173",
+        "name": "get_lead_bq",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          780,
+          680
+        ],
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "bb34f180-0211-4498-893f-d02caa7f7089",
+                "name": "endpoint",
+                "value": "companies",
+                "type": "string"
+              },
+              {
+                "id": "ea8bb1ed-a9f5-4959-81d1-39248d000e46",
+                "name": "dataset",
+                "value": "basic_data",
+                "type": "string"
+              },
+              {
+                "id": "9e4cee9d-7bf2-4210-9252-72f74fac611a",
+                "name": "CNPJ",
+                "value": "={{ $('lead').first().json.cnpjCliente }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "c83d99b9-352f-4028-8585-59c4325fd5b0",
+        "name": "set_basic_data_cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2320,
+          460
+        ],
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT\n    *\n  FROM\n    `blips-bigdata.RECEITA_FEDERAL.empresas`\n  WHERE\n    cnpj_basico = SUBSTR(\"{{ $('lead').first().json.cnpjCliente }}\", 1, 8)\nLIMIT 1;\n",
+          "options": {
+            "maxResults": 1
+          }
+        },
+        "id": "02297bed-99c5-4f70-b4d9-0f68921b394f",
+        "name": "RECEITA_FEDERAL - CNPJ EMP",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          4040,
+          480
+        ],
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "2aeeac8f-a730-4404-b7ca-dc519c24a0c1",
+                "leftValue": "={{ $json.avaliacaoFinal }}",
+                "rightValue": "APROVADO",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "ff7cc6e7-1c57-41ce-a895-2f14a3a4280c",
+                "leftValue": "={{ $('plataforma_leads').first().json.status }}",
+                "rightValue": "APROVED",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "id": "3fe74c2b-41d5-473f-a04f-f5fc356cdb85",
+        "name": "Lead já tem Aprovação ?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -1120,
+          640
+        ]
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "WITH latest_data AS (\n  SELECT\n    cnpj_basico,\n    cnpj_ordem,\n    cnpj_dv,\n    cnae_fiscal_principal,\n    cnae_fiscal_secundaria,\n    data_situacao_cadastral,\n    situacao_cadastral,\n    email_contribuinte,\n    ddd1,\n    telefone1,\n    RANK() OVER (PARTITION BY cnpj_basico, cnpj_ordem, cnpj_dv ORDER BY data_situacao_cadastral DESC) AS rank_data\n  FROM\n    `blips-bigdata.RECEITA_FEDERAL.estabelecimentos`\n  WHERE\n    cnpj_basico = SUBSTR(\"{{ $('lead').first().json.cnpjCliente }}\", 1, 8)\n    AND cnpj_ordem = SUBSTR(\"{{ $('lead').first().json.cnpjCliente }}\", 9, 4)\n    AND cnpj_dv = CAST(SUBSTR(\"{{ $('lead').first().json.cnpjCliente }}\", 13, 2) AS INT64)\n)\nSELECT *\nFROM latest_data\nWHERE rank_data = 1\nLIMIT 10;\n",
+          "options": {
+            "maxResults": 10
+          }
+        },
+        "id": "8fb150e9-198a-4439-aa13-626ac55620de",
+        "name": "RECEITA_FEDERAL - CNPJ",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          3440,
+          680
+        ],
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "05124a13-757f-4177-a151-e5d28f0ed809",
+                "name": "situacao_cadastral",
+                "value": "=ATIVO",
+                "type": "string"
+              },
+              {
+                "id": "fa8dedf1-d082-4f40-93ed-b159a45fefbd",
+                "name": "catalogo_de_variaveis",
+                "value": "={{ $('join_cvs').first().json }}",
+                "type": "object"
+              },
+              {
+                "id": "f9d16877-da13-41e0-ac9b-5070f8689616",
+                "name": "cpf_socio",
+                "value": "={{ $('RD_relationships_CNPJ').first().json.relationships.cpf }}",
+                "type": "string"
+              },
+              {
+                "id": "5a07aa52-1e0d-4b5f-b09b-70bdedb3032c",
+                "name": "equipment_value",
+                "value": "={{ $('lead').first().json.equipment_value }}",
+                "type": "number"
+              },
+              {
+                "id": "71f53eb6-ac50-452f-a51a-8903c9d79b19",
+                "name": "name",
+                "value": "={{ $('RD_relationships_CNPJ').first().json.relationships.name ? $('RD_relationships_CNPJ').first().json.relationships.name : '' }}",
+                "type": "string"
+              },
+              {
+                "id": "db4b236e-3686-4bfb-a948-10f83a277df5",
+                "name": "cellphone",
+                "value": "={{ $('get_lead_bq').first().json.cellphone }}",
+                "type": "string"
+              },
+              {
+                "id": "3b010592-3551-4742-b14b-9bf4c2058ea8",
+                "name": "cnae_fiscal_principal",
+                "value": "={{ $('RECEITA_FEDERAL - CNPJ').first().json.cnae_fiscal_principal }}",
+                "type": "string"
+              },
+              {
+                "id": "070fe141-9ea8-4035-a00b-32e9c4c2f8a1",
+                "name": "cnae_fiscal_secundaria",
+                "value": "={{ $('RECEITA_FEDERAL - CNPJ').first().json.cnae_fiscal_secundaria }}",
+                "type": "string"
+              },
+              {
+                "id": "a39ea256-72e5-43be-bed6-2002828f4617",
+                "name": "receita_federal_emp",
+                "value": "={{ $json }}",
+                "type": "object"
+              },
+              {
+                "id": "e5b96c56-aabf-4087-8ce0-d23ab62870c5",
+                "name": "idade",
+                "value": "={{ $('RD Basic Data CPF').item.json.relationships.age }}",
+                "type": "number"
+              },
+              {
+                "id": "92920364-6775-4246-a805-c5bb56b323fe",
+                "name": "cpf_divergente",
+                "value": "={{ $('RD_relationships_CNPJ').first().json.relationships.cpf_divergente }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "376c57bd-9143-44ee-aa5d-5741c164b20d",
+        "name": "Response Cliente CNPJ Ativo 30 dias",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          4300,
+          480
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "341d5823-c32c-4d8f-8315-cbce7c267a51",
+                      "leftValue": "={{ $json.situacao_cadastral }}",
+                      "rightValue": "2",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "ativo receita"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "6481aac2-a102-4d10-a512-d107ccd9e0e5",
+                      "leftValue": "={{ $json.situacao_cadastral }}",
+                      "rightValue": "2",
+                      "operator": {
+                        "type": "string",
+                        "operation": "notExists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Inconclusivo"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "6481aac2-a102-4d10-a512-d107ccd9e0e5",
+                      "leftValue": "={{ $json.situacao_cadastral }}",
+                      "rightValue": "2",
+                      "operator": {
+                        "type": "string",
+                        "operation": "notEquals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "inativo receita"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "52273350-dacf-4373-ac76-ac2d839997ec",
+        "name": "Situação da Empresa ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          3680,
+          680
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "7a1787a6-cf9c-4605-8b55-3166c9e4801e",
+                "leftValue": "={{\n  DateTime.fromFormat($json.dataProcessamento, 'dd/MM/yyyy HH:mm:ss').startOf('day').toMillis() >= DateTime.now().minus({ days: 30 }).startOf('day').toMillis() &&\n  DateTime.fromFormat($json.dataProcessamento, 'dd/MM/yyyy HH:mm:ss').startOf('day').toMillis() <= DateTime.now().startOf('day').toMillis()\n}}",
+                "rightValue": "={{ DateTime.fromISO($json.dataProcessamento).toMillis() >= DateTime.now().minus({ days: 30 }).toMillis() && DateTime.fromISO($json.dataProcessamento).toMillis() <= DateTime.now().toMillis() }}",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "543739f6-2f89-42fd-9f3a-7cb8ce23b54e",
+        "name": "Lead Aprovado em 30d ?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -740,
+          440
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "2c9364f9-7ce3-46e2-8053-65f144454e3b",
+                "leftValue": "={{ $json.PHASE_STATUS }}",
+                "rightValue": "IN_REGISTER",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "a3907631-db5a-4f21-8d10-bea3ae3d93e6",
+                "leftValue": "={{ $json.PHASE_STATUS }}",
+                "rightValue": "AWAITING_ANALYSIS",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "id": "00d295fc-3c0a-4798-99df-fe2002fbafc8",
+        "name": "Esta em Negociação ?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -20,
+          640
+        ]
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT \n  document,\n  DT_MENOR_VENC_ABERTO,\n  MAIOR_DIAS_VENCIDOS_ABERTO,\n  PHASE_STATUS,\n  ULT_BAIXA\nFROM \n  `blips-bigdata.PARAMETROS_EQUIPE_DADOS.BASE_PRINCIPAL_EQUIPAMENTOS_CONTRATOS`\nWHERE \n  document = '{{ $('lead').first().json.cnpjCliente ? $('lead').first().json.cnpjCliente : $('lead').first().json.cpfCliente }}'\n  AND (\n    (DT_MENOR_VENC_ABERTO < CURRENT_DATE() AND DT_MENOR_VENC_ABERTO IS NOT NULL) -- Apenas parcelas vencidas\n    OR (MAIOR_DIAS_VENCIDOS_ABERTO > 0) -- Apenas contratos com atraso\n  )\nLIMIT 1;",
+          "options": {
+            "timeoutMs": 60000
+          }
+        },
+        "id": "e0c424c7-dd0e-4e62-bd55-fb198f85c4f4",
+        "name": "get_parcelas",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          -2400,
+          1100
+        ],
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT \n  document,\n  PHASE_STATUS\nFROM \n  `blips-bigdata.PARAMETROS_EQUIPE_DADOS.BASE_PRINCIPAL_EQUIPAMENTOS_CONTRATOS`\nWHERE \n  document = '{{ $('lead').first().json.cnpjCliente ? $('lead').first().json.cnpjCliente : $('lead').first().json.cpfCliente }}'\n  AND \n  (PHASE_STATUS = 'AWAITING_ANALYSIS' OR PHASE_STATUS = 'IN_REGISTER')\nLIMIT 1;",
+          "options": {
+            "timeoutMs": 60000
+          }
+        },
+        "id": "e0d75df3-de45-4652-b838-d30e8a82812e",
+        "name": "get_lead_status",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          -240,
+          640
+        ],
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "5a07aa52-1e0d-4b5f-b09b-70bdedb3032c",
+                "name": "equipment_value",
+                "value": "={{ $('lead').first().json.equipment_value }}",
+                "type": "number"
+              },
+              {
+                "id": "8f5a345b-52fd-48ed-8926-eefef6c93a3f",
+                "name": "avaliacaoFinal",
+                "value": "INCONCLUSIVO",
+                "type": "string"
+              },
+              {
+                "id": "cc332d70-f27e-4445-9c71-413da70d9077",
+                "name": "equip",
+                "value": "={{ $('lead').first().json.equip }}",
+                "type": "string"
+              },
+              {
+                "id": "969f92ca-feb1-48be-993c-0115b0f9c60b",
+                "name": "situacao_cadastral",
+                "value": "={{ $json.situacaoCadastralCnpj }}",
+                "type": "string"
+              },
+              {
+                "id": "e90fe25b-b1aa-4b5e-81b2-e92b676e8737",
+                "name": "lead",
+                "value": "={{ $json }}",
+                "type": "object"
+              },
+              {
+                "id": "72da8295-0429-483c-abd2-bf51b564e523",
+                "name": "segment",
+                "value": "",
+                "type": "string"
+              },
+              {
+                "id": "5eb28159-4cf9-4631-a74b-d0efea681085",
+                "name": "cnpjCliente",
+                "value": "={{ $('lead').first().json.cnpjCliente }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "4ef91e13-6774-45a1-b132-9dfa872852d3",
+        "name": "Lead com Análise em 90d",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          520,
+          320
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "4bc57dc9-dde8-4909-bc17-6d2406c642de",
+                "leftValue": "={{ $('motor_analise_credito').first().json.organizacao }}",
+                "rightValue": "Blips",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "4afce4d8-5060-4cee-b758-98e94a517301",
+                "leftValue": "={{ $('lead').first().json.organization }}",
+                "rightValue": "Ideal",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "4af91ce3-8b8a-4f58-8d60-f52349d4bab3",
+        "name": "Aprovado Blips ou Ideal ?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          220,
+          660
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "5a07aa52-1e0d-4b5f-b09b-70bdedb3032c",
+                "name": "equipment_value",
+                "value": "={{ $('lead').first().json.equipment_value }}",
+                "type": "number"
+              },
+              {
+                "id": "8f5a345b-52fd-48ed-8926-eefef6c93a3f",
+                "name": "avaliacaoFinal",
+                "value": "APROVADO",
+                "type": "string"
+              },
+              {
+                "id": "5d013240-a752-4909-a7aa-33bd0cf331be",
+                "name": "situacao_cadastral",
+                "value": "={{ $('motor_analise_credito').first().json.situacaoCadastralCnpj }}",
+                "type": "string"
+              },
+              {
+                "id": "38ec3161-5881-453b-9911-3b2f93ad853e",
+                "name": "=equip",
+                "value": "={{ $('lead').first().json.equip }}",
+                "type": "string"
+              },
+              {
+                "id": "bea00db4-b9e9-4260-a633-f0b6ae806768",
+                "name": "lead",
+                "value": "={{ $('motor_analise_credito').first().json }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "9c3c7bea-64c1-4ca0-aa2e-b6c549caf25a",
+        "name": "Lead Pre Aprovado Blips->Ideal",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          780,
+          440
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "5a07aa52-1e0d-4b5f-b09b-70bdedb3032c",
+                "name": "equipment_value",
+                "value": "={{ $('lead').first().json.equipment_value }}",
+                "type": "number"
+              },
+              {
+                "id": "8f5a345b-52fd-48ed-8926-eefef6c93a3f",
+                "name": "avaliacaoFinal",
+                "value": "INCONCLUSIVO",
+                "type": "string"
+              },
+              {
+                "id": "6871d1ba-e08e-468d-b261-6a5961c111c5",
+                "name": "equip",
+                "value": "={{ $('lead').first().json.equip }}",
+                "type": "string"
+              },
+              {
+                "id": "442de045-cf3f-4e1a-9102-5b665b12fe49",
+                "name": "lead",
+                "value": "={{ $json }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "af524a34-56ff-4e34-9fc7-e4883fc3b235",
+        "name": "Lead Com Análise em 90d CPF",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          80,
+          1400
+        ]
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT \n  document,\n  PHASE_STATUS\nFROM \n  `blips-bigdata.PARAMETROS_EQUIPE_DADOS.BASE_PRINCIPAL_EQUIPAMENTOS_CONTRATOS`\nWHERE \n  document = '{{ $json.cnpjCliente ? $json.cnpjCliente : $json.cpfCliente }}'\n  AND \n  (PHASE_STATUS = 'AWAITING_ANALYSIS' OR PHASE_STATUS = 'IN_REGISTER')\nLIMIT 1;",
+          "options": {
+            "timeoutMs": 60000
+          }
+        },
+        "id": "849e6796-0722-45f2-a2ce-20f73df235c6",
+        "name": "get_lead_status_cpf",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          -460,
+          1620
+        ],
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "5a07aa52-1e0d-4b5f-b09b-70bdedb3032c",
+                "name": "equipment_value",
+                "value": "={{ $('lead').first().json.equipment_value }}",
+                "type": "number"
+              },
+              {
+                "id": "8f5a345b-52fd-48ed-8926-eefef6c93a3f",
+                "name": "avaliacaoFinal",
+                "value": "APROVADO",
+                "type": "string"
+              },
+              {
+                "id": "6871d1ba-e08e-468d-b261-6a5961c111c5",
+                "name": "equip",
+                "value": "={{ $('lead').first().json.equip }}",
+                "type": "string"
+              },
+              {
+                "id": "442de045-cf3f-4e1a-9102-5b665b12fe49",
+                "name": "lead",
+                "value": "={{ $json }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "6a9c4c87-5b12-4fd2-807c-a0be7f8ea4a2",
+        "name": "Lead Pre Aprovado Blips->Ideal CPF",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          420,
+          1400
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "2c9364f9-7ce3-46e2-8053-65f144454e3b",
+                "leftValue": "={{ $json.PHASE_STATUS }}",
+                "rightValue": "IN_REGISTER",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "a3907631-db5a-4f21-8d10-bea3ae3d93e6",
+                "leftValue": "={{ $json.PHASE_STATUS }}",
+                "rightValue": "AWAITING_ANALYSIS",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "id": "29c86f0a-789a-4f85-b425-286ab8b63f75",
+        "name": "Esta em Negociação ? CPF",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -200,
+          1620
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "7a1787a6-cf9c-4605-8b55-3166c9e4801e",
+                "leftValue": "={{\n  DateTime.fromFormat($json.dataProcessamento, 'dd/MM/yyyy HH:mm:ss').startOf('day').toMillis() >= DateTime.now().minus({ days: 30 }).startOf('day').toMillis() &&\n  DateTime.fromFormat($json.dataProcessamento, 'dd/MM/yyyy HH:mm:ss').startOf('day').toMillis() <= DateTime.now().startOf('day').toMillis()\n}}",
+                "rightValue": "={{ DateTime.fromISO($json.dataProcessamento).toMillis() >= DateTime.now().minus({ days: 30 }).toMillis() && DateTime.fromISO($json.dataProcessamento).toMillis() <= DateTime.now().toMillis() }}",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "dc8d0b6e-4740-4d1a-859f-fadae8bde41d",
+        "name": "Lead Aprovado em 30d ? CPF",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -720,
+          1420
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "8d0fafc0-741c-499f-8c7a-1130cbd5902e",
+                "leftValue": "={{ $json.avaliacaoFinal }}",
+                "rightValue": "APROVADO",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              },
+              {
+                "id": "e74cba73-70d3-49eb-9dff-60a936413cce",
+                "leftValue": "={{ $('plataforma_leads_cpf').first().json.status }}",
+                "rightValue": "APROVED",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "id": "aacb938c-277b-4ba1-9df5-47aa38a38fec",
+        "name": "Lead já tem Aprovação ? CPF",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -1040,
+          1600
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "f04a6913-909e-4cd9-976c-918067efaba4",
+                "leftValue": "={{ $('motor_analise_credito_cpf').first().json.organizacao }}",
+                "rightValue": "Blips",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "4bc57dc9-dde8-4909-bc17-6d2406c642de",
+                "leftValue": "={{ $('lead').first().json.organization }}",
+                "rightValue": "Ideal",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "bab89198-c7ed-4020-9914-0c08e9f9606d",
+        "name": "Aprovado Blips ou Ideal ? CPF",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          80,
+          1640
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "sSGZczbG1UA4RX3g",
+            "mode": "list",
+            "cachedResultName": "3 - Recuperação de Dados"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          1740,
+          680
+        ],
+        "id": "c4d9ab79-2777-4954-8b6c-899dd520ec81",
+        "name": "RD_relationships_CNPJ"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "71HfwsVdQvHtbqLi",
+            "mode": "list",
+            "cachedResultName": "BDC API 2.2"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          2540,
+          460
+        ],
+        "id": "0a8557cc-4016-42ee-85a7-43c0c46dff16",
+        "name": "BDC_basic_data_CNPJ",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7b2f5ede-51d7-4334-b431-69df9cda7856",
+                "name": "api",
+                "value": "BDC",
+                "type": "string"
+              },
+              {
+                "id": "bb34f180-0211-4498-893f-d02caa7f7089",
+                "name": "endpoint",
+                "value": "peoplev2",
+                "type": "string"
+              },
+              {
+                "id": "ea8bb1ed-a9f5-4959-81d1-39248d000e46",
+                "name": "type",
+                "value": "basic_data",
+                "type": "string"
+              },
+              {
+                "id": "ec9bd1c5-cc19-4dc7-8913-6102b1c23936",
+                "name": "catalogo_de_variaveis",
+                "value": "={{ $json }}",
+                "type": "object"
+              },
+              {
+                "id": "9e4cee9d-7bf2-4210-9252-72f74fac611a",
+                "name": "doc",
+                "value": "={{ $('lead').first().json.cpfCliente }}",
+                "type": "string"
+              },
+              {
+                "id": "8895b5ed-7d09-4e78-a9a2-35607eed9cac",
+                "name": "cpfCliente",
+                "value": "={{ $('lead').first().json.cpfCliente }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "3aa90f2f-e88b-49f8-abcc-8bdb9c631f36",
+        "name": "set_dados_basicos_cpf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2880,
+          680
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "sSGZczbG1UA4RX3g",
+            "mode": "list",
+            "cachedResultName": "3 - Recuperação de Dados"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          3160,
+          680
+        ],
+        "id": "d4fe6417-71d9-472d-ab1f-ec81e2301a95",
+        "name": "RD Basic Data CPF"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "05124a13-757f-4177-a151-e5d28f0ed809",
+                "name": "situacao_cadastral",
+                "value": "=INCONCLUSIVO",
+                "type": "string"
+              },
+              {
+                "id": "fa8dedf1-d082-4f40-93ed-b159a45fefbd",
+                "name": "catalogo_de_variaveis",
+                "value": "={{ $('join_cvs').first().json }}",
+                "type": "object"
+              },
+              {
+                "id": "f9d16877-da13-41e0-ac9b-5070f8689616",
+                "name": "cpf_socio",
+                "value": "={{ $('RD_relationships_CNPJ').first().json.relationships.cpf }}",
+                "type": "string"
+              },
+              {
+                "id": "5a07aa52-1e0d-4b5f-b09b-70bdedb3032c",
+                "name": "equipment_value",
+                "value": "={{ $('lead').first().json.equipment_value }}",
+                "type": "number"
+              },
+              {
+                "id": "71f53eb6-ac50-452f-a51a-8903c9d79b19",
+                "name": "name",
+                "value": "={{ $('RD_relationships_CNPJ').first().json.relationships.name ? $('RD_relationships_CNPJ').first().json.relationships.name : '' }}",
+                "type": "string"
+              },
+              {
+                "id": "db4b236e-3686-4bfb-a948-10f83a277df5",
+                "name": "cellphone",
+                "value": "={{ $('get_lead_bq').first().json.cellphone }}",
+                "type": "string"
+              },
+              {
+                "id": "3b010592-3551-4742-b14b-9bf4c2058ea8",
+                "name": "cnae_fiscal_principal",
+                "value": "={{ $('RECEITA_FEDERAL - CNPJ').first().json.cnae_fiscal_principal }}",
+                "type": "string"
+              },
+              {
+                "id": "070fe141-9ea8-4035-a00b-32e9c4c2f8a1",
+                "name": "cnae_fiscal_secundaria",
+                "value": "={{ $('RECEITA_FEDERAL - CNPJ').first().json.cnae_fiscal_secundaria }}",
+                "type": "string"
+              },
+              {
+                "id": "a39ea256-72e5-43be-bed6-2002828f4617",
+                "name": "receita_federal_emp",
+                "value": "={{ {} }}",
+                "type": "object"
+              },
+              {
+                "id": "e5b96c56-aabf-4087-8ce0-d23ab62870c5",
+                "name": "idade",
+                "value": "={{ $('RD Basic Data CPF').item.json.relationships.age }}",
+                "type": "number"
+              },
+              {
+                "id": "92920364-6775-4246-a805-c5bb56b323fe",
+                "name": "cpf_divergente",
+                "value": "={{ $('RD_relationships_CNPJ').first().json.relationships.cpf_divergente }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "60db4e8a-0406-4110-a202-912cad753370",
+        "name": "Response Cliente CNPJ Inconclusivo",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          4300,
+          680
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "03bc3947-c6a1-4bae-80b3-c3e8568f620f",
+                "leftValue": "={{ $('lead').first().json.origin }}",
+                "rightValue": "FEIRA",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -940,
+          420
+        ],
+        "id": "3624b767-ef74-45b9-a444-de9dd09b3a43",
+        "name": "Lead Feira ?"
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-prod-v2",
+            "mode": "list",
+            "cachedResultName": "blips-prod-v2",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-prod-v2"
+          },
+          "sqlQuery": "SELECT\n  COUNT(*) AS total_aprovacoes,\n  ROUND(SUM(SAFE_CAST(valorEquip AS FLOAT64)), 2) AS soma_valor_maquinas,\n  ANY_VALUE(matriz_planos) AS matriz_planos_atual\nFROM (\n  SELECT *\n  FROM `blips-prod-v2.analise_de_credito.motor_analise_credito_n8n_dev_feira`\n  WHERE\n    cnpjCliente = \"{{ $('lead').first().json.cnpjCliente }}\"\n    AND PARSE_DATETIME('%d/%m/%Y %H:%M:%S', dataProcessamento) >= DATETIME_SUB(CURRENT_DATETIME(), INTERVAL 90 DAY)\n    AND avaliacaoFinal = \"APROVADO\"\n    AND origin = \"FEIRA\"\n  ORDER BY PARSE_DATETIME('%d/%m/%Y %H:%M:%S', dataProcessamento) DESC\n  LIMIT 3\n)",
+          "options": {
+            "maxResults": 1,
+            "timeoutMs": 60000
+          }
+        },
+        "id": "7f64f69c-c7b5-4e92-97f1-5bb2e8237a19",
+        "name": "motor_analise_credito_feira",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          -740,
+          140
+        ],
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "5a07aa52-1e0d-4b5f-b09b-70bdedb3032c",
+                "name": "equipment_value",
+                "value": "={{ $('lead').first().json.equipment_value }}",
+                "type": "number"
+              },
+              {
+                "id": "8f5a345b-52fd-48ed-8926-eefef6c93a3f",
+                "name": "avaliacaoFinal",
+                "value": "INCONCLUSIVO",
+                "type": "string"
+              },
+              {
+                "id": "cc332d70-f27e-4445-9c71-413da70d9077",
+                "name": "equip",
+                "value": "={{ $('lead').first().json.equip }}",
+                "type": "string"
+              },
+              {
+                "id": "969f92ca-feb1-48be-993c-0115b0f9c60b",
+                "name": "situacao_cadastral",
+                "value": "=ATIVO",
+                "type": "string"
+              },
+              {
+                "id": "e90fe25b-b1aa-4b5e-81b2-e92b676e8737",
+                "name": "lead",
+                "value": "={{ $('motor_analise_credito').first().json }}",
+                "type": "object"
+              },
+              {
+                "id": "e587f400-cbfc-482e-afd9-0de25f41c96f",
+                "name": "motivoReprov",
+                "value": "Lead com 3 aprovações ou com 80 mil + de valor em maquinas",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "0967356f-8ac2-4b1e-9cb8-8ae3d6287752",
+        "name": "Lead com 3AP ou 80+",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          520,
+          -60
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "a4e1eb2e-5ed2-4bd9-8720-05d4a5235478",
+                "leftValue": "={{ $json.total_aprovacoes.toNumber() }}",
+                "rightValue": 3,
+                "operator": {
+                  "type": "number",
+                  "operation": "gte"
+                }
+              },
+              {
+                "id": "a9509f27-b89a-401b-8256-8270fefd3ca6",
+                "leftValue": "={{ ( $json.soma_valor_maquinas.toNumber() + $('lead').first().json.equipment_value ) }}",
+                "rightValue": 80000,
+                "operator": {
+                  "type": "number",
+                  "operation": "gt"
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          40,
+          -40
+        ],
+        "id": "8a48806f-144c-4f39-8b81-1bfdca084e31",
+        "name": "Lead com 3AP ou 80+ ?"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "5a07aa52-1e0d-4b5f-b09b-70bdedb3032c",
+                "name": "equipment_value",
+                "value": "={{ $('lead').first().json.equipment_value }}",
+                "type": "number"
+              },
+              {
+                "id": "8f5a345b-52fd-48ed-8926-eefef6c93a3f",
+                "name": "avaliacaoFinal",
+                "value": "INCONCLUSIVO",
+                "type": "string"
+              },
+              {
+                "id": "cc332d70-f27e-4445-9c71-413da70d9077",
+                "name": "equip",
+                "value": "={{ $('lead').first().json.equip }}",
+                "type": "string"
+              },
+              {
+                "id": "969f92ca-feb1-48be-993c-0115b0f9c60b",
+                "name": "situacao_cadastral",
+                "value": "=ATIVO",
+                "type": "string"
+              },
+              {
+                "id": "e90fe25b-b1aa-4b5e-81b2-e92b676e8737",
+                "name": "lead",
+                "value": "={{ $('motor_analise_credito').first().json }}",
+                "type": "object"
+              },
+              {
+                "id": "e587f400-cbfc-482e-afd9-0de25f41c96f",
+                "name": "motivoReprov",
+                "value": "Lead com 1 aprovação e RF >= 20%",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "4138e3d2-4fd0-4541-be51-b8a0c5ea03cf",
+        "name": "Lead com Risco Final > 20%",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          40,
+          -220
+        ]
+      },
+      {
+        "parameters": {
+          "content": "Controle de total de maquinas para FLUXO FEIRA",
+          "height": 840,
+          "width": 1720
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          -980,
+          -220
+        ],
+        "typeVersion": 1,
+        "id": "edeae7fb-5fc6-401c-9de5-175f6cb7c97a",
+        "name": "Sticky Note1"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "a4e1eb2e-5ed2-4bd9-8720-05d4a5235478",
+                "leftValue": "={{ $json.total_aprovacoes.toNumber() }}",
+                "rightValue": 2,
+                "operator": {
+                  "type": "number",
+                  "operation": "gte"
+                }
+              },
+              {
+                "id": "a9509f27-b89a-401b-8256-8270fefd3ca6",
+                "leftValue": "={{ ( $json.soma_valor_maquinas.toNumber() + $('lead').first().json.equipment_value ) }}",
+                "rightValue": 70000,
+                "operator": {
+                  "type": "number",
+                  "operation": "gt"
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          40,
+          160
+        ],
+        "id": "79644f44-2576-49c2-b5e3-cbf780c7e3ee",
+        "name": "Lead com 2AP ou 70+ ?"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "5a07aa52-1e0d-4b5f-b09b-70bdedb3032c",
+                "name": "equipment_value",
+                "value": "={{ $('lead').first().json.equipment_value }}",
+                "type": "number"
+              },
+              {
+                "id": "8f5a345b-52fd-48ed-8926-eefef6c93a3f",
+                "name": "avaliacaoFinal",
+                "value": "INCONCLUSIVO",
+                "type": "string"
+              },
+              {
+                "id": "cc332d70-f27e-4445-9c71-413da70d9077",
+                "name": "equip",
+                "value": "={{ $('lead').first().json.equip }}",
+                "type": "string"
+              },
+              {
+                "id": "969f92ca-feb1-48be-993c-0115b0f9c60b",
+                "name": "situacao_cadastral",
+                "value": "=ATIVO",
+                "type": "string"
+              },
+              {
+                "id": "e90fe25b-b1aa-4b5e-81b2-e92b676e8737",
+                "name": "lead",
+                "value": "={{ $('motor_analise_credito').first().json }}",
+                "type": "object"
+              },
+              {
+                "id": "e587f400-cbfc-482e-afd9-0de25f41c96f",
+                "name": "motivoReprov",
+                "value": "Lead com 2 aprovações ou com 70 mil + de valor em maquinas",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "71c2b22a-539c-4b83-8aaa-16d6d35419bd",
+        "name": "Lead com 2AP ou 70+",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          520,
+          140
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.matriz_planos_atual.toNumber() }}",
+                      "rightValue": 0.2,
+                      "operator": {
+                        "type": "number",
+                        "operation": "gte"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "0.2"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "c41d7d78-940f-4330-98db-aff01d368653",
+                      "leftValue": "={{ $json.matriz_planos_atual.toNumber() }}",
+                      "rightValue": 0,
+                      "operator": {
+                        "type": "number",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Autom"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "8085a450-ea1e-4bcd-a81a-b2e2f78d6f54",
+                      "leftValue": "={{ $json.matriz_planos_atual.toNumber() }}",
+                      "rightValue": 0.15,
+                      "operator": {
+                        "type": "number",
+                        "operation": "lte"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "2Maq"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          -260,
+          -40
+        ],
+        "id": "b790dfb1-6468-4db8-912f-67a6d01ed43b",
+        "name": "Qual sua matriz plano ?",
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "836b60bc-941a-4d62-86cd-04d1814d5978",
+                "leftValue": "={{ $json.total_aprovacoes.toNumber() }}",
+                "rightValue": 0,
+                "operator": {
+                  "type": "number",
+                  "operation": "gt"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -500,
+          140
+        ],
+        "id": "6c0026fb-048d-40cc-88c8-8126bb036e47",
+        "name": "Aprovações feira > 0 ?"
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT\n    document AS cnpj_cliente,\n    status,\n    data_hora,\n    created_at\n  FROM\n    `blips-bigdata.PLATAFORMA.leads`\n  WHERE\n    document = '{{ $('lead').first().json.cnpjCliente }}'\n    AND SAFE_CAST(data_hora AS DATETIME) >= DATETIME_SUB(CURRENT_DATETIME(), INTERVAL 90 DAY)\n    AND status = 'APROVED'\nORDER BY CAST(data_hora AS DATETIME) DESC\nLIMIT 1",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          -1520,
+          640
+        ],
+        "id": "b8ed812b-c103-4c6e-b7cc-32e31707dba0",
+        "name": "plataforma_leads",
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT\n    document AS cnpj_cliente,\n    status,\n    data_hora,\n    created_at\n  FROM\n    `blips-bigdata.PLATAFORMA.leads`\n  WHERE\n    document = '{{ $('lead').first().json.cpfCliente }}'\n    AND SAFE_CAST(data_hora AS DATETIME) >= DATETIME_SUB(CURRENT_DATETIME(), INTERVAL 90 DAY)\n    AND status = 'APROVED'\nORDER BY CAST(data_hora AS DATETIME) DESC\nLIMIT 1",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          -1520,
+          1600
+        ],
+        "id": "a964a06a-a0c2-4979-bb78-0580252b5ce5",
+        "name": "plataforma_leads_cpf",
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "documentId": {
+            "__rl": true,
+            "value": "1W7N3u6vtxsy0OVncqXYmBnky9VW8o9TVdroGphzpUIM",
+            "mode": "list",
+            "cachedResultName": "Clientes Indesejados",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1W7N3u6vtxsy0OVncqXYmBnky9VW8o9TVdroGphzpUIM/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 905668392,
+            "mode": "list",
+            "cachedResultName": "Lista p/ Motor",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1W7N3u6vtxsy0OVncqXYmBnky9VW8o9TVdroGphzpUIM/edit#gid=905668392"
+          },
+          "filtersUI": {
+            "values": [
+              {
+                "lookupColumn": "documento",
+                "lookupValue": "={{ $('lead').first().json.cnpjCliente ? $('lead').first().json.cnpjCliente : $('lead').first().json.cpfCliente }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          -2880,
+          1080
+        ],
+        "id": "c32d1b43-6873-428a-85e8-10b931ed9c10",
+        "name": "Clientes Indesejados",
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "credentials": {
+          "googleApi": {
+            "id": "KvFeNUBUHv7uR0PF",
+            "name": "Google BigQuery account - New Motor"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "c0ee6b88-26ba-47c7-88f6-4dd1e9314536",
+                "leftValue": "={{ $json.documento }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "number",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -2660,
+          1080
+        ],
+        "id": "a826dc32-eee3-4064-8cbb-74792a6fbd17",
+        "name": "Lead Indesejado ?"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "fa8dedf1-d082-4f40-93ed-b159a45fefbd",
+                "name": "catalogo_de_variaveis",
+                "value": "={{ $json }}",
+                "type": "object"
+              },
+              {
+                "id": "d63d8146-754c-482c-841b-63c501e7213c",
+                "name": "avaliacaoFinal",
+                "value": "LEAD INDESEJADO",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "bcfb54e2-9cc3-475f-8a1f-9f56e5174066",
+        "name": "Reprovado Lead Indesejado",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -2400,
+          860
+        ]
+      }
+    ],
+    "connections": {
+      "format_cv_cnpj": {
+        "main": [
+          [
+            {
+              "node": "set_relationships_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "format_cv_cpf": {
+        "main": [
+          [
+            {
+              "node": "Response Cliente CPF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_relationships_cnpj": {
+        "main": [
+          [
+            {
+              "node": "RD_relationships_CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "format_cv_cpf_socio": {
+        "main": [
+          [
+            {
+              "node": "join_cvs",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "join_cvs": {
+        "main": [
+          [
+            {
+              "node": "set_dados_basicos_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "catalogo_variaveis_cpf": {
+        "main": [
+          [
+            {
+              "node": "format_cv_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "catalogo_variaveis_cnpj": {
+        "main": [
+          [
+            {
+              "node": "format_cv_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "lead": {
+        "main": [
+          [
+            {
+              "node": "Clientes Indesejados",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "catalogo_variaveis_cpf_socio": {
+        "main": [
+          [
+            {
+              "node": "format_cv_cpf_socio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "motor_analise_credito": {
+        "main": [
+          [
+            {
+              "node": "Lead já tem Aprovação ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "É cliente com parcela em aberto ?": {
+        "main": [
+          [
+            {
+              "node": "Reprovado Parcelas",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "CPF ou CNPJ ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "motor_analise_credito_cpf": {
+        "main": [
+          [
+            {
+              "node": "Lead já tem Aprovação ? CPF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "CPF ou CNPJ ?": {
+        "main": [
+          [
+            {
+              "node": "plataforma_leads",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "plataforma_leads_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "get_lead_bq_cpf": {
+        "main": [
+          [
+            {
+              "node": "catalogo_variaveis_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "get_lead_bq": {
+        "main": [
+          [
+            {
+              "node": "catalogo_variaveis_cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_basic_data_cnpj": {
+        "main": [
+          []
+        ]
+      },
+      "RECEITA_FEDERAL - CNPJ EMP": {
+        "main": [
+          [
+            {
+              "node": "Response Cliente CNPJ Ativo 30 dias",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Lead já tem Aprovação ?": {
+        "main": [
+          [
+            {
+              "node": "Lead Feira ?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "get_lead_status",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "RECEITA_FEDERAL - CNPJ": {
+        "main": [
+          [
+            {
+              "node": "Situação da Empresa ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Situação da Empresa ?": {
+        "main": [
+          [
+            {
+              "node": "RECEITA_FEDERAL - CNPJ EMP",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Response Cliente CNPJ Inconclusivo",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Response Cliente CNPJ Inativo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Lead Aprovado em 30d ?": {
+        "main": [
+          [
+            {
+              "node": "Lead com Análise em 90d",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "get_lead_status",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Esta em Negociação ?": {
+        "main": [
+          [
+            {
+              "node": "Lead com Análise em 90d",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Aprovado Blips ou Ideal ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "get_parcelas": {
+        "main": [
+          [
+            {
+              "node": "É cliente com parcela em aberto ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "get_lead_status": {
+        "main": [
+          [
+            {
+              "node": "Esta em Negociação ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aprovado Blips ou Ideal ?": {
+        "main": [
+          [
+            {
+              "node": "Lead Pre Aprovado Blips->Ideal",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "get_lead_bq",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "get_lead_status_cpf": {
+        "main": [
+          [
+            {
+              "node": "Esta em Negociação ? CPF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Esta em Negociação ? CPF": {
+        "main": [
+          [
+            {
+              "node": "Lead Com Análise em 90d CPF",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Aprovado Blips ou Ideal ? CPF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Lead Aprovado em 30d ? CPF": {
+        "main": [
+          [
+            {
+              "node": "Lead Com Análise em 90d CPF",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "get_lead_status_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Lead já tem Aprovação ? CPF": {
+        "main": [
+          [
+            {
+              "node": "Lead Aprovado em 30d ? CPF",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "get_lead_status_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aprovado Blips ou Ideal ? CPF": {
+        "main": [
+          [
+            {
+              "node": "Lead Pre Aprovado Blips->Ideal CPF",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "get_lead_bq_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "RD_relationships_CNPJ": {
+        "main": [
+          [
+            {
+              "node": "catalogo_variaveis_cpf_socio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "BDC_basic_data_CNPJ": {
+        "main": [
+          []
+        ]
+      },
+      "set_dados_basicos_cpf": {
+        "main": [
+          [
+            {
+              "node": "RD Basic Data CPF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "RD Basic Data CPF": {
+        "main": [
+          [
+            {
+              "node": "RECEITA_FEDERAL - CNPJ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Lead Feira ?": {
+        "main": [
+          [
+            {
+              "node": "motor_analise_credito_feira",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Lead Aprovado em 30d ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "motor_analise_credito_feira": {
+        "main": [
+          [
+            {
+              "node": "Aprovações feira > 0 ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Lead com 3AP ou 80+ ?": {
+        "main": [
+          [
+            {
+              "node": "Lead com 3AP ou 80+",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "get_lead_bq",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Lead com 2AP ou 70+ ?": {
+        "main": [
+          [
+            {
+              "node": "Lead com 2AP ou 70+",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "get_lead_bq",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Qual sua matriz plano ?": {
+        "main": [
+          [
+            {
+              "node": "Lead com Risco Final > 20%",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Lead com 3AP ou 80+ ?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Lead com 2AP ou 70+ ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aprovações feira > 0 ?": {
+        "main": [
+          [
+            {
+              "node": "Qual sua matriz plano ?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "get_lead_bq",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "plataforma_leads": {
+        "main": [
+          [
+            {
+              "node": "motor_analise_credito",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Reprovado Parcelas": {
+        "main": [
+          []
+        ]
+      },
+      "plataforma_leads_cpf": {
+        "main": [
+          [
+            {
+              "node": "motor_analise_credito_cpf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Clientes Indesejados": {
+        "main": [
+          [
+            {
+              "node": "Lead Indesejado ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Lead Indesejado ?": {
+        "main": [
+          [
+            {
+              "node": "Reprovado Lead Indesejado",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "get_parcelas",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "lead": [
+        {
+          "json": {
+            "cnpjCliente": "91586104000185",
+            "cpfCliente": "52830636074",
+            "equipment_value": 30000,
+            "lead_id": "68276a996a433314e5d72cae",
+            "equip": "Plotter Eco-Solvente",
+            "is_with_sale": false,
+            "organization": "Ideal",
+            "origin": "plataforma"
+          }
+        }
+      ]
+    },
+    "versionId": "88589f9c-7cc3-4cfc-8c01-4c7e83d0044f",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-31T16:22:41.803Z",
+        "updatedAt": "2024-07-31T16:22:41.803Z",
+        "id": "mmaXbyiWhptUXaTd",
+        "name": "New Motor"
+      }
+    ]
+  }
+}
