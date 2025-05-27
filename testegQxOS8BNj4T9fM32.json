@@ -1,0 +1,869 @@
+{
+  "data": {
+    "createdAt": "2024-08-22T11:21:39.230Z",
+    "updatedAt": "2024-08-26T15:04:05.976Z",
+    "id": "gQxOS8BNj4T9fM32",
+    "name": "Nascimento - Processar Mensagens Protocolo",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "url": "={{ $json.fileMessage }}",
+          "options": {}
+        },
+        "id": "366cd2a8-28aa-4456-b34a-7771e1e9c417",
+        "name": "Baixar Áudio",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1680,
+          880
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "items[0].binary.data.fileName = 'audio.ogg';\n\nreturn items;"
+        },
+        "id": "17a70da4-307b-4f0c-9871-8eadfcc0f2ac",
+        "name": "Code",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1900,
+          880
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/audio/transcriptions",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendBody": true,
+          "contentType": "multipart-form-data",
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "model",
+                "value": "whisper-1"
+              },
+              {
+                "parameterType": "formBinaryData",
+                "name": "file",
+                "inputDataFieldName": "data"
+              },
+              {
+                "name": "language",
+                "value": "pt"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "eae9e49a-46ad-4e0f-87a2-b0a0fe334be2",
+        "name": "Transcreve o áudio",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2120,
+          880
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "yLVo36ZcKp1mrjQl",
+            "name": "Nascimento Blips - OpenAi"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "messages",
+          "options": {}
+        },
+        "id": "7cbf6ae9-a133-4756-8ec9-260901976266",
+        "name": "Agregar mensagens",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          2860,
+          540
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Acessa o array de mensagens que foi agregado pelo node anterior\nconst messages = items[0].json.messages;\n\n// Ordena as mensagens por 'createdAt' em ordem decrescente\nmessages.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));\n\n// Converte o array de mensagens ordenadas em uma JSON string\nconst historico = JSON.stringify(messages);\n\n// Retorna o resultado como uma JSON string em um único objeto JSON\nreturn [{ json: { historico } }];\n"
+        },
+        "id": "ae88f19a-08bb-4598-a2e4-99815c3d6812",
+        "name": "Ordenar mensagens por data/hora",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          3080,
+          540
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "85588a3c-4383-4a92-8158-c1f69c3d1a8f",
+                "name": "type",
+                "value": "={{ $('message').item.json.type }}",
+                "type": "string"
+              },
+              {
+                "id": "4d6b42b6-f4a7-4673-a560-4e7a798c488e",
+                "name": "textMessage",
+                "value": "={{ $json.text }}",
+                "type": "string"
+              },
+              {
+                "id": "c1f9b252-42bd-4034-a8a8-b0d1872d73a4",
+                "name": "fileMessage",
+                "value": "={{ $('message').item.json.fileMessage }}",
+                "type": "string"
+              },
+              {
+                "id": "8b8706b7-cb44-4b3d-97d2-c3cd94897a89",
+                "name": "sender",
+                "value": "={{ $('message').item.json.sender }}",
+                "type": "string"
+              },
+              {
+                "id": "b899e48f-a296-4dbd-833d-a66de49aae38",
+                "name": "createdAt",
+                "value": "={{ $('message').item.json.createdAt }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "520f80b0-6a78-40fb-9b82-0683c6901988",
+        "name": "Definir mensagem audio1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          2340,
+          880
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "298ff5d3-621c-4799-ac9f-b3336f3f1f41",
+                "name": "type",
+                "value": "={{ $json.type }}",
+                "type": "string"
+              },
+              {
+                "id": "ad70a88a-c382-4a37-ad58-d18774bd5187",
+                "name": "textMessage",
+                "value": "={{ $json.textMessage }}",
+                "type": "string"
+              },
+              {
+                "id": "c6cda514-714c-4226-bf1f-3ca97d6905dc",
+                "name": "fileMessage",
+                "value": "={{ $json.fileMessage }}",
+                "type": "string"
+              },
+              {
+                "id": "0a57608d-4b0e-46ce-b9bb-9d2f901d62a0",
+                "name": "sender",
+                "value": "={{ $json.sender }}",
+                "type": "string"
+              },
+              {
+                "id": "b1a43a50-4470-4270-8df5-073f86d2b6c2",
+                "name": "createdAt",
+                "value": "={{ $json.createdAt }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "bbfc4d0b-ec71-4223-b692-0985268a05c7",
+        "name": "Definir mensagem texto",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          2120,
+          640
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "298ff5d3-621c-4799-ac9f-b3336f3f1f41",
+                "name": "type",
+                "value": "={{ $('message').item.json.type }}",
+                "type": "string"
+              },
+              {
+                "id": "ad70a88a-c382-4a37-ad58-d18774bd5187",
+                "name": "textMessage",
+                "value": "={{ $json.content }}",
+                "type": "string"
+              },
+              {
+                "id": "c6cda514-714c-4226-bf1f-3ca97d6905dc",
+                "name": "fileMessage",
+                "value": "={{ $('message').item.json.fileMessage }}",
+                "type": "string"
+              },
+              {
+                "id": "0a57608d-4b0e-46ce-b9bb-9d2f901d62a0",
+                "name": "sender",
+                "value": "={{ $('message').item.json.sender }}",
+                "type": "string"
+              },
+              {
+                "id": "b1a43a50-4470-4270-8df5-073f86d2b6c2",
+                "name": "createdAt",
+                "value": "={{ $('message').item.json.createdAt }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "2d93a762-42a8-4a4b-851e-66b4a04ecca1",
+        "name": "Definir mensagem imagem",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          2240,
+          1100
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "298ff5d3-621c-4799-ac9f-b3336f3f1f41",
+                "name": "type",
+                "value": "={{ $json.type }}",
+                "type": "string"
+              },
+              {
+                "id": "ad70a88a-c382-4a37-ad58-d18774bd5187",
+                "name": "textMessage",
+                "value": "={{ $json.textMessage === null ? $json.type+' enviado pelo '+$json.sender : $json.textMessage }}",
+                "type": "string"
+              },
+              {
+                "id": "c6cda514-714c-4226-bf1f-3ca97d6905dc",
+                "name": "fileMessage",
+                "value": "={{ $json.fileMessage }}",
+                "type": "string"
+              },
+              {
+                "id": "0a57608d-4b0e-46ce-b9bb-9d2f901d62a0",
+                "name": "sender",
+                "value": "={{ $json.sender }}",
+                "type": "string"
+              },
+              {
+                "id": "b1a43a50-4470-4270-8df5-073f86d2b6c2",
+                "name": "createdAt",
+                "value": "={{ $json.createdAt }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d4fa0a18-c3cb-4a5c-a0f9-789f3c588316",
+        "name": "Definir mensagem outros",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          2120,
+          1320
+        ]
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "messages",
+          "include": "allOtherFields",
+          "options": {}
+        },
+        "id": "90f9eb8e-3b4d-4907-9672-00c5ac75b726",
+        "name": "Split Out",
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          720,
+          560
+        ]
+      },
+      {
+        "parameters": {
+          "batchSize": 5,
+          "options": {}
+        },
+        "id": "ef1366cf-6dde-4efa-a998-261da9e9af69",
+        "name": "Loop Over Items",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          960,
+          560
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "95cf9fc7-9d23-4d8d-ad67-5b4faf2d56e2",
+        "name": "Execute Workflow Trigger",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          280,
+          560
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "71ecd3f9-4924-4e3d-bd4f-8a02ddff3e23",
+                "name": "messages",
+                "value": "={{ $json.messages }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "df2a9bf3-a51a-4338-b7c0-c57492624a52",
+        "name": "Edit Fields",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          500,
+          560
+        ]
+      },
+      {
+        "parameters": {
+          "amount": 0.1
+        },
+        "id": "b996db2a-56c3-414d-a26f-f9d3040b05cb",
+        "name": "Wait",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          2560,
+          880
+        ],
+        "webhookId": "3fc3a3c1-c53b-4756-ac20-8e20378f32e4"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "298ff5d3-621c-4799-ac9f-b3336f3f1f41",
+                "name": "type",
+                "value": "={{ $json.messages.type }}",
+                "type": "string"
+              },
+              {
+                "id": "ad70a88a-c382-4a37-ad58-d18774bd5187",
+                "name": "textMessage",
+                "value": "={{ $json.messages.textMessage }}",
+                "type": "string"
+              },
+              {
+                "id": "c6cda514-714c-4226-bf1f-3ca97d6905dc",
+                "name": "fileMessage",
+                "value": "={{ $json.messages.fileMessage }}",
+                "type": "string"
+              },
+              {
+                "id": "0a57608d-4b0e-46ce-b9bb-9d2f901d62a0",
+                "name": "sender",
+                "value": "={{ $json.messages.sender }}",
+                "type": "string"
+              },
+              {
+                "id": "b1a43a50-4470-4270-8df5-073f86d2b6c2",
+                "name": "createdAt",
+                "value": "={{ $json.messages.createdAt }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "1da2372e-a1aa-49c5-b34d-9212aefd8afd",
+        "name": "message",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          1160,
+          900
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.type }}",
+                      "rightValue": "text",
+                      "operator": {
+                        "type": "string",
+                        "operation": "contains"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "text"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "5c2a4155-d041-45ad-9a43-93d5aeb33244",
+                      "leftValue": "={{ $json.type }}",
+                      "rightValue": "audio",
+                      "operator": {
+                        "type": "string",
+                        "operation": "contains"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "audio"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "5520ab20-566d-45e3-adc5-8563bcce09d4",
+                      "leftValue": "={{ $json.type }}",
+                      "rightValue": "image",
+                      "operator": {
+                        "type": "string",
+                        "operation": "contains"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "image"
+              }
+            ]
+          },
+          "options": {
+            "fallbackOutput": "extra",
+            "renameFallbackOutput": "other",
+            "allMatchingOutputs": false
+          }
+        },
+        "id": "e3299b49-b438-4c63-9743-4226dd6321c6",
+        "name": "Tipo de mensagem1",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          1360,
+          900
+        ]
+      },
+      {
+        "parameters": {
+          "resource": "image",
+          "operation": "analyze",
+          "modelId": {
+            "__rl": true,
+            "value": "gpt-4o-mini-2024-07-18",
+            "mode": "list",
+            "cachedResultName": "GPT-4O-MINI-2024-07-18"
+          },
+          "text": "Sobre o que é essa imagem?",
+          "imageUrls": "={{ $json.fileMessage }}",
+          "options": {}
+        },
+        "id": "31230e46-79d4-4a3f-a463-1989065b33a4",
+        "name": "OpenAI1",
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.4,
+        "position": [
+          2000,
+          1100
+        ],
+        "retryOnFail": false,
+        "alwaysOutputData": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "yLVo36ZcKp1mrjQl",
+            "name": "Nascimento Blips - OpenAi"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "numberInputs": 4
+        },
+        "id": "7a6858a1-2e39-4422-a8b5-6696ba20400b",
+        "name": "Merge1",
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3,
+        "position": [
+          2860,
+          880
+        ]
+      }
+    ],
+    "connections": {
+      "Baixar Áudio": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "Transcreve o áudio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Transcreve o áudio": {
+        "main": [
+          [
+            {
+              "node": "Definir mensagem audio1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Agregar mensagens": {
+        "main": [
+          [
+            {
+              "node": "Ordenar mensagens por data/hora",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Definir mensagem audio1": {
+        "main": [
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Definir mensagem texto": {
+        "main": [
+          [
+            {
+              "node": "Merge1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Definir mensagem imagem": {
+        "main": [
+          [
+            {
+              "node": "Merge1",
+              "type": "main",
+              "index": 2
+            }
+          ]
+        ]
+      },
+      "Definir mensagem outros": {
+        "main": [
+          [
+            {
+              "node": "Merge1",
+              "type": "main",
+              "index": 3
+            }
+          ]
+        ]
+      },
+      "Split Out": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [
+            {
+              "node": "Agregar mensagens",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "message",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute Workflow Trigger": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "Split Out",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "Merge1",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "message": {
+        "main": [
+          [
+            {
+              "node": "Tipo de mensagem1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tipo de mensagem1": {
+        "main": [
+          [
+            {
+              "node": "Definir mensagem texto",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Baixar Áudio",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "OpenAI1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Definir mensagem outros",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI1": {
+        "main": [
+          [
+            {
+              "node": "Definir mensagem imagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge1": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Execute Workflow Trigger": [
+        {
+          "json": {
+            "messages": [
+              {
+                "type": "text",
+                "textMessage": "Ok meu amigo",
+                "fileMessage": null,
+                "sender": "Cassio Alves Gonçalves Oliveira",
+                "createdAt": "2024-08-22T12:08:35.376Z"
+              },
+              {
+                "type": "text",
+                "textMessage": "Tá vou entra deixa só dá um tempinho aqui pra mim ver",
+                "fileMessage": null,
+                "sender": "cliente",
+                "createdAt": "2024-08-22T11:46:34.326Z"
+              },
+              {
+                "type": "audio",
+                "textMessage": null,
+                "fileMessage": "https://storage.hyperflow.global/ds/642eb86c0cd915bc8137a05d/2024-08-22/b994ff19-4ba8-4a25-bc2a-0d8e4c3c8ffb/audio.webm",
+                "sender": "Cassio Alves Gonçalves Oliveira",
+                "createdAt": "2024-08-22T11:28:55.979Z"
+              },
+              {
+                "type": "text",
+                "textMessage": "https://we.tl/t-tx9QArFgC0",
+                "fileMessage": null,
+                "sender": "Cassio Alves Gonçalves Oliveira",
+                "createdAt": "2024-08-22T11:28:45.776Z"
+              },
+              {
+                "type": "video",
+                "textMessage": null,
+                "fileMessage": "https://storage.hyperflow.global/ds/642eb86c0cd915bc8137a05d/2024-08-22/4a3a2974-02fb-4272-98cd-cc5c6c383dfc/WhatsAppVideo20240821at20.20.54.mp4",
+                "sender": "Cassio Alves Gonçalves Oliveira",
+                "createdAt": "2024-08-22T11:28:16.096Z"
+              },
+              {
+                "type": "audio",
+                "textMessage": null,
+                "fileMessage": "https://storage.hyperflow.global/ds/642eb86c0cd915bc8137a05d/2024-08-22/a2699769-37e2-471a-b5b6-11af1fbd6962/audio.webm",
+                "sender": "Cassio Alves Gonçalves Oliveira",
+                "createdAt": "2024-08-22T11:27:45.476Z"
+              },
+              {
+                "type": "audio",
+                "textMessage": null,
+                "fileMessage": "https://storage.hyperflow.global/ds/642eb86c0cd915bc8137a05d/2024-08-22/7bcb2ec6-98f4-44a1-9ff2-12d6cda5eb98/audio.webm",
+                "sender": "Cassio Alves Gonçalves Oliveira",
+                "createdAt": "2024-08-22T11:27:26.500Z"
+              },
+              {
+                "type": "audio",
+                "textMessage": null,
+                "fileMessage": "https://storage.hyperflow.global/whatsapp/1648328589259632",
+                "sender": "cliente",
+                "createdAt": "2024-08-21T20:53:32.951Z"
+              },
+              {
+                "type": "audio",
+                "textMessage": null,
+                "fileMessage": "https://storage.hyperflow.global/whatsapp/466207332908517",
+                "sender": "cliente",
+                "createdAt": "2024-08-21T20:51:26.638Z"
+              },
+              {
+                "type": "image",
+                "textMessage": null,
+                "fileMessage": "https://storage.hyperflow.global/whatsapp/2375662289431519",
+                "sender": "cliente",
+                "createdAt": "2024-08-22T11:28:16.096Z"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "versionId": "adf72e99-69a4-4ed0-b91d-a766ad523b0d",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-08-16T17:26:36.981Z",
+        "updatedAt": "2024-08-16T17:26:36.981Z",
+        "id": "eMX5cAtUIRtHSiCV",
+        "name": "Nascimento"
+      }
+    ]
+  }
+}
