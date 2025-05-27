@@ -1,0 +1,280 @@
+{
+  "data": {
+    "createdAt": "2025-01-09T13:05:54.545Z",
+    "updatedAt": "2025-01-09T14:08:32.051Z",
+    "id": "AteQTrrO99rpoouT",
+    "name": "Análise Tokens LLM",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          240,
+          100
+        ],
+        "id": "cd747972-19a3-41ac-9df8-22db9ba72c6b",
+        "name": "When clicking ‘Test workflow’"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "c551f503-63ab-4453-8396-81ca22b6981d",
+                "name": "prompt",
+                "value": "Você receberá um histórico de mensagens formatado como JSON  Cada _id representa um pacote individual de dados enviados por vez  metadados.user_id: número de whatsapp do remetente metadados.user_name: Nome do remetente da mensagem metadados.message_id: Identificador único da mensagem metadados.reply_message_id: o id de outra mensagem a qual esta responde content.message: a mensagem de texto. Se a mensagem tiver algo como \"@34987190906\", significa que essa mensagem está citando outro participante do grupo com o numero especificado content.media_transcription: A transcrição de uma imagem ou audio anexos na mensagem  Faça um relatório sobre a conversa [{\"_id\":\"677ed10c63885ce816036f7f\",\"metadados\":{\"assistant_id\":\"asst_VDW2A4A5aovctGglkhRfSmHj\",\"nome_agente\":\"Juarez\",\"instance_id\":\"fv7pdcv6iswerr4n6av4w\",\"group_id\":\"120363297223243753\",\"group_name\":\"iA Customer Success Blips\",\"user_id\":\"553497065593\",\"user_name\":\"Fernando Florencio\",\"message_id\":\"3EB003FAF2BEBDAAC444A8\",\"message_type\":\"text\"},\"content\":{\"message\":\"me informa se há boleto de suprimentos para o CNPJ 95795068000110\"},\"time\":{\"data\":\"08/01/2025\",\"hora\":\"16:24:59\",\"timestamp\":\"2025-01-08T16:24:59.040-03:00\"}},{\"_id\":\"677ed12b63885ce816036f81\",\"metadados\":{\"assistant_id\":\"asst_VDW2A4A5aovctGglkhRfSmHj\",\"nome_agente\":\"Juarez\",\"instance_id\":\"fv7pdcv6iswerr4n6av4w\",\"group_id\":\"120363297223243753\",\"group_name\":\"iA Customer Success Blips\",\"user_id\":\"551231973176\",\"user_name\":\"Salvador - Blips\",\"message_id\":\"3EB08E947D53DD26C2DD3A\",\"message_type\":\"text\"},\"content\":{\"message\":\"Não há boletos de suprimentos pendentes para o CNPJ 95795068000110. Todos os títulos financeiros encontrados estão com status \\\"PAGO\\\". 🎉Se precisar de mais alguma informação, é só avisar!\"},\"time\":{\"data\":\"08/01/2025\",\"hora\":\"16:25:29\",\"timestamp\":\"2025-01-08T16:25:29.716-03:00\"}}] Resumindo os principais pontos, e caso contenha link de mídia evidencieo-o naquele ponto da conversa, assim como a transcrição, se um trecho for uma transcrição de um audio considere como um texto, mas coloque ele entre [A]  Também faça uma seção chamada *Aprendizado* onde você vai listar as informações técnicas em tópicos que aprendeu lendo a conversa. Separe os conhecimentos técncios (informações sobre equipamentos, técnicas e suas operações) dos conhecimentos sobre as pessoas e o grupo  Para cada informação aprendida você deverá categorizá-la entre uma das categorias abaixo, se não se encaixar em nenhuma considere a categoria \"Geral\"   - Ensinamentos_Plotter_Recorte - Ensinamentos_Plotter_Impressao - Ensinamentos_CNC - Ensinamentos_Fiber - Ensinamentos_Escavadeira - Ensinamentos_Fitness_TOPSTEP - Ensinamentos_HTM_Stimulus Face Maxx - Ensinamentos_HTM_Stimullus R - Ensinamentos_HTM_Effect - Ensinamentos_HTM_Light Pulse - Ensinamentos_KLD_HERTIX SMART - Ensinamentos_KLD_KAVYS - Ensinamentos_KLD_HYGIADERMO VACUO - Ensinamentos_KLD_ENDOPHOTON ESTHETIC - Ensinamentos_KLD_Hygia - Ensinamentos_KLD_MANTHUS - Ensinamentos_KLD_Artix - Ensinamentos_MaxiShape_MaxiFlash G2 - Ensinamentos_BIOSET_OMNILIGHT - Ensinamentos_BIOSET_KryoPlatten - Ensinamentos_Sorvete_Vuze_Artic - Ensinamentos_Fitness_ONTRACK - Ensinamentos_KLD_Start Clinic  Os aprendizados devem sempre estar no afirmativo, enumerados numa lista contendo a pergunta que foi feita e a resposta e não devem citar pessoas   Exemplo:  *Aprendizados*  #Ensinamentos_Plotter_Recorte  1 - Pergunta: Qual a temperatura de operação da plotter de recorte? Resposta: A ploter recorte deve operar a 60c",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          340,
+          -300
+        ],
+        "id": "83789c53-d451-404c-889c-e7e79d81c87f",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "c551f503-63ab-4453-8396-81ca22b6981d",
+                "name": "size",
+                "value": "={{ $json.prompt.length }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          560,
+          -300
+        ],
+        "id": "af1719d5-479e-4217-a798-4f747cbbf860",
+        "name": "Edit Fields1"
+      },
+      {
+        "parameters": {
+          "modelId": {
+            "__rl": true,
+            "value": "gpt-4o-mini",
+            "mode": "list",
+            "cachedResultName": "GPT-4O-MINI"
+          },
+          "messages": {
+            "values": [
+              {
+                "content": "=Faça uma mensagem de bom dia",
+                "role": "assistant"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "c792603f-088d-4f36-bc7f-935968f0d0bb",
+        "name": "4o mini",
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.4,
+        "position": [
+          680,
+          0
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "tuJNruAgnnM96by3",
+            "name": "Open AI - Suporte Técnico"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "943b3895-e3b1-4044-9ecc-ea43924c9f73",
+                "name": "teste",
+                "value": "={{ $json.message.content }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1400,
+          -120
+        ],
+        "id": "4572856c-1a34-475f-96dd-1a61636e20f6",
+        "name": "Edit Fields2"
+      },
+      {
+        "parameters": {
+          "modelId": {
+            "__rl": true,
+            "value": "gpt-4o-mini",
+            "mode": "list",
+            "cachedResultName": "GPT-4O-MINI"
+          },
+          "messages": {
+            "values": [
+              {
+                "content": "=Faça uma mensagem de boa noite",
+                "role": "assistant"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "c0ded142-3c60-429c-a3a7-be7efe292c50",
+        "name": "4o mini1",
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.4,
+        "position": [
+          680,
+          200
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "tuJNruAgnnM96by3",
+            "name": "Open AI - Suporte Técnico"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "943b3895-e3b1-4044-9ecc-ea43924c9f73",
+                "name": "teste",
+                "value": "={{ $json.message.content }}",
+                "type": "string"
+              },
+              {
+                "id": "5ea4f552-7c37-4571-be73-fad2612f5130",
+                "name": "",
+                "value": "={{ $('4o mini').item.json.finish_reason }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1420,
+          120
+        ],
+        "id": "ab702f1a-4a41-4ef2-a6b6-b2174f45724a",
+        "name": "Edit Fields3"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3,
+        "position": [
+          1140,
+          120
+        ],
+        "id": "3b10ffe5-4533-4cbe-94e3-b447877ddd30",
+        "name": "Merge"
+      }
+    ],
+    "connections": {
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "4o mini",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "4o mini1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields1": {
+        "main": [
+          []
+        ]
+      },
+      "4o mini": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "4o mini1": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {},
+    "versionId": "69f289b1-4faa-44f2-a94f-8267170b4d90",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-08-08T16:17:37.968Z",
+        "updatedAt": "2024-08-08T16:17:37.968Z",
+        "id": "tv6Ov4En3lT5oHhf",
+        "name": "pedro"
+      }
+    ]
+  }
+}
