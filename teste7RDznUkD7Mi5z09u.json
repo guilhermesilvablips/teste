@@ -1,0 +1,578 @@
+{
+  "data": {
+    "createdAt": "2024-12-29T19:43:51.218Z",
+    "updatedAt": "2025-01-17T20:18:59.945Z",
+    "id": "7RDznUkD7Mi5z09u",
+    "name": "Refazer Análise Documentos",
+    "active": true,
+    "nodes": [
+      {
+        "parameters": {
+          "jsCode": "const resultado = $('Webhook').first().json.body.resultado\n\nfunction buildCampo(nomeDeCampo) {\n  const encontrado = resultado.find(obj => obj[nomeDeCampo])\n  if (!encontrado) {\n    return {}\n  }\n\n  const { fileType, url, name } = encontrado[nomeDeCampo].valor || {}\n\n  let mime_type\n  if (fileType === 'file') {\n    mime_type = name ? name.split('.').pop() : 'unknown'\n  } else if (fileType === 'image') {\n    mime_type = 'png'\n  } else if (fileType === 'audio') {\n    mime_type = 'audio'\n  } else {\n    mime_type = 'unknown'\n  }\n\n  return [{ url, mime_type }]\n}\n\nconst assinaturaObj = resultado.find(obj => obj['Assinatura'])\nconst audio = (assinaturaObj && assinaturaObj['Assinatura'] && assinaturaObj['Assinatura'].valor)\n  ? assinaturaObj['Assinatura'].valor.url\n  : null\n\nconst saida = {\n  form : {\n    frente_documento: buildCampo('FrenteDoc'),\n    verso_documento: buildCampo('VersoDoc'),\n    endereco_empresa: buildCampo('EnderecoEmp'),\n    endereco_responsavel: buildCampo('EnderecoResp'),\n    selfie: buildCampo('Selfie'),\n  },\n  audio: audio,\n  assinatura: $('Webhook').first().json.body.assinatura,\n  UrlDocFrente: { url: $('Get Card').first().json.result.item.ufCrm59UrlDocFrente },\n  UrlDocVerso: { url: $('Get Card').first().json.result.item.ufCrm59UrlDocVerso },\n  contrato: $('Webhook').first().json.body.contrato,\n  item_id: $('Webhook').first().json.body.item_id,\n  linha: $('Webhook').first().json.body.linha,\n  recoleta: true,\n  card_onboarding: $('Webhook').first().json.body.card_onboarding,\n  token: $('Gera token').first().json.accessToken,\n}\n\nif (saida.form.verso_documento[0]?.url) {\n  saida.UrlDocVerso.url = saida.form.verso_documento[0].url\n}\n\nif (saida.form.frente_documento[0]?.url) {\n  saida.UrlDocFrente.url = saida.form.frente_documento[0].url\n}\n\nreturn { body: saida }"
+        },
+        "id": "8b1ebde6-2340-45e6-afc6-3c44e08367ff",
+        "name": "Code",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -520,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "SHEEYiaaLupegow2",
+            "mode": "list",
+            "cachedResultName": "Analise de Documentos - Identificação"
+          },
+          "options": {}
+        },
+        "id": "db9efc00-6547-469a-a97a-09f254990ff0",
+        "name": "Execute - FrenteDoc",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          1100,
+          60
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "3xmF6UV839aRoP4w",
+            "mode": "list",
+            "cachedResultName": "Analise de Documentos - Face Match"
+          },
+          "options": {}
+        },
+        "id": "23ccf1cd-91b7-4361-bb5f-8e25c2b6f868",
+        "name": "Execute - Selfie",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          1100,
+          540
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "LDaxsn4S9Xx0NuM6",
+            "mode": "list",
+            "cachedResultName": "Analise de Documentos - Endereço Pessoa Física"
+          },
+          "options": {}
+        },
+        "id": "7150fe6b-7d02-4708-80f1-150064247e99",
+        "name": "Execute - EnderecoResp",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          1100,
+          380
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "TiIhb5cxg58hhcLi",
+            "mode": "list",
+            "cachedResultName": "Analise de Documentos - Endereço Pessoa Jurídica"
+          },
+          "options": {}
+        },
+        "id": "d5c4501d-03f2-48c1-a6dc-3e5d01a16e98",
+        "name": "Execute - EnderecoEmp",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          1100,
+          220
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "ry1mnJtAcRvIQn7b",
+            "mode": "list",
+            "cachedResultName": "Análise de Assinatura"
+          },
+          "options": {}
+        },
+        "id": "76121809-8c11-4fb4-895e-e5c06c3de1c7",
+        "name": "Execute - Assinatura",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          1100,
+          700
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const FrenteDoc = $('Execute - FrenteDoc').first().json.output\nconst EnderecoEmp = $('Execute - EnderecoEmp').first().json.output\nconst EnderecoResp = $('Execute - EnderecoResp').first().json.output\nconst Selfie = $('Execute - Selfie').first().json.output\nconst Assinatura = $('Execute - Assinatura').first().json.output\n\nfunction checkValue(doc) {\n  if (doc.resultado === true) return true\n  if (doc.resultado === false && doc.vazio === true) return true\n  return false\n}\n\nconst nodes = [\n  { nome: 'FrenteDoc', data: FrenteDoc },\n  { nome: 'EnderecoEmp', data: EnderecoEmp },\n  { nome: 'EnderecoResp', data: EnderecoResp },\n  { nome: 'Selfie', data: Selfie },\n  { nome: 'Assinatura', data: Assinatura }\n]\n\nconst results = {}\nfor (const node of nodes) {\n  results[node.nome] = checkValue(node.data)\n}\n\nconst validacaoFinal = Object.values(results).every(Boolean)\n\nlet justificativa = validacaoFinal\n  ? 'Aprovação automática realizada com sucesso pela Clara.'\n  : 'Reprovação automática pela Clara, necessária análise manual.'\n\nfor (const node of nodes) {\n  const nomeDoCampo = node.nome\n  const ehTrue = results[nomeDoCampo]\n  justificativa += `\\n${nomeDoCampo}: ${ehTrue}`\n  if (!ehTrue && node.data.justificativa) {\n    justificativa += ` - ${node.data.justificativa}`\n  }\n}\n\nconst saida = {\n  ...results,\n  validacaoFinal,\n  justificativa\n}\n\nreturn saida\n"
+        },
+        "id": "c58b200e-fbf2-45ce-a9c2-fedbb1611587",
+        "name": "Resultados",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          820,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "6c871c86-e720-49ac-b2d3-fb564953658e",
+        "name": "Sucesso?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          820,
+          340
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "06faeefe-2077-4d8f-ac60-bf50986cec0f",
+                "name": "frente-documento",
+                "value": "={{ $('Code').first().json.FrenteDoc.isEmpty() ? null : $('Code').first().json.FrenteDoc.dados.url }}",
+                "type": "string"
+              },
+              {
+                "id": "a8fdc8fe-9e43-4ca6-bea6-d1436ee0e1b2",
+                "name": "comprovante-de-residencia",
+                "value": "={{ $('Code').first().json.EnderecoEmp.isEmpty() ? null : $('Code').first().json.EnderecoEmp.dados.url }}",
+                "type": "string"
+              },
+              {
+                "id": "258a27c0-197f-4338-9e6b-c606eb1e8c2a",
+                "name": "comprovante-de-residencia-representante",
+                "value": "={{ $('Code').first().json.EnderecoResp.isEmpty() ? null : $('Code').first().json.EnderecoResp.dados.url }}",
+                "type": "string"
+              },
+              {
+                "id": "580c72e1-0a4a-4a43-a323-4a1e455681a6",
+                "name": "selfie",
+                "value": "={{ $('Code').first().json.Selfie.isEmpty() ? null : $('Code').first().json.Selfie.dados.url }}",
+                "type": "string"
+              },
+              {
+                "id": "eb178d04-72f0-477a-96c0-7974b1b3000f",
+                "name": "contrato",
+                "value": "={{ $('Webhook').first().json.body.contrato }}",
+                "type": "string"
+              },
+              {
+                "id": "d0817433-37b7-4c51-a604-156aeb845a68",
+                "name": "token",
+                "value": "={{ $('Webhook').first().json.body.dados.token }}",
+                "type": "string"
+              },
+              {
+                "id": "c86dbff0-9047-4f15-98ee-b49ea0755ddf",
+                "name": "item_id",
+                "value": "={{ $('Webhook').first().json.body.item_id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "4698aeaf-0f3d-4bee-b908-7ec45dbaa1dd",
+        "name": "Urls + Texto + Contrato + Token + Id + Linha",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          560,
+          660
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips-backend-staging-25jdzzxqga-uc.a.run.app/v2/user/login/624b373210c6fc7fcb4b7e0b",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\n    \"email\": \"joao.freitas@blips.com.br\",\n    \"password\": \"BlipsAI7\"\n}",
+          "options": {}
+        },
+        "id": "ee4b9fe7-dc2f-4937-9def-3b821c85c35d",
+        "name": "Gera token",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -720,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "c256e6f4-7fed-4558-b017-e710f76ef6a9",
+                "name": "Audio",
+                "value": "={{ $json.Assinatura.dados.url }}",
+                "type": "string"
+              },
+              {
+                "id": "c6b0183e-bda9-4fe1-bbf5-3676a73dea80",
+                "name": "Assinatura",
+                "value": "={{ $('Webhook').first().json.body.assinatura }}",
+                "type": "string"
+              },
+              {
+                "id": "fa36fc08-e3d6-40ac-8e37-6956ce0697b5",
+                "name": "contrato",
+                "value": "={{ $('Webhook').first().json.body.contrato }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "a639c1c5-b70d-40a3-a077-0a877dfdddd6",
+        "name": "Assinatura",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          160,
+          660
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7df34510-7ab5-4e53-a18d-f1b92b608f28",
+                "name": "Selfie",
+                "value": "={{ $json.Selfie.dados }}",
+                "type": "object"
+              },
+              {
+                "id": "bc30926e-075e-4fbb-9a48-573c251d5981",
+                "name": "Documento.url",
+                "value": "={{ $json.UrlDoc }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "9956cd5e-7ded-4842-954d-891e50b98de9",
+        "name": "Selfie",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          160,
+          500
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "392e27c7-47fb-47d1-a9ef-e815da16dc14",
+                "name": "dados",
+                "value": "={{ $json.EnderecoResp.dados }}",
+                "type": "object"
+              },
+              {
+                "id": "2522437d-6533-4c50-8fea-2cf5d2e9190c",
+                "name": "contrato",
+                "value": "={{ $('Webhook').first().json.body.contrato }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "703a878e-213a-4b8a-9725-a435994846b4",
+        "name": "EnderecoResp",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          160,
+          340
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7df34510-7ab5-4e53-a18d-f1b92b608f28",
+                "name": "dados",
+                "value": "={{ $json.EnderecoEmp.dados }}",
+                "type": "object"
+              },
+              {
+                "id": "419a1282-250d-4ecf-b054-fbe0865b2114",
+                "name": "contrato",
+                "value": "={{ $('Webhook').first().json.body.contrato }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "03ced27b-5f65-47eb-90b7-b4f41de18b47",
+        "name": "EnderecoEmp",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          160,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7f61861b-dd81-42c3-b450-7139636e63b3",
+                "name": "dados",
+                "value": "={{ $json.FrenteDoc.dados }}",
+                "type": "object"
+              },
+              {
+                "id": "539de5b4-c31a-45aa-91d2-a134e7ea0f02",
+                "name": "contrato",
+                "value": "={{ $('Webhook').first().json.body.contrato }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "3750125d-c79f-4097-8473-b229252ad0f6",
+        "name": "FrenteDoc",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          160,
+          20
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "oXuqyVZjrnGmNbrt",
+            "mode": "list",
+            "cachedResultName": "Análise de Documentos"
+          },
+          "options": {}
+        },
+        "id": "7ce4325b-dfac-4b10-8350-f9caf1648878",
+        "name": "Execute Workflow",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.1,
+        "position": [
+          -320,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "reanalise-clara",
+          "options": {}
+        },
+        "id": "10eeb271-6b32-4c9d-a8ae-2147ed0973c7",
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -1160,
+          300
+        ],
+        "webhookId": "55ad77b8-c727-417b-833f-7eec1b7343bb"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.item.get",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "entityTypeId",
+                "value": "1080"
+              },
+              {
+                "name": "id",
+                "value": "={{ $('Webhook').first().json.body.item_id }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "63a727ad-96b1-4b2a-8ddb-c44f0bc810f0",
+        "name": "Get Card",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -920,
+          300
+        ]
+      }
+    ],
+    "connections": {
+      "Execute - Assinatura": {
+        "main": [
+          [
+            {
+              "node": "Urls + Texto + Contrato + Token + Id + Linha",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gera token": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "Execute Workflow",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Get Card",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get Card": {
+        "main": [
+          [
+            {
+              "node": "Gera token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Webhook": [
+        {
+          "json": {
+            "headers": {
+              "host": "n8n-dev.blips-labs.com",
+              "content-length": "489",
+              "accept": "application/json",
+              "content-type": "application/json",
+              "x-forwarded-for": "54.232.37.49",
+              "x-forwarded-host": "n8n-dev.blips-labs.com",
+              "x-forwarded-proto": "https",
+              "x-railway-request-id": "V_76iPejTGekRm_iPAr5lQ_1002618245",
+              "x-real-ip": "54.232.37.49",
+              "x-request-start": "1737136077775",
+              "accept-encoding": "gzip"
+            },
+            "params": {},
+            "query": {},
+            "body": {
+              "contrato": "677fe808c5e8d30e215f884a",
+              "assinatura": "",
+              "card_onboarding": "107367",
+              "resultado": [
+                {
+                  "Selfie": {
+                    "valor": {
+                      "fileType": "image",
+                      "url": "https://storage.hyperflow.global/whatsapp/1119219826656951"
+                    }
+                  }
+                },
+                {
+                  "EnderecoResp": {
+                    "valor": {
+                      "fileType": "file",
+                      "url": "https://storage.hyperflow.global/whatsapp/611059234709536",
+                      "name": "1VIA-00020451188161.pdf"
+                    }
+                  }
+                },
+                {
+                  "FrenteDoc": {
+                    "valor": {
+                      "fileType": "image",
+                      "url": "https://storage.hyperflow.global/whatsapp/567141356148290"
+                    }
+                  }
+                }
+              ],
+              "item_id": "95",
+              "UrlDoc": ""
+            },
+            "webhookUrl": "https://n8n-dev.blips-labs.com/webhook/reanalise-clara",
+            "executionMode": "production"
+          }
+        }
+      ]
+    },
+    "versionId": "6a4fd553-a411-4894-b2d7-552bac9d0fa4",
+    "triggerCount": 1,
+    "tags": [
+      {
+        "createdAt": "2024-11-22T13:13:26.514Z",
+        "updatedAt": "2024-11-22T13:13:26.514Z",
+        "id": "owb3cfmzFRbqjP06",
+        "name": "Clara"
+      }
+    ]
+  }
+}
