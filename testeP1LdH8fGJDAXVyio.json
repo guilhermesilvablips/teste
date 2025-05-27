@@ -1,0 +1,193 @@
+{
+  "data": {
+    "createdAt": "2024-06-03T11:03:29.452Z",
+    "updatedAt": "2025-05-08T11:53:58.916Z",
+    "id": "P1LdH8fGJDAXVyio",
+    "name": "Suporte Neurônio - func - buscar_telemetria_uso",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "response",
+          "options": {}
+        },
+        "id": "5684b694-afb3-4007-b4b4-626a352d4127",
+        "name": "Aggregate",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          640,
+          1320
+        ],
+        "alwaysOutputData": true,
+        "executeOnce": false
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "select dia as data_hora, metros_impressos as valor, 'metros' as tipo\nfrom `IOT.MetrosImpressosDia`\nwhere numero_serie = '{{ $json.properties.function.arguments.parseJson()['id'] }}'\nor numero_serie = 'blips_{{ $json.properties.function.arguments.parseJson()['id'] }}'\nand metros_impressos != 0\norder by data_hora desc",
+          "options": {}
+        },
+        "id": "b2626890-9502-430d-825c-5dcddc6ddbf1",
+        "name": "Google BigQuery1",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2,
+        "position": [
+          -80,
+          1440
+        ],
+        "notesInFlow": false,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "select data_hora, nome_metrica, valor, 'minutos' as tipo\nfrom `IOT.EstatisticasUso`\nwhere id_dispositivo = '{{ $json.id }}'\nor id_dispositivo = 'blips_{{ $json.id }}'\norder by data_hora desc",
+          "options": {}
+        },
+        "id": "8a8060d9-00ee-4ddb-bbbd-a11392c83e71",
+        "name": "Google BigQuery",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2,
+        "position": [
+          -80,
+          1180
+        ],
+        "alwaysOutputData": true,
+        "executeOnce": false,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "id": "943c5161-3274-4c86-8064-854d02963185",
+        "name": "Merge",
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 2.1,
+        "position": [
+          360,
+          1320
+        ]
+      },
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "id"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -340,
+          1320
+        ],
+        "id": "b4d8ca36-f66d-4ebb-ac66-a0b0c1f09b81",
+        "name": "Execute"
+      }
+    ],
+    "connections": {
+      "Google BigQuery1": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Google BigQuery": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          [
+            {
+              "node": "Aggregate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute": {
+        "main": [
+          [
+            {
+              "node": "Google BigQuery",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Google BigQuery1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Execute": [
+        {
+          "json": {
+            "id": "blips_6F5C6D"
+          }
+        }
+      ]
+    },
+    "versionId": "a8b03814-fc14-4921-b20f-6da3c18fbf26",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-05-08T01:53:37.021Z",
+        "updatedAt": "2024-05-08T01:53:37.021Z",
+        "id": "HJrJfNUAaBoLOV2q",
+        "name": "Suporte Neuronio"
+      }
+    ]
+  }
+}
