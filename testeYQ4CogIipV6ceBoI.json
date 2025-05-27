@@ -1,0 +1,1067 @@
+{
+  "data": {
+    "createdAt": "2025-03-24T20:24:20.201Z",
+    "updatedAt": "2025-04-16T20:15:49.497Z",
+    "id": "YQ4CogIipV6ceBoI",
+    "name": "Mock Unit Test - Clara",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "inputSource": "passthrough"
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -540,
+          80
+        ],
+        "id": "21f8cac7-f635-4a86-98d4-a9bd77af2ce4",
+        "name": "Execute"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "1f4d29f8-91a4-41a1-aa4b-23ba24178749",
+                "leftValue": "={{ $json.mensagem }}",
+                "rightValue": "limpar_thread",
+                "operator": {
+                  "type": "string",
+                  "operation": "contains"
+                }
+              },
+              {
+                "id": "aa6b04e8-8cf6-4046-afa4-3de8e1d9bc6d",
+                "leftValue": "1",
+                "rightValue": "2",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -320,
+          80
+        ],
+        "id": "5d06104c-b430-4eae-9f3c-a226b6033dd7",
+        "name": "Limpar Thread?"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/threads",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"Inicio\"\n    },\n    {\n      \"role\": \"assistant\",\n      \"content\": \"Inicio\"\n    }\n  ]\n}",
+          "options": {}
+        },
+        "id": "4094625f-8d2b-4239-bfa1-c8df404c6632",
+        "name": "Criar Thread",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          120,
+          -120
+        ],
+        "retryOnFail": false,
+        "maxTries": 5,
+        "credentials": {
+          "openAiApi": {
+            "id": "utH6piS62wyaw3eE",
+            "name": "1Clara - DEV"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const lista = [];\nconst n = 10;\n\nfor (let i = 0; i < n; i++) {\n  lista.push({});\n}\n\nreturn lista;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -100,
+          -120
+        ],
+        "id": "8a3cb6e7-7f3a-4583-b6bf-d15114df0610",
+        "name": "Code"
+      },
+      {
+        "parameters": {
+          "resource": "assistant",
+          "assistantId": {
+            "__rl": true,
+            "value": "asst_sBCz7FeoZ25L8PTtzyai7nU6",
+            "mode": "list",
+            "cachedResultName": "Clara - Dev - Processamento"
+          },
+          "prompt": "define",
+          "text": "=<MetaDados>\nHoje é {{ $now.toLocaleString({weekday: 'long'})}} dia {{ $now.format('dd/MM/yyyy - HH:mm:ss') }} no horário de brasília\n</MetaDados>\n\n{{ $('Execute').item.json.mensagem }}",
+          "memory": "threadId",
+          "threadId": "={{ $json.thread }}",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.8,
+        "position": [
+          600,
+          280
+        ],
+        "id": "3c1995e2-a9e2-47b3-8577-be8498e111d7",
+        "name": "OpenAI",
+        "credentials": {
+          "openAiApi": {
+            "id": "utH6piS62wyaw3eE",
+            "name": "1Clara - DEV"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "toolDescription": "Função utilizada para buscar os dados da negociação e os dados da plataforma com base no número do contrato ou cnpj do cliente.",
+          "method": "POST",
+          "url": "https://n8n-dev.blips-labs.com/webhook/dados-negoatiation",
+          "sendBody": true,
+          "parametersBody": {
+            "values": [
+              {
+                "name": "contrato",
+                "valueProvider": "modelOptional"
+              },
+              {
+                "name": "cnpj",
+                "valueProvider": "modelOptional"
+              }
+            ]
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+        "typeVersion": 1.1,
+        "position": [
+          600,
+          560
+        ],
+        "id": "e7db85dd-635e-4088-b959-70b6a011f144",
+        "name": "buscar_negotiation"
+      },
+      {
+        "parameters": {
+          "toolDescription": "Função utilizada para buscar materiais de ajuda ou vídeos do blips educa dos equipamentos ou de empreendedorismo.",
+          "method": "POST",
+          "url": "https://n8n-dev.blips-labs.com/webhook/blips_educa",
+          "sendBody": true,
+          "parametersBody": {
+            "values": [
+              {
+                "name": "tema"
+              }
+            ]
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+        "typeVersion": 1.1,
+        "position": [
+          600,
+          700
+        ],
+        "id": "84680ca7-33b4-4547-ae95-b3da16c286a8",
+        "name": "buscar_blips_educa"
+      },
+      {
+        "parameters": {
+          "toolDescription": "Função utilizada para buscar os termos do contrato cliente com base no número do contrato ou cnpj do cliente. ",
+          "method": "POST",
+          "url": "https://n8n-dev.blips-labs.com/webhook/termos_contrato",
+          "sendBody": true,
+          "parametersBody": {
+            "values": [
+              {
+                "name": "contrato"
+              }
+            ]
+          },
+          "optimizeResponse": true
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+        "typeVersion": 1.1,
+        "position": [
+          600,
+          400
+        ],
+        "id": "051198ba-aa4a-4932-be1d-b26015b0d808",
+        "name": "buscar_termos_contrato"
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "collection": "Testes",
+          "updateKey": "_id",
+          "fields": "thread",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1.1,
+        "position": [
+          860,
+          -120
+        ],
+        "id": "c469ff3a-d04b-4d6a-9635-afd14b5c413e",
+        "name": "Atualizar Threads",
+        "credentials": {
+          "mongoDb": {
+            "id": "hF6byBLB2D1QHIGR",
+            "name": "Clara"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "fieldsToAggregate": {
+            "fieldToAggregate": [
+              {
+                "fieldToAggregate": "id",
+                "renameField": true,
+                "outputFieldName": "thread"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          340,
+          -120
+        ],
+        "id": "d260752c-f332-4679-aec4-eee4c321ee69",
+        "name": "Aggregate"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "1bba99a4-6fb5-4cae-b783-e9108990383f",
+                "name": "_id",
+                "value": "=67e1cc4b25536cba88d84eb1",
+                "type": "string"
+              },
+              {
+                "id": "1a06a42f-0f24-4119-9b77-218d0ee6f028",
+                "name": "thread",
+                "value": "={{ $json.thread }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          600,
+          -120
+        ],
+        "id": "92a45ff5-c01e-48b1-9d20-217f62f9fcde",
+        "name": "Args"
+      },
+      {
+        "parameters": {
+          "collection": "Testes",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1.1,
+        "position": [
+          -100,
+          260
+        ],
+        "id": "964b770d-5185-425d-965b-589be664ecdb",
+        "name": "MongoDB",
+        "credentials": {
+          "mongoDb": {
+            "id": "hF6byBLB2D1QHIGR",
+            "name": "Clara"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "thread",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          120,
+          260
+        ],
+        "id": "a8988786-70f4-4740-b581-a1311ecf016c",
+        "name": "Split Out"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ed3cb56b-bd80-4b34-baf8-0df7a6dee1d6",
+                "name": "BOT_ID",
+                "value": "2621",
+                "type": "string"
+              },
+              {
+                "id": "f5a78dea-ff72-4e62-8b5c-516c720a1dab",
+                "name": "CLIENT_ID",
+                "value": "f1gggum2s6c16u0zc6eoe760b4lupycp",
+                "type": "string"
+              },
+              {
+                "id": "a5dfb187-69c1-4915-bddc-72ca18e7e249",
+                "name": "DIALOG_ID",
+                "value": "2491",
+                "type": "string"
+              },
+              {
+                "id": "26cb7dd2-8541-488e-8c1e-6a7fa062589f",
+                "name": "MESSAGE",
+                "value": "={{ $runIndex + 1 }}\n{{ $json.data }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1580,
+          120
+        ],
+        "id": "d85b3069-bf04-4ee7-b833-b52bb2ccda85",
+        "name": "setBitrix24Message"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "let alternar = true\n\nconst texto = $json.resposta\nconst resultado = texto.replace(/\\*\\*/g, () => {\n    if (alternar) {\n        alternar = false;\n        return \"[B]\";\n    } else {\n        alternar = true;\n        return \"[/B]\";\n    }\n})\n\nreturn {json: {data:resultado}}"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1340,
+          120
+        ],
+        "id": "4245718c-b870-444e-a028-651f7141b615",
+        "name": "Formata Bitrix"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $('Execute').first().json.resposta }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ $json }}",
+          "options": {}
+        },
+        "id": "2d4a5103-503a-4fd3-979e-5a6209bfda95",
+        "name": "Resposta - Bitrix",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2100,
+          380
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "56f4fa2d-bb29-440c-a1b9-c95f4d8181dc",
+                "name": "resposta",
+                "value": "={{ $json.output }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1100,
+          120
+        ],
+        "id": "7ee734b8-dc45-443e-814a-88d30cb73558",
+        "name": "Resposta"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d0dc4234-4d8e-4008-9263-33668682bb31",
+                "name": "resposta",
+                "value": "Threads criadas",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1100,
+          -120
+        ],
+        "id": "cf78c5e7-5d62-48dd-b2d3-faf881aad8d6",
+        "name": "Mensagem Limpa"
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          340,
+          260
+        ],
+        "id": "7f6ebcba-75d5-4801-8e82-a01ddc002311",
+        "name": "Loop Over Items"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ed3cb56b-bd80-4b34-baf8-0df7a6dee1d6",
+                "name": "BOT_ID",
+                "value": "2621",
+                "type": "string"
+              },
+              {
+                "id": "f5a78dea-ff72-4e62-8b5c-516c720a1dab",
+                "name": "CLIENT_ID",
+                "value": "f1gggum2s6c16u0zc6eoe760b4lupycp",
+                "type": "string"
+              },
+              {
+                "id": "a5dfb187-69c1-4915-bddc-72ca18e7e249",
+                "name": "DIALOG_ID",
+                "value": "2491",
+                "type": "string"
+              },
+              {
+                "id": "26cb7dd2-8541-488e-8c1e-6a7fa062589f",
+                "name": "MESSAGE",
+                "value": "={{ $json.data }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1580,
+          -120
+        ],
+        "id": "4613bc42-0e41-452d-809b-7143d3bc4351",
+        "name": "setBitrix24Message1"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "let alternar = true\n\nconst texto = $json.resposta\nconst resultado = texto.replace(/\\*\\*/g, () => {\n    if (alternar) {\n        alternar = false;\n        return \"[B]\";\n    } else {\n        alternar = true;\n        return \"[/B]\";\n    }\n})\n\nreturn {json: {data:resultado}}"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1340,
+          -120
+        ],
+        "id": "bc75671c-beb1-402f-8f8d-d68fd6493bb0",
+        "name": "Formata Bitrix1"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $('Execute').first().json.resposta }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ $json }}",
+          "options": {}
+        },
+        "id": "30814494-c40c-4f1e-9968-4ee56c7a90bd",
+        "name": "Resposta - Bitrix1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1820,
+          -120
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "f51d259a-6bef-49b8-8f2a-e966e8d96248",
+                "leftValue": "={{$json.data[0].status}}",
+                "rightValue": "completed",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "88fc4f30-3ae0-47e9-a11c-2c843e603496",
+                "leftValue": "={{$json.data[0].status}}",
+                "rightValue": "failed",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "bec38f44-f57a-45ff-acfa-da798707d0b9",
+                "leftValue": "={{$json.data[0].status}}",
+                "rightValue": "expired",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "de544920-fd7a-4a48-acb5-e3dc242f53de",
+                "leftValue": "={{$json.data[0].status}}",
+                "rightValue": "canceled",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "6c66d279-66f6-4ce8-a694-d4811a49ebc8",
+                "leftValue": "={{$json.data[0].status}}",
+                "rightValue": "incomplete",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1340,
+          340
+        ],
+        "id": "a2562b85-68d1-416b-9ab0-34f385e2d694",
+        "name": "Já terminou a run?"
+      },
+      {
+        "parameters": {
+          "amount": 2
+        },
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          1580,
+          380
+        ],
+        "id": "dd35b300-57b4-4aca-b80e-294c4297aa12",
+        "name": "Wait",
+        "webhookId": "4e0dd669-c8e6-4d20-aa26-bb2e42ff3ce2"
+      },
+      {
+        "parameters": {
+          "url": "=https://api.openai.com/v1/threads/{{ $json.thread }}/runs",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "f517181c-72be-482e-bb33-64265902a9bf",
+        "name": "Lista Runs",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          1100,
+          360
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "utH6piS62wyaw3eE",
+            "name": "1Clara - DEV"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "884b84df-c745-448b-bba5-4de411a29f71",
+                "name": "thread",
+                "value": "={{ $('OpenAI').item.json.thread }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1840,
+          380
+        ],
+        "id": "21868cb8-1f41-487a-86db-1c98cf3c3417",
+        "name": "Thread"
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          600,
+          100
+        ],
+        "id": "29250011-d0a0-4a81-bfce-7ec3978d6537",
+        "name": "done",
+        "executeOnce": true
+      }
+    ],
+    "connections": {
+      "Execute": {
+        "main": [
+          [
+            {
+              "node": "Limpar Thread?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Limpar Thread?": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "MongoDB",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Criar Thread": {
+        "main": [
+          [
+            {
+              "node": "Aggregate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "Criar Thread",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI": {
+        "main": [
+          [
+            {
+              "node": "Resposta",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Lista Runs",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "buscar_negotiation": {
+        "ai_tool": [
+          [
+            {
+              "node": "OpenAI",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "buscar_blips_educa": {
+        "ai_tool": [
+          [
+            {
+              "node": "OpenAI",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "buscar_termos_contrato": {
+        "ai_tool": [
+          [
+            {
+              "node": "OpenAI",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aggregate": {
+        "main": [
+          [
+            {
+              "node": "Args",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Args": {
+        "main": [
+          [
+            {
+              "node": "Atualizar Threads",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "MongoDB": {
+        "main": [
+          [
+            {
+              "node": "Split Out",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "setBitrix24Message": {
+        "main": [
+          [
+            {
+              "node": "Resposta - Bitrix",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Formata Bitrix": {
+        "main": [
+          [
+            {
+              "node": "setBitrix24Message",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Resposta - Bitrix": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Resposta": {
+        "main": [
+          [
+            {
+              "node": "Formata Bitrix",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Mensagem Limpa": {
+        "main": [
+          [
+            {
+              "node": "Formata Bitrix1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [
+            {
+              "node": "done",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "OpenAI",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "setBitrix24Message1": {
+        "main": [
+          [
+            {
+              "node": "Resposta - Bitrix1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Formata Bitrix1": {
+        "main": [
+          [
+            {
+              "node": "setBitrix24Message1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Já terminou a run?": {
+        "main": [
+          [
+            {
+              "node": "Thread",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "Thread",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Lista Runs": {
+        "main": [
+          [
+            {
+              "node": "Já terminou a run?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Thread": {
+        "main": [
+          [
+            {
+              "node": "OpenAI",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Atualizar Threads": {
+        "main": [
+          [
+            {
+              "node": "Mensagem Limpa",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "America/Sao_Paulo",
+      "callerPolicy": "workflowsFromSameOwner",
+      "executionTimeout": 600
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Execute": [
+        {
+          "json": {
+            "user_id": "2491",
+            "name": "João Lucas",
+            "mensagem": "Quando minha máquina chega? Contrato: 12501140",
+            "cnpj": null,
+            "contrato": "12501140",
+            "audio": "",
+            "file": "",
+            "image": "",
+            "ChamadaWebhook": false,
+            "assistant_id": "asst_IPW6v1xGl5e82OUke4OUqjH0",
+            "nome_agente": "Clara",
+            "em_manutencao": false,
+            "resposta": "https://blips.bitrix24.com.br/rest/2491/odgp2tzocbi1o76k/imbot.message.add",
+            "tempo_thread": 30,
+            "tempo_espera_mensagens": 30
+          }
+        }
+      ]
+    },
+    "versionId": "c123cec2-207a-4098-8c19-f018a32fd2d5",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-11-22T13:13:26.514Z",
+        "updatedAt": "2024-11-22T13:13:26.514Z",
+        "id": "owb3cfmzFRbqjP06",
+        "name": "Clara"
+      }
+    ]
+  }
+}
