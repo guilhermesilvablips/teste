@@ -1,0 +1,279 @@
+{
+  "data": {
+    "createdAt": "2025-05-02T13:56:57.702Z",
+    "updatedAt": "2025-05-02T13:59:20.184Z",
+    "id": "R2QUnFmezhh9iINk",
+    "name": "Assistente Cobrança - func - validar_cnpj",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "select cli.business_data.document from PLATAFORMA.cliente cli where cli.personal_data.cellphone = '{{$json.telefone.match(/\\d+/g).join('')}}'",
+          "options": {}
+        },
+        "id": "dc6588a2-db91-4214-94b2-6c8812edb0f0",
+        "name": "Google BigQuery",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          260,
+          80
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "response",
+          "options": {}
+        },
+        "id": "62f18822-09c0-414e-b934-9f0d801f37b3",
+        "name": "Aggregate",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          820,
+          80
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4ac3e606-c91b-4a1c-80e4-f33bf0f34c21",
+                "name": "cnpj",
+                "value": "={{ $json.document || 'Não encontrei o cnpj' }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "7e7309f3-dc58-4255-ac08-66e4a934aec4",
+        "name": "Cnpj",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          540,
+          80
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4e4de137-22d8-40c8-bb8b-585a2e5d8d30",
+                "name": "telefone",
+                "value": "={{ $json.body.arguments.telefone }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "e5a3c1fe-759a-436a-9903-2b290ce3c69c",
+        "name": "pegar telefone1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          40,
+          -100
+        ]
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "buscar-cnpj",
+          "responseMode": "lastNode",
+          "options": {}
+        },
+        "id": "ab649bb0-70bc-4c6c-9c23-0f27671ef036",
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -200,
+          -100
+        ],
+        "webhookId": "247f347d-1903-45a5-b201-1c7246c0eb0b"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4e4de137-22d8-40c8-bb8b-585a2e5d8d30",
+                "name": "telefone",
+                "value": "={{ $json.arguments.telefone }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "31c133ce-ed5a-468d-92a8-850dc6319b31",
+        "name": "pegar telefone",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          40,
+          80
+        ]
+      },
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "telefone"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -200,
+          80
+        ],
+        "id": "ac214e2e-e486-441c-9deb-908d302e8d1d",
+        "name": "Execute"
+      }
+    ],
+    "connections": {
+      "Google BigQuery": {
+        "main": [
+          [
+            {
+              "node": "Cnpj",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Cnpj": {
+        "main": [
+          [
+            {
+              "node": "Aggregate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "pegar telefone1": {
+        "main": [
+          [
+            {
+              "node": "Google BigQuery",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "pegar telefone1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "pegar telefone": {
+        "main": [
+          [
+            {
+              "node": "Google BigQuery",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute": {
+        "main": [
+          [
+            {
+              "node": "pegar telefone",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Webhook": [
+        {
+          "json": {
+            "headers": {
+              "x-forwarded-for": "54.232.37.49",
+              "x-forwarded-proto": "https",
+              "x-forwarded-port": "443",
+              "host": "n8n-assistants.blips-labs.com",
+              "x-amzn-trace-id": "Root=1-6723ce23-3cc6125e5e15a1893c52cda0",
+              "content-length": "190",
+              "accept": "application/json",
+              "content-type": "application/json"
+            },
+            "params": {},
+            "query": {},
+            "body": {
+              "properties": {
+                "type": "function",
+                "id": "call_rsS5KZDqMK7VOxT8BivyM2q8",
+                "function": {
+                  "name": "validar_cnpj",
+                  "arguments": "{\"telefone\":\"67992338718\"}"
+                }
+              },
+              "arguments": {
+                "telefone": "67992338718"
+              }
+            },
+            "webhookUrl": "https://n8n-assistants.blips-labs.com/webhook/buscar-cnpj",
+            "executionMode": "production"
+          }
+        }
+      ]
+    },
+    "versionId": "457ca4a7-1de2-42e5-9421-710d90e3ae17",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-09T15:07:56.880Z",
+        "updatedAt": "2024-07-09T15:07:56.880Z",
+        "id": "10AfOz2oKmpgqhM9",
+        "name": "Cobranca"
+      }
+    ]
+  }
+}
