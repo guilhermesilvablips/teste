@@ -1,0 +1,342 @@
+{
+  "data": {
+    "createdAt": "2025-04-30T14:19:57.264Z",
+    "updatedAt": "2025-04-30T21:04:21.107Z",
+    "id": "rXAXJlbdlTdL347u",
+    "name": "Corretor IDs Pipe Negócios perdidos",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -180,
+          -20
+        ],
+        "id": "f6fd10f2-2891-4627-85bc-b239b32dfddb",
+        "name": "When clicking ‘Test workflow’"
+      },
+      {
+        "parameters": {
+          "resource": "person",
+          "operation": "search",
+          "limit": 1,
+          "term": "={{ $json.Telefone }}",
+          "additionalFields": {}
+        },
+        "type": "n8n-nodes-base.pipedrive",
+        "typeVersion": 1,
+        "position": [
+          1100,
+          -360
+        ],
+        "id": "94c76407-a424-4ce4-837f-7d7c8e222bc8",
+        "name": "Pipedrive",
+        "credentials": {
+          "pipedriveApi": {
+            "id": "6OXvSBSLEYwmYiBv",
+            "name": "Pipedrive account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const phone = $json.Telefone.toString()\n\nfunction fixPhoneFormat(phone) {\n    const phoneLen = phone.length;\n    if (phoneLen === 13) {\n        return phone.slice(0, 4) + phone.slice(5);\n    } else {\n        return phone.slice(0, 4) + '9' + phone.slice(4);\n    }\n}\n\nreturn {\"phone\" : fixPhoneFormat(phone)}"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          360,
+          -180
+        ],
+        "id": "fb9f4643-cebf-4ee6-a071-79f755f9f48e",
+        "name": "Code"
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "1uZMLN4pnQIZRwSO_XnZlLQHPbkT72VFtQ_UXcdoj_xs",
+            "mode": "list",
+            "cachedResultName": "Negociações Perdidas",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1uZMLN4pnQIZRwSO_XnZlLQHPbkT72VFtQ_UXcdoj_xs/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "={{ $json.name }}",
+            "mode": "name"
+          },
+          "filtersUI": {
+            "values": [
+              {
+                "lookupColumn": "Status",
+                "lookupValue": "parada"
+              },
+              {
+                "lookupColumn": "Status",
+                "lookupValue": "parado"
+              }
+            ]
+          },
+          "combineFilters": "OR",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          900,
+          -20
+        ],
+        "id": "728dbdf3-4777-45e9-a7ed-5cb67cae5d76",
+        "name": "Google Sheets",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "0RLOIXG0sHPHB1xe",
+            "name": "IA - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "dealId": "={{ $json['ID Pipe'] }}",
+          "updateFields": {
+            "customProperties": {
+              "property": [
+                {
+                  "name": "0498e6fd9e0872e766ac5f1bcefb3eb04b92371c",
+                  "value": "sim"
+                }
+              ]
+            }
+          }
+        },
+        "type": "n8n-nodes-base.pipedrive",
+        "typeVersion": 1,
+        "position": [
+          1080,
+          -20
+        ],
+        "id": "d0954bf3-fc89-4e31-9f71-0bddd513b311",
+        "name": "Pipedrive1",
+        "credentials": {
+          "pipedriveApi": {
+            "id": "6OXvSBSLEYwmYiBv",
+            "name": "Pipedrive account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "raw",
+          "jsonOutput": "\n  {\n    \"number\": \"559193637616\",\n    \"segmento\": \"Blips - Estetica\",\n    \"ID\": \"180461\"\n  },\n  {\n    \"number\": \"556198046921\",\n    \"segmento\": \"Blips - Estetica\",\n    \"ID\": \"180563\"\n  },\n  {\n    \"number\": \"5511975411480\",\n    \"segmento\": \"Blips - Estetica\",\n    \"ID\": \"180830\"\n  },\n  {\n    \"number\": \"554799400479\",\n    \"segmento\": \"Blips - Estetica\",\n    \"ID\": \"181052\"\n  },\n  {\n    \"number\": \"559484082778\",\n    \"segmento\": \"Blips - Estetica\",\n    \"ID\": \"182315\"\n  },\n  {\n    \"number\": \"5512997573800\",\n    \"segmento\": \"Blips - Estetica\",\n    \"ID\": \"185536\"\n  },\n  {\n    \"number\": \"5512997573800\",\n    \"segmento\": \"Blips - Estetica\",\n    \"ID\": \"185541\"\n  },\n  {\n    \"number\": \"5512997573800\",\n    \"segmento\": \"Blips - Estetica\",\n    \"ID\": \"185546\"\n  },\n  {\n    \"number\": \"5512997573800\",\n    \"segmento\": \"Blips - Estetica\",\n    \"ID\": \"185568\"\n  },\n  {\n    \"number\": \"5511964591659\",\n    \"segmento\": \"Blips - Estetica\",\n    \"ID\": \"185922\"\n  }\n",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          260,
+          340
+        ],
+        "id": "01a5a85e-b1c8-49ad-b132-f84ac70d78b8",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "url": "https://sheets.googleapis.com/v4/spreadsheets/1uZMLN4pnQIZRwSO_XnZlLQHPbkT72VFtQ_UXcdoj_xs",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "googleSheetsOAuth2Api",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          40,
+          -20
+        ],
+        "id": "dafca219-d418-4e83-9795-dac0c78eb63e",
+        "name": "HTTP Request",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "0RLOIXG0sHPHB1xe",
+            "name": "IA - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "3589766a-7ee6-47b7-8551-a2936ab7d2c1",
+                "name": "name",
+                "value": "={{ $json.properties.title }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          420,
+          -20
+        ],
+        "id": "65486435-20a2-4c42-9115-dfb685c4c478",
+        "name": "Planilhas"
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "sheets",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          220,
+          -20
+        ],
+        "id": "89db9e72-658e-4ea6-ae16-28b1ffe9a868",
+        "name": "Split Out"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.noOp",
+        "name": "Replace Me",
+        "typeVersion": 1,
+        "position": [
+          880,
+          240
+        ],
+        "id": "e99be681-2a03-4621-b4cb-46d45e0d8677"
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          620,
+          -20
+        ],
+        "id": "dcc94a19-d96f-455c-8e11-088031dd65e0",
+        "name": "Loop Over Items"
+      }
+    ],
+    "connections": {
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Sheets": {
+        "main": [
+          [
+            {
+              "node": "Pipedrive1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          []
+        ]
+      },
+      "Pipedrive": {
+        "main": [
+          []
+        ]
+      },
+      "HTTP Request": {
+        "main": [
+          [
+            {
+              "node": "Split Out",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out": {
+        "main": [
+          [
+            {
+              "node": "Planilhas",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Planilhas": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          []
+        ]
+      },
+      "Replace Me": {
+        "main": [
+          []
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Google Sheets",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Pipedrive1": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "b5fb686b-c31e-4022-bf93-725979d33059",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
