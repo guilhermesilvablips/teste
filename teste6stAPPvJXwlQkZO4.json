@@ -1,0 +1,927 @@
+{
+  "data": {
+    "createdAt": "2025-05-23T20:09:29.570Z",
+    "updatedAt": "2025-05-27T12:45:26.656Z",
+    "id": "6stAPPvJXwlQkZO4",
+    "name": "Qualificação p/ + Máquinas",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "8ce3e8ba-797b-4396-b583-83807f6ba7bf",
+                      "leftValue": "={{ $json.segment }}",
+                      "rightValue": "637f91facd9338cdf74d1fe3",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Estética"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "079d8216-a920-455a-a800-31514517f619",
+                      "leftValue": "={{ $json.segment }}",
+                      "rightValue": "658c859d9b32a07e5ac04b23",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Sorvete"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "076a9709-9aad-4903-a1e5-63e5c54e57ba",
+                      "leftValue": "={{ $json.segment }}",
+                      "rightValue": "6617e3f46c820dd9d7fac410",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Fitness"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "8b318562-533e-4665-b6e1-e381456bdbc7",
+                      "leftValue": "={{ $json.segment }}",
+                      "rightValue": "6258261a133743e4deadee8d",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Comunicação Visual"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "87d813f3-484c-40bd-89d8-47fc1ac521b2",
+                      "leftValue": "={{ $json.segment }}",
+                      "rightValue": "6658920c5b90e9398b1f5b0d",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Confecção"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "6f68401a-8e45-434b-99c4-445a124324b3",
+                      "leftValue": "={{ $json.segment }}",
+                      "rightValue": "662a68b3214ac40ce1cac3a9",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Construção"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "192cea0f-b6de-4e1e-861f-a5b9b066b951",
+                      "leftValue": "={{ $json.segment }}",
+                      "rightValue": "682e187be7994e95d9e66e4a",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Food"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "694c5602-f4fb-495c-8b5c-0222f7d7ab8a",
+                      "leftValue": "={{ $json.segment }}",
+                      "rightValue": "682e1857e7994e95d9e66e40",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Pizza"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "828aa927-d243-4f03-b9b5-0b7a690b7a6b",
+        "name": "Switch",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          360,
+          -140
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "projectId": {
+            "__rl": true,
+            "value": "blips-prod-v2",
+            "mode": "list",
+            "cachedResultName": "blips-prod-v2",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-prod-v2"
+          },
+          "sqlQuery": "SELECT\n  COUNT(*) AS total_aprovacoes,\n  ROUND(SUM(SAFE_CAST(valorEquip AS FLOAT64)), 2) AS soma_valor_maquinas,\n  ANY_VALUE(matriz_planos) AS matriz_planos_atual\nFROM (\n  SELECT *\n  FROM `blips-prod-v2.analise_de_credito.motor_analise_credito_n8n`\n  WHERE\n    cnpjCliente = \"{{ $('lead').first().json.cnpjCliente }}\"\n    AND PARSE_DATETIME('%d/%m/%Y %H:%M:%S', dataProcessamento) >= DATETIME_SUB(CURRENT_DATETIME(), INTERVAL 90 DAY)\n    AND avaliacaoFinal = \"APROVADO\"\n  ORDER BY PARSE_DATETIME('%d/%m/%Y %H:%M:%S', dataProcessamento) DESC\n  LIMIT 3\n)",
+          "options": {
+            "maxResults": 1,
+            "timeoutMs": 60000
+          }
+        },
+        "id": "c42372ba-3ddd-4042-b619-ca4e32b889e7",
+        "name": "motor_analise_credito_feira",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          840,
+          -80
+        ],
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleApi": {
+            "id": "KvFeNUBUHv7uR0PF",
+            "name": "Google BigQuery account - New Motor"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "inputSource": "passthrough"
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          100,
+          -40
+        ],
+        "id": "312098cf-31cf-4b00-b3fa-470f31368eb2",
+        "name": "lead"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "836b60bc-941a-4d62-86cd-04d1814d5978",
+                "leftValue": "={{ $json.total_aprovacoes.toNumber() }}",
+                "rightValue": 3,
+                "operator": {
+                  "type": "number",
+                  "operation": "lt"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1100,
+          -80
+        ],
+        "id": "fff8c7e8-2010-4bf6-b8d5-7f6c4b2209bd",
+        "name": "Aprovações < 3 ?"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "5a07aa52-1e0d-4b5f-b09b-70bdedb3032c",
+                "name": "equipment_value",
+                "value": "={{ $('lead').first().json.equipment_value }}",
+                "type": "number"
+              },
+              {
+                "id": "8f5a345b-52fd-48ed-8926-eefef6c93a3f",
+                "name": "avaliacaoFinal",
+                "value": "LEAD 30D",
+                "type": "string"
+              },
+              {
+                "id": "cc332d70-f27e-4445-9c71-413da70d9077",
+                "name": "equip",
+                "value": "={{ $('lead').first().json.equip }}",
+                "type": "string"
+              },
+              {
+                "id": "e90fe25b-b1aa-4b5e-81b2-e92b676e8737",
+                "name": "lead",
+                "value": "={{ $json.lead }}",
+                "type": "object"
+              },
+              {
+                "id": "e60e5651-2b5e-48b7-8ccc-23669e1d1776",
+                "name": "motivoReprov",
+                "value": "Este CNPJ e/ou CPF já consta com aprovação nos últimos 30 dias.",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "aa1f1afc-9cb3-4db4-aad1-1acfe6e537dc",
+        "name": "Lead com Análise em 30d",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1100,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "10f3bf75-e430-48bc-ba49-27fd3a405906",
+                "leftValue": "={{ $('lead').item.json.lead.bacenPrejCnpj.toNumber() }}",
+                "rightValue": 2000,
+                "operator": {
+                  "type": "number",
+                  "operation": "gt"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1340,
+          -100
+        ],
+        "id": "bcf39476-cbf8-438a-b508-86a12a0f7abc",
+        "name": "Prejuizo > 2k ?"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "50eb6685-efde-4fb9-89d4-3f87501bcc6c",
+                "leftValue": "={{ $('lead').item.json.lead.bacenVencidoCnpj.toNumber() }}",
+                "rightValue": 3000,
+                "operator": {
+                  "type": "number",
+                  "operation": "gt"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1560,
+          -80
+        ],
+        "id": "f52dd1e9-b0d5-4f97-81b8-43730f02ac3f",
+        "name": "Vencido > 3k ?"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "24eefb20-5ae8-4ce8-9e55-4cdd6c829edf",
+                "leftValue": "={{ $('lead').item.json.lead.protestoValorCnpj.toNumber() }}",
+                "rightValue": 2000,
+                "operator": {
+                  "type": "number",
+                  "operation": "gt"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1800,
+          -60
+        ],
+        "id": "4a47573b-d456-4ad6-b282-899ee3706a04",
+        "name": "Protesto > 2k ?"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "gpt-4.1-mini",
+            "mode": "list",
+            "cachedResultName": "gpt-4.1-mini"
+          },
+          "options": {
+            "temperature": 0.7,
+            "topP": 0.9
+          }
+        },
+        "id": "f63e39cd-8a89-41eb-8bdf-664f4ee5492b",
+        "name": "OpenAI Model2",
+        "type": "@n8n/n8n-nodes-langchain.lmOpenAi",
+        "typeVersion": 1,
+        "position": [
+          2540,
+          160
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "8gIG4Uz2T3nfRlHR",
+            "name": "OpenAi - Credito"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n  \"segmento_alinhado\": {\n    \"nome\": \"Comunicação Visual\",\n    \"esta_relacionado\": true,\n    \"motivo\": \"As avaliações e informações disponíveis indicam que a empresa atua no segmento de comunicação visual, oferecendo produtos como máquinas CNC e equipamentos relacionados.\"\n  }\n}"
+        },
+        "id": "6ef1d756-1105-4e40-ab12-b7860f1d1b2d",
+        "name": "Structured Output Parser1",
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.2,
+        "position": [
+          2680,
+          160
+        ]
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=CNAE:\n{{ $json.CNAE }}\nCNAE's secundarios:\n{{ $json['CNAE\\'s secundarias'] }}\n\nVocê está recebendo dados dos CNAEs de uma empresa para realizar uma análise detalhada. As respostas devem ser objetivas, claras e baseadas exclusivamente nas informações fornecidas. Caso haja dados insuficientes ou inconsistentes, responda diretamente que não foi possível concluir a análise e justifique.\n\nA CNAE é a classificação de atividades econômicas oficialmente adotada pelo Sistema Estatístico Nacional e pelos órgãos gestores de cadastros e registros da Administração Pública do país. A CNAE é uma classificação hierarquizada em cinco níveis – seções, divisões, grupos, classes e subclasses.\n\nSegmento informado:\n{{ $json.segmento }}",
+          "hasOutputParser": true,
+          "messages": {
+            "messageValues": [
+              {
+                "message": "=Com base nos dados fornecidos, responda às perguntas abaixo:\n\nO CNAE da empresa está alinhado com o segmento informado?\nAnalise se o conteúdo está relacionado ao segmento. Responda com Sim, Não ou Não é possível determinar."
+              }
+            ]
+          }
+        },
+        "id": "7286f26d-5ff9-4848-a0b2-97a7a79f797f",
+        "name": "Analisar CNAE",
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.4,
+        "position": [
+          2520,
+          -60
+        ],
+        "retryOnFail": true
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "2b79b584-d109-4e53-a667-5b3826d4c66f",
+                "leftValue": "={{ $('lead').item.json.lead.cnae_fiscal_principal }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          2060,
+          -40
+        ],
+        "id": "181f0001-03ae-4915-8d7a-f2fa662008a7",
+        "name": "Tem CNAE ?"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f721b773-dac1-4925-8a29-4c80369fbe10",
+                "name": "CNAE",
+                "value": "={{ $('lead').item.json.lead.cnae_fiscal_principal }}",
+                "type": "string"
+              },
+              {
+                "id": "f0d8e387-be64-43e9-a7a9-82aa0b6a249e",
+                "name": "CNAE's secundarias",
+                "value": "={{ $('lead').item.json.lead.cnae_fiscal_secundaria }}",
+                "type": "string"
+              },
+              {
+                "id": "1d3aa64f-5cb8-4bae-8b74-7573a0980248",
+                "name": "segmento",
+                "value": "={{ \n  (() => {\n    const segmentMap = {\n      '637f91facd9338cdf74d1fe3': 'Estética',\n      '658c859d9b32a07e5ac04b23': 'Sorvete',\n      '6617e3f46c820dd9d7fac410': 'Fitness',\n      '6258261a133743e4deadee8d': 'Comunicação visual',\n      '6658920c5b90e9398b1f5b0d': 'Confecção',\n      '662a68b3214ac40ce1cac3a9': 'Construção',\n      '682e187be7994e95d9e66e4a': 'Food',\n      '682e1857e7994e95d9e66e40': 'Pizza'\n    };\n\n    return segmentMap[$('lead').item.json.segment] || $('lead').item.json.segment;\n  })() \n}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2300,
+          -60
+        ],
+        "id": "7bfbb982-f3a8-4a19-bd1e-ea3ec2d3d0cd",
+        "name": "Campos p/ Prudente"
+      }
+    ],
+    "connections": {
+      "motor_analise_credito_feira": {
+        "main": [
+          [
+            {
+              "node": "Aprovações < 3 ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch": {
+        "main": [
+          [
+            {
+              "node": "Lead com Análise em 30d",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Lead com Análise em 30d",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "motor_analise_credito_feira",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Lead com Análise em 30d",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Lead com Análise em 30d",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Lead com Análise em 30d",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Lead com Análise em 30d",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Lead com Análise em 30d",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "lead": {
+        "main": [
+          [
+            {
+              "node": "Switch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aprovações < 3 ?": {
+        "main": [
+          [
+            {
+              "node": "Prejuizo > 2k ?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Lead com Análise em 30d",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prejuizo > 2k ?": {
+        "main": [
+          [
+            {
+              "node": "Lead com Análise em 30d",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Vencido > 3k ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Vencido > 3k ?": {
+        "main": [
+          [
+            {
+              "node": "Lead com Análise em 30d",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Protesto > 2k ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Protesto > 2k ?": {
+        "main": [
+          [
+            {
+              "node": "Lead com Análise em 30d",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Tem CNAE ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Model2": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Analisar CNAE",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser1": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Analisar CNAE",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tem CNAE ?": {
+        "main": [
+          [
+            {
+              "node": "Campos p/ Prudente",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Lead com Análise em 30d",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Campos p/ Prudente": {
+        "main": [
+          [
+            {
+              "node": "Analisar CNAE",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "lead": [
+        {
+          "json": {
+            "equipment_value": 26600,
+            "avaliacaoFinal": "LEAD 30D",
+            "equip": "Plotter De Impressão- Xp600 - 180cm - Eco -Semi Nova",
+            "lead": {
+              "dataCriacao": "26/05/2025",
+              "dataProcessamento": "26/05/2025 12:34:16",
+              "organizacao": "Blips",
+              "versaoMotorHist": "v3.0",
+              "avaliacaoRC": null,
+              "avaliacaoFormulario": null,
+              "avaliacaoEntrevista": null,
+              "avaliacaoFinal": "APROVADO",
+              "avaliacaoPN": "Aprovado plano balão 0% de entrada.",
+              "obsAprovacao": "{\n  \"resultado_cpf\": {\"avaliacao_cpf\":{\"strMotivoAprovCPF\":{\"SEM CPF\":\"SIM\"},\"resultadoAprovacaoAutoCPF\":\"NÃO\"}},  \n  \"resultado_cnpj\": {\"avaliacao_cnpj\":{\"strMotivoAprovCNPJ\":{\"Pefin + Refin > 1000?\":\"NÃO\",\"Cheques Sem Fundo > 3 em 24m?\":\"NÃO\",\"PROTESTO > 1000?\":\"NÃO\",\"avaliacaoPefin\":\"SIM\",\"avaliacaoChequeSemFundo\":\"SIM\",\"avaliacaoProtesto\":\"SIM\",\"temLimiteBacen\":\"SIM\",\"fundacaoMaior24M\":\"SIM\",\"Processos\":\"NÃO\",\"KYC\":\"NÃO\",\"Plano Balão > Permitido?\":\"NÃO\"},\"strMotivoCNPJ\":{\"PERFIL EMPRESA NOVA\":\"NÃO\",\"EMPRESA < 12 MESES\":\"NÃO\",\"PERFIL EMPRESA INVISIVEL\":\"SIM\",\"PERFIL EMPRESA C/ PEFIN\":\"NÃO\"},\"resultadoAprovacaoAutoCNPJ\":\"SIM\"}} \n}",
+              "strMotivoReprov": "{\n  \"resultado_cpf\": \"N/A\",  \n  \"resultado_cnpj\": \"N/A\"\n}",
+              "perfilNegocio": null,
+              "SolicFiador": null,
+              "SoliCaucao": null,
+              "crdTeorico": null,
+              "crdXDivida": null,
+              "cnpjNovo": null,
+              "cnpjMenorUmAno": null,
+              "cnpjInvisivel": null,
+              "cnpjProtesto": "",
+              "cnpjChqFlexibilizado": null,
+              "statusCnpj": "ATIVA",
+              "cpfSemLimite": null,
+              "cpfProtesto": "",
+              "cpfChq": "",
+              "cpfPefin": "",
+              "statusCpf": null,
+              "negCnpjPgfn": null,
+              "negCnpjProtesto": null,
+              "negCnpjValorBaseProtesto": null,
+              "negCnpjValorBaseNegativo": null,
+              "negCnpjChqMenosUmAno": null,
+              "negCnpjChqDoisMais": null,
+              "negCnpjPefinMaiorVinteecinco": null,
+              "negCnpjFundChqFlex": null,
+              "negCpfAntecedentes": null,
+              "negCpfMandados": null,
+              "negCpfFormSemResposta": null,
+              "negCpfProtMaiorVinteecinco": null,
+              "negCpfValorBaseProtestodoismil": null,
+              "negCpfValorBaseNegativo": null,
+              "negCpfChqMenosUmAno": null,
+              "negCpfChqDoisMais": null,
+              "negCpfPefinMaiorVinteecinco": null,
+              "negCpfMaisCnpjPefinMaiorVinteecinco": null,
+              "equip": "Plotter De Impressão- Xp600 - 180cm - Eco -Semi Nova",
+              "valorEquip": "26600",
+              "cnpjCliente": "29488054000120",
+              "tipoRegime": null,
+              "nomeClienteCnpj": "29.488.054 JACIRA DE SOUZA SILVA",
+              "faturamentoEmpresa": "",
+              "qtdFuncionarios": "",
+              "cidadeEmpresa": "Itiruçu",
+              "ufEmpresa": "BA",
+              "habitCidadeEmpresa": null,
+              "dataFundacao": "20/01/2018",
+              "pgfnCnpj": null,
+              "protestoDataCnpj": "N/A",
+              "protestoValorCnpj": "0",
+              "bacenLimiteCnpj": "0",
+              "bacenUtlCnpj": "0",
+              "bacenPrejCnpj": "0",
+              "bacenVencidoCnpj": "0",
+              "chqDataCnpj": "N/A",
+              "chqQtdCnpj": "0",
+              "refinDataCnpj": "N/A",
+              "refinValorCnpj": "0",
+              "pefinDataCnpj": "N/A",
+              "pefinValorCnpj": "0",
+              "cpfCliente": "01418541540",
+              "nomeClienteCpf": "JACIRA DE SOUZA SILVA",
+              "antecedentes": "\"\"",
+              "mandatos": null,
+              "protestoDataCpf": null,
+              "protestoValorCpf": "",
+              "bacenLimiteCpf": "",
+              "bacenUtlCpf": "",
+              "bacenPrejCpf": "",
+              "bacenVencidoCpf": "",
+              "chqDataCpf": "",
+              "chqQtdCpf": "",
+              "refinDataCpf": "",
+              "refinValorCpf": "",
+              "pefinDataCpf": "",
+              "pefinValorCpf": "",
+              "pgfnCpf": null,
+              "lead_id": "680941c7be351e07a8ddbc40",
+              "responsavelNome": "Ícaro Moreira Pazini ",
+              "responsavelTipo": null,
+              "responsavelId": "63ef706b0415d4432d09ec68",
+              "situacaoCadastralCnpj": "ATIVO",
+              "exceptionError": null,
+              "serasa_score": null,
+              "serasa_score_cnpj": "781",
+              "serasa_score_cpf": "",
+              "cnae_fiscal_principal": "4751202",
+              "cnae_fiscal_secundaria": "1412602,1813001,4772500,1822901,1813099,4781400,4751201,4763602,1732000,3299003,4761003,4789007,4744099,3299002,4789005",
+              "segmento": "Comunicação visual",
+              "blips_score": "701.85",
+              "blips_rating": "C",
+              "idade": "80",
+              "taxa_juros_variavel": "4.4906",
+              "score_ajustado": "-0.009",
+              "matriz_planos": "0",
+              "kyc": "",
+              "origin": "Comercial-Icaro_12832568"
+            },
+            "motivoReprov": "Este CNPJ e/ou CPF já consta com aprovação nos últimos 30 dias.",
+            "segment": "6617e3f46c820dd9d7fac410",
+            "cnpjCliente": "35033418000180"
+          }
+        }
+      ]
+    },
+    "versionId": "ae05e774-979e-4925-8697-6978a699fac2",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-31T16:22:41.803Z",
+        "updatedAt": "2024-07-31T16:22:41.803Z",
+        "id": "mmaXbyiWhptUXaTd",
+        "name": "New Motor"
+      }
+    ]
+  }
+}
