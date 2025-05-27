@@ -1,0 +1,1193 @@
+{
+  "data": {
+    "createdAt": "2025-02-17T18:27:04.233Z",
+    "updatedAt": "2025-04-14T17:14:30.478Z",
+    "id": "1iQ8m1lBHpqqlHUw",
+    "name": "Conhecimento Dinâmico - Clara",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "inputSource": "passthrough"
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -3940,
+          -200
+        ],
+        "id": "22b12a0d-3e3e-4d1b-8084-4504d1c008e2",
+        "name": "Execute"
+      },
+      {
+        "parameters": {
+          "resource": "fileFolder",
+          "filter": {
+            "folderId": {
+              "__rl": true,
+              "value": "1QcMmyHdgxizrPWiwipBHA9z5PLExy7Qy",
+              "mode": "list",
+              "cachedResultName": "Conhecimentos Clara",
+              "cachedResultUrl": "https://drive.google.com/drive/folders/1QcMmyHdgxizrPWiwipBHA9z5PLExy7Qy"
+            },
+            "whatToSearch": "all"
+          },
+          "options": {
+            "fields": [
+              "id",
+              "name",
+              "mimeType"
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.googleDrive",
+        "typeVersion": 3,
+        "position": [
+          -2840,
+          -200
+        ],
+        "id": "e8369db6-6501-4bb5-bebb-158e3e2f1c3f",
+        "name": "Files - Drive",
+        "executeOnce": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleDriveOAuth2Api": {
+            "id": "3lQM3JcoG2K4jAcw",
+            "name": "Drive - IA Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "file",
+          "options": {
+            "purpose": "assistants"
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.8,
+        "position": [
+          660,
+          -180
+        ],
+        "id": "aaa92a21-3142-452c-ab47-4ecdf143b5c9",
+        "name": "Upload Novo File",
+        "credentials": {
+          "openAiApi": {
+            "id": "utH6piS62wyaw3eE",
+            "name": "1Clara - DEV"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://api.openai.com/v1/vector_stores/{{ $('Vector Store').first().json.vs_id }}/files",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "file_id",
+                "value": "={{ $json.id }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          880,
+          -180
+        ],
+        "id": "501598f3-89ed-4186-9647-21d0e77ff3c1",
+        "name": "Add Vector Store",
+        "retryOnFail": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "utH6piS62wyaw3eE",
+            "name": "1Clara - DEV"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "20902422-96b1-49fe-8d31-3cf40033e1e7",
+                "name": "vs_id",
+                "value": "={{ $('Get Assistant').all().filter(item => item.json.id === 'asst_IPW6v1xGl5e82OUke4OUqjH0' )[0].json.tool_resources.file_search.vector_store_ids[0] }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -3500,
+          -200
+        ],
+        "id": "213908c8-3fbc-4269-b73b-3786e8f9b284",
+        "name": "Vector Store",
+        "executeOnce": true
+      },
+      {
+        "parameters": {
+          "resource": "assistant",
+          "operation": "list",
+          "simplify": false
+        },
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.8,
+        "position": [
+          -3720,
+          -200
+        ],
+        "id": "12522d81-79c7-4740-98c6-d007a40f37e8",
+        "name": "Get Assistant",
+        "credentials": {
+          "openAiApi": {
+            "id": "utH6piS62wyaw3eE",
+            "name": "1Clara - DEV"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "download",
+          "fileId": {
+            "__rl": true,
+            "value": "={{ $json.id }}",
+            "mode": "id"
+          },
+          "options": {
+            "googleFileConversion": {
+              "conversion": {
+                "docsToFormat": "application/pdf",
+                "drawingsToFormat": "application/pdf",
+                "slidesToFormat": "application/pdf",
+                "sheetsToFormat": "application/pdf"
+              }
+            }
+          }
+        },
+        "type": "n8n-nodes-base.googleDrive",
+        "typeVersion": 3,
+        "position": [
+          -2380,
+          -180
+        ],
+        "id": "8acada9a-b8eb-4ef6-8c02-439745c4c7b8",
+        "name": "Google Drive",
+        "credentials": {
+          "googleDriveOAuth2Api": {
+            "id": "3lQM3JcoG2K4jAcw",
+            "name": "Drive - IA Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "pdf",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          -2160,
+          -180
+        ],
+        "id": "c0b6d51f-cab9-41e4-a9be-44a00b120a3e",
+        "name": "Extract from File"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ca8829a0-4a06-4255-8ad3-b92c766db3df",
+                "name": "sections",
+                "value": "={{ $json.text.split('#').map(section => section.trim()).filter(section => section.length > 0) }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1920,
+          -180
+        ],
+        "id": "c6d918d7-9ee6-4ac5-bda0-a524dfcc0e2d",
+        "name": "Seções Arquivo"
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "sections",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          -1700,
+          -180
+        ],
+        "id": "875952a7-d1f4-4ac2-80cf-eefcbb07bed0",
+        "name": "Split Out"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.section }}",
+          "hasOutputParser": true,
+          "messages": {
+            "messageValues": [
+              {
+                "message": "=# 📌 Classificação de Seção de Atendimento  \n\nVocê é um especialista em **classificação de textos** e deve **determinar a categoria** de uma seção de atendimento com base em seu conteúdo, além de **definir uma subclasse relevante** para ela.  \n\nSua tarefa é **analisar** o texto fornecido e classificá-lo como uma das categorias abaixo, criando também uma subclasse, conforme as diretrizes:\n\n---\n\n## 🏷️ Definições das Classes\n\n### 📖 1. Regras de Atendimento  \nConjunto de diretrizes, protocolos e melhores práticas que **padronizam** o atendimento. Engloba orientações sobre **fluxos de interação, posturas recomendadas** e **procedimentos gerais** a serem seguidos de forma consistente, garantindo uma **experiência uniforme e de qualidade ao cliente**.  \n\n### 🎯 2. Situações Específicas de Atendimento  \nCasos atípicos que **exigem abordagens diferenciadas**, incluindo **exceções às regras gerais**. Abrange cenários especiais, como **condições contratuais específicas, processos de negociação** e outras situações que **demandam flexibilidade** no atendimento.  \n\n### ⚙️ 3. Instalação  \nConjunto de regras, instruções e diretrizes relacionadas à **chegada, instalação e ativação** do equipamento/neurônio. Inclui orientações que garantem a correta preparação do ambiente e operação do equipamento.\n\n### 📄 4. Documentação  \nConjunto de regras, instruções e diretrizes relacionadas à **coleta, envio, validação e aprovação** da documentação necessária para o onboarding dos clientes.\n\n---\n\n## 💡 Definições das Subclasses\n\n### 📖 1. Regras de Atendimento  \nSe o texto for classificado como **Regras de Atendimento**, ele deve ser enquadrado em uma das seguintes subclasses:  \n\n- **Início do Atendimento**  \n  - *Inclui saudação, identificação e contextualização do cliente. O assistente cumprimenta o cliente, apresenta-se e coleta informações essenciais para compreender o contexto da interação.*  \n\n- **Personalidade e Estilo de Comunicação**  \n  - *Define o tom e a abordagem da IA durante a conversa, orientando sobre formalidade, empatia e identidade da empresa.*  \n\n- **Perguntas Frequentes e Procedimentos Padrão**  \n  - *Diretrizes para solucionar dúvidas e problemas comuns, como dúvidas sobre entrega, rastreio, acesso a plataforma, dúvidas sobre os equipamentos além dos protocolos para encaminhamento a um atendente humano, garantindo soluções claras e objetivas.*  \n\n- **Encerramento e Feedback**  \n  - *Instruções sobre a finalização do atendimento, incluindo recapitulação dos pontos principais, agradecimento e coleta de feedback.*  \n\n---\n\n### 🎯 2. Situações Específicas de Atendimento  \nSe o texto for classificado como **Situações Específicas de Atendimento**, ele deve ser enquadrado em uma das seguintes subclasses:  \n\n- **Status ou Fase da Negociação**  \n  - *Refere-se ao estágio atual da negociação na plataforma (ex: \"Em cadastro\", \"Análise de documentos\", \"Concluído\"). A IA deve adaptar a abordagem conforme o status registrado.*  \n\n- **Condições Comerciais e Contratuais**  \n  - *Situações em que o atendimento varia de acordo com regras comerciais ou contratuais específicas.*  \n\n- **Condições Financeiras Específicas**  \n  - *Questões relacionadas a pagamentos, prazos especiais, descontos, parcelamentos ou ajustes financeiros, assegurando que o cliente compreenda corretamente as condições aplicáveis.*  \n\n---\n\n### ⚙️ 3. Instalação  \nSe o texto for classificado como **Instalação**, ele deve ser enquadrado em uma das seguintes subclasses:  \n\n- **Checklist de Instalação**  \n  - *Verificação técnica e confirmação dos requisitos físicos e operacionais no local de instalação.*  \n\n- **Agendamento de Instalação**  \n  - *Orientações sobre como e quando agendar a instalação (remota ou presencial).*  \n\n- **Ativação e Configuração do Equipamento**  \n  - *Procedimentos para ativação dos recursos e configuração inicial (Auto Clean, aquecedores, alinhamento de impressão etc.).*  \n\n- **Suporte Técnico de Instalação**  \n  - *Instruções para o suporte técnico no momento da instalação, incluindo links de tutoriais e suporte remoto.*  \n\n---\n\n### 📄 4. Documentação  \nSe o texto for classificado como **Documentação**, ele deve ser enquadrado em uma das seguintes subclasses:  \n\n- **Solicitação de Documentação**  \n  - *Regras sobre quais documentos o cliente deve enviar e em que momento (RG/CNH, comprovante de residência, etc.).*  \n\n- **Análise e Validação de Documentação**  \n  - *Processo de checagem dos documentos recebidos, identificando pendências ou inconformidades.*  \n\n- **Pendências Documentais e Regularização**  \n  - *Ações relacionadas à correção de documentos pendentes ou reenvio por parte do cliente.*  \n\n- **Confirmação de Documentação Aprovada**  \n  - *Comunicação formal de que a documentação foi aprovada, liberando a próxima etapa do processo.*  \n\n---\n\n## 📌 Instruções para Classificação  \n\n1. **Leia atentamente** o texto fornecido.  \n2. **Compare** seu conteúdo com as definições das classes e subclasses.  \n3. **Classifique** o texto, retornando **apenas uma das opções**:  \n   - `\"Regras de Atendimento\"`  \n   - `\"Situações Específicas de Atendimento\"`  \n   - `\"Instalação\"`  \n   - `\"Documentação\"`  \n4. **Atribua uma subclasse** correspondente ao conteúdo do texto.  \n5. Não forneça justificativas ou explicações adicionais.\n\n⚠️ **Formato da Resposta:**  \nRetorne a resposta em **JSON**, com os campos:  \n- `class`: Categoria do texto  \n- `subclass`: Subclasse mais específica, indicando a natureza exata da seção  \n\n⚠️ **Importante:**  \n- Não forneça justificativas ou explicações adicionais.  \n- A subclasse deve ser **objetiva** e **precisa** para refletir corretamente o conteúdo da seção.  \n\n---\n\n## ✅ Exemplo  \n\n📌 **Texto fornecido:**  \n*\"Após a entrega do equipamento, solicite que o cliente informe duas datas e horários para agendamento da instalação.\"*  \n\n✅ **Resposta esperada:**  \n{\n  \"class\": \"Instalação\",\n  \"subclass\": \"Agendamento de Instalação\"\n}\n\n## 🎯 Objetivo da Classificação  \nEste sistema visa **padronizar a categorização** dos conteúdos de atendimento, garantindo **uniformidade na aplicação das regras** e na **gestão eficiente de exceções**.  "
+              }
+            ]
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.5,
+        "position": [
+          -1240,
+          0
+        ],
+        "id": "931c605f-5070-4b47-9112-ff8305f96408",
+        "name": "Basic LLM Chain",
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f9686a54-606a-4bab-b48d-b54390c1de93",
+                "name": "section",
+                "value": "={{ $('Seção').item.json.section.trim() }}",
+                "type": "string"
+              },
+              {
+                "id": "40f5f541-c915-4467-ab39-78315ffde320",
+                "name": "class",
+                "value": "={{ $json.output.class.trim() }}",
+                "type": "string"
+              },
+              {
+                "id": "304ee446-5c29-474d-b742-d1cea453dd08",
+                "name": "subclass",
+                "value": "={{ $json.output.subclass.trim() }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -640,
+          -160
+        ],
+        "id": "ed0eadf5-c1be-4c3b-a81f-c52d08ebaa75",
+        "name": "Classificação"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "adc276b8-b51c-400c-8eb0-f4f78e9df1ae",
+                "name": "section",
+                "value": "={{ $json.sections }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1480,
+          -180
+        ],
+        "id": "1f6e4f25-8f52-4520-9fd8-06e616127b9b",
+        "name": "Seção"
+      },
+      {
+        "parameters": {
+          "schemaType": "manual",
+          "inputSchema": "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"class\": {\n\t\t\t\"type\": \"string\"\n\t\t},\n\t\t\"subclass\": {\n\t\t\t\"type\": \"string\"\n\t\t}\n\t}\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.2,
+        "position": [
+          -1080,
+          140
+        ],
+        "id": "be7170dc-683f-4146-8da8-74b6fb18cdc1",
+        "name": "Structured Output Parser"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Entrada:\n  - Classe: {{ $json.class }}\n  - Título da seção: {{ $json.subclass }}\n  - Texto a ser estruturado: {{ $json.text }}",
+          "hasOutputParser": true,
+          "messages": {
+            "messageValues": [
+              {
+                "message": "=# Prompt para Conversão de Texto em Markdown com JSON\n\nVocê é um modelo de linguagem avançado cuja **tarefa** é **transformar um texto fornecido** (definição de uma *subclasse*) em um **documento Markdown bem estruturado**, **fiel ao conteúdo original**, sem adicionar ou inventar qualquer informação mas melhorando a estrutura. Em seguida, deve encapsular esse documento em um objeto JSON específico. **Siga rigorosamente as diretrizes abaixo para garantir um output de alta qualidade, sintaticamente válido e estritamente aderente ao conteúdo fornecido.**\n\n---\n\n## Diretrizes Gerais\n\n- O conteúdo do Markdown deve ser **exclusivamente** baseado no **texto fornecido**. **Não adicione**, **não invente**, **não infira** informações que não estejam expressamente presentes no texto original, só melhore a estrutura.  \n- Se algum item solicitado na estruturação não puder ser preenchido por falta de conteúdo no texto original, **deixe-o em branco ou omita respeitando a lógica e integridade do conteúdo**.  \n- **Nunca** elabore conteúdos genéricos ou inventados para \"preencher\" o documento.\n\n---\n\n## Formato da Resposta OBRIGATÓRIO (JSON)\n\nA **resposta final** deve ser OBRIGATORIAMENTE um **objeto JSON válido** contendo **exatamente dois campos**:\n\n- `\"class\"`: o nome da subclasse fornecido na entrada.\n- `\"markdown\"`: uma string com o texto formatado em Markdown, estruturado conforme as instruções.\n\n### Restrições:\n- **Não** inclua nenhum texto ou explicação fora do objeto JSON.\n- **Não** use prefixos como “Aqui está o JSON:” ou similares.\n- **Não** envolva o conteúdo Markdown em blocos de código (```markdown, ```json, etc.). Insira o Markdown puro como valor da chave `\"markdown\"`.\n- O JSON deve ser **sintaticamente válido**, com o conteúdo Markdown devidamente escapado para garantir a integridade do JSON.\n\n---\n\n## Estrutura do Markdown\n\n### Título Principal\n- Insira um **título de nível 1** no início do conteúdo Markdown, utilizando a sintaxe `# Título`.\n- O título **deve ser exatamente o nome da classe fornecida**.\n\n### Organização do Conteúdo\n- **Respeite a estrutura lógica do texto original**:\n  - Utilize `##` para seções principais e `###` para subseções, **apenas se essas divisões estiverem implícitas ou explícitas no texto original**.\n- **Parágrafos curtos**, com **3 a 5 frases** no máximo, sempre **fiéis** ao texto fornecido.\n- **Listas**, **ênfases** e **formatações** devem ser usadas **apenas quando a estrutura ou conteúdo original justificar**:\n  - Listas não ordenadas (`-`) para itens soltos.\n  - Listas numeradas (`1.`, `2.`) para sequências explícitas.\n  - **Negrito** (`**`) e *itálico* (`*`) devem ser aplicados **somente se o texto original indicar necessidade de destaque**.\n\n---\n\n## Exemplo de Saída JSON (Ilustrativo)\n{\n  \"class\": \"NomeDaClasseExemplo\",\n  \"markdown\": \"# NomeDaClasseExemplo\\nTexto fiel à descrição original da subclasse fornecida.\\n\\n## Seção Original do Texto\\n- Item explicitamente listado no conteúdo original.\\n- Outro item fornecido.\\n\\n## Outra Seção\\n1. Primeiro passo descrito no texto.\\n2. Segundo passo conforme fornecido.\\n\\n> Citação exatamente como aparece no texto original.\\n\"\n}\n\n### Regras de Fidelidade ao Conteúdo\n- **Não reescreva nem melhore o texto**: apenas reestruture o que foi dado.\n- Caso o conteúdo original seja curto ou não possua seções claras, **apenas organize o texto como parágrafos simples**, sem criar seções artificiais."
+              }
+            ]
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.5,
+        "position": [
+          -200,
+          -160
+        ],
+        "id": "a5bb008f-62db-4bae-bdd1-ab3e9353a81e",
+        "name": "Basic LLM Chain1",
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "schemaType": "manual",
+          "inputSchema": "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"class\": {\n\t\t\t\"type\": \"string\"\n\t\t},\n\t\t\"markdown\": {\n\t\t\t\"type\": \"string\"\n        }\n\t}\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.2,
+        "position": [
+          -40,
+          60
+        ],
+        "id": "4d83d1c2-7527-4ee7-9207-5af80d5b0221",
+        "name": "Structured Output Parser1"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Acessa todos os itens de entrada\nconst groupedBySubclass = {};\n\n// Agrupa seções por 'subclass' e concatena seus textos\nfor (const item of items) {\n  const className = item.json.class;\n  const subclass = item.json.subclass;\n  const text = item.json.section;\n  \n  if (!groupedBySubclass[subclass]) {\n    // Se a subclasse ainda não existe no agrupamento, inicializa o objeto\n    groupedBySubclass[subclass] = {\n      class: className,\n      subclass: subclass,\n      text: text\n    };\n  } else {\n    // Se já existe, concatena o novo texto (com espaço separador)\n    groupedBySubclass[subclass].text += ' ' + text;\n  }\n}\n\n// Prepara o array de saída com os itens agrupados\nconst output = [];\nfor (const subclass in groupedBySubclass) {\n  output.push({ json: groupedBySubclass[subclass] });\n}\n\n// Retorna o array agrupado\nreturn output;\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -420,
+          -160
+        ],
+        "id": "0a3a2643-fabb-4462-84c2-4224e2eace0a",
+        "name": "Subclass"
+      },
+      {
+        "parameters": {
+          "jsCode": "const groupedByClass = {};\n\n// Percorre os itens e agrupa os Markdown por classe\nfor (const item of items) {\n  const className = item.json.output.class;\n  const markdown = item.json.output.markdown;\n  \n  if (!groupedByClass[className]) {\n    // Se a classe ainda não existe, inicializa com o título principal\n    groupedByClass[className] = `# ${className}\\n\\n`;\n  }\n  \n  // Concatena os textos de cada subclasse dentro da mesma classe\n  groupedByClass[className] += markdown.replace(`# ${className}`, '').trim() + \"\\n\\n\";\n}\n\n// Converte os resultados para um array de saída\nconst output = Object.keys(groupedByClass).map(className => {\n  return {\n    json: {\n      class: className,\n      markdown: groupedByClass[className].trim()  // Remove espaços extras no final\n    }\n  };\n});\n\nreturn output;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          220,
+          -180
+        ],
+        "id": "4c29de7f-dcae-403c-9784-37f186e0e989",
+        "name": "Class"
+      },
+      {
+        "parameters": {
+          "operation": "toText",
+          "sourceProperty": "markdown",
+          "options": {
+            "fileName": "={{ $json.class }}.md.txt"
+          }
+        },
+        "type": "n8n-nodes-base.convertToFile",
+        "typeVersion": 1.1,
+        "position": [
+          440,
+          -180
+        ],
+        "id": "587b5f42-56d1-4b4a-b3fc-3064d0bd8cbe",
+        "name": "Convert to File"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "98e46ed4-7b08-4297-a21d-1bede22b48fe",
+                "name": "ids",
+                "value": "={{ $('Arquivos Vector Store').first().json.data.map(item => item.id) }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1120,
+          -180
+        ],
+        "id": "2da19a63-7949-456b-a58a-66b2bd21b5f9",
+        "name": "IDs remover",
+        "executeOnce": true
+      },
+      {
+        "parameters": {
+          "resource": "file",
+          "operation": "deleteFile",
+          "fileId": {
+            "__rl": true,
+            "value": "={{ $json.id || $json.ids }}",
+            "mode": "id"
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.8,
+        "position": [
+          2120,
+          -260
+        ],
+        "id": "8a2883cc-49e3-46d1-9c97-18a52e4a1153",
+        "name": "OpenAI",
+        "credentials": {
+          "openAiApi": {
+            "id": "utH6piS62wyaw3eE",
+            "name": "1Clara - DEV"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "ids",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          1340,
+          -180
+        ],
+        "id": "c73a6a44-038b-4812-8745-32b5b16001cc",
+        "name": "Separa 1 a 1"
+      },
+      {
+        "parameters": {
+          "method": "DELETE",
+          "url": "=https://api.openai.com/v1/vector_stores/{{ $('Vector Store').first().json.vs_id }}/files/{{ $json.ids }}",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1900,
+          -260
+        ],
+        "id": "9e985bb4-03da-4f75-bc38-75d264e0b5af",
+        "name": "DELETE Vector Store File",
+        "retryOnFail": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "utH6piS62wyaw3eE",
+            "name": "1Clara - DEV"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "7d4bf695-2aa0-4259-99a5-a2ffa7ae65ee",
+                "leftValue": "={{ $('Vazio').first().json.vazio && !$json.isEmpty() }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "false",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1560,
+          -180
+        ],
+        "id": "df9b03b6-1cc0-487b-8261-194d1f0ce9fb",
+        "name": "Tem arquivo pra deletar?"
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "edit",
+          "owner": {
+            "__rl": true,
+            "value": "blips-ai",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "assistant-onboarding",
+            "mode": "name"
+          },
+          "filePath": "=Conhecimentos_Clara/{{ $binary.data.fileName }}",
+          "binaryData": true,
+          "commitMessage": "=Atualização Base Conhecimento - {{ $binary.data.fileName }} - {{ $now.format('dd/MM/yyyy - HH:mm') }}"
+        },
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          660,
+          -340
+        ],
+        "id": "d1851f60-fb10-4b15-be24-0dba72591e61",
+        "name": "GitHub",
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "url": "=https://api.openai.com/v1/vector_stores/{{ $('Vector Store').first().json.vs_id }}/files",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "OpenAI-Beta",
+                "value": "assistants=v2"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -3280,
+          -200
+        ],
+        "id": "d6c56f44-95f4-4373-a03e-93c561c24195",
+        "name": "Arquivos Vector Store",
+        "retryOnFail": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "utH6piS62wyaw3eE",
+            "name": "1Clara - DEV"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7a6022db-fca7-4dad-8515-4d72e4e4f1b5",
+                "name": "vazio",
+                "value": "={{ $json.data.isEmpty() }}",
+                "type": "boolean"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -3060,
+          -200
+        ],
+        "id": "d997c0ea-e59b-45af-9fe1-c3b8c03a943a",
+        "name": "Vazio"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "779c793c-53bb-4700-afe8-d950f7c0987a",
+                "name": "sucesso",
+                "value": true,
+                "type": "boolean"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2380,
+          -160
+        ],
+        "id": "760ce5b5-243d-47c9-8ff7-2698e64f00a2",
+        "name": "Sucesso",
+        "executeOnce": true
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "083cf557-f79e-4697-8721-538379681109",
+                "leftValue": "={{ $json }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "object",
+                  "operation": "empty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -2620,
+          -200
+        ],
+        "id": "e1dbbc20-a366-4a77-86e4-5c16d3bc974d",
+        "name": "Drive vazio?"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "32b2b8ad-960c-4722-9f80-dd1c010a7273",
+                "name": "sucesso",
+                "value": false,
+                "type": "boolean"
+              },
+              {
+                "id": "0634f9fd-6bc6-48cf-8f7a-34c3da727ccc",
+                "name": "erro",
+                "value": "Pasta do drive vazio, conhecimentos atuais foram maentidos",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -2380,
+          -380
+        ],
+        "id": "a20e696f-34da-43ca-8dec-496232df56a1",
+        "name": "Erro"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "2526733b-46c4-416b-88a0-cd75afdcb4f4",
+                "name": "Erro",
+                "value": "Houve um erro, por favor tentar novamente",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          380,
+          220
+        ],
+        "id": "89f15765-cfb0-4f66-b831-9a49433b30ed",
+        "name": "Erro - LLM"
+      },
+      {
+        "parameters": {
+          "mode": "combine",
+          "combineBy": "combineByPosition",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3,
+        "position": [
+          -860,
+          -160
+        ],
+        "id": "36a7a29e-5536-4088-9440-365dcb800b1b",
+        "name": "Merge"
+      },
+      {
+        "parameters": {
+          "modelName": "models/gemini-2.0-flash-thinking-exp-01-21",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+        "typeVersion": 1,
+        "position": [
+          -1240,
+          140
+        ],
+        "id": "a09e987b-5e70-4efc-ad02-203a55cac22d",
+        "name": "Google Gemini Chat Model",
+        "credentials": {
+          "googlePalmApi": {
+            "id": "nJiJWVZaDecaeKDp",
+            "name": "Google Gemini(PaLM) Api account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Execute": {
+        "main": [
+          [
+            {
+              "node": "Get Assistant",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Files - Drive": {
+        "main": [
+          [
+            {
+              "node": "Drive vazio?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Upload Novo File": {
+        "main": [
+          [
+            {
+              "node": "Add Vector Store",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Add Vector Store": {
+        "main": [
+          [
+            {
+              "node": "IDs remover",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Vector Store": {
+        "main": [
+          [
+            {
+              "node": "Arquivos Vector Store",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get Assistant": {
+        "main": [
+          [
+            {
+              "node": "Vector Store",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Drive": {
+        "main": [
+          [
+            {
+              "node": "Extract from File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract from File": {
+        "main": [
+          [
+            {
+              "node": "Seções Arquivo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Seções Arquivo": {
+        "main": [
+          [
+            {
+              "node": "Split Out",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out": {
+        "main": [
+          [
+            {
+              "node": "Seção",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Basic LLM Chain": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            }
+          ],
+          [
+            {
+              "node": "Erro - LLM",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Seção": {
+        "main": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Classificação": {
+        "main": [
+          [
+            {
+              "node": "Subclass",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser1": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Basic LLM Chain1",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Basic LLM Chain1": {
+        "main": [
+          [
+            {
+              "node": "Class",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro - LLM",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Subclass": {
+        "main": [
+          [
+            {
+              "node": "Basic LLM Chain1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Class": {
+        "main": [
+          [
+            {
+              "node": "Convert to File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Convert to File": {
+        "main": [
+          [
+            {
+              "node": "GitHub",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Upload Novo File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IDs remover": {
+        "main": [
+          [
+            {
+              "node": "Separa 1 a 1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI": {
+        "main": [
+          [
+            {
+              "node": "Sucesso",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Separa 1 a 1": {
+        "main": [
+          [
+            {
+              "node": "Tem arquivo pra deletar?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "DELETE Vector Store File": {
+        "main": [
+          [
+            {
+              "node": "OpenAI",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tem arquivo pra deletar?": {
+        "main": [
+          [
+            {
+              "node": "DELETE Vector Store File",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Sucesso",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Arquivos Vector Store": {
+        "main": [
+          [
+            {
+              "node": "Vazio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Vazio": {
+        "main": [
+          [
+            {
+              "node": "Files - Drive",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Drive vazio?": {
+        "main": [
+          [
+            {
+              "node": "Erro",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Google Drive",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          [
+            {
+              "node": "Classificação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Gemini Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "ai_languageModel",
+              "index": 0
+            },
+            {
+              "node": "Basic LLM Chain1",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "America/Sao_Paulo",
+      "callerPolicy": "workflowsFromSameOwner"
+    },
+    "staticData": {
+      "node:Google Drive Trigger": {
+        "lastTimeChecked": "2025-02-17T18:54:17Z"
+      },
+      "node:Folder Updated": {
+        "lastTimeChecked": "2025-02-17T18:32:07Z"
+      },
+      "node:Arquivo Criado": {
+        "lastTimeChecked": "2025-02-19T20:10:53Z"
+      },
+      "node:Arquivo Atualizado": {
+        "lastTimeChecked": "2025-02-19T20:10:54Z"
+      }
+    },
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "15e8e34a-d846-46e8-858a-7a945aa77416",
+    "triggerCount": 2,
+    "tags": [
+      {
+        "createdAt": "2024-11-22T13:13:26.514Z",
+        "updatedAt": "2024-11-22T13:13:26.514Z",
+        "id": "owb3cfmzFRbqjP06",
+        "name": "Clara"
+      }
+    ]
+  }
+}
