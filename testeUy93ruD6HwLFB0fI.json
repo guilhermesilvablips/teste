@@ -1,0 +1,323 @@
+{
+  "data": {
+    "createdAt": "2025-05-13T19:30:02.042Z",
+    "updatedAt": "2025-05-19T20:30:25.716Z",
+    "id": "Uy93ruD6HwLFB0fI",
+    "name": "Dani - Feedback",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "inputSource": "jsonExample",
+          "jsonExample": "{\n  \"prompt\": \"valor\"\n}"
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -1060,
+          220
+        ],
+        "id": "dfa111d6-5c5a-47a5-ad6c-ddf1a299f976",
+        "name": "Execute"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7f61f554-7678-4fd5-9e09-14c29ffa41f5",
+                "name": "output",
+                "value": "={{ $json.output }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          0,
+          0
+        ],
+        "id": "37b7d00a-32fd-40af-a41c-439a42bbd2e9",
+        "name": "Sucesso",
+        "executeOnce": true
+      },
+      {
+        "parameters": {
+          "resource": "assistant",
+          "assistantId": {
+            "__rl": true,
+            "value": "asst_BVj99gr89HJLDvizn0zw5LvB",
+            "mode": "list",
+            "cachedResultName": "Dani-feedback"
+          },
+          "prompt": "define",
+          "text": "=Hoje é {{ $now.toLocaleString({weekday: 'long'})}} dia {{ $now.format('dd/MM/yyyy - HH:mm:ss') }} no horário de brasília\n{{ $('Execute').item.json.prompt }}\n### **Sempre** chame a tool\n### **Sempre** retorne a resposta da tool\n\n\n\n",
+          "options": {
+            "preserveOriginalTools": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.8,
+        "position": [
+          -540,
+          220
+        ],
+        "id": "be3d1ae2-ad83-4aad-97db-11b018c736ff",
+        "name": "Dani - feedback",
+        "credentials": {
+          "openAiApi": {
+            "id": "Ns5Dn4K7TRUo6yE8",
+            "name": "OpenAi - Dani"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "toolDescription": "Método responsavel por resgatar feedback resgatados via dados nascimento.",
+          "url": "https://n8n-auditoria.blips-labs.com/webhook/audit_protocol",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "with_details",
+                "value": "1"
+              },
+              {
+                "name": "init_date",
+                "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters1_Value', `Aqui deve ficar a data de inicio supondo que hoje seja 30/04/2025 e foi solicitado um feedback de 15 dias atras ou seja a data que tem que ser colocada é 15/04/2025`, 'string') }}"
+              },
+              {
+                "name": "end_date",
+                "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters2_Value', `Aqui se foi solicitado datas passadas como um feedback de 15 dias atras a data que deve ser colocado aqui deve ser a data de hoje`, 'string') }}"
+              },
+              {
+                "name": "attendant",
+                "value": "={{ $('Code').item.json.email }}"
+              },
+              {
+                "name": "protocol",
+                "value": "={{ $('Code').item.json.protocolo }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequestTool",
+        "typeVersion": 4.2,
+        "position": [
+          -440,
+          440
+        ],
+        "id": "48774a3c-d07c-44c0-bda1-0f77481887bf",
+        "name": "Resgatar Feedback"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "f51d259a-6bef-49b8-8f2a-e966e8d96248",
+                "leftValue": "={{ $json.error }}",
+                "rightValue": "completed",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "88fc4f30-3ae0-47e9-a11c-2c843e603496",
+                "leftValue": "={{ $json.error }}",
+                "rightValue": "failed",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "bec38f44-f57a-45ff-acfa-da798707d0b9",
+                "leftValue": "={{ $json.error }}",
+                "rightValue": "expired",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "de544920-fd7a-4a48-acb5-e3dc242f53de",
+                "leftValue": "={{ $json.error }}",
+                "rightValue": "canceled",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "6c66d279-66f6-4ce8-a694-d4811a49ebc8",
+                "leftValue": "={{ $json.error }}",
+                "rightValue": "incomplete",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          0,
+          240
+        ],
+        "id": "ef779155-7cce-4b41-b4ac-5e9712dea66a",
+        "name": "Já terminou a consulta?"
+      },
+      {
+        "parameters": {
+          "amount": 2,
+          "unit": "seconds"
+        },
+        "id": "7b25462f-5a66-48e2-b6aa-28643675b5ab",
+        "name": "Espera rodar um pouco1",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1,
+        "position": [
+          0,
+          520
+        ],
+        "webhookId": "cd9abf53-057d-487c-9bf9-2477ff777316"
+      },
+      {
+        "parameters": {
+          "jsCode": "const promptOriginal = $json[\"prompt\"];\nlet promptLimpo = promptOriginal;\nlet dataInicio, dataFim, email, protocolo;\n\n// Regex para e-mail\nconst regexEmail = /[\\w.-]+@[\\w.-]+\\.\\w+/;\n\n// Regex para protocolo (somente números, geralmente 10 ou mais dígitos)\nconst regexProtocolo = /\\b\\d{10,20}\\b/;\n\n// Regex 1: dd/mm/yyyy a|à dd/mm/yyyy\nconst regexBR = /(\\d{2})\\/(\\d{2})\\/(\\d{4})\\s*(a|à|até|e|-)\\s*(\\d{2})\\/(\\d{2})\\/(\\d{4})/i;\n\n// Regex 2: yyyy/mm/dd a|à yyyy/mm/dd\nconst regexISO = /(\\d{4})\\/(\\d{2})\\/(\\d{2})\\s*(a|à)\\s*(\\d{4})\\/(\\d{2})\\/(\\d{2})/i;\n\n// Regex para \"últimos X dias\"\nconst regexUltimosDias = /últimos\\s+(\\d+)\\s+dias/i;\n\n// 1. Extrair e-mail\nconst matchEmail = promptOriginal.match(regexEmail);\nif (matchEmail) {\n  email = matchEmail[0];\n  promptLimpo = promptLimpo.replace(email, '').trim();\n}\n\n// 2. Extrair protocolo\nconst matchProtocolo = promptOriginal.match(regexProtocolo);\nif (matchProtocolo) {\n  protocolo = matchProtocolo[0];\n  promptLimpo = promptLimpo.replace(protocolo, '').trim();\n}\n\n// 3. Extrair e remover datas explícitas ou relativas\nif (regexBR.test(promptOriginal)) {\n  const match = regexBR.exec(promptOriginal);\n  const [, d1, m1, y1, , d2, m2, y2] = match;\n  dataInicio = `${y1}-${m1}-${d1}`;\n  dataFim = `${y2}-${m2}-${d2}`;\n  promptLimpo = promptLimpo.replace(match[0], '').replace(/no período de|da data/i, '').trim();\n\n} else if (regexISO.test(promptOriginal)) {\n  const match = regexISO.exec(promptOriginal);\n  const [, y1, m1, d1, , y2, m2, d2] = match;\n  dataInicio = `${y1}-${m1}-${d1}`;\n  dataFim = `${y2}-${m2}-${d2}`;\n  promptLimpo = promptLimpo.replace(match[0], '').replace(/no período de|da data/i, '').trim();\n\n} else if (regexUltimosDias.test(promptOriginal)) {\n  const match = regexUltimosDias.exec(promptOriginal);\n  const dias = parseInt(match[1], 10);\n\n  const hoje = new Date();\n  const inicio = new Date(hoje); // cria uma cópia da data atual\n  inicio.setDate(inicio.getDate() - dias + 1); // inclui o dia atual\n\n  dataFim = hoje.toISOString().split(\"T\")[0];\n  dataInicio = inicio.toISOString().split(\"T\")[0];\n\n  promptLimpo = promptLimpo.replace(match[0], '').trim();\n} else {\n  // Nenhuma data encontrada, assume o dia anterior\n  const ontem = new Date();\n  ontem.setDate(ontem.getDate() - 1);\n  const d = ontem.toISOString().split(\"T\")[0];\n  dataInicio = dataFim = d;\n}\n\n// Limpeza final\npromptLimpo = promptLimpo.replace(/\\s+/g, ' ').trim();\n\nreturn [\n  {\n    json: {\n      prompt_formatado: promptLimpo,\n      email: email || null,\n      protocolo: protocolo || null,\n      data_inicio: dataInicio,\n      data_fim: dataFim\n    }\n  }\n];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -800,
+          220
+        ],
+        "id": "57ead2ea-9810-49b7-a24f-9892884ca1cd",
+        "name": "Code"
+      }
+    ],
+    "connections": {
+      "Execute": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dani - feedback": {
+        "main": [
+          [
+            {
+              "node": "Sucesso",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Já terminou a consulta?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Resgatar Feedback": {
+        "ai_tool": [
+          [
+            {
+              "node": "Dani - feedback",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Já terminou a consulta?": {
+        "main": [
+          [
+            {
+              "node": "Dani - feedback",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Espera rodar um pouco1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Espera rodar um pouco1": {
+        "main": [
+          [
+            {
+              "node": "Já terminou a consulta?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "Dani - feedback",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "America/Sao_Paulo",
+      "callerPolicy": "workflowsFromSameOwner"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {
+      "Execute": [
+        {
+          "json": {
+            "prompt": "Retornar o feedback de mychelle.rosa@blips.com.br de 30 dias atrás"
+          }
+        }
+      ]
+    },
+    "versionId": "8acb69ed-d388-4b4f-815c-0e25a77549bb",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
