@@ -1,0 +1,2021 @@
+{
+  "data": {
+    "createdAt": "2024-12-13T11:23:57.504Z",
+    "updatedAt": "2025-02-21T19:53:48.190Z",
+    "id": "h7rtIL2IkJiuA4Wa",
+    "name": "Endpoints Plataforma",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "url": "={{ $('Execute').first().json.Endereço.comprovante.url }}",
+          "options": {}
+        },
+        "id": "26033995-af68-43b1-bb81-3c18b0e62577",
+        "name": "GET - Endereço - Responsável",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          540,
+          880
+        ]
+      },
+      {
+        "parameters": {
+          "url": "={{ $('Execute').first().json['frente-documento'] }}",
+          "options": {}
+        },
+        "id": "11eaaa09-63d3-451f-8113-a53aa359fc45",
+        "name": "GET - Frente Documento",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          540,
+          200
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $('Endpoints').first().json.PostFrenteDoc}}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{ $('Token').first().json.token }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "contentType": "binaryData",
+          "inputDataFieldName": "data",
+          "options": {}
+        },
+        "id": "af4982ab-b640-4648-95ba-3b5ea2e771f9",
+        "name": "Post Frente Documento",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          740,
+          200
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "method": "PATCH",
+          "url": "={{ $('Endpoints').first().json.PatchNegociacao }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{ $('Token').first().json.token }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"contractor\": {\n    \"personalData\": {\n      \"documentFront\": \"https://firebasestorage.googleapis.com/v0/b/blips-staging-refactor-ea364.appspot.com/o/negotiation%2F{{ $('Execute').first().json.contrato }}%2Ffrente-documento?alt=media&token={{ $json.downloadTokens }}\"\n    }\n  },\n  \"historicalItem\": {\n    \"type\": \"OCR\",\n    \"description\": \"enviou a foto do Documento\",\n    \"justification\": \"\"\n  }\n}",
+          "options": {}
+        },
+        "id": "0b1bef42-1e5b-4d05-aa60-c2588cd18053",
+        "name": "Patch - Doc - Front",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          940,
+          200
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "url": "={{ $('Execute').first().json['costas-documento'] }}",
+          "options": {}
+        },
+        "id": "417fcd77-af0c-4376-b358-f9a6142b12fd",
+        "name": "GET - Verso Documento",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          540,
+          380
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $('Endpoints').first().json.PostVersoDoc}}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{ $('Token').first().json.token }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "contentType": "binaryData",
+          "inputDataFieldName": "data",
+          "options": {}
+        },
+        "id": "65954eab-11ec-46e7-adf2-03ff4eb8a00c",
+        "name": "Post Verso Documento",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          740,
+          380
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "method": "PATCH",
+          "url": "={{ $('Endpoints').first().json.PatchNegociacao }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{ $('Token').first().json.token }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"contractor\": {\n    \"personalData\": {\n      \"documentBack\": \"https://firebasestorage.googleapis.com/v0/b/blips-staging-refactor-ea364.appspot.com/o/negotiation%2F{{ $('Execute').first().json.contrato }}%2Fcostas-documento?alt=media&token={{ $json.downloadTokens }}\"\n    }\n  },\n  \"historicalItem\": {\n    \"type\": \"OCR\",\n    \"description\": \"enviou a foto do Documento\",\n    \"justification\": \"\"\n  }\n}",
+          "options": {}
+        },
+        "id": "2691a4f1-559a-4d0a-8d5d-6a17b617fdea",
+        "name": "Patch - Doc - Back",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          940,
+          380
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "url": "={{ $('Execute').first().json.selfie }}",
+          "options": {}
+        },
+        "id": "5a920b64-40c2-42fe-b092-ad7c263dffdf",
+        "name": "GET - Selfie",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          540,
+          560
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $('Endpoints').first().json.PostSelfie}}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{ $('Token').first().json.token }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "contentType": "binaryData",
+          "inputDataFieldName": "data",
+          "options": {}
+        },
+        "id": "ce469bb0-3f90-4c31-938b-a4f6b25e025a",
+        "name": "Post Selfie",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          740,
+          560
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d0ee3ef0-c27d-492b-ac54-3f8bae665dda",
+                "name": "mensagem",
+                "value": "={{ \n  $('Execute').first().json['comprovante-de-residencia-representante'] \n    ? `Erro ao subir endereço do responsável - ${$('Execute').first().json.contrato} - ${$now.format('dd/MM/yyyy - HH:mm')} - Url do documento: ${$('Execute').first().json['comprovante-de-residencia-representante']}` \n    : (\n        $('Execute').first().json.recoleta \n          ? null\n          : `Erro ao subir endereço do responsável - ${$('Execute').first().json.contrato} - ${$now.format('dd/MM/yyyy - HH:mm')} - Não consegui acessar a url do documento`\n      )\n}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "48b4b51f-77d9-4fe9-b7c6-50914c8b2263",
+        "name": "Erro - Endereço Responsável",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1560,
+          900
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d61c3d1c-5376-433f-bd19-d527d3d18f6c",
+                "name": "mensagem",
+                "value": "={{ \n  $('Execute').first().json['comprovante-de-residencia'] \n    ? `Erro ao subir endereço da empresa - ${$('Execute').first().json.contrato} - ${$now.format('dd/MM/yyyy - HH:mm')} - Url do documento: ${$('Execute').first().json['comprovante-de-residencia']}` \n    : (\n        $('Execute').first().json.recoleta \n          ? null\n          : `Erro ao subir endereço da empresa - ${$('Execute').first().json.contrato} - ${$now.format('dd/MM/yyyy - HH:mm')} - Não consegui acessar a url do documento`\n      )\n}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "96e02766-f350-41c4-ad21-b0047c4e6720",
+        "name": "Erro - Endereço Empresa",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1560,
+          1080
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "cceb3460-eb6f-4114-94e9-38f38e5d4832",
+                "name": "mensagem",
+                "value": "={{ \n  $('Execute').first().json['frente-documento'] \n    ? `Erro ao subir frente do documento - ${$('Execute').first().json.contrato} - ${$now.format('dd/MM/yyyy - HH:mm')} - Url do documento: ${$('Execute').first().json['frente-documento']}` \n    : (\n        $('Execute').first().json.recoleta \n          ? null\n          : `Erro ao subir frente do documento - ${$('Execute').first().json.contrato} - ${$now.format('dd/MM/yyyy - HH:mm')} - Não consegui acessar a url do documento`\n      )\n}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "29dc942e-d8d9-438d-8acc-52bc66c7cfac",
+        "name": "Erro - Frente do Documento",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1560,
+          220
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "e8dcff02-880f-4265-bb5a-29880bc1e3a8",
+                "name": "mensagem",
+                "value": "={{ \n  $('Execute').first().json.selfie \n    ? `Erro ao subir selfie - ${$('Execute').first().json.contrato} - ${$now.format('dd/MM/yyyy - HH:mm')} - Url do documento: ${$('Execute').first().json.selfie}` \n    : (\n        $('Execute').first().json.recoleta \n          ? null\n          : `Erro ao subir selfie - ${$('Execute').first().json.contrato} - ${$now.format('dd/MM/yyyy - HH:mm')} - Não consegui acessar a url do documento`\n      )\n}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "0df064a6-df8c-4f09-b730-4efec37e643d",
+        "name": "Erro - Selfie",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1560,
+          580
+        ]
+      },
+      {
+        "parameters": {
+          "resource": "message",
+          "guildId": {
+            "__rl": true,
+            "value": "1258059672171319316",
+            "mode": "list",
+            "cachedResultName": "Bot Teste",
+            "cachedResultUrl": "https://discord.com/channels/1258059672171319316"
+          },
+          "channelId": {
+            "__rl": true,
+            "value": "1278683051869863936",
+            "mode": "list",
+            "cachedResultName": "log",
+            "cachedResultUrl": "https://discord.com/channels/1258059672171319316/1278683051869863936"
+          },
+          "content": "={{ $json.mensagem }}",
+          "options": {}
+        },
+        "id": "19488349-1642-4dac-b254-09b498030336",
+        "name": "Discord",
+        "type": "n8n-nodes-base.discord",
+        "typeVersion": 2,
+        "position": [
+          2460,
+          600
+        ],
+        "webhookId": "69f97c74-94fa-4037-acd9-b3f733252d89",
+        "credentials": {
+          "discordBotApi": {
+            "id": "HwwdTQ09UgBU7GNZ",
+            "name": "Discord Bot account"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "id": "a1e3eeaa-2a4c-47d8-b45e-5a644db58a6b",
+        "name": "Execute",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          -540,
+          640
+        ]
+      },
+      {
+        "parameters": {
+          "url": "={{ $('Execute').first().json['comprovante-de-residencia'] }}",
+          "options": {}
+        },
+        "id": "5891436c-cd90-4cf4-9084-762f101df7a2",
+        "name": "GET - Endereço Empresa",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          540,
+          1060
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "deaab001-0d40-4d2f-84f1-a7264c9f11f1",
+                "name": "mensagem",
+                "value": "={{ $json.mensagem }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "ca0ee23a-23a1-4c15-9cb1-0bec26b2c480",
+        "name": "Erro",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2260,
+          600
+        ]
+      },
+      {
+        "parameters": {
+          "method": "PATCH",
+          "url": "={{ $('Endpoints').first().json.PatchNegociacao }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{ $('Token').first().json.token }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"contractor\": {\n    \"personalData\": {\n      \"selfie\": \"https://firebasestorage.googleapis.com/v0/b/blips-staging-refactor-ea364.appspot.com/o/negotiation%2F{{ $('Execute').first().json.contrato }}%2Fselfie?alt=media&token={{ $json.downloadTokens }}\"\n    }\n  },\n  \"historicalItem\": {\n    \"type\": \"OCR\",\n    \"description\": \"enviou a foto do Documento\",\n    \"justification\": \"\"\n  }\n}",
+          "options": {}
+        },
+        "id": "7ef460d3-fcc2-4333-a5d0-67ccb92df6a4",
+        "name": "Patch - Doc - Selfie",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          940,
+          560
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ee0f5f73-1e2f-4afe-a2f2-e82bc501cd0f",
+                "name": "resultado",
+                "value": "={{ $json.mensagem ? false : true}}",
+                "type": "boolean"
+              },
+              {
+                "id": "abb3ff87-8e54-49da-bc41-13446d3a72c7",
+                "name": "mensagem",
+                "value": "={{\n  $json.mensagem \n    ? $json.mensagem \n    : (\n        $('Execute').first().json['comprovante-de-residencia-representante'] \n          ? `Sucesso ao subir endereço do responsável - ${$('Execute').first().json.contrato} - ${$now.format('dd/MM/yyyy - HH:mm')} - Url do documento: ${$('Execute').first().json['comprovante-de-residencia-representante']}`\n          : null\n      )\n}}",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "id": "c40dd28c-7ab2-4565-b8ac-b9b3d7df2d39",
+        "name": "Resultado",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1760,
+          840
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ee0f5f73-1e2f-4afe-a2f2-e82bc501cd0f",
+                "name": "resultado",
+                "value": "={{ $json.mensagem ? false : true}}",
+                "type": "boolean"
+              },
+              {
+                "id": "5602c848-a3ad-45b8-bfb9-ff5211f35214",
+                "name": "mensagem",
+                "value": "={{\n  $json.mensagem \n    ? $json.mensagem \n    : (\n        $('Execute').first().json['comprovante-de-residencia'] \n          ? `Sucesso ao subir endereço da empresa - ${$('Execute').first().json.contrato} - ${$now.format('dd/MM/yyyy - HH:mm')} - Url do documento: ${$('Execute').first().json['comprovante-de-residencia']}`\n          : null\n      )\n}}",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "id": "1e5307bf-822c-48c8-a9bd-2cedb590d632",
+        "name": "Resultado1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1760,
+          1020
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ee0f5f73-1e2f-4afe-a2f2-e82bc501cd0f",
+                "name": "resultado",
+                "value": "={{ $json.mensagem ? false : true}}",
+                "type": "boolean"
+              },
+              {
+                "id": "dbba9686-3c34-4c9c-85c8-f7d8bf9b2816",
+                "name": "mensagem",
+                "value": "={{\n  $json.mensagem \n    ? $json.mensagem \n    : (\n        $('Execute').first().json['frente-documento'] \n          ? `Sucesso ao subir frente do documento - ${$('Execute').first().json.contrato} - ${$now.format('dd/MM/yyyy - HH:mm')} - Url do documento: ${$('Execute').first().json['frente-documento']}`\n          : null\n      )\n}}",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "id": "509fdb54-acb9-4db4-9474-459e573d31e6",
+        "name": "Resultado2",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1760,
+          160
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ee0f5f73-1e2f-4afe-a2f2-e82bc501cd0f",
+                "name": "resultado",
+                "value": "={{ $json.mensagem ? false : true}}",
+                "type": "boolean"
+              },
+              {
+                "id": "c7db3d57-c0c7-4bfc-8bd7-530244a5f5e8",
+                "name": "mensagem",
+                "value": "={{\n  $json.mensagem \n    ? $json.mensagem \n    : (\n        $('Execute').first().json['costas-documento'] \n          ? `Sucesso ao subir verso do documento - ${$('Execute').first().json.contrato} - ${$now.format('dd/MM/yyyy - HH:mm')} - Url do documento: ${$('Execute').first().json['costas-documento']}`\n          : null\n      )\n}}",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "id": "57b63495-56af-4bc0-b571-7b285b30bb32",
+        "name": "Resultado3",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1760,
+          340
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ee0f5f73-1e2f-4afe-a2f2-e82bc501cd0f",
+                "name": "resultado",
+                "value": "={{ $json.mensagem ? false : true}}",
+                "type": "boolean"
+              },
+              {
+                "id": "6c79377c-9e53-47ec-b0e8-cc69afcaeabb",
+                "name": "mensagem",
+                "value": "={{\n  $json.mensagem \n    ? $json.mensagem \n    : (\n        $('Execute').first().json.selfie \n          ? `Sucesso ao subir selfie - ${$('Execute').first().json.contrato} - ${$now.format('dd/MM/yyyy - HH:mm')} - Url do documento: ${$('Execute').first().json.selfie}`\n          : null\n      )\n}}",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "id": "cd8b79de-5fd6-453c-b13b-3445111baf71",
+        "name": "Resultado4",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1760,
+          520
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "78c0cd7f-0a5f-4c5b-8897-bfe3852f3abf",
+                "leftValue": "={{ $json.resultado }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "002f2d62-8c45-428b-a8da-2e2b7cee56af",
+        "name": "Deu certo?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          2060,
+          520
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "a482bfb4-895c-493a-9ede-9b711f2bc783",
+                "name": "token",
+                "value": "={{ $json.accessToken }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "b5cf7621-9482-4258-9aa0-079bc711cf60",
+        "name": "Token",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -100,
+          640
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "c596759e-2366-4718-af30-28f45ac3fa03",
+                "name": "address",
+                "value": "={{ $('Dados negociação').first().json.contractor.businessData.address}}",
+                "type": "object"
+              },
+              {
+                "id": "eaaa5231-5960-49a3-9c03-645b3eedf369",
+                "name": "address.proofOfResidence",
+                "value": "=https://firebasestorage.googleapis.com/v0/b/blips-staging-refactor-ea364.appspot.com/o/negotiation%2F{{ $('Execute').first().json.contrato }}%2Fcomprovante-de-residencia.pdf?alt=media&token={{ $json.downloadTokens }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "a00b10fd-b115-44e4-ac03-7827e4a773d2",
+        "name": "Address - Emp",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          940,
+          1060
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "c596759e-2366-4718-af30-28f45ac3fa03",
+                "name": "address",
+                "value": "={{ $('Execute').first().json.Endereço.address }}",
+                "type": "object"
+              },
+              {
+                "id": "eaaa5231-5960-49a3-9c03-645b3eedf369",
+                "name": "address.proofOfResidence",
+                "value": "=https://firebasestorage.googleapis.com/v0/b/blips-staging-refactor-ea364.appspot.com/o/negotiation%2F{{ $('Execute').first().json.contrato }}%2Fcomprovante-de-residencia-representante?alt=media&token={{ $json.downloadTokens }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "7a210f31-81b6-4bfa-a64b-6ffc2f99cae0",
+        "name": "Address - Resp",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          940,
+          880
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const EnderecoResp = $('Resultado').first().json.resultado\nconst EnderecoEmp = $('Resultado1').first().json.resultado\nconst FrenteDoc = $('Resultado2').first().json.resultado\nconst VersoDoc = $('Resultado3').first().json.resultado\nconst Selfie = $('Resultado4').first().json.resultado\nconst Assinatura = $('Resultado5').first().json.resultado\n\nconst similarity = $('Resultado5').first().json.similarity\n\nconst resultado = {\n  EnderecoResp: EnderecoResp,\n  EnderecoEmp: EnderecoEmp,\n  FrenteDoc: FrenteDoc,\n  VersoDoc: VersoDoc,\n  Selfie: Selfie,\n  Assinatura: Assinatura,\n  Resultado: EnderecoResp && EnderecoEmp && FrenteDoc && VersoDoc && Selfie && Assinatura\n}\n\nreturn {\n  resultado: resultado,\n  similarity: similarity\n}\n"
+        },
+        "id": "cfa29b37-bee9-4dce-b4c7-66839c6d18b5",
+        "name": "Resultado Final",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2060,
+          1020
+        ]
+      },
+      {
+        "parameters": {
+          "method": "PATCH",
+          "url": "={{ $('Endpoints').first().json.PatchNegociacao }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{ $('Token').first().json.token }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"contractor\": {\n    \"personalData\": {\n      \"address\": {{ JSON.stringify($json.address, null, 8)  }}\n    }\n  },\n  \"historicalItem\": {\n    \"type\": \"EDIT_PERSONAL_DATA\",\n    \"description\": \"As informações do representante foram alteradas.\",\n    \"justification\": \"\"\n  }\n}",
+          "options": {}
+        },
+        "id": "e5684f0b-6693-490f-b877-1a19709b7c17",
+        "name": "Patch - End - Responsável",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1140,
+          880
+        ]
+      },
+      {
+        "parameters": {
+          "method": "PATCH",
+          "url": "={{ $('Endpoints').first().json.PatchNegociacao }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{ $('Token').first().json.token }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"contractor\": {\n    \"businessData\": {\n      \"address\": {{ $json.address.toJsonString() }}\n      \n    }\n  },\n  \"historicalItem\": {\n    \"type\": \"EDIT_BUSINESS_DATA\",\n    \"description\": \"As informações da empresa contratante foram alteradas.\",\n    \"justification\": \"\"\n  }\n}",
+          "options": {}
+        },
+        "id": "951f4d1e-1536-43f5-af51-4536f740c7bd",
+        "name": "Patch - End - Empresa",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1140,
+          1060
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "c16012c7-7068-4575-82c2-29f4b33d97ba",
+                "name": "mensagem",
+                "value": "={{ \n  $('Execute').first().json['costas-documento'] \n    ? `Erro ao subir verso do documento - ${$('Execute').first().json.contrato} - ${$now.format('dd/MM/yyyy - HH:mm')} - Url do documento: ${$('Execute').first().json['costas-documento']}` \n    : (\n        $('Execute').first().json.recoleta \n          ? null\n          : `Erro ao subir verso do documento - ${$('Execute').first().json.contrato} - ${$now.format('dd/MM/yyyy - HH:mm')} - Não consegui acessar a url do documento`\n      )\n}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "aecdcd40-ca29-4320-85d8-39f47ac14476",
+        "name": "Erro - Verso do Documento",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1560,
+          400
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $('Endpoints').first().json.PostEndEmpresa }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "=Firebase eyJhbGciOiJSUzI1NiIsImtpZCI6IjFhYWMyNzEwOTkwNDljMGRmYzA1OGUwNjEyZjA4ZDA2YzMwYTA0MTUiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiSm_Do28gRnJlaXRhcyIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9ibGlwcy1zdGFnaW5nLXJlZmFjdG9yLWVhMzY0IiwiYXVkIjoiYmxpcHMtc3RhZ2luZy1yZWZhY3Rvci1lYTM2NCIsImF1dGhfdGltZSI6MTczNDQ2MjIzNCwidXNlcl9pZCI6IjFMY1lZU0FVemFRV1FhdVVVaWlNdkREUWRhZDIiLCJzdWIiOiIxTGNZWVNBVXphUVdRYXVVVWlpTXZERFFkYWQyIiwiaWF0IjoxNzM0NDYyMjM0LCJleHAiOjE3MzQ0NjU4MzQsImVtYWlsIjoiYmxpcHMtYXRpdm9zLTE2NDkwOTY0OTguNDIzMjc3MV9zZXBhcmF0b3Jfam9hby5mcmVpdGFzQGJsaXBzLmNvbS5iciIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJibGlwcy1hdGl2b3MtMTY0OTA5NjQ5OC40MjMyNzcxX3NlcGFyYXRvcl9qb2FvLmZyZWl0YXNAYmxpcHMuY29tLmJyIl19LCJzaWduX2luX3Byb3ZpZGVyIjoiY3VzdG9tIn19.AuvOrZiH3xtPsd1lPphRpmEvS_b46NTGPLmC3JbFrtmHp4nCSVAZxRWIlrxZknWsM-B7PvL-Enxui0rfLBiNJnTxPQY4gUxRiBJKqyc4DEwA6L6pXFfNyiTSyytIDGhYzAUjyDcj05XkblRshkK8X2gtSCCIkxREacb8wdme8_nz9MuKGCZ8Pj0LdrgisnPTjbKl9di0n8rhVxOHHBYU2nsr9NZj-R819gl2FtYqFpqAwaWpHndN9cOEmoFN0X4x3pIb3mpDQsP889BtjL27bExNB44FguT42qRlQW1M8MwVpGsreMkk7N1zVGGozeBQDohPOwcA2DMcKi74z1Cgpg"
+              }
+            ]
+          },
+          "sendBody": true,
+          "contentType": "binaryData",
+          "inputDataFieldName": "data",
+          "options": {}
+        },
+        "id": "648619b4-04db-43e5-8d90-71f6cd47e322",
+        "name": "Post End Firebase Emp",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          740,
+          1060
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "18b14191-938f-4519-a6c3-2e4f42568442",
+                "name": "PatchNegociacao",
+                "value": "=https://blips-backend-staging-25jdzzxqga-uc.a.run.app/v2/negotiation/{{ $('Execute').first().json.contrato }}",
+                "type": "string"
+              },
+              {
+                "id": "702d1cb4-3c44-4fe8-b0f1-211b6ac42434",
+                "name": "PostEndEmpresa",
+                "value": "=https://firebasestorage.googleapis.com/v0/b/blips-staging-refactor-ea364.appspot.com/o?name=negotiation%2F{{ $('Execute').first().json.contrato }}%2Fcomprovante-de-residencia.pdf",
+                "type": "string"
+              },
+              {
+                "id": "e7cb7427-70bd-44e4-87d2-74a8c3209d9e",
+                "name": "PostEndResponsavel",
+                "value": "=https://firebasestorage.googleapis.com/v0/b/blips-staging-refactor-ea364.appspot.com/o?name=negotiation%2F{{ $('Execute').first().json.contrato }}%2Fcomprovante-de-residencia-representante",
+                "type": "string"
+              },
+              {
+                "id": "64c3a4e7-dc61-4c36-9e5b-173bced86b0e",
+                "name": "PostFrenteDoc",
+                "value": "=https://firebasestorage.googleapis.com/v0/b/blips-staging-refactor-ea364.appspot.com/o?name=negotiation%2F{{ $('Execute').first().json.contrato }}%2Ffrente-documento",
+                "type": "string"
+              },
+              {
+                "id": "58823de5-9d89-4f61-8ee5-b4ac16edd150",
+                "name": "PostVersoDoc",
+                "value": "=https://firebasestorage.googleapis.com/v0/b/blips-staging-refactor-ea364.appspot.com/o?name=negotiation%2F{{ $('Execute').first().json.contrato }}%2Fcostas-documento",
+                "type": "string"
+              },
+              {
+                "id": "4b40511c-a86c-40da-8452-984b056a6761",
+                "name": "PostSelfie",
+                "value": "=https://firebasestorage.googleapis.com/v0/b/blips-staging-refactor-ea364.appspot.com/o?name=negotiation%2F{{ $('Execute').first().json.contrato }}%2Fselfie",
+                "type": "string"
+              },
+              {
+                "id": "e0093314-b534-44ff-80c4-4c0f5d655e32",
+                "name": "PostAudio",
+                "value": "=https://firebasestorage.googleapis.com/v0/b/blips-staging-refactor-ea364.appspot.com/o?name=negotiation%2F{{ $('Execute').first().json.contrato }}%2Fassinatura-audio.mp3",
+                "type": "string"
+              },
+              {
+                "id": "c5878e1b-db40-42fe-8e66-87f94434553f",
+                "name": "ComparaAssinatura",
+                "value": "=https://blips-backend-staging-25jdzzxqga-uc.a.run.app/v2/negotiation/compare-text-voice",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "fa4c9d86-df1f-4196-aadd-c2f01c11b366",
+        "name": "Endpoints",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          100,
+          640
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $('Endpoints').first().json.PostAudio }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{ $('Token').first().json.token }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "contentType": "binaryData",
+          "inputDataFieldName": "data",
+          "options": {}
+        },
+        "id": "43a97d98-17bb-4168-b9ee-b4cdcbfe3d0a",
+        "name": "Post Áudio",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          740,
+          720
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $('Endpoints').first().json.ComparaAssinatura }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{ $('Token').first().json.token }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"gcsUri\": \"gs://blips-staging-refactor-ea364.appspot.com/negotiation/{{ $('Execute').first().json.contrato }}/assinatura-audio.mp3\",\n  \"text\": \"{{ $('Execute').first().json.texto_assinatura }}\"\n}",
+          "options": {}
+        },
+        "id": "8b938b72-def6-4eb1-a157-16dbadb12af4",
+        "name": "Compara Assinatura",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          940,
+          720
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "method": "PATCH",
+          "url": "={{ $('Endpoints').first().json.PatchNegociacao }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{ $('Token').first().json.token }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"audioSignatureAcurracy\": {{ $json.similarity }},\n  \"audioSignatureUrl\": \"https://firebasestorage.googleapis.com/v0/b/blips-staging-refactor-ea364.appspot.com/o/negotiation%2F{{ $('Execute').first().json.contrato }}%2Fassinatura-audio.mp3?alt=media&token=bd792be3-3eab-4d91-936a-464be5acd69f{{ $('Post Áudio').first().json.downloadTokens }}\",\n  \"historicalItem\": {\n    \"type\": \"SIGNATURE_BY_AUDIO\",\n    \"description\": \"enviou a Assinatura por áudio\",\n    \"justification\": \"\"\n  }\n}",
+          "options": {}
+        },
+        "id": "84c6c92d-c9eb-44be-93ec-827ee734258b",
+        "name": "Patch - Áudio",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1140,
+          720
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "e8dcff02-880f-4265-bb5a-29880bc1e3a8",
+                "name": "mensagem",
+                "value": "={{ \n  $('Execute').first().json.audio \n    ? `Erro ao subir assinatura - ${$('Execute').first().json.contrato} - ${$now.format('dd/MM/yyyy - HH:mm')} - Url do documento: ${$('Execute').first().json.audio}` \n    : (\n        $('Execute').first().json.recoleta \n          ? null\n          : `Erro ao subir assinatura - ${$('Execute').first().json.contrato} - ${$now.format('dd/MM/yyyy - HH:mm')} - Não consegui acessar a url do documento`\n      )\n}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "78c9ed65-efeb-4c92-8f62-54a9c1333cd4",
+        "name": "Erro - Assinatura",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1560,
+          740
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ee0f5f73-1e2f-4afe-a2f2-e82bc501cd0f",
+                "name": "resultado",
+                "value": "={{ $json.mensagem ? false : true}}",
+                "type": "boolean"
+              },
+              {
+                "id": "a3d28235-1101-4bd6-9146-cfafbd293212",
+                "name": "similarity",
+                "value": "={{ $('Compara Assinatura').isExecuted ? $('Compara Assinatura').first().json.similarity : 100 }}",
+                "type": "number"
+              },
+              {
+                "id": "4e6d6ab5-3a4e-4a54-877c-c9761fb01f2b",
+                "name": "mensagem",
+                "value": "={{\n  $json.mensagem \n    ? $json.mensagem \n    : (\n        $('Execute').first().json.audio \n          ? `Sucesso ao subir assinatura - ${$('Execute').first().json.contrato} - ${$now.format('dd/MM/yyyy - HH:mm')} - Url do documento: ${$('Execute').first().json.audio}`\n          : null\n      )\n}}",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "id": "22973de3-dab9-40d7-9721-0859acca085b",
+        "name": "Resultado5",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1760,
+          680
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips-backend-staging-25jdzzxqga-uc.a.run.app/v2/user/login/624b373210c6fc7fcb4b7e0b",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\n    \"email\": \"joao.freitas@blips.com.br\",\n    \"password\": \"BlipsAI7\"\n}",
+          "options": {}
+        },
+        "id": "1fbafa2c-7095-4384-95db-a32adbe030a9",
+        "name": "Gera token",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          960,
+          1400
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.timeline.comment.add",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"fields\": {\n    \"ENTITY_ID\": \"{{ $('Execute').first().json.item_id }}\", \n    \"ENTITY_TYPE\": \"DYNAMIC_1080\", \n    \"COMMENT\": \"{{ $json.comentario }}\"\n  }\n}",
+          "options": {}
+        },
+        "id": "30a0b2a6-b94c-49b2-bf24-6081dc716ab2",
+        "name": "Comentário - Sucesso",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2660,
+          400
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.timeline.comment.add",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"fields\": {\n    \"ENTITY_ID\": \"{{ $('Execute').first().json.item_id }}\", \n    \"ENTITY_TYPE\": \"DYNAMIC_1080\", \n    \"COMMENT\": \"{{ $('Erro').last().json.mensagem }}\"\n  }\n}",
+          "options": {}
+        },
+        "id": "a3ade913-da60-4b98-9d8b-d17c30069535",
+        "name": "Comentário - Falha",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2660,
+          600
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.timeline.comment.add",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n    \"fields\": {\n        \"ENTITY_ID\": {{ $('Execute').first().json.card_onboarding }},\n        \"ENTITY_TYPE\": \"deal\",\n        \"COMMENT\": \"{{ $('Comentario').first().json.comentario }}\"\n    }\n}",
+          "options": {}
+        },
+        "id": "e5536ef0-110f-4bd9-8c20-326bd0f1d730",
+        "name": "Comentário - Sucesso - Onboarding",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2860,
+          400
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.timeline.comment.add",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n    \"fields\": {\n        \"ENTITY_ID\": {{ $('Execute').first().json.card_onboarding }},\n        \"ENTITY_TYPE\": \"deal\",\n        \"COMMENT\": \"{{ $('Erro').last().json.mensagem }}\"\n    }\n}",
+          "options": {}
+        },
+        "id": "bd5191cf-893b-414d-a081-78f811e7d030",
+        "name": "Comentário - Falha - Onboarding",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2860,
+          600
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "04b9da49-43f3-4c9b-ae7b-64eb0bef6ee1",
+                "name": "comentario",
+                "value": "={{ $json.mensagem }}",
+                "type": "string"
+              },
+              {
+                "id": "36139c0c-3b58-4f67-99b9-f2f23ff533f4",
+                "name": "mandar",
+                "value": "={{ $json.mensagem ? true : false }}",
+                "type": "boolean"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "40486545-8eff-4b34-85e8-93ceb1934207",
+        "name": "Comentario",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2260,
+          420
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "8fb2dde6-b31e-4108-bd07-5ea10e802ce8",
+                "leftValue": "={{ $json.mandar }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "d4a3faf2-c01c-48ec-a25a-34754b84fb49",
+        "name": "Tem comentário?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          2460,
+          420
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://blips-backend-staging-25jdzzxqga-uc.a.run.app/v2/negotiation/67864ed98a9318d0ccfaf33d/document-analysis/67864ed88a9318d0ccfaf33b",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{ $json.accessToken }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n    \"historicalItem\": {\n        \"description\": \"Aprovado na etapa OCR de documentos. justificativa: Teste\",\n        \"justification\": \"Teste\"\n    }\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1160,
+          1400
+        ],
+        "id": "5243a8e7-73ce-43d7-9d6e-19b2228937f0",
+        "name": "HTTP Request"
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "collection": "negotiation",
+          "updateKey": "_id",
+          "fields": "={{ $json.keys().join() }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1.1,
+        "position": [
+          520,
+          1420
+        ],
+        "id": "17bed26a-ab4c-44e7-a1b2-dbed434a6b50",
+        "name": "MongoDB",
+        "credentials": {
+          "mongoDb": {
+            "id": "U7fcoo9UUt8lk8Qi",
+            "name": "1Plataforma - Staging"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const now = new Date();\n\nconst offsetDate = new Date(\n  now.toLocaleString(\"en-US\", { timeZone: \"America/Sao_Paulo\" })\n);\n\nconst isoDate = offsetDate\n  .toISOString()\n  .replace(/\\.\\d{3}Z$/, (match) => `.${match.slice(1, 3)}Z`);\n\nconst resultado = {\n  _id: \"67864ed98a9318d0ccfaf33d\",\n  \"document_analysis.2.analysisDate\": isoDate,\n  \"document_analysis.2.status\": \"COMPLETE\",\n  \"document_analysis.2.attempts\": 1,\n  \"document_analysis.2.details\": [\n    {\n      name: \"N\\u00fameros documento comparados\",\n      value:\n        \"N\\u00famero retirado da imagem pelo BDC: 15364683630 / N\\u00famero do documento no cadastro 15364683630\",\n    },\n    {\n      name: \"Nomes comparados\",\n      value:\n        \"Nome retirado da imagem pelo BDC: JOÃO LUCAS PONTES FREITAS / Nome no cadastro JOÃO LUCAS PONTES FREITAS\",\n    },\n  ],\n};\n\nreturn resultado;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          300,
+          1420
+        ],
+        "id": "17aed7bc-ad55-41cd-9e10-7926813e6efe",
+        "name": "Args Mongo"
+      },
+      {
+        "parameters": {
+          "url": "={{ $('Execute').first().json.audio }}",
+          "options": {}
+        },
+        "id": "27fc883d-be9f-4779-b226-0a724bb462b7",
+        "name": "Get - Áudio",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          540,
+          720
+        ],
+        "retryOnFail": false,
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $('Endpoints').first().json.PostEndResponsavel }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{ $('Token').first().json.token }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "contentType": "binaryData",
+          "inputDataFieldName": "data",
+          "options": {}
+        },
+        "id": "2c8fdfe0-fe1c-4112-b33d-a665cd6fba56",
+        "name": "Post End Firebase Resp",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          740,
+          880
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips.bitrix24.com.br/rest/1/c40znc77g4j9t2l4/crm.deal.list",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n    \"order\": { \"DATE_CREATE\": \"ASC\" },\n    \"filter\": {\n      \"CATEGORY_ID\": \"5\",\n      \"UF_CRM_1708708658\": \"147860\"\n    },\n    \"select\": [ \"ID\", \"TITLE\", \"STAGE_ID\", \"UF_CRM_ID_PIPE\", \"ASSIGNED_BY_ID\" ]\n}",
+          "options": {}
+        },
+        "id": "04ea4c62-6803-4053-9e3f-dc6d1b04b295",
+        "name": "Buscar deal Bitrix (id_crm)",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -480,
+          1100
+        ]
+      },
+      {
+        "parameters": {
+          "url": "=https://blips-backend-staging-25jdzzxqga-uc.a.run.app/v2/negotiation/{{ $('Execute').first().json.contrato}}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{ $('Token').first().json.token }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "3d2a7605-4bbb-4b03-b10b-f9394908ca95",
+        "name": "Dados negociação",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          80,
+          1220
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips-backend-staging-25jdzzxqga-uc.a.run.app/v2/user/login/624b373210c6fc7fcb4b7e0b",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\n    \"email\": \"joao.freitas@blips.com.br\",\n    \"password\": \"BlipsAI7\"\n}",
+          "options": {}
+        },
+        "id": "398decae-60e4-4720-a767-345d9b10be02",
+        "name": "Gera token1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -320,
+          640
+        ]
+      }
+    ],
+    "connections": {
+      "GET - Endereço - Responsável": {
+        "main": [
+          [
+            {
+              "node": "Post End Firebase Resp",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          []
+        ]
+      },
+      "GET - Frente Documento": {
+        "main": [
+          [
+            {
+              "node": "Post Frente Documento",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro - Frente do Documento",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Post Frente Documento": {
+        "main": [
+          [
+            {
+              "node": "Patch - Doc - Front",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro - Frente do Documento",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GET - Verso Documento": {
+        "main": [
+          [
+            {
+              "node": "Post Verso Documento",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro - Verso do Documento",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Post Verso Documento": {
+        "main": [
+          [
+            {
+              "node": "Patch - Doc - Back",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro - Verso do Documento",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GET - Selfie": {
+        "main": [
+          [
+            {
+              "node": "Post Selfie",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro - Selfie",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Post Selfie": {
+        "main": [
+          [
+            {
+              "node": "Patch - Doc - Selfie",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro - Selfie",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Patch - Doc - Back": {
+        "main": [
+          [
+            {
+              "node": "Resultado3",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro - Verso do Documento",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Patch - Doc - Front": {
+        "main": [
+          [
+            {
+              "node": "Resultado2",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro - Frente do Documento",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Discord": {
+        "main": [
+          [
+            {
+              "node": "Comentário - Falha",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GET - Endereço Empresa": {
+        "main": [
+          [
+            {
+              "node": "Post End Firebase Emp",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro - Endereço Empresa",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Erro": {
+        "main": [
+          [
+            {
+              "node": "Discord",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Patch - Doc - Selfie": {
+        "main": [
+          [
+            {
+              "node": "Resultado4",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro - Selfie",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Erro - Endereço Responsável": {
+        "main": [
+          [
+            {
+              "node": "Resultado",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Erro - Endereço Empresa": {
+        "main": [
+          [
+            {
+              "node": "Resultado1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Erro - Frente do Documento": {
+        "main": [
+          [
+            {
+              "node": "Resultado2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Erro - Selfie": {
+        "main": [
+          [
+            {
+              "node": "Resultado4",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Resultado2": {
+        "main": [
+          [
+            {
+              "node": "Deu certo?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Resultado1": {
+        "main": [
+          [
+            {
+              "node": "Deu certo?",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Resultado Final",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Resultado": {
+        "main": [
+          [
+            {
+              "node": "Deu certo?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Resultado3": {
+        "main": [
+          [
+            {
+              "node": "Deu certo?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Resultado4": {
+        "main": [
+          [
+            {
+              "node": "Deu certo?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Deu certo?": {
+        "main": [
+          [],
+          []
+        ]
+      },
+      "Execute": {
+        "main": [
+          [
+            {
+              "node": "Gera token1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Token": {
+        "main": [
+          [
+            {
+              "node": "Endpoints",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Address - Emp": {
+        "main": [
+          [
+            {
+              "node": "Patch - End - Empresa",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro - Endereço Empresa",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Address - Resp": {
+        "main": [
+          [
+            {
+              "node": "Patch - End - Responsável",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          []
+        ]
+      },
+      "Patch - End - Responsável": {
+        "main": [
+          [],
+          []
+        ]
+      },
+      "Patch - End - Empresa": {
+        "main": [
+          [
+            {
+              "node": "Resultado1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro - Endereço Empresa",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Erro - Verso do Documento": {
+        "main": [
+          [
+            {
+              "node": "Resultado3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Post End Firebase Emp": {
+        "main": [
+          [
+            {
+              "node": "Address - Emp",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro - Endereço Empresa",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Post Áudio": {
+        "main": [
+          [
+            {
+              "node": "Compara Assinatura",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro - Assinatura",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Compara Assinatura": {
+        "main": [
+          [
+            {
+              "node": "Patch - Áudio",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro - Assinatura",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Patch - Áudio": {
+        "main": [
+          [
+            {
+              "node": "Resultado5",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro - Assinatura",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Erro - Assinatura": {
+        "main": [
+          [
+            {
+              "node": "Resultado5",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Resultado5": {
+        "main": [
+          [
+            {
+              "node": "Deu certo?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Endpoints": {
+        "main": [
+          [
+            {
+              "node": "GET - Endereço - Responsável",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Comentário - Sucesso": {
+        "main": [
+          [
+            {
+              "node": "Comentário - Sucesso - Onboarding",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Comentário - Falha": {
+        "main": [
+          [
+            {
+              "node": "Comentário - Falha - Onboarding",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Comentario": {
+        "main": [
+          [
+            {
+              "node": "Tem comentário?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tem comentário?": {
+        "main": [
+          [
+            {
+              "node": "Comentário - Sucesso",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gera token": {
+        "main": [
+          []
+        ]
+      },
+      "Args Mongo": {
+        "main": [
+          []
+        ]
+      },
+      "Get - Áudio": {
+        "main": [
+          [
+            {
+              "node": "Post Áudio",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro - Assinatura",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Post End Firebase Resp": {
+        "main": [
+          [
+            {
+              "node": "Address - Resp",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados negociação": {
+        "main": [
+          []
+        ]
+      },
+      "Gera token1": {
+        "main": [
+          [
+            {
+              "node": "Token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "America/Sao_Paulo",
+      "saveManualExecutions": true,
+      "callerPolicy": "workflowsFromSameOwner"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Execute": [
+        {
+          "json": {
+            "contrato": "67aa414f860dc4027e149c94",
+            "token": "eyJhbGciOiAiUlMyNTYiLCAidHlwIjogIkpXVCIsICJraWQiOiAiNDI4ZGU1ZGRhODg3ZDE2ZTcxY2M2ZDU5MDdiNWU3NTczODZmMjc5MCJ9.eyJpc3MiOiAiZ2l0aHViLWNsb3VkYnVpbGRAYmxpcHMtc3RhZ2luZy1yZWZhY3Rvci1lYTM2NC5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsICJzdWIiOiAiZ2l0aHViLWNsb3VkYnVpbGRAYmxpcHMtc3RhZ2luZy1yZWZhY3Rvci1lYTM2NC5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsICJhdWQiOiAiaHR0cHM6Ly9pZGVudGl0eXRvb2xraXQuZ29vZ2xlYXBpcy5jb20vZ29vZ2xlLmlkZW50aXR5LmlkZW50aXR5dG9vbGtpdC52MS5JZGVudGl0eVRvb2xraXQiLCAidWlkIjogIjFMY1lZU0FVemFRV1FhdVVVaWlNdkREUWRhZDIiLCAiaWF0IjogMTczOTIxNDU1MSwgImV4cCI6IDE3MzkyMTgxNTEsICJjbGFpbXMiOiB7fX0.xYEOiFjjLyZENN5P60qNkyuFbS8KYBTAd1G0LiexhogdBjK1oJvw_ystMO07QHEDSn2TeY34uu8Zdp-5xmU-Wyu3HgZbr2RPpUXjP8gQcnwNrsvDtfJnwn-nGZ9DQR_MNTvzm27-nc_zo_7kc57NYLpivzhc2Gm0ewaepRhE1kxmanWSnftIfudKc4kOZkgtuG9o2JdycoKdBznhAcmpB00pw_8GX-QC153wFqxd26Ycq1TPmLFLR2qUhHShFj4JTAEZhyid0_IA_2gHnYEc6_HIz1zllQd_bKRUBaGyf3EInAl98wH0pzTPsD_74Rbqt05AtgKlQ1uIx8xsBtsyVQ",
+            "item_id": "139",
+            "recoleta": false,
+            "card_onboarding": "107367",
+            "Endereço": {
+              "address": {
+                "st_ave": "Rua Valter Silva Santos",
+                "number": "445",
+                "zip_code": "39401091",
+                "city": "Montes Claros",
+                "complement": "Apartamento 408",
+                "neighborhood": "Vila Mauricéia",
+                "state": "MG"
+              },
+              "contrato": "67aa414f860dc4027e149c94",
+              "comprovante": {
+                "id": 1150233749790720,
+                "mime_type": "image/jpeg",
+                "sha256": "bonoLd+gb43aQnkQxVf4Ohl9panhdP1Pi+FGf+0R8SE=",
+                "file_name": "IMG_8354.JPG",
+                "url": "https://storage.hyperflow.global/whatsapp/1150233749790720"
+              },
+              "nome_responsavel": "Mauricio Calhau Freitas"
+            }
+          }
+        }
+      ]
+    },
+    "versionId": "f4b9123b-934a-4eb8-94b8-68886d9fac3e",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-11-22T13:13:26.514Z",
+        "updatedAt": "2024-11-22T13:13:26.514Z",
+        "id": "owb3cfmzFRbqjP06",
+        "name": "Clara"
+      }
+    ]
+  }
+}
