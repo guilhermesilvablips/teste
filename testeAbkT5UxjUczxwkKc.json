@@ -1,0 +1,827 @@
+{
+  "data": {
+    "createdAt": "2025-05-12T19:06:23.893Z",
+    "updatedAt": "2025-05-19T15:05:44.854Z",
+    "id": "AbkT5UxjUczxwkKc",
+    "name": "Scraping WordPress Mkt",
+    "active": true,
+    "nodes": [
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "function buildGenericLinkTree(html) {\n  const baseUrl = \"https://ajuda.blips.com.br\";\n  let menus = [];\n  let equipamentos = [];\n  let downloads = [];\n  let infraestrutura = [];\n  let externos = [];\n\n  // 1. Extrai todos os <li ...><a ...>...</a></li> do menu\n  const menuRe = /<li[^>]*class=\"[^\"]*menu-item-([0-9]+)[^\"]*\"[^>]*>[\\s\\S]*?<a\\s+[^>]*href=[\"']([^\"']+)[\"'][^>]*>([\\s\\S]*?)<\\/a>/gi;\n  let match;\n  while ((match = menuRe.exec(html)) !== null) {\n    let id = match[1];\n    let href = match[2].replace(/&amp;/g, '&');\n    let text = match[3].replace(/<[^>]+>/g, '').replace(/\\s+/g, ' ').trim();\n    // Para menu\n    if (href.startsWith(baseUrl)) {\n      let endpoint = href.slice(baseUrl.length);\n      if (!endpoint.startsWith('/')) endpoint = '/' + endpoint;\n      menus.push({\n        href, tipo: 'menu', descricao: text, endpoint, id\n      });\n    }\n  }\n  menus = uniqueByHref(menus);\n\n  // 2. Pega todos os <a ...> do documento (como antes)\n  const re = /<a\\s+[^>]*href=[\"']([^\"']+)[\"'][^>]*>([\\s\\S]*?)<\\/a>/gi;\n  while ((match = re.exec(html)) !== null) {\n    let href = match[1].replace(/&amp;/g, '&');\n    let text = match[2].replace(/<[^>]+>/g, '').replace(/\\s+/g, ' ').trim();\n\n    // Já adicionados como menus acima\n    if (menus.some(m => m.href === href)) continue;\n\n    // DOWNLOADS\n    if (/drive\\.google\\.com\\/open\\?id=/.test(href) || /\\bDownload\\b/i.test(text)) {\n      downloads.push(toLinkObj(href, 'download', text || 'Download'));\n      continue;\n    }\n\n    // INFRAESTRUTURA\n    if (\n      href.startsWith(baseUrl) &&\n      (\n        /\\/wp-admin\\b/.test(href) ||\n        /\\/wp-login\\b/.test(href) ||\n        /\\/xmlrpc\\.php\\b/.test(href) ||\n        /\\/wp-content\\b/.test(href) ||\n        /\\/wp-includes\\b/.test(href) ||\n        /\\/feed\\b/.test(href) ||\n        /\\/comments\\b/.test(href) ||\n        /\\/?p=/.test(href) ||\n        /\\/edit.php/.test(href) ||\n        /\\/admin.php/.test(href)\n      )\n    ) {\n      infraestrutura.push(toLinkObj(href, 'infraestrutura', text));\n      continue;\n    }\n\n    // SITE PRINCIPAL BLIPS\n    if (href.startsWith(baseUrl)) {\n      let endpoint = href.slice(baseUrl.length);\n      if (!endpoint.startsWith('/')) endpoint = '/' + endpoint;\n      let pathClean = endpoint.replace(/^\\/|\\/$/g, '');\n      let segmentos = pathClean.split('/').filter(Boolean);\n      let dashCount = (endpoint.match(/-/g) || []).length;\n\n      if (\n        (segmentos.length > 0 && /vuze|eco|plotter|laser|flatbed|dtf|cut/i.test(pathClean)) ||\n        dashCount >= 3 ||\n        pathClean.length > 25\n      ) {\n        equipamentos.push({ ...toLinkObj(href, 'equipamento', text), endpoint });\n      }\n      continue;\n    }\n\n    // EXTERNOS\n    if (!href.startsWith(baseUrl) && !/drive\\.google\\.com/.test(href)) {\n      externos.push(toLinkObj(href, 'externo', text));\n      continue;\n    }\n  }\n\n  equipamentos = uniqueByHref(equipamentos);\n  downloads = uniqueByHref(downloads);\n  infraestrutura = uniqueByHref(infraestrutura);\n  externos = uniqueByHref(externos);\n\n  return {\n    dominio: baseUrl,\n    menus,\n    equipamentos,\n    downloads,\n    infraestrutura,\n    externos\n  };\n}\n\nfunction toLinkObj(href, tipo, descricao) {\n  return { href, tipo, descricao };\n}\nfunction uniqueByHref(arr) {\n  const seen = new Set();\n  return arr.filter(item => {\n    if (seen.has(item.href)) return false;\n    seen.add(item.href);\n    return true;\n  });\n}\n\n// Uso: buildGenericLinkTree(htmlString)\nreturn { doc: buildGenericLinkTree($json.content.rendered) }"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          740,
+          -180
+        ],
+        "id": "0bfb5ffe-3f54-4bf1-9a4e-1fde543f19a8",
+        "name": "Code3"
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "doc.menus",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          940,
+          -180
+        ],
+        "id": "a4bc8a67-e927-4c77-8e7c-657c9bb82f7a",
+        "name": "Split Out3"
+      },
+      {
+        "parameters": {
+          "jsCode": "const doct = $input.first().json.data\n\nfunction toLinkObj(href, tipo, descricao) {\n  return { href, tipo, descricao };\n}\n\nfunction uniqueByHref(arr) {\n  // Remove repetidos pelo href\n  const seen = new Set();\n  return arr.filter(item => {\n    if (seen.has(item.href)) return false;\n    seen.add(item.href);\n    return true;\n  });\n}\n\nfunction buildGenericLinkTree(html) {\n  // Regex para <a href=\"...\">text</a>\n  const re = /<a\\s+[^>]*href=[\"']([^\"']+)[\"'][^>]*>([\\s\\S]*?)<\\/a>/gi;\n  const baseUrl = \"https://ajuda.blips.com.br\";\n  \n  let menus = [];\n  let equipamentos = [];\n  let downloads = [];\n  let infraestrutura = [];\n  let externos = [];\n\n  let match;\n  \n  while ((match = re.exec(html)) !== null) {\n    let href = match[1].replace(/&amp;/g, '&');\n    let text = match[2].replace(/<[^>]+>/g, '').replace(/\\s+/g, ' ').trim();\n\n    // DOWNLOADS\n    if (/drive\\.google\\.com\\/open\\?id=/.test(href)) {\n      downloads.push(toLinkObj(href, 'download', text));\n      continue;\n    }\n\n    // INFRAESTRUTURA\n    if (\n      href.startsWith(baseUrl) &&\n      (\n        /\\/wp-admin\\b/.test(href) ||\n        /\\/wp-login\\b/.test(href) ||\n        /\\/xmlrpc\\.php\\b/.test(href) ||\n        /\\/wp-content\\b/.test(href) ||\n        /\\/wp-includes\\b/.test(href) ||\n        /\\/feed\\b/.test(href) ||\n        /\\/comments\\b/.test(href) ||\n        /\\/?p=/.test(href) ||\n        /\\/edit.php/.test(href) ||\n        /\\/admin.php/.test(href)\n      )\n    ) {\n      infraestrutura.push(toLinkObj(href, 'infraestrutura', text));\n      continue;\n    }\n\n    // SITE PRINCIPAL BR\n    if (href.startsWith(baseUrl)) {\n      let endpoint = href.slice(baseUrl.length);\n      if (!endpoint.startsWith('/')) endpoint = '/' + endpoint;\n\n      // Remove barras finais e iniciais\n      let pathClean = endpoint.replace(/^\\/|\\/$/g, '');\n      let segmentos = pathClean.split('/').filter(Boolean);\n      let dashCount = (endpoint.match(/-/g) || []).length;\n\n      // Critério de equipamento:\n      if (\n        pathClean.length >= 30 ||\n        dashCount >= 4 ||\n        segmentos.length > 1\n      ) {\n        equipamentos.push({\n          ...toLinkObj(href, 'equipamento', text),\n          endpoint\n        });\n      } else {\n        // Menu raiz\n        menus.push({\n          ...toLinkObj(href, 'menu', text),\n          endpoint\n        });\n      }\n      continue;\n    }\n\n    // EXTERNOS\n    if (!href.startsWith(baseUrl) && !/drive\\.google\\.com/.test(href)) {\n      externos.push(toLinkObj(href, 'externo', text));\n      continue;\n    }\n  }\n\n  // Remover repetidos de cada categoria\n  menus = uniqueByHref(menus);\n  equipamentos = uniqueByHref(equipamentos);\n  downloads = uniqueByHref(downloads);\n  infraestrutura = uniqueByHref(infraestrutura);\n  externos = uniqueByHref(externos);\n\n  return {\n    dominio: baseUrl,\n    menus,\n    equipamentos,\n    downloads,\n    infraestrutura,\n    externos\n  };\n}\n\n// USO EXEMPLO:\n// const fs = require('fs');\n// const html = fs.readFileSync('seuarquivo.html', 'utf8');\n// console.log(JSON.stringify(buildGenericLinkTree(html), null, 2));\n\nreturn {\"doc\": buildGenericLinkTree(doct)}\n\n// Exemplo de uso (no navegador):  \n// filtrarLinks(); // usa o DOM atual\n// Exemplo com HTML externo: filtrarLinks('<html....</html>');"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          580,
+          1320
+        ],
+        "id": "54707b9e-58fb-435f-a781-f3874c6d1453",
+        "name": "Code5"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.keys() }}",
+                      "rightValue": "data_home",
+                      "operator": {
+                        "type": "array",
+                        "operation": "contains",
+                        "rightType": "any"
+                      },
+                      "id": "7d037b70-c3bc-4023-b672-3bdaf11ba511"
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "dba37126-dd0e-4852-9d6b-1616231ff018",
+                      "leftValue": "={{ $json.keys() }}",
+                      "rightValue": "data_menus",
+                      "operator": {
+                        "type": "array",
+                        "operation": "contains",
+                        "rightType": "any"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          320,
+          1280
+        ],
+        "id": "cf8ac98a-7cf1-4f7a-852e-8ff8e07ad012",
+        "name": "Switch1"
+      },
+      {
+        "parameters": {
+          "url": "https://ajuda.blips.com.br/wp-json/wp/v2/pages?status=any",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpBasicAuth",
+          "options": {
+            "response": {
+              "response": {
+                "responseFormat": "json"
+              }
+            }
+          }
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          740,
+          -20
+        ],
+        "id": "6cf60967-40d3-4158-818b-d80a5501f143",
+        "name": "Home",
+        "credentials": {
+          "httpBasicAuth": {
+            "id": "4NP4kaawXsOnXwJU",
+            "name": "Pedro WP"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const doct = $json.content.rendered\n\nfunction toLinkObj(href, tipo, descricao) {\n  return { href, tipo, descricao };\n}\n\nfunction uniqueByHref(arr) {\n  const seen = new Set();\n  return arr.filter(item => {\n    if (seen.has(item.href)) return false;\n    seen.add(item.href);\n    return true;\n  });\n}\n\nfunction buildGenericLinkTree(html) {\n  const re = /<a\\s+[^>]*href=[\"']([^\"']+)[\"'][^>]*>([\\s\\S]*?)<\\/a>/gi;\n  const baseUrl = \"https://ajuda.blips.com.br\";\n\n  let menus = [];\n  let equipamentos = [];\n  let downloads = [];\n  let infraestrutura = [];\n  let externos = [];\n\n  let match;\n\n  while ((match = re.exec(html)) !== null) {\n    let href = match[1].replace(/&amp;/g, '&');\n    let text = match[2].replace(/<[^>]+>/g, '').replace(/\\s+/g, ' ').trim();\n\n    // DOWNLOADS\n    // Critério extra: texto com \"Download\" ou link para Google Drive\n    if (/drive\\.google\\.com\\/open\\?id=/.test(href) || /\\bDownload\\b/i.test(text)) {\n      downloads.push(toLinkObj(href, 'download', text || 'Download'));\n      continue;\n    }\n\n    // INFRAESTRUTURA\n    if (\n      href.startsWith(baseUrl) &&\n      (\n        /\\/wp-admin\\b/.test(href) ||\n        /\\/wp-login\\b/.test(href) ||\n        /\\/xmlrpc\\.php\\b/.test(href) ||\n        /\\/wp-content\\b/.test(href) ||\n        /\\/wp-includes\\b/.test(href) ||\n        /\\/feed\\b/.test(href) ||\n        /\\/comments\\b/.test(href) ||\n        /\\/?p=/.test(href) ||\n        /\\/edit.php/.test(href) ||\n        /\\/admin.php/.test(href)\n      )\n    ) {\n      infraestrutura.push(toLinkObj(href, 'infraestrutura', text));\n      continue;\n    }\n\n    // SITE PRINCIPAL BLIPS\n    if (href.startsWith(baseUrl)) {\n      let endpoint = href.slice(baseUrl.length);\n      if (!endpoint.startsWith('/')) endpoint = '/' + endpoint;\n\n      let pathClean = endpoint.replace(/^\\/|\\/$/g, '');\n      let segmentos = pathClean.split('/').filter(Boolean);\n      let dashCount = (endpoint.match(/-/g) || []).length;\n\n      // Critério de equipamentos melhorado\n      if (\n        (segmentos.length > 0 && /vuze|eco|plotter|laser|flatbed|dtf|cut/i.test(pathClean)) ||\n        dashCount >= 3 ||\n        pathClean.length > 25\n      ) {\n        equipamentos.push({ ...toLinkObj(href, 'equipamento', text), endpoint });\n      } else {\n        // Menu raiz\n        menus.push({ ...toLinkObj(href, 'menu', text), endpoint });\n      }\n      continue;\n    }\n\n    // EXTERNOS\n    if (!href.startsWith(baseUrl) && !/drive\\.google\\.com/.test(href)) {\n      externos.push(toLinkObj(href, 'externo', text));\n      continue;\n    }\n  }\n\n  // Remover repetidos de cada categoria\n  menus = uniqueByHref(menus);\n  equipamentos = uniqueByHref(equipamentos);\n  downloads = uniqueByHref(downloads);\n  infraestrutura = uniqueByHref(infraestrutura);\n  externos = uniqueByHref(externos);\n\n  return {\n    dominio: baseUrl,\n    menus,\n    equipamentos,\n    downloads,\n    infraestrutura,\n    externos\n  };\n}\n\n// Para uso externo\nreturn {\"doc\": buildGenericLinkTree(doct)}"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          560,
+          640
+        ],
+        "id": "cc447220-6a07-4417-86dc-c222576dd380",
+        "name": "Code"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "407f800d-82fe-417a-9bb1-23cf53e8c6ec",
+                "leftValue": "={{ $json.descricao }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "1ef38991-a7c8-47f4-9af7-1ef32eb52869",
+                "leftValue": "={{ $json.descricao }}",
+                "rightValue": "Institucional",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEquals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.2,
+        "position": [
+          1120,
+          -180
+        ],
+        "id": "54a17c06-ebcb-4478-a736-96ac5dda5805",
+        "name": "Filter"
+      },
+      {
+        "parameters": {
+          "url": "=https://ajuda.blips.com.br/wp-json/wp/v2/pages/743",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpBasicAuth",
+          "options": {
+            "response": {
+              "response": {}
+            }
+          }
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          360,
+          640
+        ],
+        "id": "236e605d-ef0e-48d2-807e-fd95ac57f98e",
+        "name": "Menu",
+        "executeOnce": false,
+        "credentials": {
+          "httpBasicAuth": {
+            "id": "4NP4kaawXsOnXwJU",
+            "name": "Pedro WP"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "url": "=https://ajuda.blips.com.br/wp-json/wp/v2/posts?status=any&_fields=id,title",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpBasicAuth",
+          "options": {
+            "response": {
+              "response": {
+                "responseFormat": "json"
+              }
+            }
+          }
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          360,
+          840
+        ],
+        "id": "ec917088-022a-489f-86a2-7bff1f03c04c",
+        "name": "Equipamento",
+        "executeOnce": false,
+        "credentials": {
+          "httpBasicAuth": {
+            "id": "4NP4kaawXsOnXwJU",
+            "name": "Pedro WP"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "=doc{{ $('WH_Menu').item.json.query.recurso != \"\" ? \".\" + $('WH_Menu').item.json.query.recurso : \"\"}}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          760,
+          640
+        ],
+        "id": "3188cd02-32f3-4972-9284-b5a05bb15139",
+        "name": "Split Out"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://ajuda.blips.com.br/wp-admin/admin-ajax.php",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "{\n  \"Accept\": \"*/*\",\n  \"Accept-Language\": \"pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3\",\n  \"Accept-Encoding\": \"gzip, deflate, br, zstd\",\n  \"X-Requested-With\": \"XMLHttpRequest\",\n  \"Content-Type\": \"multipart/form-data; boundary=----geckoformboundary95436f63020c2bf737d0c72034d6fbf0\",\n  \"Content-Length\": \"1574\",\n  \"Origin\": \"https://ajuda.blips.com.br\",\n  \"DNT\": \"1\",\n  \"Sec-GPC\": \"1\",\n  \"Connection\": \"keep-alive\",\n  \"Referer\": \"https://ajuda.blips.com.br/login/\",\n  \"Sec-Fetch-Dest\": \"empty\",\n  \"Sec-Fetch-Mode\": \"cors\",\n  \"Sec-Fetch-Site\": \"same-origin\",\n  \"Priority\": \"u=0\"\n}",
+          "sendBody": true,
+          "contentType": "multipart-form-data",
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "text-1",
+                "value": "pedro.alves@blips.com.br"
+              },
+              {
+                "name": "password-1",
+                "value": "acesso@pedro1"
+              },
+              {
+                "name": "referer_url"
+              },
+              {
+                "name": "forminator_nonce",
+                "value": "883944bc93"
+              },
+              {
+                "name": "_wp_http_referer",
+                "value": "/login/"
+              },
+              {
+                "name": "form_id",
+                "value": "1013"
+              },
+              {
+                "name": "page_id",
+                "value": "1022"
+              },
+              {
+                "name": "form_type",
+                "value": "login"
+              },
+              {
+                "name": "current_url",
+                "value": "https://ajuda.blips.com.br/login/"
+              },
+              {
+                "name": "render_id",
+                "value": "0"
+              },
+              {
+                "name": "redirect_to",
+                "value": "https://ajuda.blips.com.br/wp-admin/"
+              },
+              {
+                "name": "action",
+                "value": "forminator_submit_form_custom-forms"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "fullResponse": true
+              }
+            }
+          }
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1340,
+          600
+        ],
+        "id": "411c6cd5-577e-4d2a-b824-7aa0e8af317a",
+        "name": "HTTP Request"
+      },
+      {
+        "parameters": {
+          "path": "home",
+          "responseMode": "lastNode",
+          "responseData": "allEntries",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          120,
+          240
+        ],
+        "id": "2ab4f58e-e8b3-47fe-950b-9b6c63241605",
+        "name": "WH_Home",
+        "webhookId": "4a0d33ea-63c4-47fc-8a3b-2fef30dfcd5d"
+      },
+      {
+        "parameters": {
+          "path": "=home/menu",
+          "responseMode": "lastNode",
+          "responseData": "allEntries",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          160,
+          640
+        ],
+        "id": "367549fb-c1f4-4c0b-9a7e-7744a1bde309",
+        "name": "WH_Menu",
+        "webhookId": "4a0d33ea-63c4-47fc-8a3b-2fef30dfcd5d"
+      },
+      {
+        "parameters": {
+          "path": "home/equipamento",
+          "responseMode": "lastNode",
+          "responseData": "allEntries",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          120,
+          1020
+        ],
+        "id": "04e5dc44-878d-4bba-a653-be55fe32cea3",
+        "name": "WH_Equipamento",
+        "webhookId": "4a0d33ea-63c4-47fc-8a3b-2fef30dfcd5d"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const doc = $json.data\n\nfunction extrairFAQ(html) {\n  // Match cada accordion-item\n  const itemRegex = /<div class=\"elementor-accordion-item\">([\\s\\S]*?<\\/div>\\s*<\\/div>)/g;\n  let match;\n  let faqs = [];\n\n  while ((match = itemRegex.exec(html)) !== null) {\n    const bloco = match[1];\n\n    // Pergunta\n    let perguntaMatch = bloco.match(/<a[^>]+class=\"elementor-accordion-title\"[^>]*>(.*?)<\\/a>/i);\n    let pergunta = perguntaMatch ? perguntaMatch[1].replace(/<[^>]+>/g, '').trim() : null;\n\n    // Resposta (HTML sem tags)\n    let respostaMatch = bloco.match(/<div[^>]+class=\"elementor-tab-content[^\"]*\"[^>]*>([\\s\\S]*?)<\\/div>\\s*$/im);\n    let resposta = respostaMatch ? respostaMatch[1]\n      .replace(/<[^>]+>/g, '')      // Remove tags HTML\n      .replace(/\\s+/g, ' ')         // Espaços redundantes\n      .trim() : null;\n\n    if (pergunta && resposta) {\n      faqs.push({ pergunta, resposta });\n    }\n  }\n  return faqs;\n}\n\nreturn {\"faqs\" : extrairFAQ(doc)}"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1280,
+          20
+        ],
+        "id": "d88a05e2-7f21-4766-8e7b-4a4a567323f5",
+        "name": "Code6"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const doct = $json.data\n\nfunction toLinkObj(href, tipo, descricao) {\n  return { href, tipo, descricao };\n}\n\nfunction uniqueByHref(arr) {\n  // Remove repetidos pelo href\n  const seen = new Set();\n  return arr.filter(item => {\n    if (seen.has(item.href)) return false;\n    seen.add(item.href);\n    return true;\n  });\n}\n\nfunction buildGenericLinkTree(html) {\n  // Regex para <a href=\"...\">text</a>\n  const re = /<a\\s+[^>]*href=[\"']([^\"']+)[\"'][^>]*>([\\s\\S]*?)<\\/a>/gi;\n  const baseUrl = \"https://ajuda.blips.com.br\";\n  \n  let menus = [];\n  let equipamentos = [];\n  let downloads = [];\n  let infraestrutura = [];\n  let externos = [];\n\n  let match;\n  \n  while ((match = re.exec(html)) !== null) {\n    let href = match[1].replace(/&amp;/g, '&');\n    let text = match[2].replace(/<[^>]+>/g, '').replace(/\\s+/g, ' ').trim();\n\n    // DOWNLOADS\n    if (/drive\\.google\\.com\\/open\\?id=/.test(href)) {\n      downloads.push(toLinkObj(href, 'download', text));\n      continue;\n    }\n\n    // INFRAESTRUTURA\n    if (\n      href.startsWith(baseUrl) &&\n      (\n        /\\/wp-admin\\b/.test(href) ||\n        /\\/wp-login\\b/.test(href) ||\n        /\\/xmlrpc\\.php\\b/.test(href) ||\n        /\\/wp-content\\b/.test(href) ||\n        /\\/wp-includes\\b/.test(href) ||\n        /\\/feed\\b/.test(href) ||\n        /\\/comments\\b/.test(href) ||\n        /\\/?p=/.test(href) ||\n        /\\/edit.php/.test(href) ||\n        /\\/admin.php/.test(href)\n      )\n    ) {\n      infraestrutura.push(toLinkObj(href, 'infraestrutura', text));\n      continue;\n    }\n\n    // SITE PRINCIPAL BR\n    if (href.startsWith(baseUrl)) {\n      let endpoint = href.slice(baseUrl.length);\n      if (!endpoint.startsWith('/')) endpoint = '/' + endpoint;\n\n      // Remove barras finais e iniciais\n      let pathClean = endpoint.replace(/^\\/|\\/$/g, '');\n      let segmentos = pathClean.split('/').filter(Boolean);\n      let dashCount = (endpoint.match(/-/g) || []).length;\n\n      // Critério de equipamento:\n      if (\n        pathClean.length >= 30 ||\n        dashCount >= 4 ||\n        segmentos.length > 1\n      ) {\n        equipamentos.push({\n          ...toLinkObj(href, 'equipamento', text),\n          endpoint\n        });\n      } else {\n        // Menu raiz\n        menus.push({\n          ...toLinkObj(href, 'menu', text),\n          endpoint\n        });\n      }\n      continue;\n    }\n\n    // EXTERNOS\n    if (!href.startsWith(baseUrl) && !/drive\\.google\\.com/.test(href)) {\n      externos.push(toLinkObj(href, 'externo', text));\n      continue;\n    }\n  }\n\n  // Remover repetidos de cada categoria\n  menus = uniqueByHref(menus);\n  equipamentos = uniqueByHref(equipamentos);\n  downloads = uniqueByHref(downloads);\n  infraestrutura = uniqueByHref(infraestrutura);\n  externos = uniqueByHref(externos);\n\n  return {\n    dominio: baseUrl,\n    equipamentos,\n    downloads,\n  };\n}\n\n// USO EXEMPLO:\n// const fs = require('fs');\n// const html = fs.readFileSync('seuarquivo.html', 'utf8');\n// console.log(JSON.stringify(buildGenericLinkTree(html), null, 2));\n\nreturn {\"doc\": buildGenericLinkTree(doct)}\n\n// Exemplo de uso (no navegador):  \n// filtrarLinks(); // usa o DOM atual\n// Exemplo com HTML externo: filtrarLinks('<html....</html>');"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          560,
+          840
+        ],
+        "id": "e004a44d-3118-494c-8f52-a5b2dc8a4fd7",
+        "name": "Code1"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const doc = $json.data\n\nfunction extrairFAQ(html) {\n  // Match cada accordion-item\n  const itemRegex = /<div class=\"elementor-accordion-item\">([\\s\\S]*?<\\/div>\\s*<\\/div>)/g;\n  let match;\n  let faqs = [];\n\n  while ((match = itemRegex.exec(html)) !== null) {\n    const bloco = match[1];\n\n    // Pergunta\n    let perguntaMatch = bloco.match(/<a[^>]+class=\"elementor-accordion-title\"[^>]*>(.*?)<\\/a>/i);\n    let pergunta = perguntaMatch ? perguntaMatch[1].replace(/<[^>]+>/g, '').trim() : null;\n\n    // Resposta (HTML sem tags)\n    let respostaMatch = bloco.match(/<div[^>]+class=\"elementor-tab-content[^\"]*\"[^>]*>([\\s\\S]*?)<\\/div>\\s*$/im);\n    let resposta = respostaMatch ? respostaMatch[1]\n      .replace(/<[^>]+>/g, '')      // Remove tags HTML\n      .replace(/\\s+/g, ' ')         // Espaços redundantes\n      .trim() : null;\n\n    if (pergunta && resposta) {\n      faqs.push({ pergunta, resposta });\n    }\n  }\n  return faqs;\n}\n\nreturn {\"faqs\" : extrairFAQ(doc)}"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1180,
+          340
+        ],
+        "id": "54e80423-c63b-4d36-a499-b7d01d24af24",
+        "name": "FAQ"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "029c0e43-164e-431f-a558-09900c81dc4e",
+                "name": "token",
+                "value": "=\"pedro.alves@blips.com.br\":\"1RCf 6znD EsjE Yd90 jXn3 Ddlg\"",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          460,
+          1520
+        ],
+        "id": "29327bc6-320e-4ac2-9ac7-7160742210d3",
+        "name": "Token"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b43af9da-e112-4b23-a50b-7cd14e874de6",
+                "name": "tk",
+                "value": "={{ $json.token.base64Encode() }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          720,
+          1520
+        ],
+        "id": "7cf0a8f1-e21d-416c-8bcc-2c910f918b46",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "url": "https://ajuda.blips.com.br/wp-json/wp/v2/pages",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "authorization",
+                "value": "authorizationBasic cGVkcm8uYWx2ZXM6MVJDZiA2em5EIEVzakUgWWQ5MCBqWG4zIERkbGc="
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1160,
+          1100
+        ],
+        "id": "d91b43d8-42b4-41c2-a52f-9ffe993c151e",
+        "name": "Pages"
+      },
+      {
+        "parameters": {
+          "url": "=https://ajuda.blips.com.br/wp-json/wp/v2/posts/{{$json.body.id}}?status=any",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpBasicAuth",
+          "options": {
+            "response": {
+              "response": {
+                "fullResponse": true,
+                "responseFormat": "json"
+              }
+            }
+          }
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          360,
+          1020
+        ],
+        "id": "36a17f34-e74a-409a-8760-ecfa9f91e189",
+        "name": "Equipamento1",
+        "executeOnce": false,
+        "credentials": {
+          "httpBasicAuth": {
+            "id": "4NP4kaawXsOnXwJU",
+            "name": "Pedro WP"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "function extractElementorInfo(html) {\n  // Remove quebras para facilitar regex\n  html = html.replace(/[\\r\\n\\t]+/g, ' ');\n\n  // Títulos\n  let titulo1 = html.match(/<h1[^>]*>([\\s\\S]+?)<\\/h1>/i);\n  let titulo2 = html.match(/<h2[^>]*>([\\s\\S]+?)<\\/h2>/i);\n  let titulo3s = [...html.matchAll(/<h3[^>]*>([\\s\\S]+?)<\\/h3>/gi)].map(m => m[1].trim());\n\n  // Material comercial\n  let linkMaterial = '';\n  let m = html.match(/<a[^>]+href\\s*=\\s*[\"']([^\"']+)[\"'][^>]*>\\s*<span[^>]*>\\s*<span[^>]*>.*?(Material comercial|Materialcomercial)/i)\n        || html.match(/<a[^>]+href\\s*=\\s*[\"']([^\"']+)[\"'][^>]*>(Material comercial|Materialcomercial)/i);\n  if (m) linkMaterial = m[1];\n\n  // Sobre o equipamento (pega <h2>Sobre</h2> + 1º <p>)\n  let sobreEquip = '';\n  let sobreMatch = html.match(/<h2[^>]*>[^<]*Sobre[^<]*<\\/h2>[\\s\\S]*?<p[^>]*>([\\s\\S]*?)<\\/p>/i);\n  if (sobreMatch) sobreEquip = sobreMatch[1];\n\n  // Fotos do equipamento (todos data-thumbnail de galeria)\n  let fotos = [...html.matchAll(/data-thumbnail=\"([^\"]+?)\"/g)].map(m => m[1]);\n\n  // Vídeos do equipamento (pega <iframe> do loockerstudio ou video interno)\n  let videos = [...html.matchAll(/<iframe[^>]+src=[\"']([^\"']+lookerstudio[^\"']+)[\"']/gi)].map(m => m[1]);\n  // Conteúdo do YouTube: iframe youtube\n  let youtube = [...html.matchAll(/<iframe[^>]+src=[\"']([^\"']+(youtube.com|youtu.be)[^\"']*)[\"']/gi)].map(m => m[1]);\n\n  // Baixar todas as fotos: link com texto baixar todas as fotos\n  let baixarFotos = html.match(/<a[^>]+href\\s*=\\s*[\"']([^\"']+)[\"'][^>]*>[^<]*[Bb]aixar[^<]*[Ff]otos/i);\n  let baixarVideos = html.match(/<a[^>]+href\\s*=\\s*[\"']([^\"']+)[\"'][^>]*>[^<]*[Bb]aixar[^<]*[Vv]ídeos?/i);\n\n  // Especificações técnicas (pega a 1ª <h2|h3> Ficha técnica até o próximo heading)\n  let fichaRX = /<h[23][^>]*>[^<]*Ficha técnica[^<]*<\\/h[23]>([\\s\\S]{1,1000}?)(<h[1-6][^>]*>|<div[^>]+id=\"faq\"|$)/i;\n  let ficha = '';\n  let fMatch = html.match(fichaRX);\n  if (fMatch) ficha = fMatch[1]\n    .replace(/<[^>]+>/g, ' ')\n    .replace(/\\s+/g, ' ')\n    .trim();\n\n  // Download ficha técnica (palavra download/ficha técnica no <a>)\n  let downloadFicha = html.match(/<a[^>]+href=[\"']([^\"']+)[\"'][^>]*>([^<]*ficha técnica|download)/i);\n  if (downloadFicha) downloadFicha = downloadFicha[1];\n\n  // FAQ (Accordion)\n  let faqs = [];\n  let rx = /<div[^>]+id=\"faq\"[\\s\\S]*?((?:<h[3-6][^>]*>.*?<\\/h[3-6]>[\\s\\S]*?<p>.*?<\\/p>)+)/i;\n  let faqBlock = html.match(rx);\n  if (faqBlock) {\n    let pairRx = /<h[3-6][^>]*>([\\s\\S]+?)<\\/h[3-6]>[\\s\\S]*?<p>([\\s\\S]+?)<\\/p>/g;\n    let p;\n    while ((p = pairRx.exec(faqBlock[1]))) {\n      faqs.push({ pergunta: p[1].replace(/<[^>]+>/g,''), resposta: p[2].replace(/<[^>]+>/g,'') });\n    }\n  }\n\n  return {\n    titulos: {\n      h1: titulo1 ? titulo1[1].replace(/<br\\s*\\/?>/gi, '\\n').trim() : '',\n      h2: titulo2 ? titulo2[1].trim() : '',\n      h3: titulo3s\n    },\n    link_material_comercial: linkMaterial,\n    sobre_o_equipamento: sobreEquip,\n    fotos_do_equipamento: fotos,\n    videos_do_equipamento: videos,\n    conteudo_do_youtube: youtube,\n    baixar_todas_as_fotos: baixarFotos ? baixarFotos[1] : '',\n    baixar_todos_os_videos: baixarVideos ? baixarVideos[1] : '',\n    especificacoes_tecnicas: ficha,\n    download_ficha_tecnica: downloadFicha || '',\n    faq: faqs\n  }\n}\nvar markdown = extractElementorInfo( $json.body[0].content.rendered); \n\n\nreturn {\"doc\": markdown}\n\n// Exemplo de uso (no navegador):  \n// filtrarLinks(); // usa o DOM atual\n// Exemplo com HTML externo: filtrarLinks('<html....</html>');"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          820,
+          920
+        ],
+        "id": "d57225e1-23ec-4cb3-b24e-68eac12779e4",
+        "name": "Code2"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -120,
+          920
+        ],
+        "id": "aadd4e81-e8b4-4812-9eaa-8666ce59b770",
+        "name": "When clicking ‘Test workflow’"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4bbfd7e4-9977-4690-a049-554326315673",
+                "name": "nome",
+                "value": "={{ $json.slug }}",
+                "type": "string"
+              },
+              {
+                "id": "57af5f56-9f72-4efc-aa54-1d1f5505d81a",
+                "name": "descricao",
+                "value": "={{ $json.excerpt.rendered }}",
+                "type": "string"
+              },
+              {
+                "id": "8ed09593-83fe-4a57-b64f-c96ab6b01205",
+                "name": "endpoint",
+                "value": "={{ $json.id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          960,
+          -20
+        ],
+        "id": "f5859f6e-e77d-43f6-b37f-c5c8e4b22586",
+        "name": "Edit Fields1"
+      },
+      {
+        "parameters": {
+          "url": "https://ajuda.blips.com.br/wp-json/wp/v2/categories?&_fields=id,description,name,slug",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpBasicAuth",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "search",
+                "value": "estetica"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "responseFormat": "json"
+              }
+            }
+          }
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          380,
+          240
+        ],
+        "id": "cab40f2f-740c-4035-9cfa-91e81746c3c0",
+        "name": "Categorias",
+        "credentials": {
+          "httpBasicAuth": {
+            "id": "4NP4kaawXsOnXwJU",
+            "name": "Pedro WP"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "extractHtmlContent",
+          "extractionValues": {
+            "values": [
+              {}
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.html",
+        "typeVersion": 1.2,
+        "position": [
+          0,
+          0
+        ],
+        "id": "67111d54-5a7f-4128-8ae0-c88fb3ec34c1",
+        "name": "HTML"
+      },
+      {
+        "parameters": {
+          "jsCode": "const html = $json.body.content.rendered\n\nconst rootLink = \"https://ajuda.blips.com.br/wp-content/uploads\";\n\n// 1 regex para todos os atributos simples\nconst attributeRegex = /\\s(?:class|data-settings|data-e-action-hash|data-width|data-height|aria-label)=\"[^\"]*\"/gi;\n\n// Outras regras\nconst galleryrgx = /class=\"e-gallery[^\"]*\"/gi;\nconst pathrgx = /<path[^>]*>.*?<\\/path>/gis;\nconst stylergx = /<style>\\/\\*! elementor[\\s\\S]*?<\\/style>/gi;\nconst svgRegex = /<svg[\\s\\S]*?<\\/svg>/gi;  // remove bloco svg\nconst divClassRegex = /<div\\s+[^>]*class\\s*=\\s*[\"'][^\"']*[\"'][^>]*>/gi; // transforma div c/ class\n\nfunction sanitizeHtml(html) {\n  return {\n    html: \"rootLink: \" + rootLink + \"  \"\n      + html\n        .replace(stylergx,\"\")\n        .replace(attributeRegex,\"\")             // remove atributos\n        .replace(galleryrgx,'class=\"img-item\"') // gambi para mudar classe da galeria\n        .replace(pathrgx,\"\")                    // remove path\n        .replace(svgRegex,\"\")                   // REMOVE BLOCOS <svg> ... </svg>\n        .replace(divClassRegex,\"<div>\")         // REMOVE class de divs\n        .replaceAll(rootLink,\"rootLink\")        // substitui rootLink\n        .replace(/\\s/g,\"\")                      // remove espaços (isso zera quebras de linha também!)\n  };\n}\n\nreturn sanitizeHtml(html);"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          580,
+          1020
+        ],
+        "id": "2f8f1d23-da0c-428a-b099-8881fda89142",
+        "name": "Code4"
+      }
+    ],
+    "connections": {
+      "Code3": {
+        "main": [
+          [
+            {
+              "node": "Split Out3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out3": {
+        "main": [
+          [
+            {
+              "node": "Filter",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Home": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch1": {
+        "main": [
+          [],
+          []
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "Split Out",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter": {
+        "main": [
+          []
+        ]
+      },
+      "Menu": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Equipamento": {
+        "main": [
+          []
+        ]
+      },
+      "Split Out": {
+        "main": [
+          []
+        ]
+      },
+      "WH_Home": {
+        "main": [
+          [
+            {
+              "node": "Categorias",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "WH_Menu": {
+        "main": [
+          [
+            {
+              "node": "Menu",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "WH_Equipamento": {
+        "main": [
+          [
+            {
+              "node": "Equipamento1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "FAQ": {
+        "main": [
+          []
+        ]
+      },
+      "Token": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          []
+        ]
+      },
+      "Equipamento1": {
+        "main": [
+          [
+            {
+              "node": "Code4",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When clicking ‘Test workflow’": {
+        "main": [
+          []
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "fd371919-569c-49a8-aae8-92e812aa23dd",
+    "triggerCount": 3,
+    "tags": []
+  }
+}
