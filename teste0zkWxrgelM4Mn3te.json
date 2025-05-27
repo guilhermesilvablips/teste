@@ -1,0 +1,110 @@
+{
+  "data": {
+    "createdAt": "2024-10-21T11:41:19.414Z",
+    "updatedAt": "2024-10-21T16:49:14.283Z",
+    "id": "0zkWxrgelM4Mn3te",
+    "name": "Text to Speech",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "7d39cb93-ac4e-4b08-be0c-3af7e6275338",
+        "name": "When clicking ‘Test workflow’",
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          300,
+          460
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/audio/speech",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "model",
+                "value": "tts-1"
+              },
+              {
+                "name": "input",
+                "value": "Olá. Como você está?"
+              },
+              {
+                "name": "voice",
+                "value": "alloy"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "91f16cf7-c51a-402e-853d-9c04f7f31543",
+        "name": "Gera arquivo de áudio",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          800,
+          240
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "erBLFgb3zHf0C8ux",
+            "name": "Open Ai - Cobrança"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://runtime.hyperflowapis.global/api/1yEuBeOAI/gatilho-n8n",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "client_id",
+                "value": "617bb4a4-079e-4be2-9f3c-f93b7a8f07f1"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "10e0c30d-dd94-4723-b672-d852fac746db",
+        "name": "HTTP Request",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          540,
+          460
+        ]
+      }
+    ],
+    "connections": {
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "2cc52ab1-845c-4db5-93ed-166d805745fd",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
