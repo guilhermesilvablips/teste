@@ -1,0 +1,673 @@
+{
+  "data": {
+    "createdAt": "2024-09-22T18:46:20.269Z",
+    "updatedAt": "2024-09-24T02:01:15.315Z",
+    "id": "5WJSAHXmvSxGbLrG",
+    "name": "Teste Orseni 1",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "seconds"
+              }
+            ]
+          }
+        },
+        "id": "d72c6e95-2029-4853-88b8-70cdbcc147dd",
+        "name": "Schedule Trigger",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          -220,
+          220
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "55bc63dc-d20f-47f8-aee6-c871c8c4faa6",
+                "name": "jwt_token",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJnb29nbGV8MWNjMmUzOTAtZjc5YS00ODlkLTgxNDAtMzk0ZGU2MTVjZGFkIiwiZW1haWwiOiJvcnNlbmlAZ21haWwuY29tIiwibmlja25hbWUiOiJPcnNlbmkgQ2FtcG9zIiwianRpIjoiZ29vZ2xlfDFjYzJlMzkwLWY3OWEtNDg5ZC04MTQwLTM5NGRlNjE1Y2RhZCIsIndvcmtzcGFjZUlkIjoiNjZlMDBlZTFmNDY3OTU1YmM5MDNjMjJkIiwib25Cb2FyZGluZyI6eyJzdGF0ZSI6ImNvbXBsZXRlZCJ9LCJpc05ldyI6ZmFsc2UsImlhdCI6MTcyNzA5NDgyNiwiZXhwIjoxNzI3MTgxMjI2fQ.p6-lQocDwtTI-4gRSWw7_HUBS96kTC_5R0yRbM2hvQY",
+                "type": "string"
+              },
+              {
+                "id": "c4e1bbdb-2b8c-4cac-9fdb-dd2e29ef9797",
+                "name": "campaign_id",
+                "value": "99a2baa3-66f5-462b-84f3-30190434a886",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "174ffdcf-f8c3-4e4f-a122-a4b93303a88b",
+        "name": "Variáveis Globais",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          60,
+          220
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://core-saas.voicegenie.ai/campaigns/campaignProgress",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "accept",
+                "value": "application/json, text/plain, */*"
+              },
+              {
+                "name": "accept-language",
+                "value": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"
+              },
+              {
+                "name": "authorization",
+                "value": "=bearer {{ $json.jwt_token }}"
+              },
+              {
+                "name": "origin",
+                "value": "https://app.voicegenie.ai"
+              },
+              {
+                "name": "priority",
+                "value": "u=1, i"
+              },
+              {
+                "name": "referer",
+                "value": "https://app.voicegenie.ai/"
+              },
+              {
+                "name": "sec-ch-ua",
+                "value": "\"Google Chrome\";v=\"129\", \"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"129\""
+              },
+              {
+                "name": "sec-ch-ua-mobile",
+                "value": "?0"
+              },
+              {
+                "name": "sec-ch-ua-platform",
+                "value": "\"macOS\""
+              },
+              {
+                "name": "sec-fetch-dest",
+                "value": "empty"
+              },
+              {
+                "name": "sec-fetch-mode",
+                "value": "cors"
+              },
+              {
+                "name": "sec-fetch-site",
+                "value": "same-site"
+              },
+              {
+                "name": "user-agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "campaignId",
+                "value": "={{ $json.campaign_id }}"
+              },
+              {
+                "name": "limit",
+                "value": "100"
+              },
+              {
+                "name": "skip",
+                "value": 0
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "85b58999-0cdc-4102-8e8b-1a060ab2abf4",
+        "name": "HTTP Request",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          280,
+          220
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "420eb1fd-6522-46e0-a80e-218e53b7581c",
+                "name": "lastcall_id",
+                "value": "={{ $('HTTP Request').first().json.data.campaignCallData.last().callSessionHistoryId }}",
+                "type": "string"
+              },
+              {
+                "id": "56194fe2-902a-4ad2-92a1-fd5d4eeabedf",
+                "name": "status",
+                "value": "={{ $('HTTP Request').first().json.data.campaignCallData.last().status }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "92e81e2c-2811-467a-9b17-70810f3b7b35",
+        "name": "Edit Fields",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          940,
+          220
+        ]
+      },
+      {
+        "parameters": {
+          "url": "https://core-saas.voicegenie.ai/campaigns/getCallDetails",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "callSessionHistoryId",
+                "value": "={{ $('Edit Fields').item.json.lastcall_id }}"
+              },
+              {
+                "name": "campaignId",
+                "value": "={{ $('Variáveis Globais').item.json.campaign_id }}"
+              }
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "accept",
+                "value": "application/json, text/plain, */*"
+              },
+              {
+                "name": "accept-language",
+                "value": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"
+              },
+              {
+                "name": "authorization",
+                "value": "=bearer {{ $('Variáveis Globais').item.json.jwt_token }}"
+              },
+              {
+                "name": "if-none-match",
+                "value": "W/\"1c4e-iT8XPKmWnlyhn6GonWb20BywAZo\""
+              },
+              {
+                "name": "origin",
+                "value": "https://app.voicegenie.ai"
+              },
+              {
+                "name": "priority",
+                "value": "u=1, i"
+              },
+              {
+                "name": "referer",
+                "value": "https://app.voicegenie.ai/"
+              },
+              {
+                "name": "sec-ch-ua",
+                "value": "\"Google Chrome\";v=\"129\", \"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"129\""
+              },
+              {
+                "name": "sec-ch-ua-mobile",
+                "value": "?0"
+              },
+              {
+                "name": "sec-ch-ua-platform",
+                "value": "\"macOS\""
+              },
+              {
+                "name": "sec-fetch-dest",
+                "value": "empty"
+              },
+              {
+                "name": "sec-fetch-mode",
+                "value": "cors"
+              },
+              {
+                "name": "sec-fetch-site",
+                "value": "same-site"
+              },
+              {
+                "name": "user-agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {}
+            ]
+          },
+          "options": {}
+        },
+        "id": "c3b24411-5111-49fc-96d9-f46acd16f547",
+        "name": "HTTP Request1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2460,
+          320
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Função para formatar o transcript\nfunction formatTranscript(data) {\n  // Verifica se a propriedade 'transcript' existe e é um array\n  if (!data.transcript || !Array.isArray(data.transcript)) {\n    return \"Dados de transcript inválidos.\";\n  }\n\n  // Mapeia cada entrada para a formatação desejada\n  const formattedMessages = data.transcript\n    .filter(entry => {\n      // Opcional: Filtrar mensagens que não são tags ou conteúdos indesejados\n      // Por exemplo, ignorar mensagens que começam com '</speak'\n      return !/^<\\/speak/.test(entry.message.trim());\n    })\n    .map(entry => {\n      // Remove espaços extras no início e no fim da mensagem\n      const sender = entry.sender.trim();\n      const message = entry.message.trim();\n      return `${sender}: ${message}`;\n    })\n    .join('\\n'); // Junta todas as linhas com uma quebra de linha\n\n  return formattedMessages;\n}\n\n// Executa a função e exibe o resultado\ndata = $input.first().json.data.call\nconst result = formatTranscript(data);\nreturn {'output': result}\n"
+        },
+        "id": "30e17502-64aa-46bf-bc60-d3c8b3c64e13",
+        "name": "Code",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2660,
+          320
+        ]
+      },
+      {
+        "parameters": {
+          "model": "gpt-4o-mini",
+          "options": {}
+        },
+        "id": "d9f42051-01a2-4529-938a-0ffa30fe7ff2",
+        "name": "OpenAI Chat Model",
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1,
+        "position": [
+          2980,
+          600
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "trONZBLzM3mWPjKv",
+            "name": "OpenAi - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "sendTo": "orseni@gmail.com, novais@thepes.com.br",
+          "subject": "=Atendimento {{ $('HTTP Request1').item.json.data.call.customerNumber }}",
+          "message": "=<!DOCTYPE html>\n<html lang=\"pt-BR\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Atendimento</title>\n</head>\n<body style=\"Margin:0; padding:0; background-color:#f4f6f9; font-family:Arial, sans-serif;\">\n\n  <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background-color:#f4f6f9; padding:20px 0;\">\n    <tr>\n      <td align=\"center\">\n        <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background-color:#ffffff; border-radius:10px; overflow:hidden; box-shadow:0 4px 6px rgba(0,0,0,0.1);\">\n          \n          <!-- Cabeçalho -->\n          <tr>\n            <td align=\"center\" style=\"padding:20px 0; background-color:#3498db;\">\n              <h1 style=\"margin:0; color:#ffffff; font-size:24px;\">Atendimento</h1>\n            </td>\n          </tr>\n          \n          <!-- Resumo do Atendimento -->\n          <tr>\n            <td style=\"padding:20px;\">\n              <h2 style=\"margin-top:0; color:#2c3e50; font-size:20px; border-bottom:2px solid #ecf0f1; padding-bottom:10px;\">Resumo do Atendimento</h2>\n              <p style=\"color:#34495e; line-height:1.6;\">\n                {{ $json.text }}\n              </p>\n            </td>\n          </tr>\n          \n          <!-- Transcrição do Atendimento -->\n          <tr>\n            <td style=\"padding:20px; background-color:#f9f9f9;\">\n              <h2 style=\"margin-top:0; color:#2c3e50; font-size:20px; border-bottom:2px solid #ecf0f1; padding-bottom:10px;\">Transcrição do Atendimento</h2>\n              <p style=\"color:#34495e; line-height:1.6; white-space: pre-wrap;\">\n                {{ $('Code').item.json.output }}\n              </p>\n            </td>\n          </tr>\n          \n          <!-- Link de Download do Áudio -->\n          <tr>\n            <td align=\"center\" style=\"padding:20px;\">\n              <a href=\"{{ $('HTTP Request1').item.json.data.call.recordingUri }}\" download style=\"background-color:#3498db; color:#ffffff; padding:12px 25px; text-decoration:none; border-radius:25px; display:inline-block; font-size:16px;\">Download do áudio</a>\n            </td>\n          </tr>\n          \n          <!-- Rodapé Opcional -->\n          <tr>\n            <td align=\"center\" style=\"padding:10px; background-color:#ecf0f1;\">\n              <p style=\"margin:0; font-size:12px; color:#7f8c8d;\">© 2024 Sua Empresa. Todos os direitos reservados.</p>\n            </td>\n          </tr>\n          \n        </table>\n      </td>\n    </tr>\n  </table>\n\n</body>\n</html>\n",
+          "options": {
+            "senderName": "Digiall"
+          }
+        },
+        "id": "f4b6c30f-9194-4f77-b9aa-bd3074fc971a",
+        "name": "Gmail",
+        "type": "n8n-nodes-base.gmail",
+        "typeVersion": 2.1,
+        "position": [
+          3340,
+          120
+        ],
+        "credentials": {
+          "gmailOAuth2": {
+            "id": "riSYGbcq4hKKcLr3",
+            "name": "Gmail account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "Você é um especialista em interpretação de textos e seu trabalho é ler e entender diálogos de antedimento e resumir a conversa em um texto extremamente detalhado, claro e formal.\n\nResponda somente com o resumo.",
+          "messages": {
+            "messageValues": [
+              {
+                "type": "HumanMessagePromptTemplate",
+                "message": "={{ $json.output }}"
+              }
+            ]
+          }
+        },
+        "id": "1ccd1505-e8f7-4669-a3bb-6f4da8039dac",
+        "name": "Basic LLM Chain",
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.4,
+        "position": [
+          2960,
+          320
+        ]
+      },
+      {
+        "parameters": {
+          "fileSelector": "/tmp/lastcall.txt",
+          "options": {}
+        },
+        "id": "c546b253-04f0-4948-bcf2-f2fdef456499",
+        "name": "Read/Write Files from Disk",
+        "type": "n8n-nodes-base.readWriteFile",
+        "typeVersion": 1,
+        "position": [
+          500,
+          220
+        ],
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "operation": "write",
+          "fileName": "/tmp/lastcall.txt",
+          "dataPropertyName": "=data",
+          "options": {}
+        },
+        "id": "1350e2c5-75e0-4a6c-af7e-5e91389df78c",
+        "name": "Read/Write Files from Disk1",
+        "type": "n8n-nodes-base.readWriteFile",
+        "typeVersion": 1,
+        "position": [
+          1640,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "toText",
+          "sourceProperty": "lastcall_id",
+          "options": {}
+        },
+        "id": "6fb03d5d-31d2-4030-aa12-8d21f0d8ae3f",
+        "name": "Convert to File",
+        "type": "n8n-nodes-base.convertToFile",
+        "typeVersion": 1.1,
+        "position": [
+          1400,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "text",
+          "options": {}
+        },
+        "id": "a9ed266b-119f-4d6d-919f-b13b6c638370",
+        "name": "Extract from File",
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          1880,
+          220
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "text",
+          "options": {}
+        },
+        "id": "b28f65fa-0f4c-46b4-8cc7-a16e6fa24c8d",
+        "name": "Extract from File1",
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          720,
+          220
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "c68702b2-96e8-45cb-b70b-a242fc449ba0",
+                "leftValue": "={{ $json.status }}",
+                "rightValue": "Ended",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "e6be6299-1ba9-4fa6-9254-aaaebee8c6ab",
+        "name": "A ligação finalizou? (Ended)",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          1140,
+          220
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "b164589e-0d21-4e93-86d5-9cb182bd357f",
+                "leftValue": "={{ $('Extract from File1').item.json.data }}",
+                "rightValue": "={{ $('Edit Fields').item.json.lastcall_id }}",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "6b37f5b1-fd9c-4fef-9360-6d03b46caa61",
+        "name": "Ainda não enviei esse email?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          2160,
+          220
+        ]
+      }
+    ],
+    "connections": {
+      "Variáveis Globais": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Variáveis Globais",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request": {
+        "main": [
+          [
+            {
+              "node": "Read/Write Files from Disk",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "A ligação finalizou? (Ended)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request1": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Basic LLM Chain": {
+        "main": [
+          [
+            {
+              "node": "Gmail",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Read/Write Files from Disk": {
+        "main": [
+          [
+            {
+              "node": "Extract from File1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Read/Write Files from Disk1": {
+        "main": [
+          [
+            {
+              "node": "Extract from File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Convert to File": {
+        "main": [
+          [
+            {
+              "node": "Read/Write Files from Disk1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract from File": {
+        "main": [
+          [
+            {
+              "node": "Ainda não enviei esse email?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract from File1": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "A ligação finalizou? (Ended)": {
+        "main": [
+          [
+            {
+              "node": "Convert to File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ainda não enviei esse email?": {
+        "main": [
+          [],
+          [
+            {
+              "node": "HTTP Request1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": {
+      "node:Schedule Trigger": {
+        "recurrenceRules": []
+      }
+    },
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "df9f7904-5933-4c61-b9f1-46d16122679f",
+    "triggerCount": 1,
+    "tags": []
+  }
+}
