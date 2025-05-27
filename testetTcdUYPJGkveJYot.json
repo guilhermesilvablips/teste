@@ -1,0 +1,174 @@
+{
+  "data": {
+    "createdAt": "2025-04-04T17:08:34.884Z",
+    "updatedAt": "2025-04-04T18:23:22.206Z",
+    "id": "tTcdUYPJGkveJYot",
+    "name": "Sandbox Code",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "eba219c3-36e1-439d-a933-b1193044a7bf",
+        "name": "When clicking ‘Test workflow’"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "5fd96c1f-5a6b-438f-855d-6d081ed07454",
+                "name": "agent_list",
+                "value": "={{ $json.input.agents }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          220,
+          0
+        ],
+        "id": "c6d6efca-7e1b-472a-af81-85fdfb596e20",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "let email = 'axel@blips.com.br';\n\nlet isOnline = $json.agent_list.some((atendente) => {\n  return atendente.email === email && atendente.status === \"online\";\n});\n\n// Retorna true se o atendente está online, caso contrário, false\nreturn {isOnline};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          440,
+          0
+        ],
+        "id": "8e0f4774-3221-4736-810e-9ef5f86fe612",
+        "name": "Code"
+      }
+    ],
+    "connections": {
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {
+      "When clicking ‘Test workflow’": [
+        {
+          "json": {
+            "input": {
+              "online": true,
+              "agents": [
+                {
+                  "name": "Joao Paulo Vilela",
+                  "email": "j-paulo09@hotmail.com",
+                  "status": "offline"
+                },
+                {
+                  "name": "Leonardo Cabral de Menezes",
+                  "email": "leonardo.cabral.menezes@hotmail.com",
+                  "status": "online"
+                },
+                {
+                  "name": "Axel Pereira",
+                  "email": "axel@blips.com.br",
+                  "status": "offline"
+                },
+                {
+                  "name": "Izabela Aparecida",
+                  "email": "izaap.marques798@gmail.com",
+                  "status": "offline"
+                },
+                {
+                  "name": "Vítor Hugo",
+                  "email": "vitor.araujo@blips.com.br",
+                  "status": "offline"
+                },
+                {
+                  "name": "Paulo Thiago de Sousa Ferreira",
+                  "email": "paulo.ferreira@blips.com.br",
+                  "status": "offline"
+                },
+                {
+                  "name": "Gustavo Dutra Gomes",
+                  "email": "gustavo.dutra@blips.com.br",
+                  "status": "offline"
+                },
+                {
+                  "name": "Rafael Augusto Pires Freitas",
+                  "email": "rafael.freitas@blips.com.br",
+                  "status": "offline"
+                },
+                {
+                  "name": "­Felipe",
+                  "email": "felipe.soares@blips.com.br",
+                  "status": "offline"
+                },
+                {
+                  "name": "Diogo Felipe Soares da Silva",
+                  "email": "diogo.soares@blips.com.br",
+                  "status": "offline"
+                },
+                {
+                  "name": "João Lucas Dias de Oliveira",
+                  "email": "joao.oliveira@blips.com.br",
+                  "status": "offline"
+                },
+                {
+                  "name": "Guilherme",
+                  "email": "guilherme.silva@blips.com.br",
+                  "status": "offline"
+                },
+                {
+                  "name": "Robert Santos Ribeiro",
+                  "email": "robert.santos@blips.com.br",
+                  "status": "offline"
+                },
+                {
+                  "name": "Bruno Bernardes da Silva",
+                  "email": "bruno.silva@blips.com.br",
+                  "status": "offline"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "versionId": "5bdb3f40-5c64-4b7a-b1af-c5fa86b8c873",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
