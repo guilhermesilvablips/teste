@@ -1,0 +1,162 @@
+{
+  "data": {
+    "createdAt": "2024-08-07T20:47:43.262Z",
+    "updatedAt": "2024-08-08T19:40:46.886Z",
+    "id": "oQSxWXcbCF7s7TDm",
+    "name": "Advanced Course Full Example",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "path": "0202df6b-d1a1-4a14-bc91-a9c0cc0394f9",
+          "formTitle": "Submit URL Form",
+          "formFields": {
+            "values": [
+              {
+                "fieldLabel": "URL"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "25f70197-9a6c-471b-8b3d-cb08b6548f14",
+        "name": "n8n Form Trigger",
+        "type": "n8n-nodes-base.formTrigger",
+        "typeVersion": 2,
+        "position": [
+          820,
+          180
+        ],
+        "webhookId": "0202df6b-d1a1-4a14-bc91-a9c0cc0394f9"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "e1ca4883-1ed6-4ff5-b6c6-9a7f4bdd6e5d",
+                "name": "URL_list",
+                "value": "={{ $json.URL.split(',') }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "fd7ce68a-c4c2-4627-899b-0aae9a81cb47",
+        "name": "Edit Fields",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1040,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "URL_list",
+          "options": {}
+        },
+        "id": "db33664f-c1ed-4d8d-b050-af5087b62703",
+        "name": "Split Out",
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          1260,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "options": {
+            "reset": false
+          }
+        },
+        "id": "d7fd318e-e2f3-4b1a-9a89-98af77cce610",
+        "name": "Loop Over Items",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          1480,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "2b3df8bd-79b0-4f3b-ac37-cd33e9a417a0",
+        "name": "HTTP Request",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1700,
+          160
+        ]
+      }
+    ],
+    "connections": {
+      "n8n Form Trigger": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "Split Out",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "n8n Form Trigger": [
+        {
+          "json": {
+            "URL": "google.com, n8n.io, facebook.com",
+            "submittedAt": "2024-08-07T20:53:07.138Z",
+            "formMode": "test"
+          }
+        }
+      ]
+    },
+    "versionId": "9d3b3049-e0c6-43b3-b0ba-17d0b26e0f58",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-08-08T16:17:42.176Z",
+        "updatedAt": "2024-08-08T16:17:42.176Z",
+        "id": "TBdJmRTlCwVHgoq0",
+        "name": "Pedro"
+      }
+    ]
+  }
+}
