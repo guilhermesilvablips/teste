@@ -1,0 +1,1333 @@
+{
+  "data": {
+    "createdAt": "2025-01-21T20:53:53.741Z",
+    "updatedAt": "2025-02-05T12:58:48.859Z",
+    "id": "cg5jcNthlJhOFrMR",
+    "name": "Reprocessar Leads",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -220,
+          -20
+        ],
+        "id": "a7a8b772-a19d-4b60-81b6-545a8313cc94",
+        "name": "When clicking ‘Test workflow’"
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "1S2Wif0uVOL6E5GUgGxJ7-YwpGWOM85EwXzaYhFkVXfc",
+            "mode": "id"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 734795784,
+            "mode": "list",
+            "cachedResultName": "bq-results-20250122-124551-1737549978029",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1S2Wif0uVOL6E5GUgGxJ7-YwpGWOM85EwXzaYhFkVXfc/edit#gid=734795784"
+          },
+          "filtersUI": {
+            "values": [
+              {
+                "lookupColumn": "avaliacaoPN",
+                "lookupValue": "Apontamento de valores vencidos dentro do SCR"
+              },
+              {
+                "lookupColumn": "avaliacaoPN",
+                "lookupValue": "Apontamento de valores em prejuízo dentro do SCR"
+              }
+            ]
+          },
+          "combineFilters": "OR",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          60,
+          -20
+        ],
+        "id": "5bac8e92-6377-4be5-8d87-08449436fb87",
+        "name": "Google Sheets",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "4HoAG3ZVDyUYbTpj",
+            "name": "Joao Lucas - Sheets"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          360,
+          -20
+        ],
+        "id": "46fdd3d5-9e37-4822-b7d6-2e83cf1b552f",
+        "name": "Loop Over Items"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.noOp",
+        "name": "Replace Me",
+        "typeVersion": 1,
+        "position": [
+          1760,
+          0
+        ],
+        "id": "b4bcb876-2feb-449a-8a88-4b6eabeb0103"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4be75676-0333-4eb1-95df-f7dcbe6ed47e",
+                "name": "body",
+                "value": "={\n      \"integration\": \"CREDIT_ANALYSIS_BQ_N8N\",\n      \"url_webhook\": \"https://blips-backend-prod-yc62attz3a-uc.a.run.app/v2/leads/credit-query-gcp/webhook\",\n      \"id\": \"\",\n      \"segments\": [\n        {\n          \"id\": \"{{ $json.segment }}\",\n          \"disabled\": false,\n          \"name\": \"Sorvete\",\n          \"description\": \"Segmento Sorvete\",\n          \"create_user\": {\n            \"id\": \"6571be503c7bf37cdebcfc89\",\n            \"name\": \"Rayanne Dias Gonçalves\"\n          },\n          \"historical\": [\n            {\n              \"id\": \"658c859d9b32a07e5ac04b22\",\n              \"date\": \"2023-12-27T20:14:21.26Z\",\n              \"type\": \"SYSTEM\",\n              \"description\": \"Criação de um novo segmento. Nome: Sorvete\",\n              \"justification\": \"\",\n              \"backoffice_user\": {\n                \"id\": \"6571be503c7bf37cdebcfc89\",\n                \"name\": \"Rayanne Dias Gonçalves\"\n              }\n            }\n          ],\n          \"niches\": [],\n          \"created_at\": \"2023-12-27T20:14:21.00Z\",\n          \"updated_at\": \"2023-12-27T20:14:21.00Z\"\n        }\n      ],\n      \"type_all\": true,\n      \"personal_document\": \"{{ $json.personal_document }}\",\n      \"document\": \"{{ $json.document }}\",\n      \"responsible_id\": \"\",\n      \"responsible_name\": \"\",\n      \"responsible_type\": \"\",\n      \"business_rule_type\": \"\",\n      \"equipment_value\": {{ $json.equipment_value }},\n      \"is_with_sale\": false,\n      \"machine_type\": \"{{ $json.machine_type }}\",\n      \"organization_ref\": \"{{ $json.organization_ref }}\",\n      \"address_final\": {\n        \"zip_code\": \"\",\n        \"city\": \"\",\n        \"complement\": \"\",\n        \"neighborhood\": \"\",\n        \"st_ave\": \"\",\n        \"state\": \"\"\n      }\n}",
+                "type": "object"
+              },
+              {
+                "id": "c077218c-fb48-4293-bb5e-c8b5641d5302",
+                "name": "row",
+                "value": "={{ $json.row_number }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {
+            "ignoreConversionErrors": true
+          }
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          660,
+          0
+        ],
+        "id": "b06c64f5-ef8e-4889-b870-f207c364e74c",
+        "name": "set_body",
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://n8n-dev.blips-labs.com/webhook/plataforma",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{$json.body}}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          960,
+          0
+        ],
+        "id": "72df9e76-e14b-48bc-a330-6510ae8820de",
+        "name": "HTTP Request",
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "amount": 1
+        },
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          1260,
+          0
+        ],
+        "id": "64817a15-7491-41a3-9810-a19c4db82552",
+        "name": "Wait",
+        "webhookId": "dd9c15ff-f77c-4415-83f1-79e3374ffb39"
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "documentId": {
+            "__rl": true,
+            "value": "1S2Wif0uVOL6E5GUgGxJ7-YwpGWOM85EwXzaYhFkVXfc",
+            "mode": "id"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 734795784,
+            "mode": "list",
+            "cachedResultName": "bq-results-20250122-124551-1737549978029",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1S2Wif0uVOL6E5GUgGxJ7-YwpGWOM85EwXzaYhFkVXfc/edit#gid=734795784"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "row_number": "={{ $('Loop Over Items').last().json.row_number }}",
+              "blips_rating": "={{ $json.blips_score_cnpj.rating }}",
+              "blips_score": "={{ $json.blips_score_cnpj.score }}",
+              "chqQtdCnpj": "={{ $('RD_Serasa_CNPJ_Ideal').last().json.serasa_cnpj.chq_qtd }}",
+              "chqDataCnpj": "={{ $('RD_Serasa_CNPJ_Ideal').last().json.serasa_cnpj.chq_data }}",
+              "protestoDataCnpj": "={{ $('RD_Serasa_CNPJ_Ideal').last().json.serasa_cnpj.protesto_data }}",
+              "protestoValorCnpj": "={{ $('RD_Serasa_CNPJ_Ideal').last().json.serasa_cnpj.protesto_valor }}",
+              "pefinValorCnpj": "={{ $('RD_Serasa_CNPJ_Ideal').last().json.serasa_cnpj.pefin_valor }}",
+              "pefinDataCnpj": "={{ $('RD_Serasa_CNPJ_Ideal').last().json.serasa_cnpj.pefin_data }}",
+              "refinValorCnpj": "={{ $('RD_Serasa_CNPJ_Ideal').last().json.serasa_cnpj.refin_valor }}",
+              "refinDataCnpj": "={{ $('RD_Serasa_CNPJ_Ideal').last().json.serasa_cnpj.refin_data }}",
+              "serasa_score_cnpj": "={{ $('RD_Serasa_CNPJ_Ideal').last().json.serasa_cnpj.serasa_score }}",
+              "bacenVencidoCnpj": "={{ $('Utils_BMP_bacen_cnpj_Ideal').last().json.bacen_vencido_cnpj }}",
+              "bacenPrejCnpj": "={{ $('Utils_BMP_bacen_cnpj_Ideal').last().json.prej_bacen_cnpj }}",
+              "bacenLimiteCnpj": "={{ $('Utils_BMP_bacen_cnpj_Ideal').last().json.bacen_limite_cnpj }}",
+              "bacenUtlCnpj": "={{ $('Utils_BMP_bacen_cnpj_Ideal').last().json.bacen_limite_utilizado_cnpj }}"
+            },
+            "matchingColumns": [
+              "row_number"
+            ],
+            "schema": [
+              {
+                "id": "dataCriacao",
+                "displayName": "dataCriacao",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "dataProcessamento",
+                "displayName": "dataProcessamento",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "organizacao",
+                "displayName": "organizacao",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "versaoMotorHist",
+                "displayName": "versaoMotorHist",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "avaliacaoRC",
+                "displayName": "avaliacaoRC",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "avaliacaoFormulario",
+                "displayName": "avaliacaoFormulario",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "avaliacaoEntrevista",
+                "displayName": "avaliacaoEntrevista",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "avaliacaoFinal",
+                "displayName": "avaliacaoFinal",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "avaliacaoPN",
+                "displayName": "avaliacaoPN",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "obsAprovacao",
+                "displayName": "obsAprovacao",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "strMotivoReprov",
+                "displayName": "strMotivoReprov",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "perfilNegocio",
+                "displayName": "perfilNegocio",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "SolicFiador",
+                "displayName": "SolicFiador",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "SoliCaucao",
+                "displayName": "SoliCaucao",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "crdTeorico",
+                "displayName": "crdTeorico",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "crdXDivida",
+                "displayName": "crdXDivida",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "cnpjNovo",
+                "displayName": "cnpjNovo",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "cnpjMenorUmAno",
+                "displayName": "cnpjMenorUmAno",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "cnpjInvisivel",
+                "displayName": "cnpjInvisivel",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "cnpjProtesto",
+                "displayName": "cnpjProtesto",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "cnpjChqFlexibilizado",
+                "displayName": "cnpjChqFlexibilizado",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "statusCnpj",
+                "displayName": "statusCnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "cpfSemLimite",
+                "displayName": "cpfSemLimite",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "cpfProtesto",
+                "displayName": "cpfProtesto",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "cpfChq",
+                "displayName": "cpfChq",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "cpfPefin",
+                "displayName": "cpfPefin",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "statusCpf",
+                "displayName": "statusCpf",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "negCnpjPgfn",
+                "displayName": "negCnpjPgfn",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "negCnpjProtesto",
+                "displayName": "negCnpjProtesto",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "negCnpjValorBaseProtesto",
+                "displayName": "negCnpjValorBaseProtesto",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "negCnpjValorBaseNegativo",
+                "displayName": "negCnpjValorBaseNegativo",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "negCnpjChqMenosUmAno",
+                "displayName": "negCnpjChqMenosUmAno",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "negCnpjChqDoisMais",
+                "displayName": "negCnpjChqDoisMais",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "negCnpjPefinMaiorVinteecinco",
+                "displayName": "negCnpjPefinMaiorVinteecinco",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "negCnpjFundChqFlex",
+                "displayName": "negCnpjFundChqFlex",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "negCpfAntecedentes",
+                "displayName": "negCpfAntecedentes",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "negCpfMandados",
+                "displayName": "negCpfMandados",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "negCpfFormSemResposta",
+                "displayName": "negCpfFormSemResposta",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "negCpfProtMaiorVinteecinco",
+                "displayName": "negCpfProtMaiorVinteecinco",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "negCpfValorBaseProtestodoismil",
+                "displayName": "negCpfValorBaseProtestodoismil",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "negCpfValorBaseNegativo",
+                "displayName": "negCpfValorBaseNegativo",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "negCpfChqMenosUmAno",
+                "displayName": "negCpfChqMenosUmAno",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "negCpfChqDoisMais",
+                "displayName": "negCpfChqDoisMais",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "negCpfPefinMaiorVinteecinco",
+                "displayName": "negCpfPefinMaiorVinteecinco",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "negCpfMaisCnpjPefinMaiorVinteecinco",
+                "displayName": "negCpfMaisCnpjPefinMaiorVinteecinco",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "equip",
+                "displayName": "equip",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "valorEquip",
+                "displayName": "valorEquip",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "cnpjCliente",
+                "displayName": "cnpjCliente",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "tipoRegime",
+                "displayName": "tipoRegime",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "nomeClienteCnpj",
+                "displayName": "nomeClienteCnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "faturamentoEmpresa",
+                "displayName": "faturamentoEmpresa",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "qtdFuncionarios",
+                "displayName": "qtdFuncionarios",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "cidadeEmpresa",
+                "displayName": "cidadeEmpresa",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "ufEmpresa",
+                "displayName": "ufEmpresa",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "habitCidadeEmpresa",
+                "displayName": "habitCidadeEmpresa",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "dataFundacao",
+                "displayName": "dataFundacao",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "pgfnCnpj",
+                "displayName": "pgfnCnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "protestoDataCnpj",
+                "displayName": "protestoDataCnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "protestoValorCnpj",
+                "displayName": "protestoValorCnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "bacenLimiteCnpj",
+                "displayName": "bacenLimiteCnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "bacenUtlCnpj",
+                "displayName": "bacenUtlCnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "bacenPrejCnpj",
+                "displayName": "bacenPrejCnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "bacenVencidoCnpj",
+                "displayName": "bacenVencidoCnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "chqDataCnpj",
+                "displayName": "chqDataCnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "chqQtdCnpj",
+                "displayName": "chqQtdCnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "refinDataCnpj",
+                "displayName": "refinDataCnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "refinValorCnpj",
+                "displayName": "refinValorCnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "pefinDataCnpj",
+                "displayName": "pefinDataCnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "pefinValorCnpj",
+                "displayName": "pefinValorCnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "cpfCliente",
+                "displayName": "cpfCliente",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "nomeClienteCpf",
+                "displayName": "nomeClienteCpf",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "antecedentes",
+                "displayName": "antecedentes",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "mandatos",
+                "displayName": "mandatos",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "protestoDataCpf",
+                "displayName": "protestoDataCpf",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "protestoValorCpf",
+                "displayName": "protestoValorCpf",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "bacenLimiteCpf",
+                "displayName": "bacenLimiteCpf",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "bacenUtlCpf",
+                "displayName": "bacenUtlCpf",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "bacenPrejCpf",
+                "displayName": "bacenPrejCpf",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "bacenVencidoCpf",
+                "displayName": "bacenVencidoCpf",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "chqDataCpf",
+                "displayName": "chqDataCpf",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "chqQtdCpf",
+                "displayName": "chqQtdCpf",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "refinDataCpf",
+                "displayName": "refinDataCpf",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "refinValorCpf",
+                "displayName": "refinValorCpf",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "pefinDataCpf",
+                "displayName": "pefinDataCpf",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "pefinValorCpf",
+                "displayName": "pefinValorCpf",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "pgfnCpf",
+                "displayName": "pgfnCpf",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "lead_id",
+                "displayName": "lead_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "responsavelNome",
+                "displayName": "responsavelNome",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "responsavelTipo",
+                "displayName": "responsavelTipo",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "responsavelId",
+                "displayName": "responsavelId",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "situacaoCadastralCnpj",
+                "displayName": "situacaoCadastralCnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "exceptionError",
+                "displayName": "exceptionError",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "serasa_score",
+                "displayName": "serasa_score",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "serasa_score_cnpj",
+                "displayName": "serasa_score_cnpj",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "serasa_score_cpf",
+                "displayName": "serasa_score_cpf",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "cnae_fiscal_principal",
+                "displayName": "cnae_fiscal_principal",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "cnae_fiscal_secundaria",
+                "displayName": "cnae_fiscal_secundaria",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "segmento",
+                "displayName": "segmento",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "blips_score",
+                "displayName": "blips_score",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "blips_rating",
+                "displayName": "blips_rating",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "readOnly": true,
+                "removed": false
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          1500,
+          0
+        ],
+        "id": "e7e4fb2a-b79d-4935-b93d-58af7dfa7515",
+        "name": "Google Sheets1",
+        "retryOnFail": true,
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "4HoAG3ZVDyUYbTpj",
+            "name": "Joao Lucas - Sheets"
+          }
+        },
+        "onError": "continueRegularOutput"
+      }
+    ],
+    "connections": {
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "Google Sheets",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Sheets": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [],
+          [
+            {
+              "node": "set_body",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Replace Me": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_body": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request": {
+        "main": [
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "Google Sheets1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Sheets1": {
+        "main": [
+          [
+            {
+              "node": "Replace Me",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {},
+    "versionId": "1d9e1b24-b514-4389-8eb4-7b2cae765630",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-31T16:22:41.803Z",
+        "updatedAt": "2024-07-31T16:22:41.803Z",
+        "id": "mmaXbyiWhptUXaTd",
+        "name": "New Motor"
+      }
+    ]
+  }
+}
