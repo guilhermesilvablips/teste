@@ -1,0 +1,169 @@
+{
+  "data": {
+    "createdAt": "2025-05-02T12:29:11.785Z",
+    "updatedAt": "2025-05-02T15:31:46.586Z",
+    "id": "WUoxL9OYLTKWXGED",
+    "name": "Assistente Cobrança - func - consulta_titulos_equipamentos",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT\n  tbi.CGC_CPF as DOCUMENTO,\n  tbi.NUFIN,\n  tbi.CODEMP as EMPRESA,\n  CASE\n    WHEN tbi.NUMCONTRATO = '0' THEN NULL\n    ELSE tbi.NUMCONTRATO\nEND\n  AS NUMCONTRATO,\n  PARSE_DATETIME('%d%m%Y %H:%M:%S', tbi.DTVENC) AS DTVENC,\n  DATETIME_DIFF(CURRENT_DATETIME(), PARSE_DATETIME('%d%m%Y %H:%M:%S', tbi.DTVENC), DAY) AS dias_vencido,\n  tbi.VLRDESDOB AS VALOR,\n  CASE\n    WHEN tbi.DHBAIXA IS NOT NULL THEN 'PAGO'\n    WHEN tbi.DHBAIXA IS NULL\n  AND PARSE_DATE('%d%m%Y', LEFT(tbi.DTVENC, 8)) = CURRENT_DATE() THEN 'VENCE HOJE'\n    WHEN tbi.DHBAIXA IS NULL AND PARSE_DATETIME('%d%m%Y %H:%M:%S', tbi.DTVENC) < CURRENT_DATETIME() THEN 'VENCIDO'\n    ELSE 'NAO VENCIDO'\nEND\n  AS ESTA_VENCIDO,\n  'PARCELA EQUIPAMENTO' AS tipo\nFROM\n  SANKHYA.TitulosBlipsIdeal tbi\nLEFT JOIN\n  blips-bigdata.PLATAFORMA.negotiation neg\nON\n  neg.contract_number = tbi.NUMCONTRATO\n  AND neg.contract_number <>'0'\nWHERE\n  tbi.CGC_CPF = '{{ $('document').first().json.document }}'\n  AND tbi.DHBAIXA IS NULL\n  AND DATETIME_DIFF(CURRENT_DATETIME(), PARSE_DATETIME('%d%m%Y %H:%M:%S', tbi.DTVENC), DAY) >= -3\n  AND ( neg.phase.name IS NULL\n    OR neg.phase.name =\"CONCLUDED\" )\nORDER BY\n  PARSE_DATETIME('%d%m%Y %H:%M:%S', tbi.DTVENC)",
+          "options": {}
+        },
+        "id": "970e11c4-adbc-42b4-abdc-a82f7f5b5778",
+        "name": "BQ - Títulos",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2,
+        "position": [
+          -600,
+          280
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "cnpj"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -1020,
+          280
+        ],
+        "id": "b25fea82-a4aa-430f-a86f-ee37f2826ded",
+        "name": "Execute"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "07cbaa24-b381-45ec-ab70-f823b144a3e0",
+                "name": "document",
+                "value": "={{\n  $json.cnpj.match(/\\d+/g).join('')\n}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "bba61fcf-dcaa-4543-a27b-922572f5db91",
+        "name": "document",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -800,
+          280
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "w04wIisrxzPl22Vr",
+            "mode": "list",
+            "cachedResultName": "Atualizar dados plataforma"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          -380,
+          280
+        ],
+        "id": "cc1dfe6c-11c9-4097-822b-d38fbca446d4",
+        "name": "Atualizar Dados Plataforma"
+      }
+    ],
+    "connections": {
+      "Execute": {
+        "main": [
+          [
+            {
+              "node": "document",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "BQ - Títulos": {
+        "main": [
+          [
+            {
+              "node": "Atualizar Dados Plataforma",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "document": {
+        "main": [
+          [
+            {
+              "node": "BQ - Títulos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Execute": [
+        {
+          "json": {
+            "cnpj": "37452565000110"
+          }
+        }
+      ]
+    },
+    "versionId": "7f6ac8ee-5e33-4086-8b87-523444ef949e",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-09T15:07:56.880Z",
+        "updatedAt": "2024-07-09T15:07:56.880Z",
+        "id": "10AfOz2oKmpgqhM9",
+        "name": "Cobranca"
+      }
+    ]
+  }
+}
