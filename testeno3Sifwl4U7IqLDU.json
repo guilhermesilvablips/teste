@@ -1,0 +1,463 @@
+{
+  "data": {
+    "createdAt": "2024-08-17T13:16:27.164Z",
+    "updatedAt": "2024-08-26T02:31:12.273Z",
+    "id": "no3Sifwl4U7IqLDU",
+    "name": "Nascimento - Atualizar token Hyperflow",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "a6e3f0bb-4726-4289-aaee-fba87556ec03",
+        "name": "Execute Workflow Trigger",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          840,
+          340
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://desk-ext.hyperflowapis.global/graphql",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "={\n  \"accept\": \"*/*\",\n  \"accept-language\": \"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7\",\n  \"content-type\": \"application/json\",\n  \"origin\": \"https://desk.hyperflow.global\",\n  \"priority\": \"u=1, i\",\n  \"referer\": \"https://desk.hyperflow.global/\",\n  \"sec-ch-ua\": \"\\\"Not)A;Brand\\\";v=\\\"99\\\", \\\"Google Chrome\\\";v=\\\"127\\\", \\\"Chromium\\\";v=\\\"127\\\"\",\n  \"sec-ch-ua-mobile\": \"?0\",\n  \"sec-ch-ua-platform\": \"\\\"Windows\\\"\",\n  \"sec-fetch-dest\": \"empty\",\n  \"sec-fetch-mode\": \"cors\",\n  \"sec-fetch-site\": \"cross-site\",\n  \"user-agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36\"\n}",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"operationName\": \"SIGN_IN\",\n  \"variables\": {\n    \"username\": \"mateus@blips.com.br\",\n    \"password\": \"zxc,.;123\"\n  },\n  \"query\": \"mutation SIGN_IN($username: String!, $password: String!) {\\n  login(data: {username: $username, password: $password}) {\\n    token\\n    refreshToken\\n    user {\\n      name\\n      tenants {\\n        name\\n        _id\\n        __typename\\n      }\\n      __typename\\n    }\\n    __typename\\n  }\\n}\\n\"\n}",
+          "options": {}
+        },
+        "id": "46f85b4c-da25-4f2f-86d1-9e00c77a60f1",
+        "name": "Renovar token",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1040,
+          340
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://new-api.zapsterapi.com/v1/wa/messages",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTc2MTE5MjQsImlzcyI6InphcHN0ZXJhcGkiLCJzdWIiOiJiZDg4ZWI0YS02ZjdkLTRlYzUtYTk5MS1hYWUzMWMxOGMzMDQiLCJqdGkiOiJhNTBiNzdiNC0yNDdmLTQ2ZDEtYTIyOS1jMDZiOWQ1NGI3YjMifQ.Ql1H5JTcgbV48Mgj18IJCfreD8bdxgybNtmW6BOuWS0"
+              },
+              {
+                "name": "accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "recipient",
+                "value": "553492053452"
+              },
+              {
+                "name": "text",
+                "value": "=ERRO ao tentar renovar o token Hyperflow"
+              },
+              {
+                "name": "instance_id",
+                "value": "w4aimfkcaltxlavvvyqu6"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "neverError": true
+              }
+            }
+          }
+        },
+        "id": "f586c253-62bf-46e0-80bb-e055f4ca7e89",
+        "name": "Avisar erro",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          1280,
+          440
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "c9595118-c70e-4d93-9729-46345e906d54",
+                "name": "token",
+                "value": "={{ $('Renovar token').item.json.data.login.token }}",
+                "type": "string"
+              },
+              {
+                "id": "daa1a418-f1c6-4782-8ab8-ee6d88e82298",
+                "name": "refreshToken",
+                "value": "={{ $('Renovar token').item.json.data.login.refreshToken }}",
+                "type": "string"
+              },
+              {
+                "id": "7c3b436c-66b4-4e98-b6c2-e12a06d10593",
+                "name": "data_token",
+                "value": "={{ $now }}",
+                "type": "string"
+              },
+              {
+                "id": "f6c46749-af0b-4d46-9531-7391824a53e1",
+                "name": "duration",
+                "value": "={{ ( $now - $json.data_token) / 3600000 || 0}}",
+                "type": "string"
+              },
+              {
+                "id": "cf404d92-dedf-4690-b43c-ab9d481e191b",
+                "name": "_id",
+                "value": "={{ $json._id.replaceAll('\"','') }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "efb6f728-6c77-4694-8308-3b825b04087b",
+        "name": "Definir tokens",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1500,
+          260
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://new-api.zapsterapi.com/v1/wa/messages",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTc2MTE5MjQsImlzcyI6InphcHN0ZXJhcGkiLCJzdWIiOiJiZDg4ZWI0YS02ZjdkLTRlYzUtYTk5MS1hYWUzMWMxOGMzMDQiLCJqdGkiOiJhNTBiNzdiNC0yNDdmLTQ2ZDEtYTIyOS1jMDZiOWQ1NGI3YjMifQ.Ql1H5JTcgbV48Mgj18IJCfreD8bdxgybNtmW6BOuWS0"
+              },
+              {
+                "name": "accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "recipient",
+                "value": "553492053452"
+              },
+              {
+                "name": "text",
+                "value": "=Token Hyperflow atualizado:\n{{ $('Definir tokens').item.json.refreshToken }}"
+              },
+              {
+                "name": "instance_id",
+                "value": "w4aimfkcaltxlavvvyqu6"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "neverError": true
+              }
+            }
+          }
+        },
+        "id": "90a2655d-2ad8-40be-9740-fcaf18ce3afa",
+        "name": "Avisar atualização",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          1940,
+          260
+        ]
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "1g5pXRpXyzXPyLgXraFo0Wd8vDyzdBlgE6qgLPdWx-jo",
+            "mode": "list",
+            "cachedResultName": "Base Historico Conversas - Hyperflow",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1g5pXRpXyzXPyLgXraFo0Wd8vDyzdBlgE6qgLPdWx-jo/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 871306875,
+            "mode": "list",
+            "cachedResultName": "Token Hyperflow",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1g5pXRpXyzXPyLgXraFo0Wd8vDyzdBlgE6qgLPdWx-jo/edit#gid=871306875"
+          },
+          "combineFilters": "OR",
+          "options": {
+            "returnAllMatches": "returnFirstMatch"
+          }
+        },
+        "id": "39140aed-3c8f-4220-be21-f44b38ba6ca6",
+        "name": "Verificar token salvo2",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.4,
+        "position": [
+          1500,
+          80
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "4HoAG3ZVDyUYbTpj",
+            "name": "Joao Lucas - Sheets"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "collection": "tokens",
+          "options": {
+            "limit": 1
+          },
+          "query": "={} "
+        },
+        "id": "b712ff44-2612-40ae-88b7-211b1170d02d",
+        "name": "Verificar token salvo",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1.1,
+        "position": [
+          1280,
+          260
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "mongoDb": {
+            "id": "jgLY33sWojEA1rzs",
+            "name": "NascimentoDB"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "documentId": {
+            "__rl": true,
+            "value": "1g5pXRpXyzXPyLgXraFo0Wd8vDyzdBlgE6qgLPdWx-jo",
+            "mode": "list",
+            "cachedResultName": "Base Historico Conversas - Hyperflow",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1g5pXRpXyzXPyLgXraFo0Wd8vDyzdBlgE6qgLPdWx-jo/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 871306875,
+            "mode": "list",
+            "cachedResultName": "Token Hyperflow",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1g5pXRpXyzXPyLgXraFo0Wd8vDyzdBlgE6qgLPdWx-jo/edit#gid=871306875"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "row_number": "={{ $json.row_number }}",
+              "token": "={{ $('Definir tokens').item.json.token }}",
+              "refreshToken": "={{ $('Definir tokens').item.json.refreshToken }}",
+              "data token": "={{ $('Definir tokens').item.json.data }}",
+              "Duração ultimo token (horas)": "={{ ($('Definir tokens').item.json.data.toDateTime() - $json['data token'].toDateTime()) / 3600000 }}"
+            },
+            "matchingColumns": [
+              "row_number"
+            ],
+            "schema": [
+              {
+                "id": "token",
+                "displayName": "token",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "refreshToken",
+                "displayName": "refreshToken",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "data token",
+                "displayName": "data token",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Duração ultimo token (horas)",
+                "displayName": "Duração ultimo token (horas)",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "readOnly": true,
+                "removed": false
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "50cf3e99-4acb-4feb-86c5-cd1e7ce3bf33",
+        "name": "Atualizar token2",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.4,
+        "position": [
+          1720,
+          80
+        ],
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "4HoAG3ZVDyUYbTpj",
+            "name": "Joao Lucas - Sheets"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "collection": "tokens",
+          "updateKey": "_id",
+          "fields": "token,refreshToken,data_token,duration",
+          "options": {}
+        },
+        "id": "cd56540f-6ad5-459c-b42c-1b34e57751aa",
+        "name": "Atualizar token",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1.1,
+        "position": [
+          1720,
+          260
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "mongoDb": {
+            "id": "jgLY33sWojEA1rzs",
+            "name": "NascimentoDB"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Execute Workflow Trigger": {
+        "main": [
+          [
+            {
+              "node": "Renovar token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Renovar token": {
+        "main": [
+          [
+            {
+              "node": "Verificar token salvo",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Avisar erro",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Definir tokens": {
+        "main": [
+          [
+            {
+              "node": "Atualizar token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Verificar token salvo": {
+        "main": [
+          [
+            {
+              "node": "Definir tokens",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Atualizar token": {
+        "main": [
+          [
+            {
+              "node": "Avisar atualização",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "America/Sao_Paulo",
+      "saveManualExecutions": true,
+      "callerPolicy": "workflowsFromSameOwner"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "df9bad48-522d-4b87-9d61-297d5ef818b2",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-08-16T17:26:36.981Z",
+        "updatedAt": "2024-08-16T17:26:36.981Z",
+        "id": "eMX5cAtUIRtHSiCV",
+        "name": "Nascimento"
+      }
+    ]
+  }
+}
