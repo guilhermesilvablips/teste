@@ -1,0 +1,93 @@
+{
+  "data": {
+    "createdAt": "2024-06-24T02:12:09.394Z",
+    "updatedAt": "2024-06-24T02:35:03.163Z",
+    "id": "PviXSlKrVaf9EEWK",
+    "name": "Use an open-source LLM (via HuggingFace)",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "87ca4479-7433-44d1-95ff-3cf8c13d011e",
+        "name": "On new manual Chat Message",
+        "type": "@n8n/n8n-nodes-langchain.manualChatTrigger",
+        "position": [
+          660,
+          580
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "model": "meta-llama/Meta-Llama-3-70B-Instruct",
+          "options": {
+            "frequencyPenalty": 1,
+            "maxTokens": 512,
+            "temperature": 0.1
+          }
+        },
+        "id": "a32c19bf-0f0e-4c9f-99ba-79836f10e899",
+        "name": "Hugging Face Inference Model",
+        "type": "@n8n/n8n-nodes-langchain.lmOpenHuggingFaceInference",
+        "position": [
+          920,
+          800
+        ],
+        "typeVersion": 1,
+        "credentials": {
+          "huggingFaceApi": {
+            "id": "8BWmoZ6SM7Wqga1S",
+            "name": "HuggingFaceApi - Dev"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "prompt": "=Você é um assistente útil e honesto. Por favor, responda de forma concisa e verdadeira.\nResponda sempre em portugues.\nQ: {{ $json.input }}\nA: "
+        },
+        "id": "ae85bfd8-4006-483b-84d3-2307b4a6327f",
+        "name": "Basic LLM Chain",
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "position": [
+          900,
+          580
+        ],
+        "typeVersion": 1
+      }
+    ],
+    "connections": {
+      "On new manual Chat Message": {
+        "main": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Hugging Face Inference Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {},
+    "staticData": null,
+    "meta": {
+      "templateId": "1980",
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "be0a2867-d222-46a6-9182-1551c7663b09",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
