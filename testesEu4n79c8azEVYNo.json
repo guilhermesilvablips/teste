@@ -1,0 +1,455 @@
+{
+  "data": {
+    "createdAt": "2025-01-13T19:52:41.920Z",
+    "updatedAt": "2025-01-16T11:57:31.883Z",
+    "id": "sEu4n79c8azEVYNo",
+    "name": "WHATS envio de Atendimento 24h",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -280,
+          -160
+        ],
+        "id": "586d5f4c-fdcb-4de5-ac29-d2261fe9622c",
+        "name": "When clicking ‘Test workflow’"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "2f2fe669-584b-4482-9cc9-6593e9fda313",
+                "name": "token",
+                "value": "={{ $json.data.login.token }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          280,
+          -180
+        ],
+        "id": "87c51530-f7c2-46d8-949c-e8facf1c3623",
+        "name": "setToken"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://desk-ext.hyperflowapis.global/graphql",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "={\n  \"accept\": \"*/*\",\n  \"accept-language\": \"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7\",\n  \"content-type\": \"application/json\",\n  \"origin\": \"https://desk.hyperflow.global\",\n  \"priority\": \"u=1, i\",\n  \"referer\": \"https://desk.hyperflow.global/\",\n  \"sec-ch-ua\": \"\\\"Not)A;Brand\\\";v=\\\"99\\\", \\\"Google Chrome\\\";v=\\\"127\\\", \\\"Chromium\\\";v=\\\"127\\\"\",\n  \"sec-ch-ua-mobile\": \"?0\",\n  \"sec-ch-ua-platform\": \"\\\"Windows\\\"\",\n  \"sec-fetch-dest\": \"empty\",\n  \"sec-fetch-mode\": \"cors\",\n  \"sec-fetch-site\": \"cross-site\",\n  \"user-agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36\"\n}",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"operationName\": \"SIGN_IN\",\n  \"variables\": {\n    \"username\": \"mateus@blips.com.br\",\n    \"password\": \"Zxc,.;123\"\n  },\n  \"query\": \"mutation SIGN_IN($username: String!, $password: String!) {\\n  login(data: {username: $username, password: $password}) {\\n    token\\n    refreshToken\\n    user {\\n      name\\n      tenants {\\n        name\\n        _id\\n        __typename\\n      }\\n      __typename\\n    }\\n    __typename\\n  }\\n}\\n\"\n}",
+          "options": {}
+        },
+        "id": "4376668b-fc48-4095-b925-8eb4eaf27ae9",
+        "name": "getToken",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          20,
+          -160
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Mapeamento de status\nconst statusMap = {\n  hold: \"Em Espera\",\n  active: \"Em Atendimento\",\n  overdue: \"Atrasados\",\n  queued: \"Na Fila\"\n};\n\n// Função para gerar o JSON de cada status\nfunction generateStatusJson(docList, status) {\n  const auxList = docList.map((i) => {\n    const name = i.agent != null ? i.agent.name.split(\" \") : [\"Aguardando\", \"Fila\"];\n    const protocol = i.protocol;\n    return `${protocol} - ${name[0]} ${name[1]}`;\n  });\n\n  return {\n    status: status,\n    DePara: statusMap[status],\n    quantityDoc: docList.length,\n    data: auxList.join(\", \")\n  };\n}\n\n// Set lista de docs\nconst docList = $input.all()[0].json.data.listAllChats.docs;\n\n// Filtra as listas por status\nconst docListByStatus = {\n  hold: docList.filter((doc) => doc.status === \"hold\"),\n  active: docList.filter((doc) => doc.status === \"active\"),\n  overdue: docList.filter((doc) => doc.status === \"overdue\"),\n  queued: docList.filter((doc) => doc.status === \"queued\")\n};\n\n// Gera o JSON para cada status e calcula o total de documentos\nlet totalDocs = 0;\nconst result = Object.keys(docListByStatus).map((status) => {\n  const statusJson = generateStatusJson(docListByStatus[status], status);\n  totalDocs += statusJson.quantityDoc;  // Soma a quantidade de documentos\n  return statusJson;\n});\n\nreturn {\n  json: {\n    data: result,\n    totalDocs: totalDocs  // Adiciona o total de documentos ao resultado\n  }\n};\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          980,
+          -180
+        ],
+        "id": "638f207b-6b0c-49fc-ab9b-a8afd288316a",
+        "name": "getDocsFromJson"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://desk-ext.hyperflowapis.global/graphql",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "={\n  \"Content-Type\": \"application/json\",\n  \"authorization\": \"{{ $json.token }}\",\n  \"tenant\": \"642eb86c0cd915bc8137a05d\"\n}",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n\t\"operationName\": \"LIST_ALL_CHATS\",\n\t\"variables\": {\n    \"sort\": \"-createdAt\",\n    \"channelAlias\": [],\n    \"channel\": \"\",\n    \"department\": [\"642ebefe26004e64494b65ea\", \"6639194af49295d47ffccb2d\", \"64340b8efc20d22dc76b9e43\", \"667ee25801a5717255886121\", \"667ee263d24b7a3959d9bf45\", \"671926111ccc3ef7d73337bb\", \"671925740bc98fe9f6c7c359\", \"667ee24ed24b7a3959d9b96d\"],\n    \"label\": [],\n    \"classification\": [],\n    \"agent\": [],\n    \"startDate\": \"2024-01-01\",\n    \"endDate\": \"{{ $now.minus(1, 'days').format('yyyy-MM-dd') }}\",\n\t\"status\": [\"active\", \"queued\", \"hold\", \"overdue\"],\n    \"limit\": 1\n  },\n\t\"query\": \"query LIST_ALL_CHATS($page: Int, $limit: Int, $offset: Int, $sort: String, $search: String, $channel: String, $startDate: String, $endDate: String, $status: [String], $department: [String], $agent: [String], $label: [String], $classification: [String], $channelAlias: [String], $searchBy: String) {\\n  listAllChats(\\n    query: {search: $search, status: $status, channel: $channel, department: $department, agent: $agent, startDate: $startDate, endDate: $endDate, label: $label, classification: $classification, channelAlias: $channelAlias, searchBy: $searchBy}\\n    page: $page\\n    limit: $limit\\n    offset: $offset\\n    sort: $sort\\n  ) {\\n    totalPages\\n    totalDocs\\n    nextPage\\n    __typename\\n  }\\n}\\n\"\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          540,
+          -180
+        ],
+        "id": "6ea79eb6-f526-40f0-ac6c-cfcb7c5cdf89",
+        "name": "getTotalDocs"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://desk-ext.hyperflowapis.global/graphql",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "={\n  \"Content-Type\": \"application/json\",\n  \"authorization\": \"{{ $('setToken').item.json.token }}\",\n  \"tenant\": \"642eb86c0cd915bc8137a05d\"\n}",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n\t\"operationName\": \"LIST_ALL_CHATS\",\n\t\"variables\": {\n    \"sort\": \"-createdAt\",\n    \"channelAlias\": [],\n    \"channel\": \"\",\n    \"department\": [\"642ebefe26004e64494b65ea\", \"6639194af49295d47ffccb2d\", \"64340b8efc20d22dc76b9e43\", \"667ee25801a5717255886121\", \"667ee263d24b7a3959d9bf45\", \"671926111ccc3ef7d73337bb\", \"671925740bc98fe9f6c7c359\", \"667ee24ed24b7a3959d9b96d\"],\n    \"label\": [],\n    \"classification\": [],\n    \"agent\": [],\n    \"startDate\": \"2024-01-01\",\n    \"endDate\": \"{{ $now.minus(1, 'days').format('yyyy-MM-dd') }}\",\n    \"status\": [\"active\", \"queued\", \"hold\", \"overdue\"],\n    \"page\": 1,\n    \"limit\": {{ $json.data.listAllChats.totalDocs }}\n},\n\t\"query\": \"query LIST_ALL_CHATS($page: Int, $limit: Int, $offset: Int, $sort: String, $search: String, $channel: String, $startDate: String, $endDate: String, $status: [String], $department: [String], $agent: [String], $label: [String], $classification: [String], $channelAlias: [String], $searchBy: String) {\\n  listAllChats(\\n    query: {search: $search, status: $status, channel: $channel, department: $department, agent: $agent, startDate: $startDate, endDate: $endDate, label: $label, classification: $classification, channelAlias: $channelAlias, searchBy: $searchBy}\\n    page: $page\\n    limit: $limit\\n    offset: $offset\\n    sort: $sort\\n  ) {\\n    docs {\\n      _id\\n      receiver\\n      agent {\\n        _id\\n        picture\\n        email\\n        name\\n        __typename\\n      }\\n      department {\\n        _id\\n        name\\n        __typename\\n      }\\n      channel\\n      channelAlias\\n      contact {\\n        id\\n        phone\\n        name\\n        picture\\n        __typename\\n      }\\n      lastMessage {\\n        type\\n        direction\\n        createdAt\\n        __typename\\n      }\\n      protocol\\n      status\\n      classifications {\\n        _id\\n        name\\n        __typename\\n      }\\n      labels {\\n        _id\\n        color\\n        name\\n        __typename\\n      }\\n      isActive\\n      createdAt\\n      finishedAt\\n      __typename\\n    }\\n    totalPages\\n    totalDocs\\n    nextPage\\n    __typename\\n  }\\n}\\n\"\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          780,
+          -180
+        ],
+        "id": "f47e2b47-944c-4e63-97c1-073b90d9c340",
+        "name": "getAllDocs"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://new-api.zapsterapi.com/v1/wa/messages",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTc2MTE5MjQsImlzcyI6InphcHN0ZXJhcGkiLCJzdWIiOiJiZDg4ZWI0YS02ZjdkLTRlYzUtYTk5MS1hYWUzMWMxOGMzMDQiLCJqdGkiOiJhNTBiNzdiNC0yNDdmLTQ2ZDEtYTIyOS1jMDZiOWQ1NGI3YjMifQ.Ql1H5JTcgbV48Mgj18IJCfreD8bdxgybNtmW6BOuWS0"
+              },
+              {
+                "name": "accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "recipient",
+                "value": "55349795-0909"
+              },
+              {
+                "name": "text",
+                "value": "=*Atendimentos Abertos +24h*\n\nTotal de atendimentos: *{{ $json.totalDocs }}*\n\nProtocolos *{{ $json.data[1].DePara.toUpperCase() }}*:\n{{ $json.data[1].data.replaceAll(\", \", \"\\n\") }}\nTotal *{{ $json.data[1].DePara.toUpperCase() }}*: *{{ $json.data[1].quantityDoc }}*\n\n\nProtocolos *{{ $json.data[0].DePara.toUpperCase() }}*:\n{{ $json.data[0].data.replaceAll(\", \", \"\\n\") }}\nTotal *{{ $json.data[0].DePara.toUpperCase() }}*: *{{ $json.data[0].quantityDoc }}*\n\n\nProtocolos *{{ $json.data[2].DePara.toUpperCase() }}*:\n{{ $json.data[2].data.replaceAll(\", \", \"\\n\") }}\nTotal *{{ $json.data[2].DePara.toUpperCase() }}*: *{{ $json.data[2].quantityDoc }}*\n\n\nProtocolos *{{ $json.data[3].DePara.toUpperCase() }}*:\n{{ $json.data[3].data.replaceAll(\", \", \"\\n\") }}\nTotal *{{ $json.data[3].DePara.toUpperCase() }}*: *{{ $json.data[3].quantityDoc }}*\n"
+              },
+              {
+                "name": "instance_id",
+                "value": "w4aimfkcaltxlavvvyqu6"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "neverError": true
+              }
+            }
+          }
+        },
+        "id": "c2eeaeef-8592-4446-bd41-e41f390d3e81",
+        "name": "Avisar para Marcelo",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          1260,
+          -300
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://new-api.zapsterapi.com/v1/wa/messages",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTc2MTE5MjQsImlzcyI6InphcHN0ZXJhcGkiLCJzdWIiOiJiZDg4ZWI0YS02ZjdkLTRlYzUtYTk5MS1hYWUzMWMxOGMzMDQiLCJqdGkiOiJhNTBiNzdiNC0yNDdmLTQ2ZDEtYTIyOS1jMDZiOWQ1NGI3YjMifQ.Ql1H5JTcgbV48Mgj18IJCfreD8bdxgybNtmW6BOuWS0"
+              },
+              {
+                "name": "accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "recipient",
+                "value": "553484347932"
+              },
+              {
+                "name": "text",
+                "value": "=*Atendimentos Abertos +24h*\n\nTotal de atendimentos: *{{ $json.totalDocs }}*\n\nProtocolos *{{ $json.data[1].DePara.toUpperCase() }}*:\n{{ $json.data[1].data.replaceAll(\", \", \"\\n\") }}\nTotal *{{ $json.data[1].DePara.toUpperCase() }}*: *{{ $json.data[1].quantityDoc }}*\n\n\nProtocolos *{{ $json.data[0].DePara.toUpperCase() }}*:\n{{ $json.data[0].data.replaceAll(\", \", \"\\n\") }}\nTotal *{{ $json.data[0].DePara.toUpperCase() }}*: *{{ $json.data[0].quantityDoc }}*\n\n\nProtocolos *{{ $json.data[2].DePara.toUpperCase() }}*:\n{{ $json.data[2].data.replaceAll(\", \", \"\\n\") }}\nTotal *{{ $json.data[2].DePara.toUpperCase() }}*: *{{ $json.data[2].quantityDoc }}*\n\n\nProtocolos *{{ $json.data[3].DePara.toUpperCase() }}*:\n{{ $json.data[3].data.replaceAll(\", \", \"\\n\") }}\nTotal *{{ $json.data[3].DePara.toUpperCase() }}*: *{{ $json.data[3].quantityDoc }}*\n"
+              },
+              {
+                "name": "instance_id",
+                "value": "w4aimfkcaltxlavvvyqu6"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "neverError": true
+              }
+            }
+          }
+        },
+        "id": "d7c669e0-106b-4ead-ae98-c3d1701067c5",
+        "name": "Avisar para Herbert",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          1260,
+          -80
+        ]
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 8
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          -280,
+          20
+        ],
+        "id": "addaf9d2-918d-4a96-bc50-861278d97aa6",
+        "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://new-api.zapsterapi.com/v1/wa/messages",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTc2MTE5MjQsImlzcyI6InphcHN0ZXJhcGkiLCJzdWIiOiJiZDg4ZWI0YS02ZjdkLTRlYzUtYTk5MS1hYWUzMWMxOGMzMDQiLCJqdGkiOiJhNTBiNzdiNC0yNDdmLTQ2ZDEtYTIyOS1jMDZiOWQ1NGI3YjMifQ.Ql1H5JTcgbV48Mgj18IJCfreD8bdxgybNtmW6BOuWS0"
+              },
+              {
+                "name": "accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "recipient",
+                "value": "5521987248805"
+              },
+              {
+                "name": "text",
+                "value": "=*Atendimentos Abertos +24h*\n\nTotal de atendimentos: *{{ $json.totalDocs }}*\n\nProtocolos *{{ $json.data[1].DePara.toUpperCase() }}*:\n{{ $json.data[1].data.replaceAll(\", \", \"\\n\") }}\nTotal *{{ $json.data[1].DePara.toUpperCase() }}*: *{{ $json.data[1].quantityDoc }}*\n\n\nProtocolos *{{ $json.data[0].DePara.toUpperCase() }}*:\n{{ $json.data[0].data.replaceAll(\", \", \"\\n\") }}\nTotal *{{ $json.data[0].DePara.toUpperCase() }}*: *{{ $json.data[0].quantityDoc }}*\n\n\nProtocolos *{{ $json.data[2].DePara.toUpperCase() }}*:\n{{ $json.data[2].data.replaceAll(\", \", \"\\n\") }}\nTotal *{{ $json.data[2].DePara.toUpperCase() }}*: *{{ $json.data[2].quantityDoc }}*\n\n\nProtocolos *{{ $json.data[3].DePara.toUpperCase() }}*:\n{{ $json.data[3].data.replaceAll(\", \", \"\\n\") }}\nTotal *{{ $json.data[3].DePara.toUpperCase() }}*: *{{ $json.data[3].quantityDoc }}*\n"
+              },
+              {
+                "name": "instance_id",
+                "value": "w4aimfkcaltxlavvvyqu6"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "neverError": true
+              }
+            }
+          }
+        },
+        "id": "90fd0872-9f29-4a9e-b6d0-4b7afed245ef",
+        "name": "Avisar para Luan",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          1260,
+          -500
+        ],
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://new-api.zapsterapi.com/v1/wa/messages",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTc2MTE5MjQsImlzcyI6InphcHN0ZXJhcGkiLCJzdWIiOiJiZDg4ZWI0YS02ZjdkLTRlYzUtYTk5MS1hYWUzMWMxOGMzMDQiLCJqdGkiOiJhNTBiNzdiNC0yNDdmLTQ2ZDEtYTIyOS1jMDZiOWQ1NGI3YjMifQ.Ql1H5JTcgbV48Mgj18IJCfreD8bdxgybNtmW6BOuWS0"
+              },
+              {
+                "name": "accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "recipient",
+                "value": "5511995151785"
+              },
+              {
+                "name": "text",
+                "value": "=*Atendimentos Abertos +24h*\n\nTotal de atendimentos: *{{ $json.totalDocs }}*\n\nProtocolos *{{ $json.data[1].DePara.toUpperCase() }}*:\n{{ $json.data[1].data.replaceAll(\", \", \"\\n\") }}\nTotal *{{ $json.data[1].DePara.toUpperCase() }}*: *{{ $json.data[1].quantityDoc }}*\n\n\nProtocolos *{{ $json.data[0].DePara.toUpperCase() }}*:\n{{ $json.data[0].data.replaceAll(\", \", \"\\n\") }}\nTotal *{{ $json.data[0].DePara.toUpperCase() }}*: *{{ $json.data[0].quantityDoc }}*\n\n\nProtocolos *{{ $json.data[2].DePara.toUpperCase() }}*:\n{{ $json.data[2].data.replaceAll(\", \", \"\\n\") }}\nTotal *{{ $json.data[2].DePara.toUpperCase() }}*: *{{ $json.data[2].quantityDoc }}*\n\n\nProtocolos *{{ $json.data[3].DePara.toUpperCase() }}*:\n{{ $json.data[3].data.replaceAll(\", \", \"\\n\") }}\nTotal *{{ $json.data[3].DePara.toUpperCase() }}*: *{{ $json.data[3].quantityDoc }}*\n"
+              },
+              {
+                "name": "instance_id",
+                "value": "w4aimfkcaltxlavvvyqu6"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "neverError": true
+              }
+            }
+          }
+        },
+        "id": "36edc1fa-2ce9-4742-a902-6e30b10f501b",
+        "name": "Avisar para Adolfo",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          1260,
+          140
+        ]
+      }
+    ],
+    "connections": {
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "getToken",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "setToken": {
+        "main": [
+          [
+            {
+              "node": "getTotalDocs",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "getToken": {
+        "main": [
+          [
+            {
+              "node": "setToken",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "getDocsFromJson": {
+        "main": [
+          [
+            {
+              "node": "Avisar para Marcelo",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Avisar para Herbert",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Avisar para Luan",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Avisar para Adolfo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "getTotalDocs": {
+        "main": [
+          [
+            {
+              "node": "getAllDocs",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "getAllDocs": {
+        "main": [
+          [
+            {
+              "node": "getDocsFromJson",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "getToken",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "America/Sao_Paulo",
+      "callerPolicy": "workflowsFromSameOwner"
+    },
+    "staticData": {
+      "node:Schedule Trigger": {
+        "recurrenceRules": []
+      }
+    },
+    "meta": null,
+    "pinData": {},
+    "versionId": "f862a1da-120b-4012-bb77-834f79f49a64",
+    "triggerCount": 1,
+    "tags": []
+  }
+}
