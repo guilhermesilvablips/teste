@@ -1,0 +1,506 @@
+{
+  "data": {
+    "createdAt": "2024-10-25T15:34:20.836Z",
+    "updatedAt": "2024-10-25T15:34:42.348Z",
+    "id": "lnh8S2GCfmJtLxd5",
+    "name": "backup-github",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "437c7790-dae4-468f-bac2-894b2b7e0e26",
+        "name": "Set date",
+        "type": "n8n-nodes-base.dateTime",
+        "typeVersion": 2,
+        "position": [
+          -1660,
+          740
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "formatDate",
+          "date": "={{ $json.newDate }}",
+          "format": "custom",
+          "customFormat": "dd-MM-yyyy/H:mm",
+          "options": {}
+        },
+        "id": "d46e069d-ebbb-4137-bf44-2a66432982eb",
+        "name": "Format date",
+        "type": "n8n-nodes-base.dateTime",
+        "typeVersion": 2,
+        "position": [
+          -1260,
+          740
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "list",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $json.name }}",
+            "mode": "name"
+          },
+          "filePath": "={{ $json.path }}"
+        },
+        "id": "302e0699-5c12-44ac-b28a-407818c819d0",
+        "name": "List files from repository [GITHUB]",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          -860,
+          740
+        ],
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "operation": "aggregateItems",
+          "fieldsToAggregate": {
+            "fieldToAggregate": [
+              {
+                "fieldToAggregate": "name"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "5dbc4810-20a6-4b68-b209-c15c62db66c4",
+        "name": "Combine file names [GITHUB]",
+        "type": "n8n-nodes-base.itemLists",
+        "typeVersion": 2.1,
+        "position": [
+          -660,
+          740
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "jsonToBinary",
+          "options": {
+            "fileName": "={{ $json.name.replace(/\\s+/g, '-').toLowerCase() }}-{{ $json.id }}.json"
+          }
+        },
+        "id": "e87dd31f-0421-4f25-8f3f-75e326445e7f",
+        "name": "Move JSON to binary",
+        "type": "n8n-nodes-base.moveBinaryData",
+        "typeVersion": 1,
+        "position": [
+          -260,
+          740
+        ]
+      },
+      {
+        "parameters": {
+          "batchSize": 1,
+          "options": {}
+        },
+        "id": "462e387b-f14d-4a5f-9260-c7dfa1bd66a6",
+        "name": "Split to single items",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 2,
+        "position": [
+          -20,
+          740
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "string": [
+              {
+                "value1": "={{ $node['Combine file names [GITHUB]'].json.name }}",
+                "operation": "contains",
+                "value2": "={{ $binary.data.fileName }}"
+              }
+            ]
+          }
+        },
+        "id": "ac3f2094-6e27-4751-9a13-5344a5042ecf",
+        "name": "Check if file exists in repository",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 1,
+        "position": [
+          219.25284274934575,
+          669.8065175238871
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "edit",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('Set parâmetros git hub').item.json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('Set parâmetros git hub').item.json.name }}",
+            "mode": "name"
+          },
+          "filePath": "={{ $('Set parâmetros git hub').item.json.path }}/{{ $binary.data.fileName }}",
+          "binaryData": true,
+          "commitMessage": "=backup-{{ $node['Set parâmetros git hub'].json.commitDate }}"
+        },
+        "id": "b21e619c-42b6-49f8-9bdb-c2abd38369b7",
+        "name": "Update file [GITHUB]",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          460,
+          460
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('Set parâmetros git hub').item.json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('Set parâmetros git hub').item.json.name }}",
+            "mode": "name"
+          },
+          "filePath": "={{ $('Set parâmetros git hub').item.json.path }}/{{ $binary.data.fileName }}",
+          "binaryData": true,
+          "commitMessage": "=backup-{{ $node['Set parâmetros git hub'].json.commitDate }}"
+        },
+        "id": "3f168bf5-06c5-4769-a7d1-c57203cc4330",
+        "name": "Upload file [GITHUB]",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          460,
+          840
+        ]
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {},
+              {
+                "triggerAtHour": 6
+              },
+              {
+                "triggerAtHour": 12
+              },
+              {
+                "triggerAtHour": 18
+              }
+            ]
+          }
+        },
+        "id": "a33b94da-1649-4177-8925-41e2b098b067",
+        "name": "Schedule Trigger",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          -1860,
+          740
+        ]
+      },
+      {
+        "parameters": {
+          "keepOnlySet": true,
+          "values": {
+            "string": [
+              {
+                "name": "commitDate",
+                "value": "={{ $json.formattedDate }}"
+              },
+              {
+                "name": "name",
+                "value": "motor_n8n"
+              },
+              {
+                "name": "owner",
+                "value": "Diogoblips"
+              },
+              {
+                "name": "path",
+                "value": "fluxos-n8n"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "b468e9c0-2643-48fc-83c4-1aa75eee24c5",
+        "name": "Set parâmetros git hub",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 2,
+        "position": [
+          -1060,
+          740
+        ]
+      },
+      {
+        "parameters": {
+          "amount": 2
+        },
+        "id": "faf88113-eda9-4896-a53a-dd96b25f3547",
+        "name": "Wait",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          980,
+          460
+        ],
+        "webhookId": "84014f3d-7ae5-43f9-97eb-7c3a8a04b58c"
+      },
+      {
+        "parameters": {
+          "amount": 2
+        },
+        "id": "b4f834ea-81d9-4f39-aaff-26dc72ea0011",
+        "name": "Wait1",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          680,
+          840
+        ],
+        "webhookId": "8a9ee8c3-9495-4df3-9489-2ef218ec1ae2"
+      },
+      {
+        "parameters": {
+          "operation": "addToDate",
+          "magnitude": "={{ $json.currentDate }}",
+          "timeUnit": "hours",
+          "duration": -3,
+          "options": {}
+        },
+        "id": "e6d95606-d36e-4001-9c6f-302d31c3ee03",
+        "name": "Date & Time",
+        "type": "n8n-nodes-base.dateTime",
+        "typeVersion": 2,
+        "position": [
+          -1460,
+          740
+        ]
+      },
+      {
+        "parameters": {
+          "filters": {},
+          "requestOptions": {}
+        },
+        "id": "2fc1c66e-c002-4c0f-b3bc-2018334179c4",
+        "name": "Retrieve workflows",
+        "type": "n8n-nodes-base.n8n",
+        "typeVersion": 1,
+        "position": [
+          -460,
+          740
+        ]
+      }
+    ],
+    "connections": {
+      "Set date": {
+        "main": [
+          [
+            {
+              "node": "Date & Time",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Format date": {
+        "main": [
+          [
+            {
+              "node": "Set parâmetros git hub",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "List files from repository [GITHUB]": {
+        "main": [
+          [
+            {
+              "node": "Combine file names [GITHUB]",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Move JSON to binary": {
+        "main": [
+          [
+            {
+              "node": "Split to single items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split to single items": {
+        "main": [
+          [
+            {
+              "node": "Check if file exists in repository",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Check if file exists in repository": {
+        "main": [
+          [
+            {
+              "node": "Update file [GITHUB]",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Upload file [GITHUB]",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Update file [GITHUB]": {
+        "main": [
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Upload file [GITHUB]": {
+        "main": [
+          [
+            {
+              "node": "Wait1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Set date",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Set parâmetros git hub": {
+        "main": [
+          [
+            {
+              "node": "List files from repository [GITHUB]",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "Split to single items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait1": {
+        "main": [
+          [
+            {
+              "node": "Split to single items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Date & Time": {
+        "main": [
+          [
+            {
+              "node": "Format date",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Combine file names [GITHUB]": {
+        "main": [
+          [
+            {
+              "node": "Retrieve workflows",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Retrieve workflows": {
+        "main": [
+          [
+            {
+              "node": "Move JSON to binary",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {},
+    "versionId": "ce586694-d315-458a-b802-197a56e1cbd1",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-31T16:22:41.803Z",
+        "updatedAt": "2024-07-31T16:22:41.803Z",
+        "id": "mmaXbyiWhptUXaTd",
+        "name": "New Motor"
+      }
+    ]
+  }
+}
