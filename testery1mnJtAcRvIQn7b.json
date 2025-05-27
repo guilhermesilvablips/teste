@@ -1,0 +1,330 @@
+{
+  "data": {
+    "createdAt": "2024-12-11T20:44:19.101Z",
+    "updatedAt": "2024-12-30T16:01:42.226Z",
+    "id": "ry1mnJtAcRvIQn7b",
+    "name": "Análise de Assinatura",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "url": "={{ $('Execute').first().json.Audio }}",
+          "options": {}
+        },
+        "id": "917d7f7e-20ce-46b8-8a53-e45c6dceb7be",
+        "name": "Get binário",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          560,
+          300
+        ],
+        "retryOnFail": false,
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://firebasestorage.googleapis.com/v0/b/blips-staging-refactor-ea364.appspot.com/o?name=negotiation%2F{{ $('Execute').first().json.contrato }}%2Fassinatura-audio.mp3",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{ $('Gera token').first().json.accessToken }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "contentType": "binaryData",
+          "inputDataFieldName": "data",
+          "options": {}
+        },
+        "id": "8422e818-b2e5-4ba3-88b2-5880124cc753",
+        "name": "Post Áudio",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          760,
+          300
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": " https://blips-backend-staging-25jdzzxqga-uc.a.run.app/v2/negotiation/compare-text-voice",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{ $('Gera token').first().json.accessToken }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"gcsUri\": \"gs://blips-staging-refactor-ea364.appspot.com/negotiation/{{ $('Execute').first().json.contrato }}/assinatura-audio.mp3\",\n  \"text\": \"{{ $('Execute').first().json.Assinatura }}\"\n}",
+          "options": {}
+        },
+        "id": "185bfe9c-a5ea-406d-958c-d2f58eb1ff49",
+        "name": "Compara Assinatura",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          960,
+          300
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "method": "PATCH",
+          "url": "=https://blips-backend-staging-25jdzzxqga-uc.a.run.app/v2/negotiation/{{ $('Execute').first().json.contrato }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{ $('Gera token').first().json.accessToken }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"audioSignatureAcurracy\": {{ $json.similarity }},\n  \"audioSignatureUrl\": \"https://firebasestorage.googleapis.com/v0/b/blips-staging-refactor-ea364.appspot.com/o/negotiation%2F{{ $('Execute').first().json.contrato }}%2Fassinatura-audio.mp3?alt=media&token=bd792be3-3eab-4d91-936a-464be5acd69f{{ $('Post Áudio').first().json.downloadTokens }}\",\n  \"historicalItem\": {\n    \"type\": \"SIGNATURE_BY_AUDIO\",\n    \"description\": \"enviou a Assinatura por áudio\",\n    \"justification\": \"\"\n  }\n}",
+          "options": {}
+        },
+        "id": "17f43193-4160-440b-8ba9-b0416f14d0c0",
+        "name": "Patch - Áudio",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1160,
+          300
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {},
+        "id": "4cdb5ae2-c950-4325-a133-a20343935946",
+        "name": "Execute",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          160,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips-backend-staging-25jdzzxqga-uc.a.run.app/v2/user/login/624b373210c6fc7fcb4b7e0b",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\n    \"email\": \"joao.freitas@blips.com.br\",\n    \"password\": \"BlipsAI7\"\n}",
+          "options": {}
+        },
+        "id": "25151b54-055f-4729-bbea-97ca053156f4",
+        "name": "Gera token",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          360,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "e7426009-90ce-4ed2-869a-2d703883612f",
+                "name": "output.resultado",
+                "value": true,
+                "type": "boolean"
+              },
+              {
+                "id": "02735d8a-5c58-49c8-9d8b-d9108509b851",
+                "name": "output.justificativa",
+                "value": "=A similaridade foi de {{ $json.audioSignatureAcurracy }}%",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "2b424c82-f3c5-4676-99cd-b2a0eab88332",
+        "name": "Sucesso",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1360,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "a96aee60-4414-4448-ad61-d1a85964a7cd",
+                "name": "output.resultado",
+                "value": false,
+                "type": "boolean"
+              },
+              {
+                "id": "f8359cd0-a1b1-45d2-a427-06bcb120c104",
+                "name": "output.justificativa",
+                "value": "Falha ao comparar o áudio com a assinatura",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d61bb1d3-b04e-42ab-8d20-cfc41dab2232",
+        "name": "Fracasso",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1460,
+          320
+        ]
+      }
+    ],
+    "connections": {
+      "Get binário": {
+        "main": [
+          [
+            {
+              "node": "Post Áudio",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Fracasso",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Post Áudio": {
+        "main": [
+          [
+            {
+              "node": "Compara Assinatura",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Fracasso",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Compara Assinatura": {
+        "main": [
+          [
+            {
+              "node": "Patch - Áudio",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Fracasso",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute": {
+        "main": [
+          [
+            {
+              "node": "Gera token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gera token": {
+        "main": [
+          [
+            {
+              "node": "Get binário",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Patch - Áudio": {
+        "main": [
+          [
+            {
+              "node": "Sucesso",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Fracasso",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sucesso": {
+        "main": [
+          []
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "America/Sao_Paulo",
+      "saveManualExecutions": true,
+      "callerPolicy": "workflowsFromSameOwner"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Execute": [
+        {
+          "json": {
+            "Audio": "https://storage.hyperflow.global/whatsapp/397323930069756",
+            "Assinatura": "Eu Clara TESTE, reconheço e confirmo a locação de 1 ativo MaxiShape CryoStation junto à empresa, no dia 30/12/2024. Em 36 parcelas de R$ 1.880,00 reais. Estou ciente e concordo que todas as manutenções e reparos preventivos são de minha responsabilidade seguindo o contrato e em caso de não pagamento, estou de acordo que a máquina será bloqueada e a garantia suspensa. Autorizo o técnico a ter acesso remoto ao meu ativo.",
+            "contrato": "67633aa3e3e97c9646814544"
+          }
+        }
+      ]
+    },
+    "versionId": "3321f6e0-53b7-48dc-8b91-ab4e26253455",
+    "triggerCount": 1,
+    "tags": [
+      {
+        "createdAt": "2024-11-22T13:13:26.514Z",
+        "updatedAt": "2024-11-22T13:13:26.514Z",
+        "id": "owb3cfmzFRbqjP06",
+        "name": "Clara"
+      }
+    ]
+  }
+}
