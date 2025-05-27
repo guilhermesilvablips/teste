@@ -1,0 +1,456 @@
+{
+  "data": {
+    "createdAt": "2025-05-02T14:05:36.761Z",
+    "updatedAt": "2025-05-08T13:25:34.896Z",
+    "id": "w04wIisrxzPl22Vr",
+    "name": "Atualizar dados plataforma",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f3399d98-11b7-44b2-ae24-93bc3cb00bc2",
+                "name": "documento",
+                "value": "={{ $json.DOCUMENTO }}",
+                "type": "string"
+              },
+              {
+                "id": "5c00da9c-79e3-4dfe-9c89-b5ec2123ed19",
+                "name": "contract_number",
+                "value": "={{ $json.NUMCONTRATO || 0}}",
+                "type": "string"
+              },
+              {
+                "id": "2fcb1108-c78a-493e-af4e-44bc6e7abae9",
+                "name": "financial_number",
+                "value": "={{ $json.NUFIN }}",
+                "type": "string"
+              },
+              {
+                "id": "17ec726b-2578-4526-85e3-679b2f53cc9d",
+                "name": "tipo",
+                "value": "={{ $json.tipo }}",
+                "type": "string"
+              },
+              {
+                "id": "49df703c-f71a-41d2-a335-6892e618a2f5",
+                "name": "data",
+                "value": "={{ $json.DTVENC }}",
+                "type": "string"
+              },
+              {
+                "id": "ae359827-fb27-4312-8b50-777c3412e86a",
+                "name": "status",
+                "value": "={{ $json.ESTA_VENCIDO }}",
+                "type": "string"
+              },
+              {
+                "id": "fa5b1a92-6d7c-4452-8d04-15be2aaf6d47",
+                "name": "dias_vencido",
+                "value": "={{ $json.dias_vencido || 0}}",
+                "type": "string"
+              },
+              {
+                "id": "acd41805-c0f8-4c35-b2ff-783e6696380b",
+                "name": "installment_value",
+                "value": "={{ $json.VALOR }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "556e4eaf-ab21-4382-b9db-2cb060d6e092",
+        "name": "Set Títulos",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -220,
+          -20
+        ]
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "lista1",
+          "options": {}
+        },
+        "id": "ee70cf58-7cc3-4d35-9b77-91e25813f153",
+        "name": "Lista1",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          0,
+          -20
+        ],
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips-backend-prod-yc62attz3a-uc.a.run.app/v2/user/login/624b373210c6fc7fcb4b7e0b",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\n    \"email\": \"mkt@blips.com.br\",\n    \"password\": \"0H8tZkYpoE\"\n}",
+          "options": {}
+        },
+        "id": "fef252bb-3a1b-42b6-9644-00f5ce4e4f82",
+        "name": "Token Plataforma",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          240,
+          -20
+        ],
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "url": "=https://blips-backend-prod-yc62attz3a-uc.a.run.app/v2/chatbot/open-installments/{{ $('Execute').first().json.DOCUMENTO }}",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "status",
+                "value": "OVERDUE"
+              }
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "={{'Bearer ' + $json.accessToken}}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d0baa860-3eaa-49d2-99d8-4f4a9bb65f0e",
+        "name": "Cobrança Atualizada",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          440,
+          -20
+        ],
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "waitBetweenTries": 2000
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "74fab5d0-6935-494f-a689-addf7dcac9c1",
+                "name": "installmentsBLIPS",
+                "value": "={{ $('Cobrança Atualizada').item.json.BLIPS.installments }}",
+                "type": "array"
+              },
+              {
+                "id": "3404e62d-20c2-4aae-87b4-66f1ff11eed5",
+                "name": "installmentsIDEAL",
+                "value": "={{ $('Cobrança Atualizada').item.json.IDEAL.installments }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "0e162935-0878-4ec3-8c78-ec8d89c94b53",
+        "name": "Separa instalações",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          660,
+          -20
+        ],
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "jsCode": "// Obtenha os dados dos nodes anteriores\nconst installmentsBLIPS = items[0].json.installmentsBLIPS || [];\nconst installmentsIDEAL = items[0].json.installmentsIDEAL || [];\n\n// Combine os arrays\nconst combinedInstallments = [...installmentsBLIPS, ...installmentsIDEAL];\n\n// Crie um array para os resultados\nconst result = [];\n\n// Para cada item no array combinado, crie um novo item\ncombinedInstallments.forEach(installment => {\n    result.push({\n        json: {\n            contract_number: installment.contractNumber,\n            financial_number: installment.financialNumber,\n            installment_value: installment.installmentValue\n        }\n    });\n});\n\n// Retorne o resultado\nreturn result;\n"
+        },
+        "id": "fcae31bf-b86a-4cae-b7dc-0e42a7493327",
+        "name": "Dados plataforma",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          880,
+          -20
+        ],
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "lista2",
+          "options": {}
+        },
+        "id": "a882e4f2-cf9f-430d-a5a7-8ea1fe84f557",
+        "name": "Lista2",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          1120,
+          -20
+        ],
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "jsCode": "// entradas\nconst { lista1 } = $node[\"Lista1\"].json;\nconst { lista2 } = $node[\"Lista2\"].json;\n\n// monta lookup de installment_value por chave composta\nconst mapLista2 = Object.fromEntries(\n  lista2.map(({ contract_number, financial_number, installment_value }) => {\n    const chave = (+contract_number > 0)\n      ? `${contract_number}_${financial_number}`\n      : `${financial_number}`;\n    return [chave, installment_value];\n  })\n);\n\n// atualiza lista1 e formata saída para n8n\nconst resultado = lista1.map(item => {\n  const { contract_number, financial_number } = item;\n  const chave = (+contract_number > 0)\n    ? `${+contract_number}_${financial_number}`\n    : `${financial_number}`;\n\n  if (mapLista2[chave] != null) {\n    item.installment_value = mapLista2[chave];\n  }\n  // remove contract_number quando zero, null ou ausente\n  if (!contract_number || +contract_number === 0) {\n    delete item.contract_number;\n  }\n\n  return { json: item };\n});\n\nreturn resultado;"
+        },
+        "id": "6dc146f7-1ad1-40fe-b31d-8807dea2cc9b",
+        "name": "Junta Resultado",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1320,
+          -20
+        ],
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "response",
+          "options": {}
+        },
+        "id": "f2e0f241-0389-4058-aa1c-ab0edee0b596",
+        "name": "Aggregate",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          1540,
+          -20
+        ],
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "2e4832b6-a845-4c6a-b99b-bd96d76af7bf",
+                "leftValue": "={{ ! $json.isEmpty() }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "b5916d27-a508-4cd3-b710-aa3ba31e867f",
+        "name": "If",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          -480,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ce08b50a-6698-4b4e-98c9-b3dd49dc3db1",
+                "name": "Resposta",
+                "value": "Nenhum Título",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "db2c0c53-4c2b-4a8b-93b3-6dc601c045c4",
+        "name": "Vazio",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -220,
+          160
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "98dc62d9-5f05-4883-83ef-d32c1d2c6061",
+        "name": "Execute",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          -700,
+          0
+        ]
+      }
+    ],
+    "connections": {
+      "Set Títulos": {
+        "main": [
+          [
+            {
+              "node": "Lista1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Lista1": {
+        "main": [
+          [
+            {
+              "node": "Token Plataforma",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Token Plataforma": {
+        "main": [
+          [
+            {
+              "node": "Cobrança Atualizada",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Cobrança Atualizada": {
+        "main": [
+          [
+            {
+              "node": "Separa instalações",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Separa instalações": {
+        "main": [
+          [
+            {
+              "node": "Dados plataforma",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados plataforma": {
+        "main": [
+          [
+            {
+              "node": "Lista2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Lista2": {
+        "main": [
+          [
+            {
+              "node": "Junta Resultado",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Junta Resultado": {
+        "main": [
+          [
+            {
+              "node": "Aggregate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "Set Títulos",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Vazio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {
+      "Execute": [
+        {
+          "json": {
+            "DOCUMENTO": "37452565000110",
+            "name": "CONCLUDED",
+            "NUFIN": "642323",
+            "EMPRESA": "9",
+            "NUMCONTRATO": "323",
+            "DTVENC": "2025-03-25T00:00:00",
+            "dias": "38",
+            "VALOR": "1300.0",
+            "ESTA_VENCIDO": "VENCIDO",
+            "tipo": "PARCELA EQUIPAMENTO"
+          }
+        }
+      ]
+    },
+    "versionId": "f2b6ab3a-7b1f-4ef1-8894-3b1c4124bdc7",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-09T15:07:56.880Z",
+        "updatedAt": "2024-07-09T15:07:56.880Z",
+        "id": "10AfOz2oKmpgqhM9",
+        "name": "Cobranca"
+      }
+    ]
+  }
+}
