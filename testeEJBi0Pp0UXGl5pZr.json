@@ -1,0 +1,120 @@
+{
+  "data": {
+    "createdAt": "2025-03-07T19:59:23.484Z",
+    "updatedAt": "2025-03-07T20:54:02.986Z",
+    "id": "EJBi0Pp0UXGl5pZr",
+    "name": "Crawler Reclame Aqui",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "9bc08e12-a63c-46f9-b73c-b7e3bd304202",
+        "name": "When clicking ‘Test workflow’"
+      },
+      {
+        "parameters": {
+          "url": "={{ 'https://www.google.com/search?q={' + $json.cnpj + '}+site:reclameaqui.com.br' }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "User-Agent",
+                "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 10000
+          }
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          240,
+          0
+        ],
+        "id": "05769710-b518-499f-885f-8d6e036241c7",
+        "name": "HTTP Request"
+      },
+      {
+        "parameters": {
+          "operation": "extractHtmlContent",
+          "extractionValues": {
+            "values": [
+              {
+                "key": "link",
+                "cssSelector": "a[jsname=\"UWckNb\"]",
+                "returnValue": "attribute",
+                "attribute": "href",
+                "returnArray": true
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.html",
+        "typeVersion": 1.2,
+        "position": [
+          480,
+          0
+        ],
+        "id": "6265f665-81d3-4b2c-9958-ee0fc4d07bd1",
+        "name": "HTML"
+      }
+    ],
+    "connections": {
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request": {
+        "main": [
+          [
+            {
+              "node": "HTML",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {
+      "When clicking ‘Test workflow’": [
+        {
+          "json": {
+            "cnpj": "35914008000148"
+          }
+        }
+      ]
+    },
+    "versionId": "676ffd66-73e5-42f3-8446-271b09d9b93f",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-31T16:22:41.803Z",
+        "updatedAt": "2024-07-31T16:22:41.803Z",
+        "id": "mmaXbyiWhptUXaTd",
+        "name": "New Motor"
+      }
+    ]
+  }
+}
