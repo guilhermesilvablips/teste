@@ -1,0 +1,194 @@
+{
+  "data": {
+    "createdAt": "2024-09-09T19:05:14.587Z",
+    "updatedAt": "2024-09-09T19:29:08.124Z",
+    "id": "MSjrWQ1wyYapJx3j",
+    "name": "Agente Formulários - New Motor - Diogo H",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "611c4c57-45d1-4d24-a000-d89a238f3bc4",
+        "name": "lead",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          820,
+          380
+        ]
+      },
+      {
+        "parameters": {
+          "requestOptions": {}
+        },
+        "id": "6eec9cce-2dfb-4420-8b56-248178f7d81d",
+        "name": "WhatsApp Business Cloud",
+        "type": "n8n-nodes-base.whatsApp",
+        "typeVersion": 1,
+        "position": [
+          1520,
+          380
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.formulario }}",
+                      "rightValue": "avaliacaoPefin",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Pefin"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "977c0e7e-c12a-4516-9a62-4b406bf58473",
+                      "leftValue": "={{ $json.formulario }}",
+                      "rightValue": "avaliacaoProtesto",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Protesto"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "c58add18-9af4-40ce-8631-321ed195d192",
+                      "leftValue": "={{ $json.formulario }}",
+                      "rightValue": "temLimiteBacen",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Bacen"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "83cea18c-11ba-4b99-b605-496c0621f669",
+                      "leftValue": "={{ $json.formulario }}",
+                      "rightValue": "EMPRESA > 5 ANOS COM CHEQUE 2 ANOS +",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Empresa5aCheque"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict"
+                  },
+                  "conditions": [
+                    {
+                      "id": "edee89cd-c908-47ff-931d-e38ba6c3df70",
+                      "leftValue": "={{ $json.formulario }}",
+                      "rightValue": "PERFIL EMPRESA INVISIVEL",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "P.Emp.Invisivel"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "4bc3ccf4-a2ad-42e8-8e22-28e62a45234b",
+        "name": "Qual Formulário ?",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          1040,
+          360
+        ]
+      }
+    ],
+    "connections": {
+      "lead": {
+        "main": [
+          [
+            {
+              "node": "Qual Formulário ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "bf744999-da26-4614-9217-a25745934490",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
