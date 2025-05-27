@@ -1,0 +1,1437 @@
+{
+  "data": {
+    "createdAt": "2025-05-07T19:46:08.295Z",
+    "updatedAt": "2025-05-09T14:56:01.560Z",
+    "id": "Vyl8ezyZVBWfRZz9",
+    "name": "Correção - buscar_atendentes - função",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "jsCode": "// Inicializamos um array para armazenar os resultados unificados\nlet result = [];\n\n// Iteramos sobre todos os itens de entrada\nfor (const item of items) {\n    const inputData = item.json.data.listAgents.docs;\n\n    // Mapeamos os dados de cada item e adicionamos ao array de resultados\n    const mappedData = inputData.map(doc => {\n        return {\n            id: doc._id,\n            name: doc.name,\n            email: doc.email,\n            status: doc.tenantMember.status,\n            departments: doc.tenantMember.departments.map(department => department.name),\n            teams: doc.tenantMember.teams.map(team => team.name)\n        };\n    });\n\n    // Unificamos os resultados\n    result = result.concat(mappedData);\n}\n\n// Retornamos todos os resultados unificados\n//return result.map(item => ({ json: item }));\nreturn result"
+        },
+        "id": "65fb5c9c-eb9e-4a81-babf-22268bdf3995",
+        "name": "Extrair lista de protocolos",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          980,
+          100
+        ],
+        "alwaysOutputData": false,
+        "notesInFlow": false,
+        "retryOnFail": false
+      },
+      {
+        "parameters": {
+          "content": "## Web Scraping Hyperflow",
+          "height": 702.0408324175676,
+          "width": 1222.8723991634856,
+          "color": 6
+        },
+        "id": "f62f9843-dc33-4283-ba50-202034bcebab",
+        "name": "Sticky Note",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://new-api.zapsterapi.com/v1/wa/messages",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTc2MTE5MjQsImlzcyI6InphcHN0ZXJhcGkiLCJzdWIiOiJiZDg4ZWI0YS02ZjdkLTRlYzUtYTk5MS1hYWUzMWMxOGMzMDQiLCJqdGkiOiJhNTBiNzdiNC0yNDdmLTQ2ZDEtYTIyOS1jMDZiOWQ1NGI3YjMifQ.Ql1H5JTcgbV48Mgj18IJCfreD8bdxgybNtmW6BOuWS0"
+              },
+              {
+                "name": "accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "recipient",
+                "value": "553492053452"
+              },
+              {
+                "name": "text",
+                "value": "=Autenticação do Hyperflow expirou: {{ $json.hyperflow_key }}"
+              },
+              {
+                "name": "instance_id",
+                "value": "w4aimfkcaltxlavvvyqu6"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "neverError": true
+              }
+            }
+          }
+        },
+        "id": "1b432946-cb8b-4ea7-b23f-d71a61384e2d",
+        "name": "Avisar autenticação expirou1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          0,
+          560
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "24ZIZu82pwU8bUnO",
+          "options": {}
+        },
+        "id": "1cc8a984-3c1f-4937-a924-50add483fc8c",
+        "name": "Renovar token",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          220,
+          560
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "25ec8b5a-1489-45d7-9edb-94ad7fb6ced6",
+                "name": "hyperflow_key",
+                "value": "={{ $json.refreshToken }}",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "id": "542c5099-0c93-4352-8332-dfe926046c98",
+        "name": "Salvar token",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1180,
+          140
+        ]
+      },
+      {
+        "parameters": {
+          "content": "## Renovar tokem Hyperflow",
+          "height": 323.24489417125403,
+          "width": 682.9308442150124,
+          "color": 3
+        },
+        "id": "3fce7d5e-57ff-4551-b8c2-914fd520c5da",
+        "name": "Sticky Note3",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -160,
+          480
+        ]
+      },
+      {
+        "parameters": {
+          "collection": "tokens",
+          "options": {
+            "limit": 1
+          },
+          "query": "{\n  \"ativo\":true\n} "
+        },
+        "id": "13570af5-a1ac-4090-8060-23c2a8791d88",
+        "name": "Buscar token Hyperflow",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1.1,
+        "position": [
+          -1380,
+          140
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "mongoDb": {
+            "id": "jgLY33sWojEA1rzs",
+            "name": "NascimentoDB"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://desk-ext.hyperflowapis.global/graphql",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "={\n  \"accept\": \"application/json, text/plain, */*\",\n  \"accept-language\": \"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7\",\n  \"authorization\": \"{{ $('Salvar token').item.json.hyperflow_key }}\",\n  \"content-type\": \"application/json\",\n  \"origin\": \"https://desk.hyperflow.global\",\n  \"priority\": \"u=1, i\",\n  \"referer\": \"https://desk.hyperflow.global/\",\n  \"sec-ch-ua\": \"\\\"Not)A;Brand\\\";v=\\\"99\\\", \\\"Google Chrome\\\";v=\\\"127\\\", \\\"Chromium\\\";v=\\\"127\\\"\",\n  \"sec-ch-ua-mobile\": \"?0\",\n  \"sec-ch-ua-platform\": \"\\\"Windows\\\"\",\n  \"sec-fetch-dest\": \"empty\",\n  \"sec-fetch-mode\": \"cors\",\n  \"sec-fetch-site\": \"cross-site\",\n  \"tenant\": \"642eb86c0cd915bc8137a05d\",\n  \"user-agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36\"\n}",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"operationName\": \"LIST_ALL_CHATS\",\n  \"variables\": {\n    \"sort\": \"-createdAt\",\n    \"search\": \"34992053452\",\n    \"channelAlias\": [],\n    \"status\": [],\n    \"channel\": \"\",\n    \"department\": [],\n    \"label\": [],\n    \"classification\": [],\n    \"agent\": [],\n    \"startDate\": null,\n    \"endDate\": null,\n    \"page\": 1,\n    \"limit\": 1\n  },\n  \"query\": \"query LIST_ALL_CHATS($page: Int, $limit: Int, $offset: Int, $sort: String, $search: String, $channel: String, $startDate: String, $endDate: String, $status: [String], $department: [String], $agent: [String], $label: [String], $classification: [String], $channelAlias: [String], $searchBy: String) {\\n  listAllChats(\\n    query: {search: $search, status: $status, channel: $channel, department: $department, agent: $agent, startDate: $startDate, endDate: $endDate, label: $label, classification: $classification, channelAlias: $channelAlias, searchBy: $searchBy}\\n    page: $page\\n    limit: $limit\\n    offset: $offset\\n    sort: $sort\\n  ) {\\n    docs {\\n      _id\\n      receiver\\n      agent {\\n        _id\\n        picture\\n        email\\n        name\\n        __typename\\n      }\\n      department {\\n        _id\\n        name\\n        __typename\\n      }\\n      channel\\n      channelAlias\\n      contact {\\n        id\\n        phone\\n        name\\n        picture\\n        __typename\\n      }\\n      lastMessage {\\n        type\\n        direction\\n        createdAt\\n        __typename\\n      }\\n      protocol\\n      status\\n      classifications {\\n        _id\\n        name\\n        __typename\\n      }\\n      labels {\\n        _id\\n        color\\n        name\\n        __typename\\n      }\\n      isActive\\n      createdAt\\n      finishedAt\\n      __typename\\n    }\\n    totalPages\\n    totalDocs\\n    nextPage\\n    __typename\\n  }\\n}\"\n}",
+          "options": {}
+        },
+        "id": "d9316521-dd1f-498e-a26a-8dba6012ba8e",
+        "name": "Validar token",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -980,
+          140
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "d62ad62a-7d5b-47c8-abde-efcd6da6bc14",
+                "leftValue": "={{ $json.errors[0].message }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notExists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "0b6b4a4a-17d0-495c-bd40-79d6cdb6c00e",
+        "name": "token valido?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -740,
+          120
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "8b78c832-8cf3-430f-83b0-7bbca38e4140",
+                "name": "=telefone",
+                "value": "={{ $json.arguments.telefone }}",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": "={{ false }}",
+          "options": {}
+        },
+        "id": "53c3a5f1-c10d-46a8-86b4-b87a288d488a",
+        "name": "Variáveis Globais",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          -1580,
+          140
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "dfa412d3-248b-46fa-b7e0-52f760bd48da",
+                "name": "text",
+                "value": "=Nâo foi possivel realizar a analise. O telefone informado não possui nenhum protocolo.\n\nVerifique se o telefone está correto e solicite uma nova analise.",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "a0252465-9f56-4379-9a02-1a406258085a",
+        "name": "Definir resposta erro",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          520,
+          320
+        ]
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "agentes",
+          "options": {}
+        },
+        "id": "7c7130f7-6ebd-4937-b983-d46eb54bf8b4",
+        "name": "lista atendentes",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          1180,
+          340
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://desk-ext.hyperflowapis.global/graphql",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "={\n  \"accept\": \"application/json, text/plain, */*\",\n  \"accept-language\": \"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7\",\n  \"authorization\": \"{{ $('Salvar token').item.json.hyperflow_key }}\",\n  \"content-type\": \"application/json\",\n  \"origin\": \"https://desk.hyperflow.global\",\n  \"priority\": \"u=1, i\",\n  \"referer\": \"https://desk.hyperflow.global/\",\n  \"sec-ch-ua\": \"\\\"Not)A;Brand\\\";v=\\\"99\\\", \\\"Google Chrome\\\";v=\\\"127\\\", \\\"Chromium\\\";v=\\\"127\\\"\",\n  \"sec-ch-ua-mobile\": \"?0\",\n  \"sec-ch-ua-platform\": \"\\\"Windows\\\"\",\n  \"sec-fetch-dest\": \"empty\",\n  \"sec-fetch-mode\": \"cors\",\n  \"sec-fetch-site\": \"cross-site\",\n  \"tenant\": \"642eb86c0cd915bc8137a05d\",\n  \"user-agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36\"\n}",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"operationName\": \"LIST_AGENTS_FULL\",\n  \"query\": \"query LIST_AGENTS_FULL($search: String = \\\"\\\", $departments: [ObjectId!], $page: Int, $limit: Int, $sort: String, $type: UserTypeEnum, $status: [String!]) {\\n  listAgents(\\n    query: {search: $search, role: \\\"agent\\\", departments: $departments, status: $status, type: $type, includeEmpty: false}\\n    page: $page\\n    limit: $limit\\n    sort: $sort\\n  ) {\\n    docs {\\n      _id\\n      name\\n      email\\n      picture\\n      pictureRaw\\n      description\\n      gpt {\\n        delay\\n        chunk\\n        assistant\\n        organization\\n        api_key\\n        __typename\\n      }\\n      tenantMember {\\n        status\\n        roles\\n        departments {\\n          _id\\n          name\\n          __typename\\n        }\\n        teams {\\n          _id\\n          name\\n          __typename\\n        }\\n        maxChats\\n        maxPausedChats\\n        __typename\\n      }\\n      metadata\\n      totalActiveChats\\n      createdAt\\n      __typename\\n    }\\n    totalDocs\\n    totalPages\\n    __typename\\n  }\\n}\\n\",\n  \"variables\": {\n    \"search\": \"\",\n    \"page\" : 0,\n    \"departments\": [],\n    \"limit\": 50,\n    \"type\": \"user\",\n    \"status\": []\n  }\n}",
+          "options": {
+            "pagination": {
+              "pagination": {
+                "parameters": {
+                  "parameters": [
+                    {
+                      "type": "body",
+                      "name": "variables.page",
+                      "value": "={{ $pageCount + 1 }}"
+                    }
+                  ]
+                },
+                "limitPagesFetched": true,
+                "maxRequests": 3
+              }
+            }
+          }
+        },
+        "id": "e531214f-e665-44d8-908f-3eb0809a17df",
+        "name": "Pesquisar atendentes",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -560,
+          -240
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://new-api.zapsterapi.com/v1/wa/messages",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTc2MTE5MjQsImlzcyI6InphcHN0ZXJhcGkiLCJzdWIiOiJiZDg4ZWI0YS02ZjdkLTRlYzUtYTk5MS1hYWUzMWMxOGMzMDQiLCJqdGkiOiJhNTBiNzdiNC0yNDdmLTQ2ZDEtYTIyOS1jMDZiOWQ1NGI3YjMifQ.Ql1H5JTcgbV48Mgj18IJCfreD8bdxgybNtmW6BOuWS0"
+              },
+              {
+                "name": "accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "recipient",
+                "value": "553492053452"
+              },
+              {
+                "name": "text",
+                "value": "=ERRO na requisição de Agentes Hyperflow"
+              },
+              {
+                "name": "instance_id",
+                "value": "w4aimfkcaltxlavvvyqu6"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "neverError": true
+              }
+            }
+          }
+        },
+        "id": "4e6f2c31-d713-4c39-a0fd-904b5b557e00",
+        "name": "Avisar erro requisição",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          280,
+          320
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "da560171-a8e0-4c29-a77a-49af8e681a92",
+        "name": "combinar paginas",
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3,
+        "position": [
+          -240,
+          -200
+        ]
+      },
+      {
+        "parameters": {
+          "fieldsToAggregate": {
+            "fieldToAggregate": [
+              {}
+            ]
+          },
+          "options": {}
+        },
+        "id": "d871441d-3368-4a27-97ef-bd25556e5655",
+        "name": "lista atendentes1",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          780,
+          -300
+        ]
+      },
+      {
+        "parameters": {
+          "fieldsToSummarize": {
+            "values": [
+              {
+                "aggregation": "append",
+                "field": "data.listAgents.docs"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.summarize",
+        "typeVersion": 1.1,
+        "position": [
+          980,
+          -120
+        ],
+        "id": "1e146ae3-5019-4881-8100-8cee532bd054",
+        "name": "Summarize"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://desk-ext.hyperflowapis.global/graphql",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "={\n  \"accept\": \"application/json, text/plain, */*\",\n  \"accept-language\": \"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7\",\n  \"authorization\": \"{{ $('Salvar token').item.json.hyperflow_key }}\",\n  \"content-type\": \"application/json\",\n  \"origin\": \"https://desk.hyperflow.global\",\n  \"priority\": \"u=1, i\",\n  \"referer\": \"https://desk.hyperflow.global/\",\n  \"sec-ch-ua\": \"\\\"Not)A;Brand\\\";v=\\\"99\\\", \\\"Google Chrome\\\";v=\\\"127\\\", \\\"Chromium\\\";v=\\\"127\\\"\",\n  \"sec-ch-ua-mobile\": \"?0\",\n  \"sec-ch-ua-platform\": \"\\\"Windows\\\"\",\n  \"sec-fetch-dest\": \"empty\",\n  \"sec-fetch-mode\": \"cors\",\n  \"sec-fetch-site\": \"cross-site\",\n  \"tenant\": \"642eb86c0cd915bc8137a05d\",\n  \"user-agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36\"\n}",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"operationName\": \"LIST_AGENTS_FULL\",\n  \"query\": \"query LIST_AGENTS_FULL($search: String = \\\"\\\", $departments: [ObjectId!], $page: Int, $limit: Int, $sort: String, $type: UserTypeEnum, $status: [String!]) {\\n  listAgents(\\n    query: {search: $search, role: \\\"agent\\\", departments: $departments, status: $status, type: $type, includeEmpty: false}\\n    page: $page\\n    limit: $limit\\n    sort: $sort\\n  ) {\\n    docs {\\n      _id\\n      name\\n      email\\n      picture\\n      pictureRaw\\n      description\\n      gpt {\\n        delay\\n        chunk\\n        assistant\\n        organization\\n        api_key\\n        __typename\\n      }\\n      tenantMember {\\n        status\\n        roles\\n        departments {\\n          _id\\n          name\\n          __typename\\n        }\\n        teams {\\n          _id\\n          name\\n          __typename\\n        }\\n        maxChats\\n        maxPausedChats\\n        __typename\\n      }\\n      metadata\\n      totalActiveChats\\n      createdAt\\n      __typename\\n    }\\n    totalDocs\\n    totalPages\\n    __typename\\n  }\\n}\\n\",\n  \"variables\": {\n    \"search\": \"\",\n    \"departments\": [],\n    \"limit\": 50,\n    \"page\": {{ $runIndex+1 }},\n    \"type\": \"user\",\n    \"status\": []\n  }\n}",
+          "options": {
+            "pagination": {}
+          }
+        },
+        "id": "24c5480e-549c-4ac7-89ef-f130ff6da8b6",
+        "name": "Pesquisar atendentes1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          260,
+          80
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "d6a850a0-a6f7-41e6-8036-db912ee9837b",
+                "leftValue": "={{ $runIndex+1 }}",
+                "rightValue": "={{ $json.data.listAgents.totalPages }}",
+                "operator": {
+                  "type": "number",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "c1258cbd-f5ee-4c9d-9fad-b97be467f213",
+        "name": "É ultima pagina?1",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          780,
+          60
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "e1d854ea-47e3-497b-9dbd-dc7028676a68",
+                "name": "nome",
+                "value": "={{ $json.name }}",
+                "type": "string"
+              },
+              {
+                "id": "d99dbb97-32e3-4967-b610-6e25325b4381",
+                "name": "email",
+                "value": "={{ $json.email }}",
+                "type": "string"
+              },
+              {
+                "id": "46c55afa-04c1-4904-81a5-30cee9a349ab",
+                "name": "departments_hyper",
+                "value": "={{ $json.department_hyper.map(item => item.name)}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1340,
+          680
+        ],
+        "id": "03154ce3-5de0-407f-9ce4-7c72f7bbbd0a",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {},
+        "id": "ecece9d0-8a9f-4ba4-8035-8ad067152a62",
+        "name": "When clicking ‘Test workflow’",
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -1800,
+          140
+        ]
+      },
+      {
+        "parameters": {
+          "model": "gpt-4.1-mini",
+          "options": {}
+        },
+        "id": "92372a62-0cae-4fe7-9380-1aee2ddcf504",
+        "name": "OpenAI Chat Model",
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1,
+        "position": [
+          -1820,
+          1260
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "tuJNruAgnnM96by3",
+            "name": "Open AI - Suporte Técnico"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "schemaType": "manual",
+          "inputSchema": "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"nome\": {\n\t\t\t\"type\": \"string\"\n\t\t},\n\t\t\"departamento\": {\n\t\t\t\"type\": \"string\"\n\t\t},\n\n      \"email\": {\n\t\t\t\"type\": \"string\"\n\t\t}\n\t}\n}"
+        },
+        "id": "804910d9-644d-434b-bfc3-260e82cf3ba0",
+        "name": "Structured Output Parser",
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.2,
+        "position": [
+          -1660,
+          1260
+        ]
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Você vai receber uma lista de funcionários e um nome de funcionário e seu departamento.\n\nDepartamento,Nome: Débora,Instalação\n\nVerifique se encontra ele na lista, seja flexível com relação ao nome e ao departamento (desconsidere diferenças entre letras e erros ortograficos e vogais que tenham o mesmo som \"ex.: Izabela ou Isabela\", \"Higor ou \"Igor\")\n\nretorne um json com os campos: nome,email,departamento \n\nSe não encontrar retorne apenas o departamento passado para você, Ex.: {\"departamento\": \"CNC\" }\n\n\nLista para checar: {{ $json.data.toJsonString() }}\n\n",
+          "hasOutputParser": true
+        },
+        "id": "2469e345-24af-4554-a694-48d357abe9cc",
+        "name": "Basic LLM Chain",
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.4,
+        "position": [
+          -1800,
+          1060
+        ],
+        "retryOnFail": true,
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "include": "specifiedFields",
+          "fieldsToInclude": "name,email,department_hyper",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          -2000,
+          1060
+        ],
+        "id": "3abad21b-2660-4679-8f6b-4125650cc740",
+        "name": "Aggregate"
+      },
+      {
+        "parameters": {
+          "url": "https://n8n-auditoria.blips-labs.com/webhook/blips_users?has_hyper=true",
+          "options": {
+            "response": {
+              "response": {}
+            }
+          }
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -2360,
+          1060
+        ],
+        "id": "387cfe4f-0ea8-43f5-afe4-7c82c8aa1b68",
+        "name": "HTTP Request3"
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "data",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          -2180,
+          1060
+        ],
+        "id": "673c1e6c-36ad-435d-96b2-9025a5f22844",
+        "name": "Split Out2"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "25ec8b5a-1489-45d7-9edb-94ad7fb6ced6",
+                "name": "hyperflow_key",
+                "value": "={{ $json.refreshToken }}",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "id": "f1fc65ba-f828-4275-866f-ed24b60cc1ea",
+        "name": "Salvar token1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -960,
+          1040
+        ]
+      },
+      {
+        "parameters": {
+          "collection": "tokens",
+          "options": {
+            "limit": 1
+          },
+          "query": "{\n  \"ativo\":true\n} "
+        },
+        "id": "a39b08fa-a31c-4927-bb14-040ef81cce17",
+        "name": "Buscar token Hyperflow1",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1.1,
+        "position": [
+          -1160,
+          1040
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "mongoDb": {
+            "id": "jgLY33sWojEA1rzs",
+            "name": "NascimentoDB"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://desk-ext.hyperflowapis.global/graphql",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "={\n  \"accept\": \"application/json, text/plain, */*\",\n  \"accept-language\": \"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7\",\n  \"authorization\": \"{{ $('Salvar token1').item.json.hyperflow_key }}\",\n  \"content-type\": \"application/json\",\n  \"origin\": \"https://desk.hyperflow.global\",\n  \"priority\": \"u=1, i\",\n  \"referer\": \"https://desk.hyperflow.global/\",\n  \"sec-ch-ua\": \"\\\"Not)A;Brand\\\";v=\\\"99\\\", \\\"Google Chrome\\\";v=\\\"127\\\", \\\"Chromium\\\";v=\\\"127\\\"\",\n  \"sec-ch-ua-mobile\": \"?0\",\n  \"sec-ch-ua-platform\": \"\\\"Windows\\\"\",\n  \"sec-fetch-dest\": \"empty\",\n  \"sec-fetch-mode\": \"cors\",\n  \"sec-fetch-site\": \"cross-site\",\n  \"tenant\": \"642eb86c0cd915bc8137a05d\",\n  \"user-agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36\"\n}",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"operationName\": \"LIST_ALL_CHATS\",\n  \"variables\": {\n    \"sort\": \"-createdAt\",\n    \"search\": \"34992053452\",\n    \"channelAlias\": [],\n    \"status\": [],\n    \"channel\": \"\",\n    \"department\": [],\n    \"label\": [],\n    \"classification\": [],\n    \"agent\": [],\n    \"startDate\": null,\n    \"endDate\": null,\n    \"page\": 1,\n    \"limit\": 1\n  },\n  \"query\": \"query LIST_ALL_CHATS($page: Int, $limit: Int, $offset: Int, $sort: String, $search: String, $channel: String, $startDate: String, $endDate: String, $status: [String], $department: [String], $agent: [String], $label: [String], $classification: [String], $channelAlias: [String], $searchBy: String) {\\n  listAllChats(\\n    query: {search: $search, status: $status, channel: $channel, department: $department, agent: $agent, startDate: $startDate, endDate: $endDate, label: $label, classification: $classification, channelAlias: $channelAlias, searchBy: $searchBy}\\n    page: $page\\n    limit: $limit\\n    offset: $offset\\n    sort: $sort\\n  ) {\\n    docs {\\n      _id\\n      receiver\\n      agent {\\n        _id\\n        picture\\n        email\\n        name\\n        __typename\\n      }\\n      department {\\n        _id\\n        name\\n        __typename\\n      }\\n      channel\\n      channelAlias\\n      contact {\\n        id\\n        phone\\n        name\\n        picture\\n        __typename\\n      }\\n      lastMessage {\\n        type\\n        direction\\n        createdAt\\n        __typename\\n      }\\n      protocol\\n      status\\n      classifications {\\n        _id\\n        name\\n        __typename\\n      }\\n      labels {\\n        _id\\n        color\\n        name\\n        __typename\\n      }\\n      isActive\\n      createdAt\\n      finishedAt\\n      __typename\\n    }\\n    totalPages\\n    totalDocs\\n    nextPage\\n    __typename\\n  }\\n}\"\n}",
+          "options": {}
+        },
+        "id": "71534cb5-3030-47e5-bd03-ca05fc3a98da",
+        "name": "Validar token1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -760,
+          1040
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "d62ad62a-7d5b-47c8-abde-efcd6da6bc14",
+                "leftValue": "={{ $json.errors[0].message }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notExists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "d32e2917-c658-4743-a08f-5df148cc7acf",
+        "name": "token valido?1",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -500,
+          1040
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "8b78c832-8cf3-430f-83b0-7bbca38e4140",
+                "name": "=telefone",
+                "value": "={{\"abcResumo: Cliente relatou que está com 6 boletos, mas possui apenas 4 equipamentos ativos e precisa saber qual boleto (valor de R$ 1327) não deve pagar. Solicitada análise detalhada, pois não localizei os títulos necessários no sistema\".match(/Resumo:.*/)[0]}}",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": "={{ false }}",
+          "options": {}
+        },
+        "id": "9678c003-152a-4b1d-8dff-ac12ef49502a",
+        "name": "Variáveis Globais1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          -1360,
+          1040
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://new-api.zapsterapi.com/v1/wa/messages",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTc2MTE5MjQsImlzcyI6InphcHN0ZXJhcGkiLCJzdWIiOiJiZDg4ZWI0YS02ZjdkLTRlYzUtYTk5MS1hYWUzMWMxOGMzMDQiLCJqdGkiOiJhNTBiNzdiNC0yNDdmLTQ2ZDEtYTIyOS1jMDZiOWQ1NGI3YjMifQ.Ql1H5JTcgbV48Mgj18IJCfreD8bdxgybNtmW6BOuWS0"
+              },
+              {
+                "name": "accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "recipient",
+                "value": "553492053452"
+              },
+              {
+                "name": "text",
+                "value": "=Autenticação do Hyperflow expirou: {{ $json.hyperflow_key }}"
+              },
+              {
+                "name": "instance_id",
+                "value": "w4aimfkcaltxlavvvyqu6"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "neverError": true
+              }
+            }
+          }
+        },
+        "id": "b41075f3-dc6e-45a8-b7dd-702b5d6fada7",
+        "name": "Avisar autenticação expirou",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          -560,
+          1320
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "24ZIZu82pwU8bUnO",
+          "options": {}
+        },
+        "id": "8e8b17cf-6d88-449a-aeb2-59b07eeb99fa",
+        "name": "Renovar token1",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          -340,
+          1320
+        ]
+      },
+      {
+        "parameters": {
+          "content": "## Renovar tokem Hyperflow",
+          "height": 323.24489417125403,
+          "width": 682.9308442150124,
+          "color": 3
+        },
+        "id": "f6f9829c-2fc8-49b9-911e-7e556ed7bfb7",
+        "name": "Sticky Note4",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -1200,
+          560
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://desk-ext.hyperflowapis.global/graphql",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "={\n  \"accept\": \"application/json, text/plain, */*\",\n  \"accept-language\": \"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7\",\n  \"authorization\": \"{{ $('Salvar token1').item.json.token }}\",\n  \"content-type\": \"application/json\",\n  \"origin\": \"https://desk.hyperflow.global\",\n  \"priority\": \"u=1, i\",\n  \"referer\": \"https://desk.hyperflow.global/\",\n  \"sec-ch-ua\": \"\\\"Not)A;Brand\\\";v=\\\"99\\\", \\\"Google Chrome\\\";v=\\\"127\\\", \\\"Chromium\\\";v=\\\"127\\\"\",\n  \"sec-ch-ua-mobile\": \"?0\",\n  \"sec-ch-ua-platform\": \"\\\"Windows\\\"\",\n  \"sec-fetch-dest\": \"empty\",\n  \"sec-fetch-mode\": \"cors\",\n  \"sec-fetch-site\": \"cross-site\",\n  \"tenant\": \"642eb86c0cd915bc8137a05d\",\n  \"user-agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36\"\n}",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"operationName\": \"LIST_AGENTS_FULL\",\n  \"query\": \"query LIST_AGENTS_FULL($search: String = \\\"\\\", $departments: [ObjectId!], $page: Int, $limit: Int, $sort: String, $type: UserTypeEnum, $status: [String!]) {\\n  listAgents(\\n    query: {search: $search, role: \\\"agent\\\", departments: $departments, status: $status, type: $type, includeEmpty: false}\\n    page: $page\\n    limit: $limit\\n    sort: $sort\\n  ) {\\n    docs {\\n      _id\\n      name\\n      email\\n      picture\\n      pictureRaw\\n      description\\n      gpt {\\n        delay\\n        chunk\\n        assistant\\n        organization\\n        api_key\\n        __typename\\n      }\\n      tenantMember {\\n        status\\n        roles\\n        departments {\\n          _id\\n          name\\n          __typename\\n        }\\n        teams {\\n          _id\\n          name\\n          __typename\\n        }\\n        maxChats\\n        maxPausedChats\\n        __typename\\n      }\\n      metadata\\n      totalActiveChats\\n      createdAt\\n      __typename\\n    }\\n    totalDocs\\n    totalPages\\n    __typename\\n  }\\n}\\n\",\n  \"variables\": {\n    \"search\": \"{{ $json.output.email }}\",\n    \"departments\": [],\n    \"limit\": 50,\n    \"type\": \"user\",\n    \"status\": []\n  }\n}",
+          "options": {}
+        },
+        "id": "eab6a49b-895b-4618-b298-d5a1873cc7c1",
+        "name": "Pesquisar atendentes2",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -240,
+          1040
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "c408331c-18ae-4ead-9e4d-3d0964cc168a",
+                "name": "departamento",
+                "value": "={{ $('Basic LLM Chain').item.json.output.departamento }}",
+                "type": "string"
+              },
+              {
+                "id": "4d48d279-e2bf-40a4-af1a-ced757e3438c",
+                "name": "email",
+                "value": "={{ $('Basic LLM Chain').item.json.output.email }}",
+                "type": "string"
+              },
+              {
+                "id": "ee71a990-bffa-42c7-9df6-d0af8d9a04a9",
+                "name": "status",
+                "value": "={{ $json.data.listAgents.docs[0].tenantMember.status }}",
+                "type": "string"
+              },
+              {
+                "id": "21ec1911-4e1b-4e42-b969-9249c672e767",
+                "name": "nome",
+                "value": "={{ $('Basic LLM Chain').item.json.output.nome }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "e08a2f3f-3818-4950-ab2e-9ea7b5a26197",
+        "name": "Output",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          20,
+          1040
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT * FROM blips-bigdata.VIEWS_DASHES.telefones_tecnicos",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          -1500,
+          1720
+        ],
+        "id": "7b02b2a3-feb4-4740-bad9-656b88fc4e1f",
+        "name": "Google BigQuery",
+        "credentials": {
+          "googleApi": {
+            "id": "2b5fy3dagItEtiXX",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "tecnicos",
+          "include": "specifiedFields",
+          "fieldsToInclude": "name,email,department_hyper",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          -1300,
+          1720
+        ],
+        "id": "6e9fedb6-6fe7-4d0e-b559-d62875e21027",
+        "name": "Aggregate1"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://desk-ext.hyperflowapis.global/graphql",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "={\n  \"Content-Type\": \"application/json\",\n  \"tenant\": \"642eb86c0cd915bc8137a05d\",\n  \"Authorization\": \"{{ $('Renovar token').first().json.data.login.token }}\"\n}",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"operationName\": \"LIST_AGENTS_FULL\",\n  \"variables\": {\n    \"search\": \"\",\n    \"departments\":[],\n    \"limit\":1000,\n    \"page\": 1,\n    \"type\": \"user\",\n    \"status\":[]\n  },\n  \"query\": \"query LIST_AGENTS_FULL($search: String = \\\"\\\", $departments: [ObjectId!], $page: Int, $limit: Int, $sort: String, $type: UserTypeEnum, $status: [String!]) {\\n  listAgents(\\n    query: {search: $search, role: \\\"agent\\\", departments: $departments, status: $status, type: $type, includeEmpty: false}\\n    page: $page\\n    limit: $limit\\n    sort: $sort\\n  ) {\\n    docs {\\n      _id\\n      name\\n      email\\n      picture\\n      pictureRaw\\n      description\\n      gpt {\\n        delay\\n        chunk\\n        assistant\\n        organization\\n        api_key\\n        custom_domain\\n        custom_params\\n        __typename\\n      }\\n      tenantMember {\\n        status\\n        roles\\n        departments {\\n          _id\\n          name\\n          __typename\\n        }\\n        teams {\\n          _id\\n          name\\n          __typename\\n        }\\n        maxChats\\n        maxPausedChats\\n        allowReceptiveCalls\\n        receptiveCallChannels {\\n          _id\\n          identifier\\n          type\\n          alias\\n          credentials\\n          __typename\\n        }\\n        __typename\\n      }\\n      metadata\\n      totalActiveChats\\n      totalPausedChats\\n      totalOverdueChats\\n      createdAt\\n      userStatus {\\n        online\\n        busy\\n        away\\n        offline\\n        __typename\\n      }\\n      __typename\\n    }\\n    totalDocs\\n    totalPages\\n    __typename\\n  }\\n}\\n\"}\n",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          480,
+          -160
+        ],
+        "id": "6440a2b6-de95-4395-9fb8-4c732a2a5409",
+        "name": "HTTP Request1"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://desk-ext.hyperflowapis.global/graphql",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "={\n  \"accept\": \"application/json, text/plain, */*\",\n  \"accept-language\": \"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7\",\n  \"authorization\": \"{{ $('Salvar token').item.json.hyperflow_key }}\",\n  \"content-type\": \"application/json\",\n  \"origin\": \"https://desk.hyperflow.global\",\n  \"priority\": \"u=1, i\",\n  \"referer\": \"https://desk.hyperflow.global/\",\n  \"sec-ch-ua\": \"\\\"Not)A;Brand\\\";v=\\\"99\\\", \\\"Google Chrome\\\";v=\\\"127\\\", \\\"Chromium\\\";v=\\\"127\\\"\",\n  \"sec-ch-ua-mobile\": \"?0\",\n  \"sec-ch-ua-platform\": \"\\\"Windows\\\"\",\n  \"sec-fetch-dest\": \"empty\",\n  \"sec-fetch-mode\": \"cors\",\n  \"sec-fetch-site\": \"cross-site\",\n  \"tenant\": \"642eb86c0cd915bc8137a05d\",\n  \"user-agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36\"\n}",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"operationName\": \"LIST_AGENTS_FULL\",\n  \"variables\": {\n    \"search\": \"\",\n    \"departments\":[],\n    \"limit\":1000,\n    \"page\": 1,\n    \"type\": \"user\",\n    \"status\":[]\n  },\n  \"query\": \"query LIST_AGENTS_FULL($search: String = \\\"\\\", $departments: [ObjectId!], $page: Int, $limit: Int, $sort: String, $type: UserTypeEnum, $status: [String!]) {\\n  listAgents(\\n    query: {search: $search, role: \\\"agent\\\", departments: $departments, status: $status, type: $type, includeEmpty: false}\\n    page: $page\\n    limit: $limit\\n    sort: $sort\\n  ) {\\n    docs {\\n      _id\\n      name\\n      email\\n               tenantMember {\\n        status\\n     departments {\\n          _id\\n          name\\n      }\\n           }\\n           }\\n   }\\n}\\n\"}\n",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -420,
+          80
+        ],
+        "id": "f6b03e6e-35c4-4db1-b5ea-8be2a751b395",
+        "name": "HTTP Request"
+      }
+    ],
+    "connections": {
+      "Extrair lista de protocolos": {
+        "main": [
+          [
+            {
+              "node": "lista atendentes",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Avisar autenticação expirou1": {
+        "main": [
+          [
+            {
+              "node": "Renovar token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Renovar token": {
+        "main": [
+          [
+            {
+              "node": "Salvar token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Salvar token": {
+        "main": [
+          [
+            {
+              "node": "Validar token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Buscar token Hyperflow": {
+        "main": [
+          [
+            {
+              "node": "Salvar token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Validar token": {
+        "main": [
+          [
+            {
+              "node": "token valido?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Avisar autenticação expirou1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "token valido?": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Avisar autenticação expirou1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Variáveis Globais": {
+        "main": [
+          [
+            {
+              "node": "Buscar token Hyperflow",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Definir resposta erro": {
+        "main": [
+          [
+            {
+              "node": "lista atendentes",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "lista atendentes": {
+        "main": [
+          []
+        ]
+      },
+      "Pesquisar atendentes": {
+        "main": [
+          [],
+          []
+        ]
+      },
+      "Avisar erro requisição": {
+        "main": [
+          [
+            {
+              "node": "Definir resposta erro",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "combinar paginas": {
+        "main": [
+          []
+        ]
+      },
+      "lista atendentes1": {
+        "main": [
+          []
+        ]
+      },
+      "Pesquisar atendentes1": {
+        "main": [
+          [
+            {
+              "node": "É ultima pagina?1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "É ultima pagina?1": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Pesquisar atendentes1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          []
+        ]
+      },
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "Variáveis Globais",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aggregate": {
+        "main": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request3": {
+        "main": [
+          [
+            {
+              "node": "Split Out2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out2": {
+        "main": [
+          [
+            {
+              "node": "Aggregate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Salvar token1": {
+        "main": [
+          [
+            {
+              "node": "Validar token1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Buscar token Hyperflow1": {
+        "main": [
+          [
+            {
+              "node": "Salvar token1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Validar token1": {
+        "main": [
+          [
+            {
+              "node": "token valido?1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Avisar autenticação expirou",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Variáveis Globais1": {
+        "main": [
+          [
+            {
+              "node": "Buscar token Hyperflow1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Avisar autenticação expirou": {
+        "main": [
+          [
+            {
+              "node": "Renovar token1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "token valido?1": {
+        "main": [
+          [
+            {
+              "node": "Pesquisar atendentes2",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Renovar token1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Renovar token1": {
+        "main": [
+          [
+            {
+              "node": "Salvar token1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Basic LLM Chain": {
+        "main": [
+          [
+            {
+              "node": "Variáveis Globais1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Pesquisar atendentes2": {
+        "main": [
+          [
+            {
+              "node": "Output",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Output",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google BigQuery": {
+        "main": [
+          [
+            {
+              "node": "Aggregate1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "When clicking ‘Test workflow’": [
+        {
+          "json": {
+            "event": "ONIMBOTMESSAGEADD",
+            "event_handler_id": "473",
+            "data": {
+              "BOT": {
+                "2621": {
+                  "BOT_ID": "2621",
+                  "BOT_CODE": "6cmciki6sb9pdt1i"
+                }
+              },
+              "PARAMS": {
+                "MESSAGE": "qual a previsão de entrega da máquina do contrato 12500193?",
+                "TEMPLATE_ID": "3543007b-37a3-4dcd-8945-b1874df305e2",
+                "MESSAGE_TYPE": "C",
+                "FROM_USER_ID": "2491",
+                "DIALOG_ID": "chat16501",
+                "WAIT_FULL_EXECUTION": "N",
+                "TO_CHAT_ID": "16501",
+                "SKIP_URL_INDEX": "N",
+                "SKIP_COUNTER_INCREMENTS": "N",
+                "SKIP_COMMAND": "N",
+                "SKIP_CONNECTOR": "N",
+                "IMPORTANT_CONNECTOR": "N",
+                "SILENT_CONNECTOR": "N",
+                "AUTHOR_ID": "2491",
+                "CHAT_ID": "16501",
+                "CHAT_AUTHOR_ID": "2491",
+                "COMMAND_CONTEXT": "TEXTAREA",
+                "MESSAGE_ORIGINAL": "[USER=2621]Clara - IA Onboarding[/USER] qual a previsão de entrega da máquina do contrato 12500193?",
+                "TO_USER_ID": "2621",
+                "MESSAGE_ID": "815347",
+                "CHAT_TYPE": "C",
+                "LANGUAGE": "br"
+              },
+              "USER": {
+                "ID": "2491",
+                "NAME": "João Lucas Pontes Freitas",
+                "FIRST_NAME": "João Lucas",
+                "LAST_NAME": "Pontes Freitas",
+                "WORK_POSITION": "",
+                "GENDER": "M",
+                "IS_BOT": "N",
+                "IS_CONNECTOR": "N",
+                "IS_NETWORK": "N",
+                "IS_EXTRANET": "N"
+              }
+            },
+            "ts": "1742416186",
+            "auth": {
+              "domain": "blips.bitrix24.com.br",
+              "client_endpoint": "https://blips.bitrix24.com.br/rest/",
+              "server_endpoint": "https://oauth.bitrix.info/rest/",
+              "member_id": "cc1dbe6157e85937651412909fb01150",
+              "application_token": "f1gggum2s6c16u0zc6eoe760b4lupycp"
+            },
+            "fileId": "",
+            "fileType": "",
+            "fileDownloadUrl": ""
+          }
+        }
+      ]
+    },
+    "versionId": "4186cc93-6403-445e-913d-5ef15b3d62a2",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
