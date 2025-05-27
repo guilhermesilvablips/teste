@@ -1,0 +1,192 @@
+{
+  "data": {
+    "createdAt": "2024-05-16T01:18:12.450Z",
+    "updatedAt": "2025-05-08T11:46:26.283Z",
+    "id": "LMPk2IwulK3VCzwr",
+    "name": "Suporte Neurônio - func - buscar_financeiro_cliente",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT \n  tbi.NUFIN,\n  PARSE_DATETIME('%d%m%Y %H:%M:%S', tbi.DTVENC) AS DTVENC,\n  tbi.VALOR,\n  IF(PARSE_DATETIME('%d%m%Y %H:%M:%S', tbi.DTVENC) < CURRENT_DATETIME(), 'VENCIDO', 'NAO VENCIDO') AS ESTA_VENCIDO,\n  'SUPRIMENTO' AS tipo,\n  false as eh_equipamento,\n  true as eh_suprimento,\nFROM `SANKHYA.TitulosVencidosVendaSuprimentos` tbi\nWHERE CGC_CPF = '{{ $json.cnpj\n    .replaceAll(/\\D/g, \"\") }}'\nORDER BY PARSE_DATETIME('%d%m%Y %H:%M:%S', tbi.DTVENC)\n",
+          "options": {}
+        },
+        "id": "2680aecb-9c92-4d6e-9fbd-c0963c8b3b1b",
+        "name": "BQ - Títulos de Suprimento",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2,
+        "position": [
+          180,
+          -340
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT \n  tbi.NUFIN,\n  tbi.NUMCONTRATO AS CONTRATO,\n  PARSE_DATETIME('%d%m%Y %H:%M:%S', tbi.DTVENC) AS DTVENC,\n  tbi.VLRDESDOB AS VALOR,\n  CASE \n    WHEN tbi.DHBAIXA IS NOT NULL THEN 'PAGO'\n    WHEN PARSE_DATETIME('%d%m%Y %H:%M:%S', tbi.DTVENC) < CURRENT_DATETIME() THEN 'VENCIDO'\n    ELSE 'NAO VENCIDO'\n  END AS ESTA_VENCIDO,\n  tbi.DESCRNAT AS TIPO,\n  true as eh_equipamento,\n  false as eh_suprimento\nFROM `SANKHYA.TitulosBlipsIdeal` tbi\nWHERE CGC_CPF = '{{ $json.cnpj\n    .replaceAll(/\\D/g, \"\") }}'\nORDER BY PARSE_DATETIME('%d%m%Y %H:%M:%S', tbi.DTVENC)\n",
+          "options": {}
+        },
+        "id": "86952348-a0d9-4ba7-933c-6eba0c307c77",
+        "name": "BQ - Títulos de Parcelas",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2,
+        "position": [
+          180,
+          -520
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "id": "2b47d217-bcde-43ec-9dfa-67cb298d6136",
+        "name": "Merge",
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 2.1,
+        "position": [
+          440,
+          -460
+        ]
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "response",
+          "options": {}
+        },
+        "id": "7259d365-f0f6-421d-937d-cd18647c38e7",
+        "name": "Aggregate",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          660,
+          -460
+        ]
+      },
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "cnpj"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -80,
+          -440
+        ],
+        "id": "8dbbfcfb-fbbf-4be0-a23b-a6270a86b7f5",
+        "name": "Execute"
+      }
+    ],
+    "connections": {
+      "BQ - Títulos de Suprimento": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "BQ - Títulos de Parcelas": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          [
+            {
+              "node": "Aggregate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute": {
+        "main": [
+          [
+            {
+              "node": "BQ - Títulos de Parcelas",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "BQ - Títulos de Suprimento",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "saveManualExecutions": true,
+      "callerPolicy": "workflowsFromSameOwner",
+      "executionTimeout": 60
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Execute": [
+        {
+          "json": {
+            "cnpj": "53597821000113"
+          }
+        }
+      ]
+    },
+    "versionId": "8a9bf8e9-a01e-4f73-9073-6152ce25f8a9",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-05-08T01:53:37.021Z",
+        "updatedAt": "2024-05-08T01:53:37.021Z",
+        "id": "HJrJfNUAaBoLOV2q",
+        "name": "Suporte Neuronio"
+      }
+    ]
+  }
+}
