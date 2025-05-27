@@ -1,0 +1,917 @@
+{
+  "data": {
+    "createdAt": "2025-05-05T20:42:33.522Z",
+    "updatedAt": "2025-05-05T20:42:51.972Z",
+    "id": "XBJCZHZNkrUvxJJU",
+    "name": "Backend Credit API",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "path": "331f9771-783a-4ec8-bf9e-2e0f5ef88d05",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          720,
+          340
+        ],
+        "id": "a0549e78-c88b-4c12-b1a4-7fd735ffc16e",
+        "name": "Webhook",
+        "webhookId": "331f9771-783a-4ec8-bf9e-2e0f5ef88d05",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "useJson": true,
+          "claimsJson": "={\n  \"iss\": \"blips-bigdata@appspot.gserviceaccount.com\",\n  \"scope\": \"https://www.googleapis.com/auth/cloud-platform\",\n  \"aud\": \"https://oauth2.googleapis.com/token\",\n  \"iat\": {{Math.floor(new Date().getTime() / 1000)}},\n  \"exp\": {{Math.floor(new Date().getTime() / 1000) + 3600}} \n}",
+          "options": {}
+        },
+        "id": "8c25ddb9-53e4-44ea-b5d6-050fbc2c6e74",
+        "name": "JWT GOOGLE",
+        "type": "n8n-nodes-base.jwt",
+        "typeVersion": 1,
+        "position": [
+          240,
+          20
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "jwtAuth": {
+            "id": "qucHFpcTrmVLRJYC",
+            "name": "JWT Auth GOOGLE"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://oauth2.googleapis.com/token",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "googleOAuth2Api",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "grant_type",
+                "value": "urn:ietf:params:oauth:grant-type:jwt-bearer"
+              },
+              {
+                "name": "assertion",
+                "value": "={{ $json.token }}"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "4dc4d59e-29a8-4565-a0b5-3f5ea380e924",
+        "name": "Token",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          480,
+          20
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "googleOAuth2Api": {
+            "id": "AUpV7k8Hj4mJXlUi",
+            "name": "Google account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('Urgencia').item.json.analise_insta }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "string",
+                        "operation": "exists",
+                        "singleValue": true
+                      },
+                      "id": "9ff45e4e-d0b4-438a-85ff-cb266b68ddba"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "put_analise_insta"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "0db69fa1-10e8-4a3f-b059-dca3b4346b0a",
+                      "leftValue": "={{ $('Urgencia').item.json.urgencia }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "string",
+                        "operation": "exists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "post_urgencia"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "58afcb78-013e-48ba-a85a-07d415578633",
+                      "leftValue": "={{ $('Urgencia').item.json.repescagem }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "string",
+                        "operation": "exists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "post_repescagem"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "48e53138-370a-46c0-9225-1e50bbb34201",
+                      "leftValue": "={{ $('Urgencia').item.json.comite }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "string",
+                        "operation": "exists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "post_comite"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          720,
+          0
+        ],
+        "id": "6fb635d8-2d8e-46fb-b894-f05488e5db7c",
+        "name": "Qual Endpoint ?"
+      },
+      {
+        "parameters": {
+          "method": "PUT",
+          "url": "=https://blips-credit-backend-dev-685867804490.us-central1.run.app/api/v1/peb_records/n8n/{{$('Webhook').first().json.body.telefone}}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "={{ \"Bearer \" + $json.access_token}}"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"p1\": \"{{ $('Webhook').first().json.body.p1 }}\",\n  \"p2\": \"{{ $('Webhook').first().json.body.p2 }}\",\n  \"p3\": \"{{ $('Webhook').first().json.body.p3 }}\",\n  \"p4\": \"{{ $('Webhook').first().json.body.p4 }}\",\n  \"p5\": \"{{ $('Webhook').first().json.body.p5 }}\",\n  \"p6\": \"{{ $('Webhook').first().json.body.p6 }}\",\n  \"p7\": \"{{ $('Webhook').first().json.body.p7 }}\",\n  \"p8\": \"{{ $('Webhook').first().json.body.p8 }}\",\n  \"p9\": \"{{ $('Webhook').first().json.body.p9 }}\",\n  \"p10\": \"{{ $('Webhook').first().json.body.p10 }}\",\n  \"analise_insta\": \"{{ $('Webhook').first().json.body.analise_insta.replace(/[\\n\\r]+/g, ' ').replace(/[^\\w\\sÀ-ÿ.,!?@%/-]/g, '').replace(/\\s+/g, ' ').trim() }}\"\n}",
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "d949f75d-94ef-42fd-b6db-a47a573e9759",
+        "name": "Put PEB Insta",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1020,
+          -260
+        ],
+        "retryOnFail": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://blips-credit-backend-dev-685867804490.us-central1.run.app/api/v1/urgencia_records/",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "={{ \"Bearer \" + $json.access_token}}"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"data_envio\": \"{{ DateTime.fromFormat($('Urgencia').first().json.data_envio, 'dd/MM/yyyy HH:mm:ss').toFormat(\"yyyy-MM-dd HH:mm:ss\") }}\",\n  \"email\": \"{{ $('Urgencia').first().json.email }}\",\n  \"tipo\": \"{{ $('Urgencia').first().json.tipo }}\",\n  \"cnpj\": \"{{ $('Urgencia').first().json.cnpj }}\",\n  \"urgencia\": \"{{ $('Urgencia').first().json.urgencia }}\"\n}",
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "eb8b34b0-a7a8-41a4-b880-92cdbccf7a80",
+        "name": "Post Urgencia",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1020,
+          -80
+        ],
+        "retryOnFail": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://blips-credit-backend-dev-685867804490.us-central1.run.app/api/v1/repescagem_comercial/",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "={{ 'Bearer ' + $json.access_token}}"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"cnpj_sem_pontuacao\": \"{{ $('Webhook').first().json.body.cnpj_sem_pontuacao}}\",\n  \"cpf_sem_pontuacao\": \"{{ $('Webhook').first().json.body.cpf_sem_pontuacao }}\",\n  \"razao_social\": \"{{ $('Webhook').first().json.body.razao_social }}\",\n  \"valor_do_equipamento\": {{ $('Webhook').first().json.body.valor_equipamento }},\n  \"segmento\": \"{{ $('Webhook').first().json.body.segmento }}\",\n  \"plano_escolhido\": \"{{ $('Webhook').first().json.body.plano_escolhido }}\",\n  \"data_registro\": \"{{ DateTime.fromFormat($('Webhook').first().json.body.data_registro, 'dd/MM/yyyy HH:mm:ss').toFormat(\"yyyy-MM-dd HH:mm:ss\") \n}}\"\n}",
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "ca70054b-d9ea-433f-acc2-69b7d8bcdc24",
+        "name": "Post Repescagem",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1020,
+          120
+        ],
+        "retryOnFail": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://blips-credit-backend-dev-685867804490.us-central1.run.app/api/v1/comite_credito/",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "={{ \"Bearer \" + $json.access_token}}"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"razao_social\": \"{{ $('Webhook').first().json.body.razao_social }}\",\n  \"cnpj\": \"{{ $('Webhook').first().json.body.cnpj}}\",\n  \"comercial\": \"{{ $('Webhook').first().json.body.comercial }}\",\n  \"valor_proposta\": \"{{ $('Webhook').first().json.body.valor_proposta }}\",\n  \"condicoes_proposta\": \"{{ $('Webhook').first().json.body.condicoes_proposta }}\",\n  \"data_contestacao\": \"{{ DateTime.fromFormat($('Webhook').first().json.body.data_contestacao, 'dd/MM/yyyy HH:mm:ss').toFormat(\"yyyy-MM-dd HH:mm:ss\") \n}}\",\n  \"tratativa\": \"{{ $('Webhook').first().json.body.tratativa }}\",\n  \"contestacao\": \"{{ $('Webhook').first().json.body.contestacao }}\"\n}",
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "e97380bf-b3c0-4cd3-9362-0c0fe477610e",
+        "name": "Post Comite de Crédito",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1020,
+          340
+        ],
+        "retryOnFail": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "pollTimes": {
+            "item": [
+              {
+                "hour": 12
+              }
+            ]
+          },
+          "documentId": {
+            "__rl": true,
+            "value": "1AdMvpmKzWZWQEmhSTCpIJlX-6_9VpobA0PoDiujliyY",
+            "mode": "list",
+            "cachedResultName": "Solicitação de urgência",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1AdMvpmKzWZWQEmhSTCpIJlX-6_9VpobA0PoDiujliyY/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 1264582000,
+            "mode": "list",
+            "cachedResultName": "Respostas ao formulário 1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1AdMvpmKzWZWQEmhSTCpIJlX-6_9VpobA0PoDiujliyY/edit#gid=1264582000"
+          },
+          "event": "rowAdded",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheetsTrigger",
+        "typeVersion": 1,
+        "position": [
+          -540,
+          -200
+        ],
+        "id": "76a197f1-c1cb-488b-8d4f-ea27caf41e39",
+        "name": "Solicitação Urgência",
+        "credentials": {
+          "googleSheetsTriggerOAuth2Api": {
+            "id": "zpSKCSoIVVsz5LPD",
+            "name": "Google Sheets Trigger account"
+          }
+        },
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "dc8727ac-a0d8-4b68-924e-8883f8c0aa7c",
+                "name": "data_envio",
+                "value": "={{ $json[\"Carimbo de data/hora\"] }}",
+                "type": "string"
+              },
+              {
+                "id": "52844d0d-8c3f-40ae-a978-1978f888a07c",
+                "name": "email",
+                "value": "={{ $json[\"Endereço de e-mail\"] }}",
+                "type": "string"
+              },
+              {
+                "id": "93775a79-8134-45c1-a2f9-d5958c9c4b20",
+                "name": "tipo",
+                "value": "={{ $json[\"Locação ou financiamento?\"] }}",
+                "type": "string"
+              },
+              {
+                "id": "dc71174e-ba44-4c8a-96a3-f1f1c6bcd78b",
+                "name": "cnpj",
+                "value": "={{ $json[\"CNPJ do cliente\"] }}",
+                "type": "string"
+              },
+              {
+                "id": "dfe0b10e-ffb7-40e1-8849-dd50fd00cb11",
+                "name": "urgencia",
+                "value": "={{ $json[\"Qual a urgência?\"] }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -160,
+          -200
+        ],
+        "id": "ac74610f-dfa5-4b23-a393-eb15c593d115",
+        "name": "Urgencia"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{$('Webhook').first().json.body.analise_insta}}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "string",
+                        "operation": "exists",
+                        "singleValue": true
+                      },
+                      "id": "9ff45e4e-d0b4-438a-85ff-cb266b68ddba"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "put_analise_insta"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "0db69fa1-10e8-4a3f-b059-dca3b4346b0a",
+                      "leftValue": "={{ $('Urgencia').item.json.urgencia }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "string",
+                        "operation": "exists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "post_urgencia"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "58afcb78-013e-48ba-a85a-07d415578633",
+                      "leftValue": "={{$('Webhook').first().json.body.cnpj_sem_pontuacao}}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "string",
+                        "operation": "exists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "post_repescagem"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "48e53138-370a-46c0-9225-1e50bbb34201",
+                      "leftValue": "={{$('Webhook').first().json.body.contestacao}}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "string",
+                        "operation": "exists",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "post_comite"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          740,
+          -320
+        ],
+        "id": "2e022f62-8bca-4347-b355-7172605f378c",
+        "name": "Qual Endpoint ?1",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "pollTimes": {
+            "item": [
+              {
+                "hour": 12
+              }
+            ]
+          },
+          "documentId": {
+            "__rl": true,
+            "value": "1nOhdWTuZY95dcZESSJnm51rImgm2ekdjJOpZZ4l_pQM",
+            "mode": "list",
+            "cachedResultName": "Operações de Repescagem",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1nOhdWTuZY95dcZESSJnm51rImgm2ekdjJOpZZ4l_pQM/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 1632472850,
+            "mode": "list",
+            "cachedResultName": "BASE2.0",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1nOhdWTuZY95dcZESSJnm51rImgm2ekdjJOpZZ4l_pQM/edit#gid=1632472850"
+          },
+          "event": "rowAdded",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheetsTrigger",
+        "typeVersion": 1,
+        "position": [
+          -540,
+          20
+        ],
+        "id": "02d93f99-3c91-4fae-aa13-f3dd010daa70",
+        "name": "Solicitação Repescagem",
+        "credentials": {
+          "googleSheetsTriggerOAuth2Api": {
+            "id": "zpSKCSoIVVsz5LPD",
+            "name": "Google Sheets Trigger account"
+          }
+        },
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "dc8727ac-a0d8-4b68-924e-8883f8c0aa7c",
+                "name": "data_envio",
+                "value": "={{ $json[\"Carimbo de data/hora\"] }}",
+                "type": "string"
+              },
+              {
+                "id": "52844d0d-8c3f-40ae-a978-1978f888a07c",
+                "name": "email",
+                "value": "={{ $json[\"Endereço de e-mail\"] }}",
+                "type": "string"
+              },
+              {
+                "id": "93775a79-8134-45c1-a2f9-d5958c9c4b20",
+                "name": "tipo",
+                "value": "={{ $json[\"Locação ou financiamento?\"] }}",
+                "type": "string"
+              },
+              {
+                "id": "dc71174e-ba44-4c8a-96a3-f1f1c6bcd78b",
+                "name": "cnpj",
+                "value": "={{ $json[\"CNPJ do cliente\"] }}",
+                "type": "string"
+              },
+              {
+                "id": "dfe0b10e-ffb7-40e1-8849-dd50fd00cb11",
+                "name": "urgencia",
+                "value": "={{ $json[\"Qual a urgência?\"] }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -160,
+          20
+        ],
+        "id": "2bbe5114-b8bf-4248-812e-39879139489d",
+        "name": "Repescagem"
+      },
+      {
+        "parameters": {
+          "pollTimes": {
+            "item": [
+              {
+                "hour": 12
+              }
+            ]
+          },
+          "documentId": {
+            "__rl": true,
+            "value": "11GnD_-NBUandVezlg_iQBPwzzOW8oDS8ZEv9_GgaZrw",
+            "mode": "list",
+            "cachedResultName": "Comitê de Crédito - Estética | Fitness",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11GnD_-NBUandVezlg_iQBPwzzOW8oDS8ZEv9_GgaZrw/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 1284613350,
+            "mode": "list",
+            "cachedResultName": "Estética",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11GnD_-NBUandVezlg_iQBPwzzOW8oDS8ZEv9_GgaZrw/edit#gid=1284613350"
+          },
+          "event": "rowAdded",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheetsTrigger",
+        "typeVersion": 1,
+        "position": [
+          -540,
+          240
+        ],
+        "id": "353e3a80-678f-47a1-9025-bdd2c5a09081",
+        "name": "Solicitação Comite",
+        "credentials": {
+          "googleSheetsTriggerOAuth2Api": {
+            "id": "zpSKCSoIVVsz5LPD",
+            "name": "Google Sheets Trigger account"
+          }
+        },
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "dc8727ac-a0d8-4b68-924e-8883f8c0aa7c",
+                "name": "data_envio",
+                "value": "={{ $json[\"Carimbo de data/hora\"] }}",
+                "type": "string"
+              },
+              {
+                "id": "52844d0d-8c3f-40ae-a978-1978f888a07c",
+                "name": "email",
+                "value": "={{ $json[\"Endereço de e-mail\"] }}",
+                "type": "string"
+              },
+              {
+                "id": "93775a79-8134-45c1-a2f9-d5958c9c4b20",
+                "name": "tipo",
+                "value": "={{ $json[\"Locação ou financiamento?\"] }}",
+                "type": "string"
+              },
+              {
+                "id": "dc71174e-ba44-4c8a-96a3-f1f1c6bcd78b",
+                "name": "cnpj",
+                "value": "={{ $json[\"CNPJ do cliente\"] }}",
+                "type": "string"
+              },
+              {
+                "id": "dfe0b10e-ffb7-40e1-8849-dd50fd00cb11",
+                "name": "urgencia",
+                "value": "={{ $json[\"Qual a urgência?\"] }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -160,
+          240
+        ],
+        "id": "027d26d8-9f98-4d15-9a10-37f38ab9f715",
+        "name": "Comite"
+      }
+    ],
+    "connections": {
+      "JWT GOOGLE": {
+        "main": [
+          [
+            {
+              "node": "Token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          []
+        ]
+      },
+      "Token": {
+        "main": [
+          [
+            {
+              "node": "Qual Endpoint ?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Qual Endpoint ?": {
+        "main": [
+          [
+            {
+              "node": "Put PEB Insta",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Post Urgencia",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Post Repescagem",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Post Comite de Crédito",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Solicitação Urgência": {
+        "main": [
+          [
+            {
+              "node": "Urgencia",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Urgencia": {
+        "main": [
+          [
+            {
+              "node": "JWT GOOGLE",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Solicitação Repescagem": {
+        "main": [
+          [
+            {
+              "node": "Repescagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Repescagem": {
+        "main": [
+          []
+        ]
+      },
+      "Solicitação Comite": {
+        "main": [
+          [
+            {
+              "node": "Comite",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "saveDataErrorExecution": "none",
+      "callerPolicy": "workflowsFromSameOwner"
+    },
+    "staticData": {
+      "node:Solicitação Urgência": {
+        "documentId": "1AdMvpmKzWZWQEmhSTCpIJlX-6_9VpobA0PoDiujliyY",
+        "sheetId": 1264582000,
+        "lastIndexChecked": 4074
+      },
+      "node:Repescagem": {
+        "documentId": "1nOhdWTuZY95dcZESSJnm51rImgm2ekdjJOpZZ4l_pQM",
+        "sheetId": 0,
+        "lastIndexChecked": 116
+      },
+      "node:Solicitação Repescagem": {
+        "documentId": "1nOhdWTuZY95dcZESSJnm51rImgm2ekdjJOpZZ4l_pQM",
+        "sheetId": 1632472850,
+        "lastIndexChecked": 10342
+      },
+      "node:Solicitação Repescagem1": {
+        "documentId": "1nOhdWTuZY95dcZESSJnm51rImgm2ekdjJOpZZ4l_pQM",
+        "sheetId": 0,
+        "lastIndexChecked": 116
+      },
+      "node:Solicitação Comite": {
+        "documentId": "11GnD_-NBUandVezlg_iQBPwzzOW8oDS8ZEv9_GgaZrw",
+        "sheetId": 1284613350
+      }
+    },
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Webhook": [
+        {
+          "json": {
+            "headers": {
+              "x-forwarded-for": "3.209.52.59",
+              "x-forwarded-proto": "https",
+              "x-forwarded-port": "443",
+              "host": "motor-credito.blips-labs.com",
+              "x-amzn-trace-id": "Root=1-67f81919-65d42cb12f82d20e49221557",
+              "content-length": "1198",
+              "accept": "application/json,text/html,application/xhtml+xml,application/xml,text/*;q=0.9, image/*;q=0.8, */*;q=0.7",
+              "content-type": "application/json",
+              "user-agent": "axios/1.7.4",
+              "accept-encoding": "gzip, compress, deflate, br"
+            },
+            "params": {},
+            "query": {},
+            "body": {
+              "data_envio": "23/02/2024 11:34:41",
+              "email": "karina@blips.com.br",
+              "tipo": "Financiamento",
+              "cnpj": "41545041000140",
+              "urgencia": "Cliente está aquecido querendo fechar locação"
+            },
+            "webhookUrl": "https://motor-credito.blips-labs.com/webhook/b6854424-27d6-41df-950c-9160ba295296",
+            "executionMode": "production"
+          }
+        }
+      ]
+    },
+    "versionId": "0b170d4b-a165-4804-86cb-c29565a904fa",
+    "triggerCount": 3,
+    "tags": [
+      {
+        "createdAt": "2024-07-31T16:22:41.803Z",
+        "updatedAt": "2024-07-31T16:22:41.803Z",
+        "id": "mmaXbyiWhptUXaTd",
+        "name": "New Motor"
+      }
+    ]
+  }
+}
