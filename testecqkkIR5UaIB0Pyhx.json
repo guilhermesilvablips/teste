@@ -1,0 +1,690 @@
+{
+  "data": {
+    "createdAt": "2024-11-25T19:55:50.220Z",
+    "updatedAt": "2024-11-26T19:23:41.328Z",
+    "id": "cqkkIR5UaIB0Pyhx",
+    "name": "Transcrição de videos",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "operation": "formatDate",
+          "date": "={{ $now }}",
+          "format": "custom",
+          "customFormat": "dd-MM-yyyy/H:mm",
+          "options": {}
+        },
+        "id": "46b3266e-bed3-4ad8-943d-332fcc02cf80",
+        "name": "Format date",
+        "type": "n8n-nodes-base.dateTime",
+        "typeVersion": 2,
+        "position": [
+          -1480,
+          1220
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "6425a006-057f-4dfc-9f03-681fa65a51d3",
+        "name": "When clicking ‘Test workflow’",
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -1660,
+          1220
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7d7698ea-b4d3-4182-8fde-d87d62c9744d",
+                "name": "name",
+                "value": "={{ $('Limit').item.json.name }}",
+                "type": "array"
+              },
+              {
+                "id": "de3780f8-1264-4ea0-b984-64ac7ff0a26f",
+                "name": "text",
+                "value": "={{ $('Transcreve o áudio').item.json}}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "0777231a-c285-4f5a-b1ca-94d93e94f47b",
+        "name": "Set Message from Audio",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          1180,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/audio/transcriptions",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendBody": true,
+          "contentType": "multipart-form-data",
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "model",
+                "value": "whisper-1"
+              },
+              {
+                "parameterType": "formBinaryData",
+                "name": "file",
+                "inputDataFieldName": "data"
+              },
+              {
+                "name": "language",
+                "value": "pt"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "578b3e60-81de-483c-9abc-094b168bce5f",
+        "name": "Transcreve o áudio",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          900,
+          1300
+        ],
+        "retryOnFail": true,
+        "alwaysOutputData": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "tuJNruAgnnM96by3",
+            "name": "Open AI - Suporte Técnico"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "name",
+          "options": {}
+        },
+        "id": "903d6973-fd3c-4d2d-bb6a-e592aac7e3c7",
+        "name": "ListaNome",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          -80,
+          40
+        ]
+      },
+      {
+        "parameters": {
+          "url": "={{ $json.download_url}}",
+          "options": {}
+        },
+        "id": "9f8aa663-162d-455a-84bc-0d4a7a4a4394",
+        "name": "Baixar Áudio1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          160,
+          1320
+        ],
+        "executeOnce": false,
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "maxItems": 20
+        },
+        "id": "1a7912b4-d789-45b1-879a-16b7388d3022",
+        "name": "Limit",
+        "type": "n8n-nodes-base.limit",
+        "typeVersion": 1,
+        "position": [
+          -40,
+          1320
+        ]
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "5ad0e069-c96a-47e7-8370-a9e1c13b9ecd",
+        "name": "Loop Over Items",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          640,
+          1300
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.name }}",
+            "mode": "name"
+          },
+          "filePath": "={{ $('PARAM_GITHUB').item.json.transcricoes}}{{$json.name.replaceAll('.mp3', '.txt')}}",
+          "fileContent": "=",
+          "commitMessage": "=  Criado em {{ $('Format date').first().json.formattedDate }}"
+        },
+        "id": "846efea1-6a0d-4231-9273-b2ba8db7a759",
+        "name": "GitHub",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          920,
+          1120
+        ],
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7d7698ea-b4d3-4182-8fde-d87d62c9744d",
+                "name": "name",
+                "value": "={{ $('Limit').item.json.name }}",
+                "type": "string"
+              },
+              {
+                "id": "de3780f8-1264-4ea0-b984-64ac7ff0a26f",
+                "name": "text",
+                "value": "={{ $('Transcreve o áudio').item.json.text}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "5739aeef-b7bd-43d7-a6f5-a6bce0a2f4f1",
+        "name": "Set Message from Audio1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          1160,
+          1300
+        ]
+      },
+      {
+        "parameters": {
+          "keepOnlySet": true,
+          "values": {
+            "string": [
+              {
+                "name": "name",
+                "value": "assistant-tecnico-juarez"
+              },
+              {
+                "name": "commitDate",
+                "value": "={{ $json.formattedDate }}"
+              },
+              {
+                "name": "owner",
+                "value": "blips-ai"
+              },
+              {
+                "name": "path",
+                "value": "bases-conhecimento/audios/IDEAL/Tutoriais/"
+              },
+              {
+                "name": "transcricoes",
+                "value": "bases-conhecimento/transcricoes/IDEAL/Tutoriais/"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "c1fb1fd6-7c0c-4807-ae0c-6ce63c3af6b8",
+        "name": "PARAM_GITHUB",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 2,
+        "position": [
+          -1300,
+          1220
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7d7698ea-b4d3-4182-8fde-d87d62c9744d",
+                "name": "name",
+                "value": "={{ $('ListaGit_Audios').item.json.name }}",
+                "type": "string"
+              },
+              {
+                "id": "a9ba3b80-502b-46b9-b5e2-b5879990b03a",
+                "name": "download_url",
+                "value": "={{ $('ListaGit_Audios').item.json.download_url }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "8e70ecdf-c99c-4363-8a05-7fee5cd812ab",
+        "name": "Set Message from Audio2",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          -220,
+          1120
+        ]
+      },
+      {
+        "parameters": {
+          "fieldsToAggregate": {
+            "fieldToAggregate": [
+              {
+                "fieldToAggregate": "name"
+              },
+              {
+                "fieldToAggregate": "download_url"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "e0032c2c-c92b-43c7-80a3-6c562ed6d6d7",
+        "name": "ListaAudios",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          -1000,
+          360
+        ]
+      },
+      {
+        "parameters": {
+          "fieldsToAggregate": {
+            "fieldToAggregate": [
+              {
+                "fieldToAggregate": "name"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "0e14b99a-805c-451c-85ed-0bbb20d535ce",
+        "name": "ListaTranscricao",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          -960,
+          1220
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "let intersection  = $('ListaAudios').item.json.name.filter(x => $('ListaTranscricao').item.json.name.includes(x));\n\n  return intersection;\n\n{{ $('ListaAudios').item.json.name }}"
+        },
+        "id": "cdc7f051-be2e-4ef1-ae71-0e3ea9fb9ade",
+        "name": "Code",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -780,
+          360
+        ]
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "name",
+          "options": {}
+        },
+        "id": "a6c20a91-8439-4a3a-868a-4be2db4e4ddc",
+        "name": "Split Out",
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          -640,
+          1220
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "list",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.name }}",
+            "mode": "name"
+          },
+          "filePath": "={{ $('PARAM_GITHUB').item.json.transcricoes }}"
+        },
+        "id": "4f818330-1dba-477e-9c8b-4ee02730db33",
+        "name": "ListaGit_Transcricoes",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          -1120,
+          1220
+        ],
+        "alwaysOutputData": true,
+        "executeOnce": false,
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "resource": "file",
+          "operation": "list",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('PARAM_GITHUB').item.json.name }}",
+            "mode": "name"
+          },
+          "filePath": "={{ $('PARAM_GITHUB').item.json.path }}"
+        },
+        "id": "6273ab79-8e86-478b-ab4f-78f528090384",
+        "name": "ListaGit_Audios",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          -800,
+          1220
+        ],
+        "alwaysOutputData": true,
+        "executeOnce": false,
+        "credentials": {
+          "githubOAuth2Api": {
+            "id": "t73yiC13xLlYtLRb",
+            "name": "GitHub blips-ai"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "59102616-5dda-4c32-b0e2-5e5ec3d5e9e0",
+                "leftValue": "={{ $('ListaTranscricao').item.json.name }}",
+                "rightValue": "={{ $('Split Out').item.json.name.replace('mp3', 'txt') }}",
+                "operator": {
+                  "type": "array",
+                  "operation": "contains",
+                  "rightType": "any"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "8bb27ad4-504a-43f5-897c-92228ec71b9c",
+        "name": "AudioTranscrito?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          -460,
+          1220
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7d7698ea-b4d3-4182-8fde-d87d62c9744d",
+                "name": "name",
+                "value": "={{ $('ListaGit_Audios').item.json.name }}",
+                "type": "string"
+              },
+              {
+                "id": "a9ba3b80-502b-46b9-b5e2-b5879990b03a",
+                "name": "download_url",
+                "value": "={{ $('ListaGit_Audios').item.json.download_url }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "2c637ca1-9c77-4ab7-ad86-3c2304e1c17c",
+        "name": "paraSubir",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          -220,
+          1320
+        ]
+      }
+    ],
+    "connections": {
+      "Format date": {
+        "main": [
+          [
+            {
+              "node": "PARAM_GITHUB",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "Format date",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Transcreve o áudio": {
+        "main": [
+          [
+            {
+              "node": "Set Message from Audio1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Baixar Áudio1": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Limit": {
+        "main": [
+          [
+            {
+              "node": "Baixar Áudio1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [
+            {
+              "node": "GitHub",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Transcreve o áudio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Set Message from Audio1": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "PARAM_GITHUB": {
+        "main": [
+          [
+            {
+              "node": "ListaGit_Transcricoes",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "ListaTranscricao": {
+        "main": [
+          [
+            {
+              "node": "ListaGit_Audios",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out": {
+        "main": [
+          [
+            {
+              "node": "AudioTranscrito?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "ListaGit_Transcricoes": {
+        "main": [
+          [
+            {
+              "node": "ListaTranscricao",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "ListaGit_Audios": {
+        "main": [
+          [
+            {
+              "node": "Split Out",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AudioTranscrito?": {
+        "main": [
+          [
+            {
+              "node": "Set Message from Audio2",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "paraSubir",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "paraSubir": {
+        "main": [
+          [
+            {
+              "node": "Limit",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "America/Sao_Paulo",
+      "saveManualExecutions": true,
+      "callerPolicy": "workflowsFromSameOwner"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "17719237-f20c-4107-a14b-d9f288ec7f14",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-08-08T16:17:37.968Z",
+        "updatedAt": "2024-08-08T16:17:37.968Z",
+        "id": "tv6Ov4En3lT5oHhf",
+        "name": "pedro"
+      }
+    ]
+  }
+}
