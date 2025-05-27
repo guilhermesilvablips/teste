@@ -1,0 +1,1058 @@
+{
+  "data": {
+    "createdAt": "2025-05-02T13:49:56.907Z",
+    "updatedAt": "2025-05-26T15:31:10.961Z",
+    "id": "QDJmYsOTGPYo1Jlk",
+    "name": "Assistente Cobrança - func - gerar_pagamento",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips-backend-prod-yc62attz3a-uc.a.run.app/v2/user/login/624b373210c6fc7fcb4b7e0b",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\n    \"email\": \"mkt@blips.com.br\",\n    \"password\": \"0H8tZkYpoE\"\n}",
+          "options": {}
+        },
+        "id": "e22c5988-635b-47ba-a42c-b7f1ffd58af2",
+        "name": "Token Plataforma",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -1760,
+          180
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "maxTries": 5
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "74fab5d0-6935-494f-a689-addf7dcac9c1",
+                "name": "installmentsBLIPS",
+                "value": "={{ $('Cobrança Atualizada').item.json.BLIPS.installments }}",
+                "type": "array"
+              },
+              {
+                "id": "3404e62d-20c2-4aae-87b4-66f1ff11eed5",
+                "name": "installmentsIDEAL",
+                "value": "={{ $('Cobrança Atualizada').item.json.IDEAL.installments }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "eaf206c4-8098-4999-a1a2-c0d98d0c529a",
+        "name": "Separa instalações",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1260,
+          160
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "2ddf5971-80cd-4d1d-b8ff-b2e6ecfeaa44",
+                "leftValue": "={{ $json.pixCOde }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "b7c55ab7-8f25-4220-8552-8128979aead9",
+        "name": "Já tem pix?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          420,
+          280
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7e040dc3-932d-41ed-8464-e5748b8d5d74",
+                "name": "financial_number",
+                "value": "={{ $json.financial_number }}",
+                "type": "number"
+              },
+              {
+                "id": "967a299f-7c36-4e2d-ae55-5ec7c5a4088b",
+                "name": "cnpj",
+                "value": "={{ $json.cnpj }}",
+                "type": "string"
+              },
+              {
+                "id": "937ebc4b-441b-412a-a91a-59f564cd741e",
+                "name": "teste",
+                "value": "={{1==1}}",
+                "type": "boolean"
+              },
+              {
+                "id": "cb6aef81-e582-4590-bbf1-0055bed493e0",
+                "name": "method",
+                "value": "={{ $json.method || null }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "1625641a-a2a2-4900-b3bd-a4dc0912b2e8",
+        "name": "Parâmetros Chamada",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.3,
+        "position": [
+          -2200,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "be850939-eb7c-4c64-82f1-d195be745ed2",
+                "name": "link_pagamento_pix",
+                "value": "=https://pagamento.blips.com.br/v1/payment/{{$('Gera key da página').item.json.s3_key}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "a65c7a7c-ccb0-483f-9d9c-a6f282441165",
+        "name": "Link do pix",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1480,
+          120
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "bbc82606-00be-4a02-b7f7-565eb3256d67",
+                "name": "contractNumber",
+                "value": "={{ $json.contractNumber }}",
+                "type": "number"
+              },
+              {
+                "id": "99be65cf-3c9f-4823-beb5-ac131710a1ff",
+                "name": "financialNumber",
+                "value": "={{ $json.financialNumber }}",
+                "type": "number"
+              },
+              {
+                "id": "ac301428-6619-446a-8329-6e47ed5d284b",
+                "name": "installmentValue",
+                "value": "={{ $json.installmentValue }}",
+                "type": "number"
+              },
+              {
+                "id": "bcd2a287-36f1-4a6c-912e-f9e177cde621",
+                "name": "organizationSlug",
+                "value": "={{ $json.organizationSlug }}",
+                "type": "string"
+              },
+              {
+                "id": "4f8cf3c3-f4fb-4fc8-9f0c-cf1e2ef077d8",
+                "name": "pixCOde",
+                "value": "={{ $json.pixCode }}",
+                "type": "string"
+              },
+              {
+                "id": "04c46482-afe6-47ab-8b54-86b535ab9513",
+                "name": "data",
+                "value": "={{ $json.data }}",
+                "type": "string"
+              },
+              {
+                "id": "ab272def-ba48-4896-873f-84d711e653f5",
+                "name": "nome",
+                "value": "={{ $json.nome }}",
+                "type": "string"
+              },
+              {
+                "id": "78a02f16-8c61-48d9-95b7-68aeadfec272",
+                "name": "dias",
+                "value": "={{ $json.dias }}",
+                "type": "number"
+              },
+              {
+                "id": "933d20c0-1ead-4766-b8de-41df4cc7d6f8",
+                "name": "boleto",
+                "value": "={{ $json.boleto }}",
+                "type": "string"
+              },
+              {
+                "id": "e680a478-f49c-433d-918f-43e58bd8e8ba",
+                "name": "method",
+                "value": "={{ \n  $('Parâmetros Chamada').item.json.method \n}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "2a4ecfd5-d162-4c67-aaea-bb7d5d11f7d1",
+        "name": "Dados título",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          0,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "a451bca1-9597-4f70-8878-0b614c8a19a7",
+                "leftValue": "={{ $json.installmentsBLIPS }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "array",
+                  "operation": "notExists",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "23053479-24e4-43b4-839e-8fbd12943a3f",
+                "leftValue": "={{$json.installmentsIDEAL}}",
+                "rightValue": "",
+                "operator": {
+                  "type": "array",
+                  "operation": "notExists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "60daf4aa-3f11-4199-87a0-f5c5e44ec82c",
+        "name": "Se não tiver installments",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -1020,
+          160
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "443b8678-24b5-48c7-8ca3-263f3cd7f507",
+                "name": "linha_digitável_boleto",
+                "value": "={{ $json.boleto }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "7fd64681-dadd-471f-bb1b-f3269449f424",
+        "name": "Boleto",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          420,
+          80
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "11f758f9-e846-418d-b6bd-6d21f42daef6",
+                "leftValue": "={{ \n  $json.pixCOde === null && $json.boleto !== null && (($json.dias < 0 && $json.method === null ) || $json.method === 'boleto')\n  || \n  $json.pixCOde !== null && $json.pixCOde.includes('santander') && $json.boleto && $json.pixCOde.includes('IDEAL')\n}}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "6077f297-e890-44dc-92a3-e0553d961166",
+        "name": "É por boleto?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          220,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "13508869-cbb7-4fa6-b0db-7cbee5381b86",
+                "name": "pix",
+                "value": "={{ $json.pixCOde || $json.textImageQrcode }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "4d326e27-35c7-4f81-b848-df7c66c5f264",
+        "name": "Código pix",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          820,
+          260
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "e3462539-10a9-418b-b319-06515a3b8598",
+                "name": "codigo_pix",
+                "value": "={{ $('Código pix').item.json.pix }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "1ca45d9f-3dde-4da2-b8c9-4e7bf13a0b5c",
+        "name": "Código pix em caso de erro",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1480,
+          280
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://pagamento.blips.com.br/v1/payment/create_page",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer gbaChsbOyaqmvYWxqi4AYvZIo7Huvx8ObPyEfA6HznNmWNCsCEK8Z8ddUu0pzeJ5Azo3cnNYAnyFCe6bcFez0TdN0kDGbNbHdu8WbsOzHMwpihJRXMcx33VUUVc2dNqNU3DJlLNnRwicjf89gxwB7irfC79pNdpVwG6Wwc2ZsWwEETyKK0t0EL6vkOaAhR8L52j285oqyhISqrgILuYqtHrg8NIo4vhwNJnAZaTYGQr6OSR9Nggk9c9GHm"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"value\": \"{{ $('Dados título').item.json.installmentValue }}\",\n  \"due_date\": \"{{ $('Dados título').item.json.data }}\",\n  \"pix_key\": \"{{ $json.pix }}\",\n  \"organization_name\": \"{{ $('Dados título').item.json.nome }}\"\n}",
+          "options": {}
+        },
+        "id": "b8a17645-04e6-4c61-80b0-645105262ee0",
+        "name": "Gera key da página",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1040,
+          260
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 1000,
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "url": "=https://blips-backend-prod-yc62attz3a-uc.a.run.app/v2/chatbot/open-installments/{{ $('Parâmetros Chamada').first().json.cnpj }}",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {}
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "=Authorization",
+                "value": "={{ 'Bearer ' + $json.accessToken }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "bea2e761-7b42-4c97-bd92-8096d9b31468",
+        "name": "Cobrança Atualizada",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -1540,
+          180
+        ],
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 3000,
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "02f240eb-95a2-4707-9a15-ca582f10c5f3",
+                "name": "Erro",
+                "value": "Não foi possível gerar o pagamento - Conexão Falhou",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "da8c4db5-687f-4311-bfd6-d95b8e174b88",
+        "name": "Erro",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1260,
+          320
+        ]
+      },
+      {
+        "parameters": {
+          "url": "=https://pagamento.blips.com.br/v1/payment/{{ $json.s3_key }}",
+          "options": {}
+        },
+        "id": "5808ad5e-2620-4622-8ff6-27bd105faaf6",
+        "name": "Gera página de pagamento",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1240,
+          140
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 3000,
+        "maxTries": 3,
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1hBag2re5oTl3u8ZRPm7Oxm6vtGEml8ieV6Uy_rDinls",
+            "mode": "list",
+            "cachedResultName": "[BLIPS] Envios Cobrança",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1hBag2re5oTl3u8ZRPm7Oxm6vtGEml8ieV6Uy_rDinls/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 1257500129,
+            "mode": "list",
+            "cachedResultName": "Pagina PIX",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1hBag2re5oTl3u8ZRPm7Oxm6vtGEml8ieV6Uy_rDinls/edit#gid=1257500129"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "Documento": "={{ $json.cnpj }}",
+              "Data": "={{$now.format('yyyy-MM-dd HH:mm')}}",
+              "NUFIN": "={{ $json.financial_number }}",
+              "Teste": "={{ $json.teste }}"
+            },
+            "matchingColumns": [
+              "Documento"
+            ],
+            "schema": [
+              {
+                "id": "Documento",
+                "displayName": "Documento",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Data",
+                "displayName": "Data",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Telefone",
+                "displayName": "Telefone",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "NUFIN",
+                "displayName": "NUFIN",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Teste",
+                "displayName": "Teste",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "id": "3f1cf039-0520-453c-bad5-8f0c12d40e3c",
+        "name": "Google Sheets",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.4,
+        "position": [
+          -1980,
+          180
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 3000,
+        "maxTries": 5,
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "4HoAG3ZVDyUYbTpj",
+            "name": "Joao Lucas - Sheets"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://blips-backend-prod-yc62attz3a-uc.a.run.app/v2/adm/624b373210c6fc7fcb4b7e0b/bank/payment-pix-code/noauth",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"contract_number\": \"{{ $json.contractNumber }}\",\n  \"financial_number\": \"{{ $json.financialNumber }}\",\n  \"installment_value\": {{ $json.installmentValue }},\n  \"organization_slug\": \"{{ $json.organizationSlug }}\"\n}  ",
+          "options": {}
+        },
+        "id": "a492d8a6-4381-4ff6-8e33-0237e55be8af",
+        "name": "Gerar PIX",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          620,
+          380
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000
+      },
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "cnpj"
+              },
+              {
+                "name": "financial_number"
+              },
+              {
+                "name": "method"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -2420,
+          180
+        ],
+        "id": "041732a7-d647-4aa8-8a22-aedef6974891",
+        "name": "Execute"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Obtenha os dados dos nodes anteriores\nconst installmentsBLIPS = items[0].json.installmentsBLIPS || [];\nconst installmentsIDEAL = items[0].json.installmentsIDEAL || [];\n\n// Combine os arrays\nconst combinedInstallments = [...installmentsBLIPS, ...installmentsIDEAL];\n\n// Funções auxiliares\nfunction formatarData(data) {\n  const [dia, mes, ano] = data.split(' ')[0].split('/');\n  return `${ano}-${mes}-${dia}`;\n}\n\nfunction formatarNome(slug) {\n  return slug.split('-')[0].toUpperCase();\n}\n\nfunction calculoDias(data) {\n  const [dia, mes, ano] = data.split(' ')[0].split('/');\n  const dataVenc = new Date(`${ano}-${mes}-${dia}`);\n  const dataHoje = new Date();\n  return Math.floor((dataHoje - dataVenc) / (1000 * 60 * 60 * 24));\n}\n\n// Defina o número financeiro alvo\nconst targetFinancialNumber = $(\"Parâmetros Chamada\").first().json.financial_number;\n\n// Procure o título correspondente\nconst target = combinedInstallments.find(\n  installment => Number(installment.financialNumber) === targetFinancialNumber\n);\n\n// Se não encontrar, retorna JSON vazio\nif (!target) {\n  return [{}];\n}\n\n// Formata e retorna apenas o objeto desejado\nreturn {\n  contractNumber:   target.contractNumber,\n  financialNumber:  target.financialNumber,\n  installmentValue: target.installmentValue,\n  organizationSlug: target.organizationSlug,\n  pixCode:          target.pixCode,\n  data:             formatarData(target.dueDate),\n  nome:             formatarNome(target.organizationSlug),\n  dias:             calculoDias(target.dueDate),\n  boleto:           target.bankSlipCode,\n  dataPagamento:    target.paymentDate\n};"
+        },
+        "id": "365eedff-1691-4cc1-b705-6e94428fddf8",
+        "name": "Encontra o título",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -740,
+          180
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "a5742ce6-2a52-47b5-b6a7-80391c938c01",
+                "leftValue": "={{ $json }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "object",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -520,
+          180
+        ],
+        "id": "02cb83a0-3713-4852-b6ab-3c416ec187fa",
+        "name": "Encontrou o título?"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "80298260-3e72-429e-b2f4-213e469f1dcf",
+                "leftValue": "={{ $json.dataPagamento }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -260,
+          160
+        ],
+        "id": "7263e416-c576-4f96-96f4-0668ca5511d4",
+        "name": "Já pagou?"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "02f240eb-95a2-4707-9a15-ca582f10c5f3",
+                "name": "Erro",
+                "value": "Não foi possível gerar o pagamento - Título não encontrado",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "8ad9ad64-bffe-4dba-abe9-ee65e5eb3942",
+        "name": "Erro1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -260,
+          320
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "6e515833-8a19-4fde-8dcf-467ba9a4275d",
+                "name": "Resposta",
+                "value": "O título já foi pago",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          0,
+          0
+        ],
+        "id": "07a02589-83e3-4bab-8af5-2bc4152d0c41",
+        "name": "Pagou"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "02f240eb-95a2-4707-9a15-ca582f10c5f3",
+                "name": "Erro",
+                "value": "Não foi possível gerar o pagamento - Título não encontrado",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "70b3a62a-21ec-43c9-8321-0f5e8185d732",
+        "name": "Erro2",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -740,
+          20
+        ]
+      }
+    ],
+    "connections": {
+      "Token Plataforma": {
+        "main": [
+          [
+            {
+              "node": "Cobrança Atualizada",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Separa instalações": {
+        "main": [
+          [
+            {
+              "node": "Se não tiver installments",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Já tem pix?": {
+        "main": [
+          [
+            {
+              "node": "Código pix",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Gerar PIX",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parâmetros Chamada": {
+        "main": [
+          [
+            {
+              "node": "Google Sheets",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados título": {
+        "main": [
+          [
+            {
+              "node": "É por boleto?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Se não tiver installments": {
+        "main": [
+          [
+            {
+              "node": "Erro2",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Encontra o título",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "É por boleto?": {
+        "main": [
+          [
+            {
+              "node": "Boleto",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Já tem pix?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Código pix": {
+        "main": [
+          [
+            {
+              "node": "Gera key da página",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gera key da página": {
+        "main": [
+          [
+            {
+              "node": "Gera página de pagamento",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Código pix em caso de erro",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Cobrança Atualizada": {
+        "main": [
+          [
+            {
+              "node": "Separa instalações",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gera página de pagamento": {
+        "main": [
+          [
+            {
+              "node": "Link do pix",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Código pix em caso de erro",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Sheets": {
+        "main": [
+          [
+            {
+              "node": "Token Plataforma",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gerar PIX": {
+        "main": [
+          [
+            {
+              "node": "Código pix",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute": {
+        "main": [
+          [
+            {
+              "node": "Parâmetros Chamada",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Encontra o título": {
+        "main": [
+          [
+            {
+              "node": "Encontrou o título?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Encontrou o título?": {
+        "main": [
+          [
+            {
+              "node": "Já pagou?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Já pagou?": {
+        "main": [
+          [
+            {
+              "node": "Pagou",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Dados título",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Execute": [
+        {
+          "json": {
+            "cnpj": "57261009000173",
+            "financial_number": "923915",
+            "method": "boleto",
+            "teste": true
+          }
+        }
+      ]
+    },
+    "versionId": "af2ea0b5-ea24-448f-9902-b5e1a384a811",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-09T15:07:56.880Z",
+        "updatedAt": "2024-07-09T15:07:56.880Z",
+        "id": "10AfOz2oKmpgqhM9",
+        "name": "Cobranca"
+      }
+    ]
+  }
+}
