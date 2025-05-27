@@ -1,0 +1,143 @@
+{
+  "data": {
+    "createdAt": "2024-08-22T20:40:24.125Z",
+    "updatedAt": "2024-08-28T21:14:53.896Z",
+    "id": "EkLhcQDZzyZnywwS",
+    "name": "Testar Nascimento",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "81e3accc-5867-40d1-be2c-0098a93e0e50",
+        "name": "When clicking ‘Test workflow’",
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          780,
+          380
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://n8n-auditoria.blips-labs.com/webhook-test/cf956a36-327a-406b-acc8-77f21844039a",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\n  \"created_at\": \"2024-08-22T18:36:55.367Z\",\n  \"data\": {\n    \"content\": {\n      \"view_once\": false,\n      \"text\": \"analisa o protocolo 2608247337710\"\n    },\n    \"id\": \"4BCD8FBB5A56A4B4A6\",\n    \"recipient\": {\n      \"name\": \"Mateus Alberone\",\n      \"id\": \"553492053452\",\n      \"profile_picture\": \"https://zapsterapi.s3.us-east-1.amazonaws.com/instances/i-w4aimfkcaltxlavvvyqu6/profile-pictures/myork6rr7n1sea5nompmgi1rnydo3w7v.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAV6PM7KXCEFS4IW3T%2F20240822%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240822T183655Z&X-Amz-Expires=86400&X-Amz-Signature=b25d336a25df7cab8c303d7c4030642f61a56148d305384a9b4f3ae6fd07cee4&X-Amz-SignedHeaders=host&x-id=GetObject\",\n      \"type\": \"chat\"\n    },\n    \"sender\": {\n      \"name\": \"Mateus Alberone\",\n      \"id\": \"553492053452\",\n      \"profile_picture\": \"https://zapsterapi.s3.us-east-1.amazonaws.com/instances/i-w4aimfkcaltxlavvvyqu6/profile-pictures/myork6rr7n1sea5nompmgi1rnydo3w7v.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAV6PM7KXCEFS4IW3T%2F20240822%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240822T183655Z&X-Amz-Expires=86400&X-Amz-Signature=b25d336a25df7cab8c303d7c4030642f61a56148d305384a9b4f3ae6fd07cee4&X-Amz-SignedHeaders=host&x-id=GetObject\"\n    },\n    \"sent_at\": \"2024-08-22T18:36:54.000Z\",\n    \"type\": \"text\"\n  },\n  \"id\": \"svekgk8niunb2lnzi5i6b\",\n  \"type\": \"message.received\"\n}",
+          "options": {}
+        },
+        "id": "e7d0ad86-e765-4d78-87e2-4cffb33d1f14",
+        "name": "Whatsapp",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1140,
+          260
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://n8n-assistants.blips-labs.com/webhook-test/capitao-nascimento",
+          "sendQuery": true,
+          "specifyQuery": "json",
+          "jsonQuery": "{\n\"id_card\": \"94283\",\n\"canal\": \"bitrix\",\n\"message\": \"analise_os_atendimentos_do_telefone_ 11 99849-7727\"\n}",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "{\n\"x-forwarded-for\": \"52.29.163.104\",\n\"x-forwarded-proto\": \"https\",\n\"x-forwarded-port\": \"443\",\n\"host\": \"n8n-assistants.blips-labs.com\",\n\"x-amzn-trace-id\": \"Root=1-66ca56a5-5f97caae39b95ff6135deab2\",\n\"content-length\": \"320\",\n\"content-type\": \"application/x-www-form-urlencoded\",\n\"user-agent\": \"Bitrix24 Webhook Engine\",\n\"accept-encoding\": \"gzip\"\n}",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\n\"document_id[0]\": \"crm\",\n\"document_id[1]\": \"CCrmDocumentDeal\",\n\"document_id[2]\": \"DEAL_92891\",\n\"auth[domain]\": \"blips.bitrix24.com.br\",\n\"auth[client_endpoint]\": \"https://blips.bitrix24.com.br/rest/\",\n\"auth[server_endpoint]\": \"https://oauth.bitrix.info/rest/\",\n\"auth[member_id]\": \"cc1dbe6157e85937651412909fb01150\"\n}",
+          "options": {}
+        },
+        "id": "20515ed5-06d2-42bc-900d-8ce35f1d8cf8",
+        "name": "Bitrix",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1140,
+          460
+        ]
+      },
+      {
+        "parameters": {
+          "amount": 30
+        },
+        "id": "7393d8bb-01fb-4de0-8b58-ed8ad7f15301",
+        "name": "Wait",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          1400,
+          260
+        ],
+        "webhookId": "1419bea0-1683-492a-95ea-5ef7d09b74fe"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://n8n-auditoria.blips-labs.com/webhook/a8f7c1ca-df7f-4b28-8f11-76e0d3517414",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\n  \"created_at\": \"2024-08-22T18:36:55.367Z\",\n  \"data\": {\n    \"content\": {\n      \"view_once\": false,\n      \"text\": \"analisa o protocolo 2608241119810\"\n    },\n    \"id\": \"4BCD8FBB5A56A4B4A6\",\n    \"recipient\": {\n      \"name\": \"Mateus Alberone\",\n      \"id\": \"553492053452\",\n      \"profile_picture\": \"https://zapsterapi.s3.us-east-1.amazonaws.com/instances/i-w4aimfkcaltxlavvvyqu6/profile-pictures/myork6rr7n1sea5nompmgi1rnydo3w7v.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAV6PM7KXCEFS4IW3T%2F20240822%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240822T183655Z&X-Amz-Expires=86400&X-Amz-Signature=b25d336a25df7cab8c303d7c4030642f61a56148d305384a9b4f3ae6fd07cee4&X-Amz-SignedHeaders=host&x-id=GetObject\",\n      \"type\": \"chat\"\n    },\n    \"sender\": {\n      \"name\": \"Mateus Alberone\",\n      \"id\": \"553492053452\",\n      \"profile_picture\": \"https://zapsterapi.s3.us-east-1.amazonaws.com/instances/i-w4aimfkcaltxlavvvyqu6/profile-pictures/myork6rr7n1sea5nompmgi1rnydo3w7v.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAV6PM7KXCEFS4IW3T%2F20240822%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240822T183655Z&X-Amz-Expires=86400&X-Amz-Signature=b25d336a25df7cab8c303d7c4030642f61a56148d305384a9b4f3ae6fd07cee4&X-Amz-SignedHeaders=host&x-id=GetObject\"\n    },\n    \"sent_at\": \"2024-08-22T18:36:54.000Z\",\n    \"type\": \"text\"\n  },\n  \"id\": \"svekgk8niunb2lnzi5i6b\",\n  \"type\": \"message.received\"\n}",
+          "options": {}
+        },
+        "id": "51b88375-34ef-44c0-b6b4-ca63fdf1443f",
+        "name": "Whatsapp1",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1660,
+          260
+        ]
+      }
+    ],
+    "connections": {
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "Whatsapp",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Whatsapp": {
+        "main": [
+          []
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "Whatsapp1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "e7fd9663-58bb-4ec0-a595-61a35150a039",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-08-16T17:26:36.981Z",
+        "updatedAt": "2024-08-16T17:26:36.981Z",
+        "id": "eMX5cAtUIRtHSiCV",
+        "name": "Nascimento"
+      }
+    ]
+  }
+}
