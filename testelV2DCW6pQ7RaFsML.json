@@ -1,0 +1,386 @@
+{
+  "data": {
+    "createdAt": "2025-04-23T18:26:03.285Z",
+    "updatedAt": "2025-05-02T12:15:17.876Z",
+    "id": "lV2DCW6pQ7RaFsML",
+    "name": "Disparo Cobrança",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "1buF3vypm2gKo8fo61JEbK8v1HtOAXeTc0PqjNjthXt8",
+            "mode": "list",
+            "cachedResultName": "Envios Cobrança - Teste",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1buF3vypm2gKo8fo61JEbK8v1HtOAXeTc0PqjNjthXt8/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Base Blips",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1buF3vypm2gKo8fo61JEbK8v1HtOAXeTc0PqjNjthXt8/edit#gid=0"
+          },
+          "filtersUI": {
+            "values": [
+              {
+                "lookupColumn": "MSG ENVIADA",
+                "lookupValue": "NÃO"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "73d96667-d346-4010-8861-34f481b6b683",
+        "name": "Google Sheets",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          -700,
+          160
+        ],
+        "alwaysOutputData": false,
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "4HoAG3ZVDyUYbTpj",
+            "name": "Joao Lucas - Sheets"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "b4955d45-810d-4669-b4a8-ebaaa6559957",
+        "name": "Loop Over Items",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          -500,
+          160
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://n8n-dev.blips-labs.com/webhook/envio-hyper-n8n",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "cnpj",
+                "value": "={{ $json.DOCUMENTO }}"
+              },
+              {
+                "name": "EhVenda",
+                "value": "={{ $json['É IDEAL'] }}"
+              },
+              {
+                "name": "linha",
+                "value": "={{ $json.row_number }}"
+              },
+              {
+                "name": "inativo",
+                "value": "={{ $json.INATIVO }}"
+              },
+              {
+                "name": "dias",
+                "value": "={{ $json['DIAS VENCIDO'] }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "6c62a185-ad3a-45b5-b3c2-f417f1771e10",
+        "name": "Ativa régua",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          0,
+          160
+        ],
+        "retryOnFail": true
+      },
+      {
+        "parameters": {
+          "amount": 1,
+          "unit": "minutes"
+        },
+        "id": "f6e01674-a26e-45d8-8c96-158279033489",
+        "name": "Wait",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          500,
+          -80
+        ],
+        "webhookId": "053b93c8-5a6e-4b92-b93c-13c571280f86"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "0bb84c73-533b-45b7-bdde-86a63a32aaef",
+                "leftValue": "={{ $('Contador').first().json.count % $('Numero').first().json.numero == 0 }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "794eebc8-5d90-4468-80fd-232d4ee21480",
+        "name": "Esperar?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          220,
+          160
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "11271bd5-64f0-4d7e-a62f-b34e6c65a819",
+        "name": "Dados",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          -1120,
+          160
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "6afbf5c6-8510-4fca-8c29-b8e2d8695ebb",
+                "name": "count",
+                "value": "={{ $runIndex + 1 }}",
+                "type": "number"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "id": "be5cd43c-0766-4d26-b1f2-5412ce9e02f3",
+        "name": "Contador",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -240,
+          160
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "deactivate",
+          "workflowId": {
+            "__rl": true,
+            "value": "kp1CGeWIh5nBqHtC",
+            "mode": "list",
+            "cachedResultName": "Consulta do Dia - Mongo (#kp1CGeWIh5nBqHtC)"
+          },
+          "requestOptions": {}
+        },
+        "type": "n8n-nodes-base.n8n",
+        "typeVersion": 1,
+        "position": [
+          -240,
+          -80
+        ],
+        "id": "adc07881-f30a-4636-a4e4-fcc8f131da07",
+        "name": "Desativar Consulta Mongo",
+        "executeOnce": true,
+        "credentials": {
+          "n8nApi": {
+            "id": "zyc1Rhd9LKcUNM8O",
+            "name": "n8n account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "08599b42-7184-4655-862a-f95936313118",
+                "name": "numero",
+                "value": "={{ $json.numero || $json.body.numero }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -900,
+          160
+        ],
+        "id": "e5701465-6339-4901-ab6a-ad5139407779",
+        "name": "Numero"
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "iniciar_disparo",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -1120,
+          0
+        ],
+        "id": "fcb3a371-37ee-4517-af61-af1b84dd5317",
+        "name": "Webhook",
+        "webhookId": "6e07bd01-46c3-4b2b-8547-d83e95e8f18d"
+      }
+    ],
+    "connections": {
+      "Google Sheets": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [
+            {
+              "node": "Desativar Consulta Mongo",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Contador",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ativa régua": {
+        "main": [
+          []
+        ]
+      },
+      "Wait": {
+        "main": [
+          []
+        ]
+      },
+      "Esperar?": {
+        "main": [
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados": {
+        "main": [
+          [
+            {
+              "node": "Numero",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Contador": {
+        "main": [
+          [
+            {
+              "node": "Ativa régua",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Numero": {
+        "main": [
+          [
+            {
+              "node": "Google Sheets",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Numero",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Dados": [
+        {
+          "json": {
+            "numero": 1
+          }
+        }
+      ]
+    },
+    "versionId": "f37a437f-9697-4e60-979b-8d3f5805a52d",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-09T15:07:56.880Z",
+        "updatedAt": "2024-07-09T15:07:56.880Z",
+        "id": "10AfOz2oKmpgqhM9",
+        "name": "Cobranca"
+      }
+    ]
+  }
+}
