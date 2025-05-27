@@ -1,0 +1,125 @@
+{
+  "data": {
+    "createdAt": "2024-05-15T19:34:36.173Z",
+    "updatedAt": "2025-05-08T11:44:18.743Z",
+    "id": "5HQMC1PAswB0IGmH",
+    "name": "Suporte Neurônio - func - buscar_bloqueio",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "response",
+          "options": {}
+        },
+        "id": "dde29bf7-a410-4657-be6a-34f9364a1792",
+        "name": "Aggregate",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          -860,
+          -600
+        ],
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "select eb.cnpj, eb.numero_serie, eb.motivo as motivo_bloqueio, eb.status_bloqueio, eb.data_hora as ultima_conexao, eb.nufin, eb.valor\nfrom `IOT.EquipamentosBloqueados` eb\nwhere 1 = 1\nand eb.numero_serie = '{{ $json.id }}'\nor eb.numero_serie = 'blips_{{ $json.id }}'",
+          "options": {}
+        },
+        "id": "27b91239-a13c-4057-9290-220f80ef4ce2",
+        "name": "Google BigQuery1",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2,
+        "position": [
+          -1200,
+          -600
+        ],
+        "notesInFlow": false,
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "id"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -1460,
+          -600
+        ],
+        "id": "3aec22e7-c79c-47d4-aa37-56c11e0c511f",
+        "name": "Execute"
+      }
+    ],
+    "connections": {
+      "Google BigQuery1": {
+        "main": [
+          [
+            {
+              "node": "Aggregate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute": {
+        "main": [
+          [
+            {
+              "node": "Google BigQuery1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Execute": [
+        {
+          "json": {
+            "id": "blips_AA34D1"
+          }
+        }
+      ]
+    },
+    "versionId": "d854c5dd-1588-44d8-8786-21759b6192a6",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-05-08T01:53:37.021Z",
+        "updatedAt": "2024-05-08T01:53:37.021Z",
+        "id": "HJrJfNUAaBoLOV2q",
+        "name": "Suporte Neuronio"
+      }
+    ]
+  }
+}
