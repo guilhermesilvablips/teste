@@ -1,0 +1,336 @@
+{
+  "data": {
+    "createdAt": "2024-05-09T16:44:09.886Z",
+    "updatedAt": "2024-06-26T14:01:45.901Z",
+    "id": "ZXmOpPS6W8jKQC5H",
+    "name": "Comentarios - Teste - João Lucas",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "46baf389-fc28-4e45-8523-0a6bc6e1bd7d",
+        "name": "When clicking \"Test workflow\"",
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          240,
+          560
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "base": {
+            "__rl": true,
+            "value": "app3KF7alvQ2S8Gdi",
+            "mode": "list",
+            "cachedResultName": "Teste",
+            "cachedResultUrl": "https://airtable.com/app3KF7alvQ2S8Gdi"
+          },
+          "table": {
+            "__rl": true,
+            "value": "tbl6GbLHGaWy2grL0",
+            "mode": "list",
+            "cachedResultName": "Table 6",
+            "cachedResultUrl": "https://airtable.com/app3KF7alvQ2S8Gdi/tbl6GbLHGaWy2grL0"
+          },
+          "id": "=reclPa90yZwVhWnRd",
+          "options": {}
+        },
+        "id": "57d15f58-3cde-4a63-bd46-c466599b8e8f",
+        "name": "Airtable",
+        "type": "n8n-nodes-base.airtable",
+        "typeVersion": 2,
+        "position": [
+          460,
+          660
+        ],
+        "credentials": {
+          "airtableTokenApi": {
+            "id": "1p6rtTaquWnytVMn",
+            "name": "Airtable Personal Access Token account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "12e02bc8-facf-40f4-826e-4c646f1d54f2",
+        "name": "OpenAI Chat Model",
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1,
+        "position": [
+          900,
+          800
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "trONZBLzM3mWPjKv",
+            "name": "OpenAi - Blips"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "base": {
+            "__rl": true,
+            "value": "app3KF7alvQ2S8Gdi",
+            "mode": "list",
+            "cachedResultName": "Teste",
+            "cachedResultUrl": "https://airtable.com/app3KF7alvQ2S8Gdi"
+          },
+          "table": {
+            "__rl": true,
+            "value": "tbl6GbLHGaWy2grL0",
+            "mode": "list",
+            "cachedResultName": "Table 6",
+            "cachedResultUrl": "https://airtable.com/app3KF7alvQ2S8Gdi/tbl6GbLHGaWy2grL0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "Data": "={{ $('Loop Over Items').item.json.Data }}",
+              "Comentário": "={{ $('Loop Over Items').item.json['Comentário'] }}",
+              "Rede": "={{ $('Loop Over Items').item.json.Rede }}",
+              "Classificação": "={{ $json.text }}",
+              "id": "={{ $('Loop Over Items').item.json.id }}"
+            },
+            "matchingColumns": [
+              "id"
+            ],
+            "schema": [
+              {
+                "id": "id",
+                "displayName": "id",
+                "required": false,
+                "defaultMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": true,
+                "removed": false
+              },
+              {
+                "id": "Data",
+                "displayName": "Data",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Rede",
+                "displayName": "Rede",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Comentário",
+                "displayName": "Comentário",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Classificação",
+                "displayName": "Classificação",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "04d20ae0-d905-458f-b01d-2a131fbc53cd",
+        "name": "Airtable1",
+        "type": "n8n-nodes-base.airtable",
+        "typeVersion": 2,
+        "position": [
+          1260,
+          580
+        ],
+        "credentials": {
+          "airtableTokenApi": {
+            "id": "1p6rtTaquWnytVMn",
+            "name": "Airtable Personal Access Token account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "search",
+          "base": {
+            "__rl": true,
+            "value": "app3KF7alvQ2S8Gdi",
+            "mode": "list",
+            "cachedResultName": "Teste",
+            "cachedResultUrl": "https://airtable.com/app3KF7alvQ2S8Gdi"
+          },
+          "table": {
+            "__rl": true,
+            "value": "tbl6GbLHGaWy2grL0",
+            "mode": "list",
+            "cachedResultName": "Table 6",
+            "cachedResultUrl": "https://airtable.com/app3KF7alvQ2S8Gdi/tbl6GbLHGaWy2grL0"
+          },
+          "options": {}
+        },
+        "id": "285b48e0-d87f-46ab-b6f7-95ca5e8e6d27",
+        "name": "Airtable2",
+        "type": "n8n-nodes-base.airtable",
+        "typeVersion": 2,
+        "position": [
+          360,
+          260
+        ],
+        "credentials": {
+          "airtableTokenApi": {
+            "id": "1p6rtTaquWnytVMn",
+            "name": "Airtable Personal Access Token account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "b02ae81c-819f-42b9-a5ba-14245164244e",
+        "name": "Loop Over Items",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          720,
+          420
+        ]
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json['Comentário'] }}",
+          "hasOutputParser": true,
+          "messages": {
+            "messageValues": [
+              {
+                "message": "Sua tarefa é classificar os comentários recebidos em 3 tipos:\n1: Elogio\n2: Reclamação \n3: Ofensa\n\nUm comentário só pode ser de um tipo, o seu objetivo é determinar e retornar qual dos 3 tipos acima é o mais adequado.\n\nexemplos:\n\nComentário Classificação\nA impressora é um produto horrível o serviço é um lixo. Ofensivo\nGostei muito do serviço os produtos funcionaram super bem. Elogio\nNão tive uma experiência boa tive dificuldade em fazer alguns produtos funcionarem. Reclamação\n\n\nO resultado deve ser somente a classificação, ou seja, ou Reclamação, ou Ofensa ou Elogio, mais nada."
+              }
+            ]
+          }
+        },
+        "id": "807d1056-f6b9-428a-be5a-b46356c8ba4d",
+        "name": "Basic LLM Chain",
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.4,
+        "position": [
+          880,
+          580
+        ]
+      }
+    ],
+    "connections": {
+      "When clicking \"Test workflow\"": {
+        "main": [
+          [
+            {
+              "node": "Airtable",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Airtable2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Airtable1": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Airtable2": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Basic LLM Chain": {
+        "main": [
+          [
+            {
+              "node": "Airtable1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "America/Sao_Paulo",
+      "saveManualExecutions": true,
+      "callerPolicy": "workflowsFromSameOwner"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "37d4b664-5e1c-4df0-ad55-89b25262bcfc",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
