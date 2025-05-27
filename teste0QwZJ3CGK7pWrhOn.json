@@ -1,0 +1,83 @@
+{
+  "data": {
+    "createdAt": "2025-01-15T17:04:38.798Z",
+    "updatedAt": "2025-01-16T12:25:25.073Z",
+    "id": "0QwZJ3CGK7pWrhOn",
+    "name": "Teste Fallback 2",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.errorTrigger",
+        "typeVersion": 1,
+        "position": [
+          580,
+          -160
+        ],
+        "id": "9ab0d34e-9a2c-4843-b3dd-dd974b69bea7",
+        "name": "Error Trigger"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "85725fb3-e937-4e7a-b380-e03a7fb2c26d",
+                "name": "teste",
+                "value": "14",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          200,
+          0
+        ],
+        "id": "b73b4c4d-69c6-4be9-89a2-9c9ce9a885d1",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          -40,
+          0
+        ],
+        "id": "45fb5dbe-25ae-4027-b1e6-03fd6889b5cd",
+        "name": "Execute Workflow Trigger"
+      }
+    ],
+    "connections": {
+      "Error Trigger": {
+        "main": [
+          []
+        ]
+      },
+      "Execute Workflow Trigger": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {},
+    "versionId": "6bc48b62-d1e5-4b15-a4c5-30a84f335cbc",
+    "triggerCount": 0,
+    "tags": []
+  }
+}
