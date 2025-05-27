@@ -1,0 +1,1138 @@
+{
+  "data": {
+    "createdAt": "2024-12-10T16:40:34.608Z",
+    "updatedAt": "2025-01-13T15:24:37.448Z",
+    "id": "SHEEYiaaLupegow2",
+    "name": "Analise de Documentos - Identificação",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "3bfa18bb-11d1-4a09-b504-116760a6237d",
+        "name": "Execute Workflow Trigger",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          -820,
+          780
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "8f553225-51d0-4778-bc91-c401ab243ab3",
+                "leftValue": "={{ ($json.frente && $json.verso) ? true : false }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "68aa600e-e2b1-49a0-81a4-61225a9af55e",
+        "name": "Tem dados?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          -600,
+          780
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "3cbf42fa-6d21-4a0a-8492-8382808b5038",
+                "name": "output.resultado",
+                "value": false,
+                "type": "boolean"
+              },
+              {
+                "id": "4200157d-b070-4e94-9005-6790b4e5c0cc",
+                "name": "output.justificativa",
+                "value": "Não veio nenhum documento",
+                "type": "string"
+              },
+              {
+                "id": "dc990b39-b3df-4d20-8ac4-5983495376bc",
+                "name": "output.vazio",
+                "value": true,
+                "type": "boolean"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "168fcaed-bede-4b38-93c3-7d5871d40d0c",
+        "name": "Return vazio",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -380,
+          940
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "88e016f2-0dea-457e-b57b-8023bce73789",
+                "name": "primeira",
+                "value": "={{ $json.frente.url }}",
+                "type": "string"
+              },
+              {
+                "id": "54c5fdd2-d71b-4ec8-9412-94c8dda946d2",
+                "name": "Contrato",
+                "value": "={{ $json.contrato }}",
+                "type": "string"
+              },
+              {
+                "id": "bb6ea940-132b-4369-8633-e3326a105560",
+                "name": "segunda",
+                "value": "={{ $json.verso.url }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "8f26dcb0-f793-4fbb-a630-f67fa1901dd4",
+        "name": "Dados do documento",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -380,
+          760
+        ]
+      },
+      {
+        "parameters": {
+          "resource": "image",
+          "operation": "analyze",
+          "modelId": {
+            "__rl": true,
+            "value": "gpt-4o",
+            "mode": "list",
+            "cachedResultName": "GPT-4O"
+          },
+          "text": "=# Entrada: Você irá receber duas fotos, não tem problema se elas forem idênticas.\n\n# Tarefa: Você tem três tarefas.\n  - A primeira é identificar qual das duas tem as informações de data de nascimento, cpf, data de emissão e etc do documento, a primeira ou a segunda.\n  - Após identificar qual é a que trás os dados, a segunda tarefa é extratir os campos e valores do documento.\n  - A terceira é identificar qual das duas tem a foto da pessoa, a primeira ou a segunda.\n\n*Importante*: Se as imagens forem idênticas, escolha a primeira sempre.\n\n# Saída esperada: String do objeto json completo e json válido com os seguintes campos: 'dados', 'campos' e 'foto'. \n\n#Exemplo de Saída:\n{\n  \"dados\": \"primeira\",\n  \"campos\": {\n    \"CPF\": \"14324324\",\n    \"Nome\": \"Kleber Macedo Junior\",\n    \"Data de Validade\": \"25/01/2024\",\n    \"Data de Emissão\": \"25/01/2019\"\n  }\n  \"foto\": \"segunda\"\n}\n\n*Importante*: Não use ```json. Deixe como se fosse uma string normal que represente um json.\n*Importante*: Você não deve buscar somente os campos do exemplo, mas todos da imagem escolhida.\n*Importante*: Se as imagens forem idênticas, escolha a primeira sempre.\n*Importante*: Se não for um documento ou não conseguir extratir as informações, retorne exatamente e especifcamente: '#ERRO#'.",
+          "imageUrls": "={{ $json.primeira }},{{ $json.segunda }}",
+          "options": {}
+        },
+        "id": "0ecc39c0-c3b2-4309-96ce-a7bf2422b4ee",
+        "name": "Dados Imagens",
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.4,
+        "position": [
+          -160,
+          760
+        ],
+        "alwaysOutputData": false,
+        "credentials": {
+          "openAiApi": {
+            "id": "utH6piS62wyaw3eE",
+            "name": "1Clara - DEV"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "c870e13d-6e76-4480-acdc-5d4ffbd30985",
+                "leftValue": "={{ $json.content.replaceAll(\"```json\", \"\").replaceAll(\"```\", \"\").toUpperCase() }}",
+                "rightValue": "#ERRO#",
+                "operator": {
+                  "type": "string",
+                  "operation": "notContains"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          100,
+          740
+        ],
+        "id": "2e64d1a5-785b-4a8c-a670-3474b4f24e82",
+        "name": "Sucesso?"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "81cc02db-084a-4bb3-8eb6-9cb38dd1c583",
+                "leftValue": "={{ $json.content.toUpperCase() }}",
+                "rightValue": "ERRO",
+                "operator": {
+                  "type": "string",
+                  "operation": "notContains"
+                }
+              },
+              {
+                "id": "7fac36ec-a1cf-499d-8c6c-2246eb9cc1fb",
+                "leftValue": "={{ $json.isEmpty() }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "false",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "2ba971c2-4981-45d7-ac81-f1e25865cd3e",
+                "leftValue": "={{ $json.ResultCode != 70}}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "false",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "893b4845-ec63-4d85-98d8-7b39e7e08666",
+                "leftValue": "={{ $json.DocInfo.CPF }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "96cd1e83-ba6a-4320-98c5-2713754132ce",
+        "name": "Sucesso na frente?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          520,
+          920
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "81cc02db-084a-4bb3-8eb6-9cb38dd1c583",
+                "leftValue": "={{ $json.content.toUpperCase() }}",
+                "rightValue": "ERRO",
+                "operator": {
+                  "type": "string",
+                  "operation": "notContains"
+                }
+              },
+              {
+                "id": "7fac36ec-a1cf-499d-8c6c-2246eb9cc1fb",
+                "leftValue": "={{ $json.isEmpty() }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "false",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "2ba971c2-4981-45d7-ac81-f1e25865cd3e",
+                "leftValue": "={{ $json.ResultCode != 70}}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "false",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "cc387531-3c8a-4895-8546-fbcd7385c4d0",
+                "leftValue": "={{ $json.DocInfo.CPF }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "a289c7d5-fe32-4b87-b85c-6dd4ddb9a21f",
+        "name": "Sucesso no Verso?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          920,
+          1060
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "8168b8c2-60a8-4be5-b95d-dcf7e321bc15",
+                "name": "dados",
+                "value": "={{ \n$json.content.replaceAll(\"```json\", \"\").replaceAll(\"```\", \"\").trim().parseJson().dados === 'primeira' \n? $('Dados do documento').first().json.primeira \n: $('Dados do documento').first().json.segunda \n}}",
+                "type": "string"
+              },
+              {
+                "id": "a933f44c-91ed-431b-8e7a-b5fbd1812269",
+                "name": "foto",
+                "value": "={{ \n$json.content.replaceAll(\"```json\", \"\").replaceAll(\"```\", \"\").trim().parseJson().foto === 'primeira' \n? $('Dados do documento').first().json.primeira \n: $('Dados do documento').first().json.segunda \n}}",
+                "type": "string"
+              },
+              {
+                "id": "8772667c-e2d2-4e99-bb3b-1afab4816d2f",
+                "name": "campos",
+                "value": "={{ $json.content.replaceAll(\"```json\", \"\").replaceAll(\"```\", \"\").trim().parseJson().campos }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          520,
+          720
+        ],
+        "id": "5017698f-8e51-4d8d-9790-d69acac3d1f3",
+        "name": "Dados"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://app.bigdatacorp.com.br/bigid/documentoscopia/checar",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "accept",
+                "value": "application/json"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1bmlxdWVfbmFtZSI6ImluZnJhZXN0cnV0dXJhQGJsaXBzLmNvbS5iciIsIm5iZiI6MTY3MzU0NTc2NSwiZXhwIjoxOTg4NTQ1NzY1LCJpYXQiOjE2NzM1NDU3NjUsImlzcyI6IkJpZyBEYXRhIENvcnAuIiwicHJvZHVjdHMiOlsiQklHQk9PU1QiXSwiZG9tYWluIjoiQkxJUFMifQ.Ep_mYbFOiyLl7EMJ-jmFgEoOPO8_VuO3JZelc_GZGh0"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"Parameters\": [\n    \"DOC_IMG_URL={{ $json.dados }}\"\n  ]\n}",
+          "options": {}
+        },
+        "id": "20af75f4-2eaf-4aa1-a5b1-9a03a416f0ce",
+        "name": "Api documento",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          720,
+          720
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "81cc02db-084a-4bb3-8eb6-9cb38dd1c583",
+                "leftValue": "={{ $json.content.toUpperCase() }}",
+                "rightValue": "ERRO",
+                "operator": {
+                  "type": "string",
+                  "operation": "contains"
+                }
+              },
+              {
+                "id": "7fac36ec-a1cf-499d-8c6c-2246eb9cc1fb",
+                "leftValue": "={{ $json.isEmpty() }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "2ba971c2-4981-45d7-ac81-f1e25865cd3e",
+                "leftValue": "={{ $json.ResultCode != 70}}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "094dde4b-bfa6-4f87-a460-1fef3f8419d7",
+                "leftValue": "={{ $json.DocInfo.CPF }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notExists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "id": "3846bc08-5e4f-4dae-a9f5-f4a3d3009539",
+        "name": "Deu erro?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          920,
+          720
+        ]
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT\n  contractor.personal_data.document,\n  contractor.personal_data.document_back,\n  contractor.personal_data.document_front,\n  contractor.personal_data.name,\n  contractor.personal_data.selfie\n\nFROM\n  `blips-bigdata.PLATAFORMA.negotiation`\nWHERE\n  contract_number = '{{ $('Execute Workflow Trigger').first().json.contrato.replaceSpecialChars().replace(/\\D/g, '').trim() }}'",
+          "options": {}
+        },
+        "id": "90c74f6e-e583-4be6-aba4-2fe612c4232b",
+        "name": "Dados Plataforma",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          1600,
+          640
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "90073909-51ed-44ea-a8bf-cc9027e31879",
+                "leftValue": "={{ $json.isEmpty() }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "27cd9525-437e-4ccb-9fc4-1b9764778994",
+        "name": "Contrato inválido?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          1800,
+          800
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d9e789fe-7ffe-40d8-a65c-f69d14f60cd9",
+                "name": "output.resultado",
+                "value": false,
+                "type": "boolean"
+              },
+              {
+                "id": "d065c9b6-d739-4e83-b0d7-f3c1965c634f",
+                "name": "output.justificativa",
+                "value": "Dados do contrato não encontrados",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "2488747c-5dae-48b5-af95-dea0024d067d",
+        "name": "Erro - Contrato",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2020,
+          700
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "c37f3e7f-4e7a-41b2-b0db-92a72e1532b1",
+                "name": "document",
+                "value": "153.646.836-30",
+                "type": "string"
+              },
+              {
+                "id": "ad48d143-1d78-47a0-9bbd-42b52446db6d",
+                "name": "name",
+                "value": "João Lucas Pontes Freitas",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d49b7827-b0ed-4b9c-8850-d58fea526bc9",
+        "name": "MOCK",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1600,
+          800
+        ]
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=# Entrada: Você irá receber um objeto JSON contendo dados sobre o documento do cliente.\n\n## Tarefa: Sua tarefa é validar se o documento segue as seguintes restrições:\n\n### Documentos aceitos:\n- CNH dentro da validade;\n- Identidade com até 10 anos de emissão;\n- Carteira de Trabalho e Previdência Social - CTPS;\n- Carteira de identidade profissional expedida por órgãos fiscalizadores de exercício de profissão regulamentada (OAB, CRC, CRM, CRA, CREA etc);\n- Carteiras funcionais emitidas por órgãos públicos;\n- Documento de identificação militar;\n- Passaporte.\n\n### Importante:\n- Para analisar a data de validade do documento, considere que a data de hoje é: `{{ $now.format('dd/MM/yyyy') }}`.\n- Para passar na validação, o CPF do documento deve ser igual a: `{{ $json.document }}`. Considere somente a parte numérica na comparação. Ou seja, `45.13.2-1` é igual a `451321`. Se no documento não tiver o CPF, desconsidere essa regra.\n- Para passar na validação, o nome do documento deve ser igual a: `{{ $json.name }}`. Faça uma comparação inteligente, ou seja, se um tiver maiúsculo e outro minúsculo, ou um com acento e outro sem, ainda são considerados iguais.\n- Em nenhuma hipótese você pode retornar vazio, sempre tem que ter um resultado de acordo com o formato da saída que foi especificado. \n- Tome cuidado com a parte dos nomes, as vezes o nome do pai vem misturado com o nome da mãe, tente não repetir e diferenciar esses casos. Exemplo: nome do pai Robson Melo Julia Ribeiro, nome da mãe Julia Ribeiro. Os nomes certos seriam Robson Melo e Julia Ribeiro separados.\n\n## Saída esperada:\nObjeto JSON da seguinte forma. Sem mais nada:\n{\n  \"resultado\": true ou false,\n  \"justificativa\": \"texto curto explicando por que está certo ou por que está errado\",\n  \"erros\": \"vazio ou campos que não estão de acordo com o estipulado nas regras\",\n  \"campos\": {\n    \"todos os campos encontrados no documento\"\n  }\n}\n\n#Exemplo de jusitifcativa: O CPF do documento (124434234) é diferente do CPF esperado (8822156).\n\n#Exemplo de objeto de saída esperado:\n\n{\n  \"resultado\": true,\n  \"justificativa\": \"O documento é um RG válido e o CPF e nome estão corretos.\",\n  \"erros\": [],\n  \"campos\": {\n    \"nome\": \"MARCOS PAULOS\",\n    \"CPF\": \"552585555\",\n    \"validade\": \"12/11/2132\",\n    \"emissao\": \"23/07/2011\",\n    \"tipo_documento\": \"RG\",\n    \"pai\": \"Robson Augusto Cesar\",\n    \"mae\": \"Cleide Ribeiro Araujo\"\n  }\n}\n-----------------------------\n\nA entrada que você deve processar é essa: \n{{ $('Dados Documento').first().json.toJsonString()}}",
+          "hasOutputParser": true
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.5,
+        "position": [
+          2020,
+          880
+        ],
+        "id": "b41dc79f-cdeb-4bfc-8fac-afc8c3a139c8",
+        "name": "Basic LLM Chain"
+      },
+      {
+        "parameters": {
+          "model": "gpt-4o",
+          "options": {
+            "temperature": 0.1
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1,
+        "position": [
+          2060,
+          1120
+        ],
+        "id": "76ca9dab-69a1-41ef-9d49-52e0eff4482c",
+        "name": "OpenAI Chat Model",
+        "credentials": {
+          "openAiApi": {
+            "id": "utH6piS62wyaw3eE",
+            "name": "1Clara - DEV"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n  \"resultado\": false,\n  \"justificativa\": \"O documento está fora da data de validade\",\n  \"erros\": [\"Validade\"],\n  \"campos\": {\n    \"nome\": \"João Lucas\",\n    \"CPF\": \"153.646.836.30\",\n    \"validade\": \"07/12/1997\",\n    \"emissao\": \"01/01/1995\",\n    \"tipo_documento\": \"RG\",\n    \"pai\": \"Kleber Jorge Melo\",\n    \"mae\": \"Julia Arantes Melo\"\n  }\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.2,
+        "position": [
+          2180,
+          1120
+        ],
+        "id": "2190b76f-264d-4f79-b104-863ec7554fda",
+        "name": "Structured Output Parser"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d065c9b6-d739-4e83-b0d7-f3c1965c634f",
+                "name": "dados",
+                "value": "={{ $('Dados').first().json.campos }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "45d8f0cb-502d-4e09-a431-833cd8aa369f",
+        "name": "Dados IA",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1160,
+          700
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b75a0f15-3d30-4842-9269-d3e494b467a5",
+                "name": "dados",
+                "value": "={{ $json.DocInfo }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "e2fdd666-940e-4da9-9202-5f8af721fa61",
+        "name": "Dados Imagem",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1160,
+          900
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d9e789fe-7ffe-40d8-a65c-f69d14f60cd9",
+                "name": "output.resultado",
+                "value": false,
+                "type": "boolean"
+              },
+              {
+                "id": "d065c9b6-d739-4e83-b0d7-f3c1965c634f",
+                "name": "output.justificativa",
+                "value": "Os dados não foram encontrados na imagem",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "4fa970e8-1fb8-4a71-bd35-c277b4bebacc",
+        "name": "Erro",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1160,
+          1080
+        ]
+      },
+      {
+        "parameters": {
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "id": "70735ca2-fcf4-4617-9993-d33ca56f6e3c",
+        "name": "Dados Documento",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1400,
+          800
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4f1cea13-1f25-4dc1-9d3a-46fcdeb5a9b2",
+                "name": "foto",
+                "value": "={{ $('Dados').isExecuted ? $('Dados').first().json.foto : null }}",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2400,
+          880
+        ],
+        "id": "597eaef2-ff70-4459-b131-1911e18ec602",
+        "name": "Resultado + Foto"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4f1cea13-1f25-4dc1-9d3a-46fcdeb5a9b2",
+                "name": "foto",
+                "value": "={{ $('Dados').isExecuted ? $('Dados').first().json.foto : null }}",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2400,
+          700
+        ],
+        "id": "53ef076c-8c56-4a9f-b6ef-2897b81743c9",
+        "name": "Erro + Foto"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://app.bigdatacorp.com.br/bigid/documentoscopia/checar",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "accept",
+                "value": "application/json"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1bmlxdWVfbmFtZSI6ImluZnJhZXN0cnV0dXJhQGJsaXBzLmNvbS5iciIsIm5iZiI6MTY3MzU0NTc2NSwiZXhwIjoxOTg4NTQ1NzY1LCJpYXQiOjE2NzM1NDU3NjUsImlzcyI6IkJpZyBEYXRhIENvcnAuIiwicHJvZHVjdHMiOlsiQklHQk9PU1QiXSwiZG9tYWluIjoiQkxJUFMifQ.Ep_mYbFOiyLl7EMJ-jmFgEoOPO8_VuO3JZelc_GZGh0"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"Parameters\": [\n    \"DOC_IMG_URL={{ $('Dados do documento').first().json.primeira }}\"\n  ]\n}",
+          "options": {}
+        },
+        "id": "dec646c2-c680-4e93-a123-fa0a4b7474fa",
+        "name": "BDC Frente",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          720,
+          1060
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://app.bigdatacorp.com.br/bigid/documentoscopia/checar",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "accept",
+                "value": "application/json"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1bmlxdWVfbmFtZSI6ImluZnJhZXN0cnV0dXJhQGJsaXBzLmNvbS5iciIsIm5iZiI6MTY3MzU0NTc2NSwiZXhwIjoxOTg4NTQ1NzY1LCJpYXQiOjE2NzM1NDU3NjUsImlzcyI6IkJpZyBEYXRhIENvcnAuIiwicHJvZHVjdHMiOlsiQklHQk9PU1QiXSwiZG9tYWluIjoiQkxJUFMifQ.Ep_mYbFOiyLl7EMJ-jmFgEoOPO8_VuO3JZelc_GZGh0"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"Parameters\": [\n    \"DOC_IMG_URL={{ $('Dados do documento').first().json.segunda }}\"\n  ]\n}",
+          "options": {}
+        },
+        "id": "4f8800f4-9797-476a-b0e9-19242d8eeee8",
+        "name": "BDC Verso",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          320,
+          920
+        ]
+      }
+    ],
+    "connections": {
+      "Execute Workflow Trigger": {
+        "main": [
+          [
+            {
+              "node": "Tem dados?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tem dados?": {
+        "main": [
+          [
+            {
+              "node": "Dados do documento",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Return vazio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados do documento": {
+        "main": [
+          [
+            {
+              "node": "Dados Imagens",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados Imagens": {
+        "main": [
+          [
+            {
+              "node": "Sucesso?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "BDC Verso",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sucesso?": {
+        "main": [
+          [
+            {
+              "node": "Dados",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "BDC Verso",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sucesso na frente?": {
+        "main": [
+          [
+            {
+              "node": "Dados Imagem",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "BDC Frente",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados": {
+        "main": [
+          [
+            {
+              "node": "Api documento",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Api documento": {
+        "main": [
+          [
+            {
+              "node": "Deu erro?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sucesso no Verso?": {
+        "main": [
+          [
+            {
+              "node": "Dados Imagem",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Deu erro?": {
+        "main": [
+          [
+            {
+              "node": "Dados IA",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Dados Imagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Contrato inválido?": {
+        "main": [
+          [
+            {
+              "node": "Erro - Contrato",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "MOCK": {
+        "main": [
+          [
+            {
+              "node": "Contrato inválido?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados IA": {
+        "main": [
+          [
+            {
+              "node": "Dados Documento",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados Imagem": {
+        "main": [
+          [
+            {
+              "node": "Dados Documento",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados Documento": {
+        "main": [
+          [
+            {
+              "node": "MOCK",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Basic LLM Chain": {
+        "main": [
+          [
+            {
+              "node": "Resultado + Foto",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Erro - Contrato": {
+        "main": [
+          [
+            {
+              "node": "Erro + Foto",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "BDC Frente": {
+        "main": [
+          [
+            {
+              "node": "Sucesso no Verso?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "BDC Verso": {
+        "main": [
+          [
+            {
+              "node": "Sucesso na frente?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "callerPolicy": "workflowsFromSameOwner",
+      "errorWorkflow": "CPe8m95zjnd0NlyH"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Execute Workflow Trigger": [
+        {
+          "json": {
+            "frente": {
+              "id": 951044516527995,
+              "mime_type": "image/jpeg",
+              "sha256": "EiukY6VeW9s2rmMF1TqFAslHjYqQpwsYWpwPuwQg+88=",
+              "file_name": "c39f3e88-62bc-4d5d-a9dd-455c2654a88d.jpg",
+              "url": "https://storage.hyperflow.global/whatsapp/951044516527995"
+            },
+            "contrato": "67633aa3e3e97c9646814544",
+            "verso": {
+              "id": 951044516527995,
+              "mime_type": "image/jpeg",
+              "sha256": "EiukY6VeW9s2rmMF1TqFAslHjYqQpwsYWpwPuwQg+88=",
+              "file_name": "c39f3e88-62bc-4d5d-a9dd-455c2654a88d.jpg",
+              "url": "https://storage.hyperflow.global/whatsapp/951044516527995"
+            }
+          }
+        }
+      ]
+    },
+    "versionId": "3dd092f9-ab82-4340-9d0b-7eda3a1969fb",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-11-22T13:13:26.514Z",
+        "updatedAt": "2024-11-22T13:13:26.514Z",
+        "id": "owb3cfmzFRbqjP06",
+        "name": "Clara"
+      }
+    ]
+  }
+}
