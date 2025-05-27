@@ -1,0 +1,2254 @@
+{
+  "data": {
+    "createdAt": "2024-11-22T13:13:06.847Z",
+    "updatedAt": "2025-01-29T14:51:10.750Z",
+    "id": "TiIhb5cxg58hhcLi",
+    "name": "Analise de Documentos - Endereço Pessoa Jurídica",
+    "active": true,
+    "nodes": [
+      {
+        "parameters": {
+          "url": "={{ $json.url }}",
+          "options": {
+            "response": {
+              "response": {
+                "responseFormat": "file",
+                "outputPropertyName": "comprovante"
+              }
+            }
+          }
+        },
+        "id": "28243b73-8f23-4c89-b965-bc7ff874578e",
+        "name": "Get File",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          720,
+          1140
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "pdf",
+          "binaryPropertyName": "comprovante",
+          "options": {}
+        },
+        "id": "03ca7e8d-8486-4afa-a853-bf0ef9960d33",
+        "name": "Pdf to text",
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          920,
+          1140
+        ],
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "61ade9a6-9b14-487d-a614-a3f022851b7b",
+                "name": "text",
+                "value": "={{ $json.text }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "f0e78538-7a07-42cc-b989-d44a2acbf714",
+        "name": "Transcrição pdf",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1120,
+          1140
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://app.bigdatacorp.com.br/bigid/certidoes/residencia",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "accept",
+                "value": "application/json"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1bmlxdWVfbmFtZSI6ImluZnJhZXN0cnV0dXJhQGJsaXBzLmNvbS5iciIsIm5iZiI6MTY3MzU0NTc2NSwiZXhwIjoxOTg4NTQ1NzY1LCJpYXQiOjE2NzM1NDU3NjUsImlzcyI6IkJpZyBEYXRhIENvcnAuIiwicHJvZHVjdHMiOlsiQklHQk9PU1QiXSwiZG9tYWluIjoiQkxJUFMifQ.Ep_mYbFOiyLl7EMJ-jmFgEoOPO8_VuO3JZelc_GZGh0"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "Image",
+                "value": "={{ $json.url}}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "1fcfa3bb-c923-4dc8-a83d-dc9a2eb6e1a7",
+        "name": "Api endereço",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          720,
+          740
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "fc6ed262-c6ab-4845-93b9-838c199b8e19",
+                "leftValue": "={{ $json.tipo != 'pdf' }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "3be49e37-bea7-45e2-98b4-b346addbf6ba",
+        "name": "É imagem?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          520,
+          1040
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "87ce7809-a150-4a30-8b47-07f44f9b7c58",
+                "leftValue": "={{ $json.text }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "9c07e306-3293-481f-a2db-a3f1e77aa2ca",
+        "name": "Deu certo?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          1320,
+          1140
+        ]
+      },
+      {
+        "parameters": {
+          "model": "gpt-4o",
+          "options": {
+            "responseFormat": "json_object",
+            "temperature": 0.1
+          }
+        },
+        "id": "efe91c69-6387-43dd-8a67-8f3b750dcb69",
+        "name": "OpenAI Chat Model1",
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1,
+        "position": [
+          1580,
+          1280
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "utH6piS62wyaw3eE",
+            "name": "1Clara - DEV"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n  \"Logradouro\": \"Rua Raul Torres\",\n  \"Número\": \"621\",\n  \"Bairro\": \"Jardim Brasil\",\n  \"CEP\": \"18604-020\",\n  \"Cidade\": \"Botucatu\",\n  \"Estado\": \"São Paulo\",\n  \"Complemento\": \"\"\n}"
+        },
+        "id": "727580d3-09a4-4224-b3b1-5c3713f42a09",
+        "name": "Structured Output Parser1",
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.2,
+        "position": [
+          1740,
+          1280
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "501f8e9a-771c-4999-a369-e8611d225f67",
+                "name": "dados",
+                "value": "={{ $json.output }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "b703a978-3dff-4eda-8868-a199ac81a749",
+        "name": "Dados PDF",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1920,
+          1120
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "9e7921e8-11c7-4f1c-89f5-f2fbe335cab8",
+                "name": "Logradouro",
+                "value": "={{ $json.dados.Logradouro.toLowerCase().replaceSpecialChars().trim().replaceAll(',', '').replaceAll('.', '')  }}",
+                "type": "string"
+              },
+              {
+                "id": "a959dfa2-b845-4fdd-ab7b-58226649ecbb",
+                "name": "Número",
+                "value": "={{ $json.dados.Número.toLowerCase().replaceSpecialChars().replace(/\\D/g, '').trim().replaceAll(',', '').replaceAll('.', '')  }}",
+                "type": "string"
+              },
+              {
+                "id": "27ee0223-b119-4516-9b67-30e7d32fb346",
+                "name": "Bairro",
+                "value": "={{ $json.dados.Bairro.toLowerCase().replaceSpecialChars().trim().replaceAll(',', '').replaceAll('.', '')  }}",
+                "type": "string"
+              },
+              {
+                "id": "b7d8c77b-a957-4bd1-a46f-3baa34f1d4cf",
+                "name": "CEP",
+                "value": "={{ $json.dados.CEP.toLowerCase().replaceSpecialChars().replace(/\\D/g, '').trim().replaceAll(',', '').replaceAll('.', '')  }}",
+                "type": "string"
+              },
+              {
+                "id": "889014f1-97cc-462f-99f5-92d9273fa2c1",
+                "name": "Cidade",
+                "value": "={{ $json.dados.Cidade.toLowerCase().replaceSpecialChars().trim().replaceAll(',', '').replaceAll('.', '')  }}",
+                "type": "string"
+              },
+              {
+                "id": "0dd11d6d-900c-4d83-bbd0-e8a511b44b12",
+                "name": "Estado",
+                "value": "={{ $json.dados.Estado.toLowerCase().replaceSpecialChars().trim().replaceAll(',', '').replaceAll('.', '')  }}",
+                "type": "string"
+              },
+              {
+                "id": "0f0ac779-bc5e-4fa3-9be9-7d1bc0764894",
+                "name": "Complemento",
+                "value": "={{ $json.dados.Complemento.toLowerCase().replaceSpecialChars().trim().replaceAll(',', '').replaceAll('.', '')  }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "b3ad50f4-fb8c-4fb9-b2a6-060e1eebbbc9",
+        "name": "Dados Comprovante",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2080,
+          940
+        ]
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT\n  contractor.business_data.address.city,\n  contractor.business_data.address.complement,\n  contractor.business_data.address.neighborhood,\n  contractor.business_data.address.number,\n  contractor.business_data.address.proof_of_residence,\n  contractor.business_data.address.st_ave,\n  contractor.business_data.address.state,\n  contractor.business_data.address.zip_code\nFROM\n  `blips-bigdata.PLATAFORMA.negotiation`\nWHERE\n  contract_number = '{{ $('Execute Workflow Trigger').first().json.contrato.replaceSpecialChars().replace(/\\D/g, '').trim() }}'",
+          "options": {}
+        },
+        "id": "e5a510bc-8c3c-41e3-af8d-d21aed069a2c",
+        "name": "Dados Plataforma",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          2280,
+          940
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": "gpt-4o",
+          "options": {
+            "responseFormat": "json_object",
+            "temperature": 0.1
+          }
+        },
+        "id": "2bb550e8-cd08-468c-a497-940d93661640",
+        "name": "OpenAI Chat Model",
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1,
+        "position": [
+          2900,
+          1200
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "utH6piS62wyaw3eE",
+            "name": "1Clara - DEV"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n  \"resultado\": false,\n  \"diferencas\": [\"Logradouro\", \"Bairro\"],\n  \"faltando\": [\"CEP\", \"Cidade\"]\n}"
+        },
+        "id": "7a6e1c6b-b9a2-4922-b384-cb8a0ecd68b3",
+        "name": "Structured Output Parser",
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.2,
+        "position": [
+          3060,
+          1200
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d49f44c1-ea74-466c-bb6f-5072d2cc30c3",
+                "name": "Logradouro",
+                "value": "={{ $json.st_ave.toLowerCase().replaceSpecialChars().trim().replaceAll(',', '').replaceAll('.', '')  }}",
+                "type": "string"
+              },
+              {
+                "id": "20880844-43c7-4103-ac88-6942504402b3",
+                "name": "Número",
+                "value": "={{ $json.number.toLowerCase().replaceSpecialChars().replace(/\\D/g, '').trim().replaceAll(',', '').replaceAll('.', '')  }}",
+                "type": "string"
+              },
+              {
+                "id": "428d5fae-27c1-4e7d-b358-306eef301560",
+                "name": "Bairro",
+                "value": "={{ $json.neighborhood.toLowerCase().replaceSpecialChars().trim() }}",
+                "type": "string"
+              },
+              {
+                "id": "a17d7edd-709e-4cf3-ac3b-a652e1f0e8b7",
+                "name": "CEP",
+                "value": "={{ $json.zip_code.toLowerCase().replaceSpecialChars().replace(/\\D/g, '').trim().replaceAll(',', '').replaceAll('.', '')  }}",
+                "type": "string"
+              },
+              {
+                "id": "8d98099a-d6c8-4c81-a14d-85e2892ae387",
+                "name": "Cidade",
+                "value": "={{ $json.city.toLowerCase().replaceSpecialChars().trim().replaceAll(',', '').replaceAll('.', '')  }}",
+                "type": "string"
+              },
+              {
+                "id": "b0c947d4-b16a-435d-b3a3-2b77e6e3c60c",
+                "name": "Estado",
+                "value": "={{ $json.state.toLowerCase().replaceSpecialChars().trim().replaceAll(',', '').replaceAll('.', '')  }}",
+                "type": "string"
+              },
+              {
+                "id": "fd59674b-f109-4e21-a06b-872be83e3aa3",
+                "name": "Complemento",
+                "value": "={{ $json.complement.toLowerCase().replaceSpecialChars().trim().replaceAll(',', '').replaceAll('.', '')  }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "5ead31d3-cf71-421e-8730-39c21477fdb1",
+        "name": "Dados plataforma",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2680,
+          1040
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "a2d59986-a732-42e0-9a0e-aed247f21c43",
+                "leftValue": "={{ $json.output.resultado }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "adcee29e-6a68-4d05-9e2b-3da58dc960b7",
+        "name": "Análise deu certo?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          3080,
+          780
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b75a0f15-3d30-4842-9269-d3e494b467a5",
+                "name": "dados",
+                "value": "={{ $json.content.replaceAll(\"```json\", \"\").replaceAll(\"```\", \"\").parseJson() }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "77e2e7a3-d652-4905-91ca-da3c60611fbe",
+        "name": "Dados Imagem",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1120,
+          940
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "88e016f2-0dea-457e-b57b-8023bce73789",
+                "name": "url",
+                "value": "={{ $json.dados.url }}",
+                "type": "string"
+              },
+              {
+                "id": "a71e2bd2-9f97-42b9-8dcf-4e367ade4ac4",
+                "name": "tipo",
+                "value": "={{ $json.dados.mime_type.match(/[^/]+$/)[0] }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "f89e0171-91b0-4413-9f96-9faef15a962e",
+        "name": "Dados do documento",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          320,
+          1040
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "81cc02db-084a-4bb3-8eb6-9cb38dd1c583",
+                "leftValue": "={{ $json.content.toUpperCase() }}",
+                "rightValue": "ERRO",
+                "operator": {
+                  "type": "string",
+                  "operation": "contains"
+                }
+              },
+              {
+                "id": "7fac36ec-a1cf-499d-8c6c-2246eb9cc1fb",
+                "leftValue": "={{ $json.isEmpty() }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "id": "6812de1c-0546-470f-90d2-9fafe056ae76",
+        "name": "Deu erro?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          920,
+          940
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d9e789fe-7ffe-40d8-a65c-f69d14f60cd9",
+                "name": "output.resultado",
+                "value": false,
+                "type": "boolean"
+              },
+              {
+                "id": "d065c9b6-d739-4e83-b0d7-f3c1965c634f",
+                "name": "output.diferencas",
+                "value": "[\"Não foi possível ler a imagem\"]",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "9c4fbec6-25d7-4115-94e9-bcb6784e6507",
+        "name": "Erro",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1040,
+          780
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ccaabe91-1b88-4e6e-93b7-145849e32437",
+                "name": "output.resultado",
+                "value": false,
+                "type": "boolean"
+              },
+              {
+                "id": "74d32581-4a2e-44f1-81f0-4962cb71a57b",
+                "name": "output.justificativa",
+                "value": "={{  \n$json.output.diferencas.includes('Não foi possível ler a imagem') ? $json.output.diferencas.join(', ') \n: \n($json.output.diferencas.length > 0 ? 'Os seguintes campos não estão iguais no comprovante de endereço e na plataforma: ' +  $json.output.diferencas.join(', ') + '. ' : '') \n+ \n($json.output.faltando.length > 0 ? 'Os seguintes campos não foram encontrados no comprovante: ' +  $json.output.faltando.join(', ') : '')\n}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "55fbb5b8-d0df-4b5e-9d29-c44ec9f895cf",
+        "name": "Justificativa",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3280,
+          880
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "e0e43bbb-a75d-4b86-a5d3-ef8c8ae32882",
+                "name": "output.justificativa",
+                "value": "Todos os campos conferem",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "id": "e46c2b60-239f-4f51-b596-f9651a11316f",
+        "name": "Resultado",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3280,
+          680
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "90073909-51ed-44ea-a8bf-cc9027e31879",
+                "leftValue": "={{ $json.isEmpty() }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "145f2e7a-d95b-47ab-9a67-54a82412136f",
+        "name": "Contrato inválido?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          2480,
+          940
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d9e789fe-7ffe-40d8-a65c-f69d14f60cd9",
+                "name": "output.resultado",
+                "value": false,
+                "type": "boolean"
+              },
+              {
+                "id": "d065c9b6-d739-4e83-b0d7-f3c1965c634f",
+                "name": "output.justificativa",
+                "value": "Dados do contrato não encontrados",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "604589ca-c1e0-4ada-a503-75fd25dbb62a",
+        "name": "Erro - Contrato",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2680,
+          840
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "c37f3e7f-4e7a-41b2-b0db-92a72e1532b1",
+                "name": "city",
+                "value": "Uberlândia",
+                "type": "string"
+              },
+              {
+                "id": "ad48d143-1d78-47a0-9bbd-42b52446db6d",
+                "name": "complement",
+                "value": "LOT S DA GA100 CD GAVEA PARADISO",
+                "type": "string"
+              },
+              {
+                "id": "21143961-b173-4b7d-9bf7-66fe85e37cc6",
+                "name": "neighborhood",
+                "value": "Gávea",
+                "type": "string"
+              },
+              {
+                "id": "f4d81765-701d-4b6c-8729-71d7ae782a04",
+                "name": "number",
+                "value": "60",
+                "type": "string"
+              },
+              {
+                "id": "3018a67d-b35f-49c2-a530-710c4e990f50",
+                "name": "st_ave",
+                "value": "Rua Alameda dos Rouxinóis",
+                "type": "string"
+              },
+              {
+                "id": "6ca6deb3-fc2d-41c8-8b26-597ef2f6dfe3",
+                "name": "state",
+                "value": "Minas Gerais",
+                "type": "string"
+              },
+              {
+                "id": "7ef51301-2203-4c64-aaca-67b922d155e8",
+                "name": "zip_code",
+                "value": "38.411-145",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "aac56964-a8ac-4029-b50c-685e5004673e",
+        "name": "MOCK",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2280,
+          1100
+        ]
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=# Entrada: Você irá receber dados de duas fontes, uma é a plataforma e outro de um comprovante. \n\n# Tarefa: Sua tarefa é comparar os dados da plataforma com os dados do comprovante e determinar se eles são iguais. Comparando campo a campo. \n\n*Importante*: Faça uma validação inteligente, por exemplo: se em uma fonte estiver escrito 'Av jao paulo' e na outra 'Avenida joao paulo', entenda que foi somente uma simplificação e o que os dados de fato conferem. Se em um estiver 'rua pedro cabra'l e na outra 'avenida pedro cabaral', também considere que foi erro de digitação e e está correto. Outro exemplo, se um for 'mg' e outro for 'Minas Gerais' é só uma abreviação e está certo. \n\nFaça essa análise campo a campo dos dois objetos de entrada.\n\n#Saída esperada: Objeto json: {\"resultado\": true ou false, \"diferencas\": vazio ou campos que diferem, \"faltanto\": vazio ou campos que faltam no comprovante mas não na plataforma} \n\n# Exemplo 1\nPlataforma:\n{\"Logradouro\":\"rua castelo branco\",\"Número\":\"63\",\"Bairro\":\"jardim elisa maria\",\"CEP\":\"02873740\",\"Cidade\":\"sao paulo\",\"Estado\":\"SP\",\"Complemento\":\"\"}\n\nComprovante:\n{\"Logradouro\":\"r castelo branco\",\"Número\":\"63\",\"Bairro\":\"jardim elisas maria\",\"CEP\":\"02873740\",\"Cidade\":\"sao paulo\",\"Estado\":\"sp\",\"Complemento\":\"\"}\n\n<Saída>:\n{\n  \"resultado\": true,\n  \"diferencas\": ,\n  \"faltando\": \n}\n\n# Exemplo 2\nPlataforma:\n{\"Logradouro\":\"rua castelo branco\",\"Número\":\"63\",\"Bairro\":\"jardim elisa maria\",\"CEP\":\"02873740\",\"Cidade\":\"sao paulo\",\"Estado\":\"SP\",\"Complemento\":\"\"}\n\nComprovante:\n{\"Logradouro\":\"r castelo branco\",\"Número\":\"63\",\"Bairro\":\"jardim elisas maria\",\"CEP\":\"02873741\",\"Cidade\":\"sao paulo\",\"Estado\":\"mg\",\"Complemento\":\"\"}\n\n<Saída>:\n{\n  \"resultado\": false,\n  \"diferencas\": [\"CEP (02873740 na plataforma e 02873741 no comprovante\", \"Estado (SP na plataforma e mg no comprovante)\"],\n  \"faltando\": \n}\n\n# Exemplo 3\nPlataforma:\n{\"Logradouro\":\"rua castelo branco\",\"Número\":\"63\",\"Bairro\":\"jardim elisa maria\",\"CEP\":\"02873740\",\"Cidade\":\"sao paulo\",\"Estado\":\"SP\",\"Complemento\":\"\"}\n\nComprovante:\n{\"Logradouro\":\"r castelo branco\",\"Número\":\"63\",\"Bairro\":\"jardim elisas maria\",\"CEP\":\"\",\"Cidade\":\"sao paulo\",\"Estado\":\"sp\",\"Complemento\":\"\"}\n\n<Saída>:\n{\n  \"resultado\": false,\n  \"diferencas\": [\"CEP (02873740 na plataforma e vazio no comprovante)\"],\n  \"faltando\": [\"CEP\"]\n}\n\n# Exemplo 4\nPlataforma:\n{\"Logradouro\":\"av josé joao\",\"Número\":\"63\",\"Bairro\":\"jardim elisa maria\",\"CEP\":\"02873740\",\"Cidade\":\"sao paulo\",\"Estado\":\"sp\",\"Complemento\":\"\"}\n\nComprovante:\n{\"Logradouro\":\"avenida jose joao\",\"Número\":\"63\",\"Bairro\":\"jardim elisas maria\",\"CEP\":\"02873740\",\"Cidade\":\"sao paulo\",\"Estado\":\"sao paulo\",\"Complemento\":\"\"}\n\n<Saída>:\n{\n  \"resultado\": true,\n  \"diferencas\": ,\n  \"faltando\": \n}\n\n-----------------------------\n\nA entrada que você deve processar é essa: \nPlataforma:\n{{ $json.toJsonString() }}\n\nComprovante:\n{{ $('Dados Comprovante').first().json.toJsonString() }}",
+          "hasOutputParser": true
+        },
+        "id": "7473c24f-5bfc-4476-ae68-883f753b16da",
+        "name": "Compara Dados",
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.4,
+        "position": [
+          2880,
+          1040
+        ]
+      },
+      {
+        "parameters": {
+          "resource": "image",
+          "operation": "analyze",
+          "modelId": {
+            "__rl": true,
+            "value": "chatgpt-4o-latest",
+            "mode": "list",
+            "cachedResultName": "CHATGPT-4O-LATEST"
+          },
+          "text": "=# Entrada: Você irá receber uma imagem.\n# Tarefa: Sua tarefa é trazer, *SEM NENHUM ERRO*, *TODOS* os campos listados abaixo: \n- Logradouro\n- Número\n- Bairro\n- CEP\n- Cidade\n- Estado\n- Complemento\n- Nome\n\nem formato json, com chave e valor.\n\n*Importante*: Se algum deles for vazio ou você não encontrar ou for ***, você deve retornar o valor vazio para esse campo. Assim: \"campo\": \"\". Se você não tiver certeza sobre um campo, coloque \"\", não invente nem tente colocar algum outro, tem que ter certeza. Não use ```json.\n\n*Importante*: *NUNCA* invente os valores, se não conseguir achar não tiver certeza, retorne \"#ERRO#\".\n\n*Importante*: Se for uma conta de consumo, tome cuidado para não confundir os dados do endereço do cliente (quem está pagando a conta de consumo), com os dados da empresa que está cobrando. Os dados que eue quero são o *do cliente* *não confunda*. Não traga os outros dados que não são do cliente.\n\n*Importante*: O comprovante de endereço só é válido se seguir as seguintes restrições:\n\nComprovante de endereço aceito para Pessoa Jurídica:\n\n- Cartão CNPJ;\n\n- Contas de consumo (conta de água, luz ou telefone fixo e celular; Contrato de aluguel em vigor, com firma reconhecida pelo proprietário do imóvel, junto com uma conta de consumo (água, luz, telefone); Declaração anual do Imposto de Renda Pessoa Física; Boleto bancário de mensalidade escolar ou plano de saúde, condomínio ou financiamento habitacional; Fatura de cartão de crédito; Guia/carnê do IPTU ou IPVA; Certificado de Registro e Licenciamento de Veículos; etc.), com emissão de até 3 meses;\n\n- Declaração de endereço comercial ou residencial feita pelo locatário do imóvel (autenticada em cartório);\n\n- Declaração de endereço comercial e residencial (documento que já traz o endereço dos dois locais ao mesmo tempo) feita pelo responsável legal da empresa (autenticada em cartório);\n\n*Importante*: Se não seguir essas restrições, deve retornar exatamente: \"#ERRO#\".\n\n\n#Saída esperada: Objeto json completo com todas as chaves: Logradouro, Número, Bairro, CEP, Cidade, Estado e Complemento. Ou \"#ERRO#\".",
+          "imageUrls": "={{ $json.url }}",
+          "options": {}
+        },
+        "id": "eecd9368-c7ea-4589-a4aa-224ab1dd2087",
+        "name": "OpenAI",
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.4,
+        "position": [
+          720,
+          940
+        ],
+        "alwaysOutputData": false,
+        "credentials": {
+          "openAiApi": {
+            "id": "utH6piS62wyaw3eE",
+            "name": "1Clara - DEV"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=# Entrada: Você irá receber um texto grande, com várias informações. \n# Tarefa: Sua tarefa é trazer, *SEM NENHUM ERRO*, *TODOS* os campos listados abaixo: \n- Logradouro\n- Número\n- Bairro\n- CEP\n- Cidade\n- Estado\n- Complemento\n- Nome\n\nem formato json, com chave e valor.\n\n*Importante*: Se algum deles for vazio ou você não encontrar ou for ***, você deve retornar o valor vazio para esse campo. Assim: \"campo\": \"\". Se você não tiver certeza sobre um campo, coloque \"\", não invente nem tente colocar algum outro, tem que ter certeza.\n\n*Importante*: Na parte do logradouro, se estiver só 'r' coloque 'rua', se estiver só 'av' coloque 'avenida', tem que estar com o logradouro completo para a minha análise, mesmo que no documento estiver abreviado eu preciso da palavra completa.\n\n*Importante*: O comprovante de endereço só é válido se seguir as seguintes restrições:\n\nComprovante de endereço aceito para Pessoa Jurídica:\n\n- Cartão CNPJ;\n\n- Contas de consumo (conta de água, luz ou telefone fixo e celular; Contrato de aluguel em vigor, com firma reconhecida pelo proprietário do imóvel, junto com uma conta de consumo (água, luz, telefone); Declaração anual do Imposto de Renda Pessoa Física; Boleto bancário de mensalidade escolar ou plano de saúde, condomínio ou financiamento habitacional; Fatura de cartão de crédito; Guia/carnê do IPTU ou IPVA; Certificado de Registro e Licenciamento de Veículos; etc.), com emissão de até 3 meses;\n\n- Declaração de endereço comercial ou residencial feita pelo locatário do imóvel (autenticada em cartório);\n\n- Declaração de endereço comercial e residencial (documento que já traz o endereço dos dois locais ao mesmo tempo) feita pelo responsável legal da empresa (autenticada em cartório);\n\n*Importante*: Se não seguir essas restrições, deve retornar exatamente: \"#ERRO#\".\n\n\n#Saída esperada: Objeto json completo com todas as chaves: Logradouro, Número, Bairro, CEP, Cidade, Estado e Complemento.\n\n# Exemplo 1\n\n<Entrada>:\nREPÚBLICA FEDERATIVA DO BRASIL\\nCADASTRO NACIONAL DA PESSOA JURÍDICA\\nNÚMERO DE INSCRIÇÃO\\n22.098.418/0001-16\\nMATRIZ\\nCOMPROVANTE DE INSCRIÇÃO E DE SITUAÇÃO\\nCADASTRAL\\nDATA DE ABERTURA\\n21/03/2015\\nNOME EMPRESARIAL\\n22.098.418 BISMARKIS SANTOS SILVA\\nTÍTULO DO ESTABELECIMENTO (NOME DE FANTASIA)\\n********\\nPORTE\\nME\\nCÓDIGO E DESCRIÇÃO DA ATIVIDADE ECONÔMICA PRINCIPAL\\n82.99-7-99 - Outras atividades de serviços prestados principalmente às empresas não especificadas anteriormente\\nCÓDIGO E DESCRIÇÃO DAS ATIVIDADES ECONÔMICAS SECUNDÁRIAS\\n45.20-0-07 - Serviços de instalação, manutenção e reparação de acessórios para veículos automotores\\nCÓDIGO E DESCRIÇÃO DA NATUREZA JURÍDICA\\n213-5 - Empresário (Individual)\\nLOGRADOURO\\nR SAO CRISTOVAO\\nNÚMERO\\n274\\nCOMPLEMENTO\\nLOJA 7\\nCEP\\n11.370-610\\nBAIRRO/DISTRITO\\nJARDIM PARAISO\\nMUNICÍPIO\\nSAO VICENTE\\nUF\\nSP\\nENDEREÇO ELETRÔNICO\\nDJBISMARKIS@HOTMAIL.COM\\nTELEFONE\\n(13) 7410-0189\\nENTE FEDERATIVO RESPONSÁVEL (EFR)\\n*****\\nSITUAÇÃO CADASTRAL\\nATIVA\\nDATA DA SITUAÇÃO CADASTRAL\\n22/11/2023\\nMOTIVO DE SITUAÇÃO CADASTRAL\\nSITUAÇÃO ESPECIAL\\n********\\nDATA DA SITUAÇÃO ESPECIAL\\n********\\nAprovado pela Instrução Normativa RFB nº 2.119, de 06 de dezembro de 2022.\\nEmitido no dia 27/11/2024 às 14:47:42 (data e hora de Brasília). Página: 1/1\\n27/11/2024, 14:47 about:blank\\nabout:blank 1/1\n\n<Saída>:\n{\n  \"Logradouro\": \"Rua SAO CRISTOVAO\"\n  \"Número\": 274\n  \"Bairro\": \"JARDIM PARAISO\"\n  \"CEP\": \"11.370-610\"\n  \"Cidade\": \"SAO VICENTE\"\n  \"Estado\": \"SP\"\n  \"Complemento\": \"LOJA 7\",\n  \"Nome\": \"BISMARKIS SANTOS SILVA\"\n}\n\n# Exemplo 2\n\n<Entrada>:\n\n130357798\\n18/12/202431\\nFORNECIMENTO\\nADC BANDEIRA AMARELA kWh 0,01069030,00 0,03 0,32 0% 0 0,0097290,32\\nADC BANDEIRA VERMELHA kWh 0,04188030,00 0,11 1,26 0% 0 0,0381141,26\\nVALOR MIN. FATURÁVEL CUSTO DISP kWh 0,81339630,00 2,19 24,4 0% 0 0,74023624,40\\nVALOR ACUM. MES PASSADO - 10/2024 24,90\\nITENS FINANCEIROS\\nTipo de fornecimento: MONOFÁSICO\\nClassificação: B B1 RESIDENCIAL - RESIDENCIAL NORMAL CONVENCIONAL\\nFERNANDO GABRIEL DE SOUZA FERNANDES\\nCNPJ/CPF: 044.105.901-54\\nRUA VASCO DOS REIS, Q. 28, L. 13, S/N, CASA - 1\\nPARQUE ESTRELA DALVA\\nCEP: 72804340 LUZIANIA GO BRASIL\\nPERDAS DE TRANSFORMAÇÃO / RAMAL: 0%\\nR$**********50,8812/12/2024\\n16/10/2024 16/11/2024\\nNOV/2024\\n10029553910\\nPIS/PASEP 1,6038%25,98 0,42\\nICMS 0%25,98 0\\nCOFINS 7,3906%25,98 1,92\\nREVISÃO TARIFÁRIA PERIÓDICA COM EFEITO MÉDIO DE 4,33%. RESOLUÇÃO HOMOLOGATORIA ANEEL N. 3.407/2024, COM INÍCIO VIGÊNCIA EM 22/10/2024.\\nENERGIA ATIVA - KWH 00248 013216534-1 00248 1,000000ÚNICO\\nCliente residencial isento conforme Anexo IX RCTE ART. 6º INC. XI.\\nCFOP 5258: Venda de energia elétrica para não contribuinte\\nProtocolo de autorização: 3522400032939738 - 22/11/2024 às 21:24:48\\n52241101543032000104660001246295481044721056\\nchave de acesso:\\nConsulte pela Chave de Acesso em:\\nhttps://dfe-portal.svrs.rs.gov.br/NF3e/consulta\\nNOTA FISCAL Nº 124629548 - SÉRIE 0 / DATA DE EMISSÃO: 22/11/2024 21:19:39\\nTOTAL 2,34 25,98 0,0050,88\\nTensão Nominal Disp: 220 V Lim Min: 200,2 V Lim Max: 231,0 V\\n27/11/2024\\nDIAS\\nTIPOS DE\\nFATURAMENTOCONSUMO FATURADO(kWh)MÊS/ANO\\n0,00\\n0,00\\n0,00\\n0,00\\n0,00\\n0,00\\n0,00\\n0,00\\n0,00\\n0,00\\n0,00\\n0,00\\n0,00\\n0,00\\n31\\n30\\n32\\n30\\n32\\n30\\n29\\n29\\n31\\n30\\n30\\n32\\n31\\nMÍNIMO\\nMÍNIMO\\nMÍNIMO\\nMÍNIMO\\n83620000000-5 50880009111-0 88117411240-2 00796010627-1\\nEQUATORIAL GOIAS DISTRIBUIDORA DE ENERGIA S/A / CELG DISTRIBUICAO S A.\\n83620000000-5 50880009111-0 88117411240-2 00796010627-1\\nFERNANDO GABRIEL DE SOUZA FERNANDES CNPJ/CPF: 044.105.901-54\\nRUA VASCO DOS REIS, Q. 28, L. 13, S/N, CASA - 1 PARQUE ESTRELA DALVA CEP: 72804340 LUZIANIA GO BRASIL\\n22/11/2024 2024111881174 NOV/2024 12/12/2024 R$**********50,88\\nAproveite os benefícios do débito automático, cadastre-se na sua instituição bancária utilizando o código: 0796010627\\n0796010627\\nEsta fatura ainda não possui\\nQr Code. Estamos trabalhando\\npara que você em breve conte\\ncom este serviço.\\nRUA VASCO DOS REIS, Q. 28, L. 13, S/N, CASA - 1\\nPARQUE ESTRELA DALVA\\nCEP: 72804340 LUZIANIA GO BRASIL\\nENDEREÇO DE ENTREGA:\\nSegunda via\\n\\n22/11/2024 12/12/2024NOV/2024\\nFERNANDO GABRIEL DE SOUZA FERNANDES\\nRUA VASCO DOS REIS, Q. 28, L. 13, S/N, CASA - 1\\nPARQUE ESTRELA DALVA\\nCEP: 72804340 LUZIANIA GO BRASIL\\n32 / 12 64400 13216534-1\n\n<Saída>:\n{\n  \"Logradouro\": \"RUA VASCO DOS REIS\"\n  \"Número\": \"\"\n  \"Bairro\": \"PARQUE ESTRELA DALVA\"\n  \"CEP\": \"72804340\"\n  \"Cidade\": \"LUZIANIA\"\n  \"Estado\": \"GO\"\n  \"Complemento\": \"Quadra 28, Lote 13, Casa 1\",\n  \"Nome\": \"FERNANDO GABRIEL DE SOUZA FERNANDES\"\n}\n\n# Exemplo 3\n\n<Entrada>:\n\nPág: 1 de3\\nUTILIZE ESTA VIA PARA PAGAMENTO \\nVocê pode migrar para um plano que não possui\\nlivros digitais, sem a cobrança de multa. Fale com a\\ngente pelo nosso canal de atendimento 10312.\\nMAURICIO CALHAU FREITAS\\nNome do\\nCliente:\\nNº da Fatura Banco / Agência Identificação Data de Vencimento Valor Total da Conta\\n451188161 000473276470 26/02/2024 75,27\\n84610000000-5 75270004000-5 04732764700-5 45118816100-9 AUTENTICAÇÃO MECÂNICA\\nTELECOM\\nMAURICIO CALHAU FREITAS\\nPAULO GRACINDO (LOT S DA GA1000 AV\\nCD GAVEA PARADISO R ALAMEDA DOS ROU NR 60 GAVEA\\n38411-145 UBERLANDIA MG\\nPAGUE COM PIX\\nNº da fatura\\n451188161\\nValor total da conta\\nR$ 75,27\\nData de vencimento\\n26 / fev / 2024\\nFALE COM A ALGAR TELECOM\\nwww.algartelecom.com.br\\n@algartelecom\\nfacebook.com/algartelecom\\nOu ligue 103 12\\nHISTÓRICO VALOR DA CONTA\\n(R$)\\nSET\\n74\\nOUT\\n74\\nNOV\\n75\\nDEZ\\n73\\nJAN\\n73\\nEMISSÃO DESTA CONTA: 12/02/2024\\nCONTA SIMPLIFICADA\\nCELULAR\\nSEU NÚMERO VALOR (R$) PLANO\\n98444-8484 73,20 PLANO CONTROLE 8GB\\nTOTAL \\nR$ 73,20\\nSERVIÇOS DA CONTA\\nSERVIÇO VALOR (R$) SERVIÇOS\\n000473276470 2,07 Serviços Da Conta\\nTOTAL \\nR$ 2,07\n\n<Saída>:\n{\n  \"Logradouro\": \"R ALAMEDA DOS ROU\"\n  \"Número\": \"60\"\n  \"Bairro\": \"GAVEA\"\n  \"CEP\": \"38411-145\"\n  \"Cidade\": \"UBERLANDIA\"\n  \"Estado\": \"MG\"\n  \"Complemento\": \"LOT S DA GA100 CD GAVEA PARADISO\",\n  \"Nome\": \"MAURICIO CALHAU FREITAS\"\n}\n\n-------------------------------------\nA entrada que você deve processar é essa: {{ $json.text }}",
+          "hasOutputParser": true
+        },
+        "id": "82877e6d-7caf-4307-bbf7-690639ffea83",
+        "name": "Extrai dados PDF",
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.4,
+        "position": [
+          1560,
+          1120
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "8f553225-51d0-4778-bc91-c401ab243ab3",
+                "leftValue": "={{ $json.dados ? true : false }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "26e39fc2-d955-45f3-bab2-2dd565760c42",
+        "name": "Tem dados?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          120,
+          1040
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "3cbf42fa-6d21-4a0a-8492-8382808b5038",
+                "name": "output.resultado",
+                "value": false,
+                "type": "boolean"
+              },
+              {
+                "id": "4200157d-b070-4e94-9005-6790b4e5c0cc",
+                "name": "output.justificativa",
+                "value": "Não veio nenhum documento",
+                "type": "string"
+              },
+              {
+                "id": "dc990b39-b3df-4d20-8ac4-5983495376bc",
+                "name": "output.vazio",
+                "value": true,
+                "type": "boolean"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "853bc562-7ab4-467b-b57f-24ced8218e47",
+        "name": "Return vazio",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          320,
+          1200
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "34c30b13-9539-440f-b4d1-6e51d6c31753",
+        "name": "Execute Workflow Trigger",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          -260,
+          2080
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "fc6ed262-c6ab-4845-93b9-838c199b8e19",
+                "leftValue": "={{ $json.tipo != 'pdf' }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "fd46dca2-d8e0-4e57-9766-88686cda7802",
+        "name": "É imagem?1",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          360,
+          2080
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "87ce7809-a150-4a30-8b47-07f44f9b7c58",
+                "leftValue": "={{ $json.text }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "09f14bdb-f263-47b2-8b2b-afa28be917d5",
+        "name": "Deu certo?1",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          1160,
+          2180
+        ]
+      },
+      {
+        "parameters": {
+          "model": "gpt-4o",
+          "options": {
+            "responseFormat": "json_object",
+            "temperature": 0.1
+          }
+        },
+        "id": "d45df967-e363-4dbc-9f32-f28262c69a74",
+        "name": "OpenAI Chat Model2",
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1,
+        "position": [
+          1420,
+          2320
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "utH6piS62wyaw3eE",
+            "name": "1Clara - DEV"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n  \"Logradouro\": \"Rua Raul Torres\",\n  \"Número\": \"621\",\n  \"Bairro\": \"Jardim Brasil\",\n  \"CEP\": \"18604-020\",\n  \"Cidade\": \"Botucatu\",\n  \"Estado\": \"São Paulo\",\n  \"Complemento\": \"\",\n  \"Nome\": \"Paulo Eduardo\"\n}"
+        },
+        "id": "ae2d5504-593b-40c6-a38b-086daa64828b",
+        "name": "Structured Output Parser2",
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.2,
+        "position": [
+          1580,
+          2320
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "501f8e9a-771c-4999-a369-e8611d225f67",
+                "name": "dados",
+                "value": "={{ $json.output }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "52417f22-eca7-4435-ab9e-cfd7d26f1949",
+        "name": "Dados PDF1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1760,
+          2160
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "3afb042f-a691-469a-b00f-4137bfbcff79",
+                "name": "city",
+                "value": "={{ $json.dados.Cidade.toLowerCase().replaceSpecialChars().trim().replaceAll(',', '').replaceAll('.', '') }}",
+                "type": "string"
+              },
+              {
+                "id": "3bdcdb0e-2610-4d7e-8990-6a6fe5e56e7c",
+                "name": "complement",
+                "value": "={{ $json.dados.Complemento.toLowerCase().replaceSpecialChars().trim().replaceAll(',', '').replaceAll('.', '') }}",
+                "type": "string"
+              },
+              {
+                "id": "0fbe9758-1bf3-4e29-a800-45c881c22d5c",
+                "name": "neighborhood",
+                "value": "={{ $json.dados.Bairro.toLowerCase().replaceSpecialChars().trim().replaceAll(',', '').replaceAll('.', '') }}",
+                "type": "string"
+              },
+              {
+                "id": "b10a7077-9074-4aa7-bf9c-40ccb71e3336",
+                "name": "number",
+                "value": "={{ $json.dados.Número.toLowerCase().replaceSpecialChars().replace(/\\D/g, '').trim().replaceAll(',', '').replaceAll('.', '') }}",
+                "type": "string"
+              },
+              {
+                "id": "948b0f06-0777-4cc6-8ad7-496883fb6b4e",
+                "name": "st_ave",
+                "value": "={{ $json.dados.Logradouro.toLowerCase().replaceSpecialChars().trim().replaceAll(',', '').replaceAll('.', '') }}",
+                "type": "string"
+              },
+              {
+                "id": "6b4ae163-4baa-4971-b27f-f7dc8aa7c145",
+                "name": "state",
+                "value": "={{ $json.dados.Estado.toLowerCase().replaceSpecialChars().trim().replaceAll(',', '').replaceAll('.', '') }}",
+                "type": "string"
+              },
+              {
+                "id": "61fd7569-3693-4ee9-828d-f9f9870da1a1",
+                "name": "zip_code",
+                "value": "={{ $json.dados.CEP.toLowerCase().replaceSpecialChars().replace(/\\D/g, '').trim().replaceAll(',', '').replaceAll('.', '') }}",
+                "type": "string"
+              },
+              {
+                "id": "c2b12053-bb7d-4ac6-849f-6723e80b5d11",
+                "name": "nome",
+                "value": "={{ $json.dados.Nome }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "e48aa9d9-0fba-4850-abb5-40db6a11bb61",
+        "name": "Dados Comprovante1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1920,
+          1980
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b75a0f15-3d30-4842-9269-d3e494b467a5",
+                "name": "dados",
+                "value": "={{ $json.content.replaceAll(\"```json\", \"\").replaceAll(\"```\", \"\").parseJson() }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "8d3646dd-b102-4a12-910d-75ecb3ac4e93",
+        "name": "Dados Imagem1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          960,
+          1980
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "81cc02db-084a-4bb3-8eb6-9cb38dd1c583",
+                "leftValue": "={{ $json.content.toUpperCase() }}",
+                "rightValue": "ERRO",
+                "operator": {
+                  "type": "string",
+                  "operation": "contains"
+                }
+              },
+              {
+                "id": "7fac36ec-a1cf-499d-8c6c-2246eb9cc1fb",
+                "leftValue": "={{ $json.isEmpty() }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "id": "4919f2b7-2c84-41d7-9107-82cd2f7a0779",
+        "name": "Deu erro?1",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          760,
+          1980
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d9e789fe-7ffe-40d8-a65c-f69d14f60cd9",
+                "name": "output.resultado",
+                "value": false,
+                "type": "boolean"
+              },
+              {
+                "id": "d065c9b6-d739-4e83-b0d7-f3c1965c634f",
+                "name": "output.diferencas",
+                "value": "[\"Não foi possível ler a imagem\"]",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "77b50186-b658-4799-a295-e0813ffe768d",
+        "name": "Erro1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          880,
+          1820
+        ]
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=# Entrada: Você irá receber um texto grande, com várias informações. \n# Tarefa: Sua tarefa é trazer, *SEM NENHUM ERRO*, *TODOS* os campos listados abaixo: \n- Logradouro\n- Número\n- Bairro\n- CEP\n- Cidade\n- Estado\n- Complemento\n- Nome\n\nem formato json, com chave e valor.\n\n*Importante*: Se algum deles for vazio ou você não encontrar ou for ***, você deve retornar o valor vazio para esse campo. Assim: \"campo\": \"\". Se você não tiver certeza sobre um campo, coloque \"\", não invente nem tente colocar algum outro, tem que ter certeza.\n\n*Importante*: Na parte do logradouro, se estiver só 'r' coloque 'rua', se estiver só 'av' coloque 'avenida', tem que estar com o logradouro completo para a minha análise, mesmo que no documento estiver abreviado eu preciso da palavra completa.\n\n*Importante*: O comprovante de endereço só é válido se seguir as seguintes restrições:\n\nComprovante de endereço aceito para Pessoa Jurídica:\n\n- Cartão CNPJ;\n\n- Contas de consumo (conta de água, luz ou telefone fixo e celular; Contrato de aluguel em vigor, com firma reconhecida pelo proprietário do imóvel, junto com uma conta de consumo (água, luz, telefone); Declaração anual do Imposto de Renda Pessoa Física; Boleto bancário de mensalidade escolar ou plano de saúde, condomínio ou financiamento habitacional; Fatura de cartão de crédito; Guia/carnê do IPTU ou IPVA; Certificado de Registro e Licenciamento de Veículos; etc.), com emissão de até 3 meses;\n\n- Declaração de endereço comercial ou residencial feita pelo locatário do imóvel (autenticada em cartório);\n\n- Declaração de endereço comercial e residencial (documento que já traz o endereço dos dois locais ao mesmo tempo) feita pelo responsável legal da empresa (autenticada em cartório);\n\n*Importante*: Se não seguir essas restrições, deve retornar exatamente: \"#ERRO#\".\n\n\n#Saída esperada: Objeto json completo com todas as chaves: Logradouro, Número, Bairro, CEP, Cidade, Estado e Complemento.\n\n# Exemplo 1\n\n<Entrada>:\nREPÚBLICA FEDERATIVA DO BRASIL\\nCADASTRO NACIONAL DA PESSOA JURÍDICA\\nNÚMERO DE INSCRIÇÃO\\n22.098.418/0001-16\\nMATRIZ\\nCOMPROVANTE DE INSCRIÇÃO E DE SITUAÇÃO\\nCADASTRAL\\nDATA DE ABERTURA\\n21/03/2015\\nNOME EMPRESARIAL\\n22.098.418 BISMARKIS SANTOS SILVA\\nTÍTULO DO ESTABELECIMENTO (NOME DE FANTASIA)\\n********\\nPORTE\\nME\\nCÓDIGO E DESCRIÇÃO DA ATIVIDADE ECONÔMICA PRINCIPAL\\n82.99-7-99 - Outras atividades de serviços prestados principalmente às empresas não especificadas anteriormente\\nCÓDIGO E DESCRIÇÃO DAS ATIVIDADES ECONÔMICAS SECUNDÁRIAS\\n45.20-0-07 - Serviços de instalação, manutenção e reparação de acessórios para veículos automotores\\nCÓDIGO E DESCRIÇÃO DA NATUREZA JURÍDICA\\n213-5 - Empresário (Individual)\\nLOGRADOURO\\nR SAO CRISTOVAO\\nNÚMERO\\n274\\nCOMPLEMENTO\\nLOJA 7\\nCEP\\n11.370-610\\nBAIRRO/DISTRITO\\nJARDIM PARAISO\\nMUNICÍPIO\\nSAO VICENTE\\nUF\\nSP\\nENDEREÇO ELETRÔNICO\\nDJBISMARKIS@HOTMAIL.COM\\nTELEFONE\\n(13) 7410-0189\\nENTE FEDERATIVO RESPONSÁVEL (EFR)\\n*****\\nSITUAÇÃO CADASTRAL\\nATIVA\\nDATA DA SITUAÇÃO CADASTRAL\\n22/11/2023\\nMOTIVO DE SITUAÇÃO CADASTRAL\\nSITUAÇÃO ESPECIAL\\n********\\nDATA DA SITUAÇÃO ESPECIAL\\n********\\nAprovado pela Instrução Normativa RFB nº 2.119, de 06 de dezembro de 2022.\\nEmitido no dia 27/11/2024 às 14:47:42 (data e hora de Brasília). Página: 1/1\\n27/11/2024, 14:47 about:blank\\nabout:blank 1/1\n\n<Saída>:\n{\n  \"Logradouro\": \"Rua SAO CRISTOVAO\"\n  \"Número\": 274\n  \"Bairro\": \"JARDIM PARAISO\"\n  \"CEP\": \"11.370-610\"\n  \"Cidade\": \"SAO VICENTE\"\n  \"Estado\": \"SP\"\n  \"Complemento\": \"LOJA 7\",\n  \"Nome\": \"BISMARKIS SANTOS SILVA\"\n}\n\n# Exemplo 2\n\n<Entrada>:\n\n130357798\\n18/12/202431\\nFORNECIMENTO\\nADC BANDEIRA AMARELA kWh 0,01069030,00 0,03 0,32 0% 0 0,0097290,32\\nADC BANDEIRA VERMELHA kWh 0,04188030,00 0,11 1,26 0% 0 0,0381141,26\\nVALOR MIN. FATURÁVEL CUSTO DISP kWh 0,81339630,00 2,19 24,4 0% 0 0,74023624,40\\nVALOR ACUM. MES PASSADO - 10/2024 24,90\\nITENS FINANCEIROS\\nTipo de fornecimento: MONOFÁSICO\\nClassificação: B B1 RESIDENCIAL - RESIDENCIAL NORMAL CONVENCIONAL\\nFERNANDO GABRIEL DE SOUZA FERNANDES\\nCNPJ/CPF: 044.105.901-54\\nRUA VASCO DOS REIS, Q. 28, L. 13, S/N, CASA - 1\\nPARQUE ESTRELA DALVA\\nCEP: 72804340 LUZIANIA GO BRASIL\\nPERDAS DE TRANSFORMAÇÃO / RAMAL: 0%\\nR$**********50,8812/12/2024\\n16/10/2024 16/11/2024\\nNOV/2024\\n10029553910\\nPIS/PASEP 1,6038%25,98 0,42\\nICMS 0%25,98 0\\nCOFINS 7,3906%25,98 1,92\\nREVISÃO TARIFÁRIA PERIÓDICA COM EFEITO MÉDIO DE 4,33%. RESOLUÇÃO HOMOLOGATORIA ANEEL N. 3.407/2024, COM INÍCIO VIGÊNCIA EM 22/10/2024.\\nENERGIA ATIVA - KWH 00248 013216534-1 00248 1,000000ÚNICO\\nCliente residencial isento conforme Anexo IX RCTE ART. 6º INC. XI.\\nCFOP 5258: Venda de energia elétrica para não contribuinte\\nProtocolo de autorização: 3522400032939738 - 22/11/2024 às 21:24:48\\n52241101543032000104660001246295481044721056\\nchave de acesso:\\nConsulte pela Chave de Acesso em:\\nhttps://dfe-portal.svrs.rs.gov.br/NF3e/consulta\\nNOTA FISCAL Nº 124629548 - SÉRIE 0 / DATA DE EMISSÃO: 22/11/2024 21:19:39\\nTOTAL 2,34 25,98 0,0050,88\\nTensão Nominal Disp: 220 V Lim Min: 200,2 V Lim Max: 231,0 V\\n27/11/2024\\nDIAS\\nTIPOS DE\\nFATURAMENTOCONSUMO FATURADO(kWh)MÊS/ANO\\n0,00\\n0,00\\n0,00\\n0,00\\n0,00\\n0,00\\n0,00\\n0,00\\n0,00\\n0,00\\n0,00\\n0,00\\n0,00\\n0,00\\n31\\n30\\n32\\n30\\n32\\n30\\n29\\n29\\n31\\n30\\n30\\n32\\n31\\nMÍNIMO\\nMÍNIMO\\nMÍNIMO\\nMÍNIMO\\n83620000000-5 50880009111-0 88117411240-2 00796010627-1\\nEQUATORIAL GOIAS DISTRIBUIDORA DE ENERGIA S/A / CELG DISTRIBUICAO S A.\\n83620000000-5 50880009111-0 88117411240-2 00796010627-1\\nFERNANDO GABRIEL DE SOUZA FERNANDES CNPJ/CPF: 044.105.901-54\\nRUA VASCO DOS REIS, Q. 28, L. 13, S/N, CASA - 1 PARQUE ESTRELA DALVA CEP: 72804340 LUZIANIA GO BRASIL\\n22/11/2024 2024111881174 NOV/2024 12/12/2024 R$**********50,88\\nAproveite os benefícios do débito automático, cadastre-se na sua instituição bancária utilizando o código: 0796010627\\n0796010627\\nEsta fatura ainda não possui\\nQr Code. Estamos trabalhando\\npara que você em breve conte\\ncom este serviço.\\nRUA VASCO DOS REIS, Q. 28, L. 13, S/N, CASA - 1\\nPARQUE ESTRELA DALVA\\nCEP: 72804340 LUZIANIA GO BRASIL\\nENDEREÇO DE ENTREGA:\\nSegunda via\\n\\n22/11/2024 12/12/2024NOV/2024\\nFERNANDO GABRIEL DE SOUZA FERNANDES\\nRUA VASCO DOS REIS, Q. 28, L. 13, S/N, CASA - 1\\nPARQUE ESTRELA DALVA\\nCEP: 72804340 LUZIANIA GO BRASIL\\n32 / 12 64400 13216534-1\n\n<Saída>:\n{\n  \"Logradouro\": \"RUA VASCO DOS REIS\"\n  \"Número\": \"\"\n  \"Bairro\": \"PARQUE ESTRELA DALVA\"\n  \"CEP\": \"72804340\"\n  \"Cidade\": \"LUZIANIA\"\n  \"Estado\": \"GO\"\n  \"Complemento\": \"Quadra 28, Lote 13, Casa 1\",\n  \"Nome\": \"FERNANDO GABRIEL DE SOUZA FERNANDES\"\n}\n\n# Exemplo 3\n\n<Entrada>:\n\nPág: 1 de3\\nUTILIZE ESTA VIA PARA PAGAMENTO \\nVocê pode migrar para um plano que não possui\\nlivros digitais, sem a cobrança de multa. Fale com a\\ngente pelo nosso canal de atendimento 10312.\\nMAURICIO CALHAU FREITAS\\nNome do\\nCliente:\\nNº da Fatura Banco / Agência Identificação Data de Vencimento Valor Total da Conta\\n451188161 000473276470 26/02/2024 75,27\\n84610000000-5 75270004000-5 04732764700-5 45118816100-9 AUTENTICAÇÃO MECÂNICA\\nTELECOM\\nMAURICIO CALHAU FREITAS\\nPAULO GRACINDO (LOT S DA GA1000 AV\\nCD GAVEA PARADISO R ALAMEDA DOS ROU NR 60 GAVEA\\n38411-145 UBERLANDIA MG\\nPAGUE COM PIX\\nNº da fatura\\n451188161\\nValor total da conta\\nR$ 75,27\\nData de vencimento\\n26 / fev / 2024\\nFALE COM A ALGAR TELECOM\\nwww.algartelecom.com.br\\n@algartelecom\\nfacebook.com/algartelecom\\nOu ligue 103 12\\nHISTÓRICO VALOR DA CONTA\\n(R$)\\nSET\\n74\\nOUT\\n74\\nNOV\\n75\\nDEZ\\n73\\nJAN\\n73\\nEMISSÃO DESTA CONTA: 12/02/2024\\nCONTA SIMPLIFICADA\\nCELULAR\\nSEU NÚMERO VALOR (R$) PLANO\\n98444-8484 73,20 PLANO CONTROLE 8GB\\nTOTAL \\nR$ 73,20\\nSERVIÇOS DA CONTA\\nSERVIÇO VALOR (R$) SERVIÇOS\\n000473276470 2,07 Serviços Da Conta\\nTOTAL \\nR$ 2,07\n\n<Saída>:\n{\n  \"Logradouro\": \"Avenida Paulo Gracindo\"\n  \"Número\": \"1000\"\n  \"Bairro\": \"GAVEA\"\n  \"CEP\": \"38411-145\"\n  \"Cidade\": \"UBERLANDIA\"\n  \"Estado\": \"MG\"\n  \"Complemento\": \"Alameda dos rouxinóis 60\",\n  \"Nome\": \"MAURICIO CALHAU FREITAS\"\n}\n\n-------------------------------------\nA entrada que você deve processar é essa: {{ $json.text }}",
+          "hasOutputParser": true
+        },
+        "id": "84e9e64b-6bab-4fc9-996f-26baf3087576",
+        "name": "Extrai dados PDF1",
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.4,
+        "position": [
+          1400,
+          2160
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "3cbf42fa-6d21-4a0a-8492-8382808b5038",
+                "name": "output.resultado",
+                "value": false,
+                "type": "boolean"
+              },
+              {
+                "id": "4200157d-b070-4e94-9005-6790b4e5c0cc",
+                "name": "output.justificativa",
+                "value": "Não veio nenhum documento",
+                "type": "string"
+              },
+              {
+                "id": "dc990b39-b3df-4d20-8ac4-5983495376bc",
+                "name": "output.vazio",
+                "value": true,
+                "type": "boolean"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "f1ce9596-35b0-47a6-bee1-b8dc2b8e8174",
+        "name": "Return vazio1",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          160,
+          2240
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "8f553225-51d0-4778-bc91-c401ab243ab3",
+                "leftValue": "={{ ( $json.comprovante && $json.address && $json.nome_responsavel ) ? true : false }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "67db6193-b0ec-4a9d-80de-e5f9351247d0",
+        "name": "Vieram os dados?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          -40,
+          2080
+        ]
+      },
+      {
+        "parameters": {
+          "resource": "image",
+          "operation": "analyze",
+          "modelId": {
+            "__rl": true,
+            "value": "chatgpt-4o-latest",
+            "mode": "list",
+            "cachedResultName": "CHATGPT-4O-LATEST"
+          },
+          "text": "=# Entrada: Você irá receber uma imagem.\n# Tarefa: Sua tarefa é trazer, *SEM NENHUM ERRO*, *TODOS* os campos listados abaixo: \n- Logradouro\n- Número\n- Bairro\n- CEP\n- Cidade\n- Estado\n- Complemento\n- Nome\n\nem formato json, com chave e valor.\n\n*Importante*: Se algum deles for vazio ou você não encontrar ou for ***, você deve retornar o valor vazio para esse campo. Assim: \"campo\": \"\". Se você não tiver certeza sobre um campo, coloque \"\", não invente nem tente colocar algum outro, tem que ter certeza. Não use ```json.\n\n*Importante*: *NUNCA* invente os valores, se não conseguir achar não tiver certeza, retorne \"#ERRO#\".\n\n*Importante*: Se for uma conta de consumo, tome cuidado para não confundir os dados do endereço do cliente (quem está pagando a conta de consumo), com os dados da empresa que está cobrando. Os dados que eue quero são o *do cliente* *não confunda*. Não traga os outros dados que não são do cliente.\n\n*Importante*: O comprovante de endereço só é válido se seguir as seguintes restrições:\n\nComprovante de endereço aceito para Pessoa Jurídica:\n\n- Cartão CNPJ;\n\n- Contas de consumo (conta de água, luz ou telefone fixo e celular; Contrato de aluguel em vigor, com firma reconhecida pelo proprietário do imóvel, junto com uma conta de consumo (água, luz, telefone); Declaração anual do Imposto de Renda Pessoa Física; Boleto bancário de mensalidade escolar ou plano de saúde, condomínio ou financiamento habitacional; Fatura de cartão de crédito; Guia/carnê do IPTU ou IPVA; Certificado de Registro e Licenciamento de Veículos; etc.), com emissão de até 3 meses;\n\n- Declaração de endereço comercial ou residencial feita pelo locatário do imóvel (autenticada em cartório);\n\n- Declaração de endereço comercial e residencial (documento que já traz o endereço dos dois locais ao mesmo tempo) feita pelo responsável legal da empresa (autenticada em cartório);\n\n*Importante*: Se não seguir essas restrições, deve retornar exatamente: \"#ERRO#\".\n\n\n#Saída esperada: Objeto json completo com todas as chaves: Logradouro, Número, Bairro, CEP, Cidade, Estado e Complemento. Ou \"#ERRO#\".",
+          "imageUrls": "={{ $json.url }}",
+          "options": {
+            "detail": "high"
+          }
+        },
+        "id": "0cac4263-bc16-4a3b-98b9-5226c2f2f897",
+        "name": "Extrai Dados Imagem",
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.4,
+        "position": [
+          560,
+          1980
+        ],
+        "alwaysOutputData": false,
+        "credentials": {
+          "openAiApi": {
+            "id": "utH6piS62wyaw3eE",
+            "name": "1Clara - DEV"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "url": "={{ $json.url }}",
+          "options": {
+            "response": {
+              "response": {
+                "responseFormat": "file",
+                "outputPropertyName": "comprovante"
+              }
+            }
+          }
+        },
+        "id": "489a8cf6-81fc-4247-9cff-0de9e1a23c1d",
+        "name": "Baixa PDF",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          560,
+          2180
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "pdf",
+          "binaryPropertyName": "comprovante",
+          "options": {}
+        },
+        "id": "6b74370c-d6ea-40f0-b72f-e9422cb4dd0d",
+        "name": "Transcreve PDF",
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          760,
+          2180
+        ],
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "61ade9a6-9b14-487d-a614-a3f022851b7b",
+                "name": "text",
+                "value": "={{ $json.text }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "9b44f347-c81a-4089-af8b-2c06826d2088",
+        "name": "Extrai texto",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          960,
+          2180
+        ]
+      },
+      {
+        "parameters": {
+          "model": "gpt-4o",
+          "options": {
+            "responseFormat": "json_object",
+            "temperature": 0.1
+          }
+        },
+        "id": "8679f066-6b03-491b-9ad6-7d7023c2a549",
+        "name": "OpenAI Chat Model3",
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1,
+        "position": [
+          2180,
+          2220
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "utH6piS62wyaw3eE",
+            "name": "1Clara - DEV"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "a2d59986-a732-42e0-9a0e-aed247f21c43",
+                "leftValue": "={{ $json.output.resultado }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "ef535af1-8daf-4022-a5ad-0c455d809056",
+        "name": "Análise deu certo?1",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.1,
+        "position": [
+          2480,
+          1820
+        ]
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=# Entrada: O agente receberá dois conjuntos de dados simplificados, um da plataforma e outro do comprovante. Esses conjuntos contêm apenas campos textuais que devem ser validados.\n\n## Campos fornecidos:\n1. **city**: Cidade.\n2. **complement**: Complemento do endereço.\n3. **neighborhood**: Bairro.\n4. **st_ave**: Logradouro (rua, avenida, etc.).\n5. **state**: Estado.\n\n# Tarefa:\nSua tarefa é comparar os valores desses campos entre a plataforma e o comprovante. Para cada campo:\n\n## Regras de validação:\n1. **Tolerância a diferenças menores:**\n   - Considere abreviações, simplificações e erros de digitação menores como equivalentes. Por exemplo:\n     - \"Av João Paulo\" e \"Avenida Joao Paulo\" devem ser considerados iguais.\n     - \"MG\" e \"Minas Gerais\" devem ser considerados iguais.\n     - \"São Paulo\" e \"Sao Paulo\" devem ser considerados iguais, ignorando acentos.\n   - Não permita alterações que mudem o significado do campo.\n\n2. **Diferenças críticas:**\n   - Considere como diferentes valores que mudem o significado, mesmo que sejam parecidos. Por exemplo:\n     - \"José\" e \"Josef\" devem ser considerados diferentes.\n     - \"ouro fino\" e \"ouro preto\" devem ser considerados diferentes, pois representam locais distintos.\n\n3. **Espaços extras:**\n   - Ignore espaços extras no início, no meio ou no final dos valores antes de comparar. Por exemplo:\n     - \" São Paulo \" e \"São Paulo\" devem ser considerados iguais.\n     - \"Rua  José \" e \"Rua José\" devem ser considerados iguais.\n\n4. **Capitalização:**\n   - Trate palavras em maiúsculas e minúsculas como equivalentes. Por exemplo:\n     - \"SP\" e \"sp\" devem ser considerados iguais.\n     - \"Rua Castelo Branco\" e \"rua castelo branco\" devem ser considerados iguais.\n\n5. **Campos ausentes ou vazios:**\n   - Considere campos vazios como válidos **se ambos estiverem vazios**. Por exemplo:\n     - \"complement\": \"\" na plataforma e no comprovante deve ser considerado válido.\n   - Reporte como **faltando** se um campo estiver vazio em apenas um dos conjuntos de dados. Por exemplo:\n     - \"complement\": \"\" na plataforma, mas \"complement\": \"Ap 101\" no comprovante deve ser considerado faltante.\n   - Campos ausentes em qualquer um dos conjuntos devem ser registrados como faltantes.\n\n6. **Caracteres especiais:**\n   - Ignore diferenças em caracteres especiais que não mudem o significado. Por exemplo:\n     - \"Av. José\" e \"Avenida Jose\" devem ser considerados iguais.\n     - \"R. da Paz\" e \"Rua da Paz\" também devem ser considerados equivalentes.\n\n7. **Validação de estados:**\n   - Considere como equivalentes o nome completo de um estado e sua sigla correspondente. Por exemplo:\n     - \"MG\" e \"Minas Gerais\" devem ser considerados iguais.\n     - \"PR\" e \"Paraná\" também devem ser considerados equivalentes.\n     - Se a sigla ou o nome completo não corresponderem a um estado válido, considere como divergente.\n\n8. **Correspondência total:**\n   - Todo campo textual deve ser validado. Qualquer campo que não atenda às regras acima deve ser registrado como divergente.\n\n# Saída esperada:\nUm objeto JSON no formato:\n{\n  \"resultado\": true ou false,\n  \"diferencas\": null ou [\"campo: valor_na_plataforma != valor_no_comprovante\"],\n  \"faltando\": null ou [\"campo\"]\n}\n\n- `resultado`: Indica se todos os campos são equivalentes ou não.\n- `diferencas`: Lista de campos cujos valores divergem entre a plataforma e o comprovante.\n- `faltando`: Lista de campos ausentes em qualquer um dos conjuntos de dados.\n\n# Exemplo de entrada e saída:\n\n## Exemplo 1:\n**Plataforma:**\n- city: sao paulo\n- complement: \n- neighborhood: jardim paulista\n- st_ave: rua oscar freire\n- state: sp\n\n**Comprovante:**\n- city: sao paulo\n- complement: \n- neighborhood: jd paulista\n- st_ave: rua oscar freire\n- state: sp\n\n**Saída esperada:**\n{\n  \"resultado\": true,\n  \"diferencas\": null,\n  \"faltando\": null\n}\n\n## Exemplo 2:\n**Plataforma:**\n- city: belo horizonte\n- complement: \n- neighborhood: centro\n- st_ave: avenida afonso pena\n- state: minas gerais\n\n**Comprovante:**\n- city: belo horizonte\n- complement: \n- neighborhood: centro\n- st_ave: av afonso pena\n- state: mg\n\n**Saída esperada:**\n{\n  \"resultado\": true,\n  \"diferencas\": null,\n  \"faltando\": null\n}\n\n## Exemplo 3:\n**Plataforma:**\n- city: rio de janeiro\n- complement: \n- neighborhood: copacabana\n- st_ave: avenida atlantica\n- state: rj\n\n**Comprovante:**\n- city: rio de janeiro\n- complement: \n- neighborhood: copacabana\n- st_ave: av atlantica\n- state: rj\n\n**Saída esperada:**\n{\n  \"resultado\": true,\n  \"diferencas\": null,\n  \"faltando\": null\n}\n\n## Exemplo 4:\n**Plataforma:**\n- city: recife\n- complement: apartamento 202\n- neighborhood: boa viagem\n- st_ave: rua dos navegantes marinheiros\n- state: pe\n\n**Comprovante:**\n- city: recife\n- complement: \n- neighborhood: boa viagem\n- st_ave: rua navegantes\n- state: pe\n\n**Saída esperada:**\n{\n  \"resultado\": false,\n  \"diferencas\": [\"complement: apartamento 202 != \", \"st_ave: rua dos navegantes marinheiros != rua navegantes\"],\n  \"faltando\": [\"complement\"]\n}\n\n## Exemplo 5:\n**Plataforma:**\n- city: curitiba\n- complement: \n- neighborhood: batel\n- st_ave: avenida sete de setembro\n- state: pr\n\n**Comprovante:**\n- city: curitiba\n- complement: \n- neighborhood: batel\n- st_ave: av sete setembro\n- state: pr\n\n**Saída esperada:**\n{\n  \"resultado\": true,\n  \"diferencas\": null,\n  \"faltando\": null\n}\n\n## Exemplo 6:\n**Plataforma:**\n- city: curitiba\n- complement: apartamento 2\n- neighborhood: batel\n- st_ave: avenida sete de setembro\n- state: pr\n\n**Comprovante:**\n- city: \n- complement: \n- neighborhood: \n- st_ave: \n- state: \n\n**Saída esperada:**\n{\n  \"resultado\": false,\n  \"diferencas\": [\"city: curitiba != \", \"complement: apartamento 2 != \", \"neighborhood: batel != \", \"st_ave: avenida sete de setembro != \", \"state: pr != \"],\n  \"faltando\": [\"city\", \"complement\", \"neighborhood\", \"st_ave\", \"state\"]\n}\n\n------------------------------------------------------------\n\n## Observação:\nA validação deve ser criteriosa e garantir que campos importantes não sejam aprovados erroneamente. A tolerância deve ser aplicada somente conforme as regras estabelecidas.\n\n------------------------------------------------------------\n\nA entrada que você deve processar é essa: \n**Plataforma:**\n- city: {{ $('Dados').first().json.address.city }}\n- complement: {{ $('Dados').first().json.address.complement }}\n- neighborhood: {{ $('Dados').first().json.address.neighborhood }}\n- st_ave: {{ $('Dados').first().json.address.st_ave }}\n- state: {{ $('Dados').first().json.address.state }}\n\n**Comprovante:**\n- city: {{ $('Dados Comprovante1').first().json.city }}\n- complement: {{ $('Dados Comprovante1').first().json.complement }}\n- neighborhood: {{ $('Dados Comprovante1').first().json.neighborhood }}\n- st_ave: {{ $('Dados Comprovante1').first().json.st_ave }}\n- state: {{ $('Dados Comprovante1').first().json.state }}",
+          "hasOutputParser": true
+        },
+        "id": "c46ba0ae-32df-4600-88a0-dbc686ef4aad",
+        "name": "Compara Dados1",
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.4,
+        "position": [
+          2140,
+          1980
+        ]
+      },
+      {
+        "parameters": {
+          "schemaType": "manual",
+          "inputSchema": "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"resultado\": {\n\t\t\t\"type\": \"boolean\"\n\t\t},\n\t\t\"diferencas\": {\n\t\t\t\"type\": [\"array\", \"null\"],\n\t\t\t\"items\": {\n\t\t\t\t\"type\": \"string\"\n\t\t\t}\n\t\t},\n\t\t\"faltando\": {\n\t\t\t\"type\": [\"array\", \"null\"],\n\t\t\t\"items\": {\n\t\t\t\t\"type\": \"string\"\n\t\t\t}\n\t\t}\n\t}\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.2,
+        "position": [
+          2320,
+          2220
+        ],
+        "id": "29b1cb29-26d3-4092-836e-0956a628f2e0",
+        "name": "Structured Output Parser3"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "88e016f2-0dea-457e-b57b-8023bce73789",
+                "name": "url",
+                "value": "={{ $json.comprovante.url }}",
+                "type": "string"
+              },
+              {
+                "id": "a71e2bd2-9f97-42b9-8dcf-4e367ade4ac4",
+                "name": "tipo",
+                "value": "={{ $json.comprovante.mime_type.match(/[^/]+$/)[0] }}",
+                "type": "string"
+              },
+              {
+                "id": "00b0c9ad-ed0f-49c3-92d3-e6fe7f57a600",
+                "name": "address.city",
+                "value": "={{ $json.address.city.toLowerCase().replaceSpecialChars().trim().replaceAll(',', '').replaceAll('.', '') }}",
+                "type": "string"
+              },
+              {
+                "id": "a510d2b1-eff4-4abc-9d95-b0735d321b53",
+                "name": "address.complement",
+                "value": "={{ $json.address.complement.toLowerCase().replaceSpecialChars().trim().replaceAll(',', '').replaceAll('.', '') }}",
+                "type": "string"
+              },
+              {
+                "id": "de545e1f-a0c2-4337-9455-5731fe889b46",
+                "name": "address.neighborhood",
+                "value": "={{ $json.address.neighborhood.toLowerCase().replaceSpecialChars().trim().replaceAll(',', '').replaceAll('.', '') }}",
+                "type": "string"
+              },
+              {
+                "id": "4f6184a4-4127-4c78-8d50-442cd8811a4d",
+                "name": "address.number",
+                "value": "={{ $json.address.number.toLowerCase().replaceSpecialChars().replace(/\\D/g, '').trim().replaceAll(',', '').replaceAll('.', '') }}",
+                "type": "string"
+              },
+              {
+                "id": "24605cfe-c92c-4dd5-bceb-7d7db51bcd4a",
+                "name": "address.st_ave",
+                "value": "={{ $json.address.st_ave.toLowerCase().replaceSpecialChars().trim().replaceAll(',', '').replaceAll('.', '') }}",
+                "type": "string"
+              },
+              {
+                "id": "bfd7a635-ada9-4988-82a5-3fa178a8200b",
+                "name": "address.state",
+                "value": "={{ $json.address.state.toLowerCase().replaceSpecialChars().trim().replaceAll(',', '').replaceAll('.', '') }}",
+                "type": "string"
+              },
+              {
+                "id": "9cd2c4b9-cd9b-4b47-8e7c-2b317dcd3d83",
+                "name": "address.zip_code",
+                "value": "={{ $json.address.zip_code.toLowerCase().replaceSpecialChars().replace(/\\D/g, '').trim().replaceAll(',', '').replaceAll('.', '') }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "8cb96931-4606-4bc4-b413-d2e59f72c38a",
+        "name": "Dados",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          160,
+          2080
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Função de normalização\nconst normalize = (str) => {\n  return str\n    ? str.trim().replace(/\\s+/g, ' ').toLowerCase()\n    : '';\n};\n\n// Pega os nomes crus\nlet rawNomeResponsavel = $('Execute Workflow Trigger').first().json.nome_responsavel;\nlet rawPai = $('Execute Workflow Trigger').first().json.pai;\nlet rawMae = $('Execute Workflow Trigger').first().json.mae;\n\n// Normaliza e filtra vazios\nconst nomesPossiveis = [rawNomeResponsavel, rawPai, rawMae]\n  .map((nome) => normalize(nome))\n  .filter((nome) => nome !== '');\n\n// Dados de entrada\nconst comprovanteNome = normalize($('Dados Comprovante1').first().json.nome || '');\nconst comprovanteCep = $('Dados Comprovante1').first().json.zip_code || null;\nconst comprovanteNumero = $('Dados Comprovante1').first().json.number || null;\n\nconst plataformaCep = $('Dados').first().json.address.zip_code || null;\nconst plataformaNumero = $('Dados').first().json.address.number || null;\n\n// Inicializa arrays\nlet resultado = true;\nconst diferencas = [];\nconst faltando = [];\n\n/** \n * Verifica nome \n * Regra:\n * 1. Se for vazio, colocamos em \"faltando\" e também em \"diferenças\". \n * 2. Se existir, mas não constar em `nomesPossiveis`, vai em \"diferenças\".\n */\nif (!comprovanteNome) {\n  resultado = false;\n  faltando.push('nome');         \n  diferencas.push(`nome vazio (nenhum valor informado)`);\n} else if (!nomesPossiveis.includes(comprovanteNome)) {\n  resultado = false;\n  diferencas.push(\n    `nome: [${nomesPossiveis.join(', ')}] diferentes de ${comprovanteNome}`\n  );\n}\n\n/**\n * Verifica CEP\n * 1. Se for null, está faltando.\n * 2. Se existir, mas for diferente, colocamos em \"diferenças\".\n * Obs: se quiser também colocar \"CEP vazio\" em diferenças, basta replicar \n *      a lógica do nome.\n */\nif (plataformaCep === null || comprovanteCep === null) {\n  resultado = false;\n  faltando.push('CEP');\n  // Caso queira também no diferenças:\n  diferencas.push(`CEP faltando (valor null ou vazio)`);\n} else if (plataformaCep !== comprovanteCep) {\n  resultado = false;\n  diferencas.push(`CEP: ${plataformaCep} != ${comprovanteCep}`);\n}\n\n/**\n * Verifica número\n * 1. Se for null, está faltando.\n * 2. Se existir, mas for diferente, colocamos em \"diferenças\".\n */\nif (plataformaNumero === null || comprovanteNumero === null) {\n  resultado = false;\n  faltando.push('number');\n  // Caso queira também no diferenças:\n  diferencas.push(`number faltando (valor null ou vazio)`);\n} else if (plataformaNumero !== comprovanteNumero) {\n  resultado = false;\n  diferencas.push(`number: ${plataformaNumero} != ${comprovanteNumero}`);\n}\n\n// Monta objeto de saída\nconst output = {\n  resultado: resultado,\n  diferencas: diferencas.length > 0 ? diferencas : null,\n  faltando: faltando.length > 0 ? faltando : null\n};\n\nreturn { output };"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2720,
+          1700
+        ],
+        "id": "7e031dda-20e7-4b38-a50f-4832165e56c1",
+        "name": "Nome do Documento"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "54ed1054-606f-4f14-9ee6-0290f6aba57e",
+                "leftValue": "={{ $json.output.resultado }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          2940,
+          1700
+        ],
+        "id": "a45b012f-fcc0-45aa-a403-503f58bbd148",
+        "name": "Resultado?"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "e0e43bbb-a75d-4b86-a5d3-ef8c8ae32882",
+                "name": "output.justificativa",
+                "value": "Todos os campos conferem",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "id": "9e7fbbbb-7555-4d3e-8c8a-512fc98f814e",
+        "name": "Aprovado",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3160,
+          1680
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ccaabe91-1b88-4e6e-93b7-145849e32437",
+                "name": "output.resultado",
+                "value": false,
+                "type": "boolean"
+              },
+              {
+                "id": "cd552a10-1dee-47ba-893f-ba0046955957",
+                "name": "output.justificativa",
+                "value": "={{  \n$json.output.diferencas.includes('Não foi possível ler a imagem') ? $json.output.diferencas.join(', ') \n: \n($json.output.diferencas ? 'Os seguintes campos não estão iguais no comprovante de endereço e na plataforma: ' +  $json.output.diferencas.join(', ') + '. ' : '') \n+ \n($json.output.faltando ? 'Os seguintes campos não foram encontrados no comprovante: ' +  $json.output.faltando.join(', ') : '')\n}}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "415f815e-399f-43da-939d-fb5e65f0c6a7",
+        "name": "Reprovado",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3160,
+          1940
+        ]
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "analise-documentos/endereco-pessoa-juridica",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -260,
+          1900
+        ],
+        "id": "d42ef659-f366-4206-8adb-f0c54dc2ab1b",
+        "name": "Webhook",
+        "webhookId": "8d8022db-9aec-4f0c-a65f-9ed330fbed1b"
+      }
+    ],
+    "connections": {
+      "Get File": {
+        "main": [
+          [
+            {
+              "node": "Pdf to text",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "É imagem?": {
+        "main": [
+          [
+            {
+              "node": "OpenAI",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Get File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Transcrição pdf": {
+        "main": [
+          [
+            {
+              "node": "Deu certo?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Deu certo?": {
+        "main": [
+          [
+            {
+              "node": "Extrai dados PDF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model1": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Extrai dados PDF",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser1": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Extrai dados PDF",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Pdf to text": {
+        "main": [
+          [
+            {
+              "node": "Transcrição pdf",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados PDF": {
+        "main": [
+          [
+            {
+              "node": "Dados Comprovante",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados Comprovante": {
+        "main": [
+          [
+            {
+              "node": "MOCK",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Compara Dados",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Compara Dados",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados plataforma": {
+        "main": [
+          [
+            {
+              "node": "Compara Dados",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Análise deu certo?": {
+        "main": [
+          [
+            {
+              "node": "Resultado",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Justificativa",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados Imagem": {
+        "main": [
+          [
+            {
+              "node": "Dados Comprovante",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados do documento": {
+        "main": [
+          [
+            {
+              "node": "É imagem?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Deu erro?": {
+        "main": [
+          [
+            {
+              "node": "Erro",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Dados Imagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Erro": {
+        "main": [
+          [
+            {
+              "node": "Análise deu certo?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Contrato inválido?": {
+        "main": [
+          [
+            {
+              "node": "Erro - Contrato",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Dados plataforma",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "MOCK": {
+        "main": [
+          [
+            {
+              "node": "Contrato inválido?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Compara Dados": {
+        "main": [
+          [
+            {
+              "node": "Análise deu certo?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI": {
+        "main": [
+          [
+            {
+              "node": "Deu erro?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extrai dados PDF": {
+        "main": [
+          [
+            {
+              "node": "Dados PDF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tem dados?": {
+        "main": [
+          [
+            {
+              "node": "Dados do documento",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Return vazio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute Workflow Trigger": {
+        "main": [
+          [
+            {
+              "node": "Vieram os dados?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "É imagem?1": {
+        "main": [
+          [
+            {
+              "node": "Extrai Dados Imagem",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Baixa PDF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Deu certo?1": {
+        "main": [
+          [
+            {
+              "node": "Extrai dados PDF1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model2": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Extrai dados PDF1",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser2": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Extrai dados PDF1",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados PDF1": {
+        "main": [
+          [
+            {
+              "node": "Dados Comprovante1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados Comprovante1": {
+        "main": [
+          [
+            {
+              "node": "Compara Dados1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados Imagem1": {
+        "main": [
+          [
+            {
+              "node": "Dados Comprovante1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Deu erro?1": {
+        "main": [
+          [
+            {
+              "node": "Erro1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Dados Imagem1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Erro1": {
+        "main": [
+          [
+            {
+              "node": "Análise deu certo?1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extrai dados PDF1": {
+        "main": [
+          [
+            {
+              "node": "Dados PDF1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Vieram os dados?": {
+        "main": [
+          [
+            {
+              "node": "Dados",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Return vazio1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extrai Dados Imagem": {
+        "main": [
+          [
+            {
+              "node": "Deu erro?1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Baixa PDF": {
+        "main": [
+          [
+            {
+              "node": "Transcreve PDF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Transcreve PDF": {
+        "main": [
+          [
+            {
+              "node": "Extrai texto",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extrai texto": {
+        "main": [
+          [
+            {
+              "node": "Deu certo?1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model3": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Compara Dados1",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Análise deu certo?1": {
+        "main": [
+          [
+            {
+              "node": "Nome do Documento",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Reprovado",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Compara Dados1": {
+        "main": [
+          [
+            {
+              "node": "Análise deu certo?1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser3": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Compara Dados1",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados": {
+        "main": [
+          [
+            {
+              "node": "É imagem?1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Nome do Documento": {
+        "main": [
+          [
+            {
+              "node": "Resultado?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Resultado?": {
+        "main": [
+          [
+            {
+              "node": "Aprovado",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Reprovado",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Execute Workflow Trigger": [
+        {
+          "json": {
+            "comprovante": {
+              "id": 479665074844300,
+              "mime_type": "application/pdf",
+              "sha256": "qRVweO/YBv1i2CBqgTReOmWDI2Bu3A6Rl4zEwgGQglU=",
+              "file_name": "1VIA-00020451188161.pdf",
+              "url": "https://storage.hyperflow.global/whatsapp/479665074844300"
+            },
+            "address": {
+              "city": "Uberlândia",
+              "complement": "Alameda dos rouxinóis 60",
+              "neighborhood": "Gávea",
+              "number": "1000",
+              "st_ave": "Avenida Paulo Gracindo",
+              "state": "Minas Gerais",
+              "zip_code": "38.411-145"
+            },
+            "nome_responsavel": "Mauricio Calhau Freitas"
+          }
+        }
+      ]
+    },
+    "versionId": "26f18ba6-5b50-4afa-a2dc-aed349110a26",
+    "triggerCount": 1,
+    "tags": [
+      {
+        "createdAt": "2024-11-22T13:13:26.514Z",
+        "updatedAt": "2024-11-22T13:13:26.514Z",
+        "id": "owb3cfmzFRbqjP06",
+        "name": "Clara"
+      }
+    ]
+  }
+}
