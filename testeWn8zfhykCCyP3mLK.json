@@ -1,0 +1,513 @@
+{
+  "data": {
+    "createdAt": "2024-10-25T15:33:34.222Z",
+    "updatedAt": "2025-05-20T17:17:17.719Z",
+    "id": "Wn8zfhykCCyP3mLK",
+    "name": "BMP API",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "1501b928-ec20-48b7-a02d-2a00fb5b43c8",
+                "name": "jti",
+                "value": "={{$json[\"jti\"]}}",
+                "type": "string"
+              },
+              {
+                "id": "ee02bb7a-61c2-4955-b6eb-203866a53d58",
+                "name": "sub",
+                "value": "bmp.digital.api.blips_scr",
+                "type": "string"
+              },
+              {
+                "id": "6a244342-d317-4748-be46-fdabbd76fc79",
+                "name": "iat",
+                "value": "={{Math.floor(new Date().getTime() / 1000)}}",
+                "type": "string"
+              },
+              {
+                "id": "607f204b-a95b-486e-8524-54219a12932f",
+                "name": "nbf",
+                "value": "={{Math.floor(new Date().getTime() / 1000)}}",
+                "type": "string"
+              },
+              {
+                "id": "f4b31e6e-dc37-46e2-98ae-11937f42c28a",
+                "name": "exp",
+                "value": "={{Math.floor(new Date().getTime() / 1000) + 60}}",
+                "type": "string"
+              },
+              {
+                "id": "c922305f-3b10-46dd-ae24-d2eebf1db017",
+                "name": "iss",
+                "value": "bmp.digital.api.blips_scr",
+                "type": "string"
+              },
+              {
+                "id": "cebb1674-3204-4480-bf10-182f3bf8ae29",
+                "name": "aud",
+                "value": "https://auth.moneyp.com.br/connect/token",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "14eb9d77-7070-436c-adc7-fb4d294bf69d",
+        "name": "format_JWT",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          200,
+          60
+        ]
+      },
+      {
+        "parameters": {
+          "language": "python",
+          "pythonCode": "import uuid\n\nfor item in _input.all():\n  jti = str(uuid.uuid4())\n  item.json.jti = jti\nreturn _input.all()"
+        },
+        "id": "e9168216-222f-4134-a40d-f1e896d21506",
+        "name": "UUID",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          0,
+          60
+        ]
+      },
+      {
+        "parameters": {
+          "language": "python",
+          "pythonCode": "from datetime import datetime, timedelta\nimport time\nimport os\nimport random\nimport hashlib\n\ndef generate_object_id():\n    # Timestamp\n    timestamp = int(time.time())\n\n    # Machine identifier (using the machine's hostname)\n    machine_identifier = hashlib.md5(os.uname().nodename.encode()).hexdigest()[0:6]\n\n    # Process identifier (using the current process id)\n    process_identifier = os.getpid() & 0xFFFF\n\n    # Counter (using a random number)\n    counter = random.randint(0, 0xFFFFFF)\n\n    # Combine all parts into the 12-byte ObjectId\n    object_id = f'{timestamp:08x}{machine_identifier}{process_identifier:04x}{counter:06x}'\n\n    return object_id\n\ndef validate_and_format_date(date_string):\n    try:\n        # Tenta analisar a data fornecida no formato esperado\n        parsed_date = datetime.strptime(date_string, \"%Y-%m-%dT%H:%M:%S.%fZ\")\n        # Retorna a data formatada no mesmo formato\n        return parsed_date.strftime(\"%Y-%m-%dT%H:%M:%S.%fZ\")\n    except (ValueError, TypeError):\n        # Se a data fornecida não puder ser analisada, retorna a data e hora atuais no formato ISO\n        current_date = datetime.utcnow()\n        return current_date.strftime(\"%Y-%m-%dT%H:%M:%S.%fZ\")\n\nfor item in items:\n    # Data de hoje\n    today = datetime.today()\n\n    # Primeiro, encontra o último dia do mês anterior\n    last_month = today.replace(day=1) - timedelta(days=1)\n    # Agora encontra o último dia do mês anterior a esse\n    month_before_last = last_month.replace(day=1) - timedelta(days=1)\n\n    # Formata o mês e o ano para serem usados no JSON\n    item['json']['date_month'] = month_before_last.strftime(\"%m\")\n    item['json']['date_year'] = month_before_last.strftime(\"%Y\")\n\n    # Valida e formata a data fornecida para 'date_scr'\n    item['json']['date_scr'] = validate_and_format_date(item['json'].get('date_scr'))\n\n    item['json']['IdempotencyKey'] = generate_object_id()\n\n# Retorna os itens processados\nreturn items\n"
+        },
+        "id": "af06a947-e5fa-43de-81e3-69360dd0cccc",
+        "name": "format_date",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          800,
+          60
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "fa3e63b1-08de-432a-bcd3-703d00b7eb5a",
+        "name": "lead",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          -220,
+          60
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "322e58fb-8448-4bd7-8638-1d456bf138b8",
+                "name": "date",
+                "value": "={{ $now.toFormat(\"yyyy-MM-dd HH:mm:ss\") }}",
+                "type": "string"
+              },
+              {
+                "id": "c8fd2836-5505-49be-a343-1f0ea277be2b",
+                "name": "cpf_cnpj",
+                "value": "={{ $('lead').first().json.documento }}",
+                "type": "string"
+              },
+              {
+                "id": "bf8a4ab5-6259-4238-ad7f-08c6d99d2b7f",
+                "name": "bureau",
+                "value": "QueryBMP",
+                "type": "string"
+              },
+              {
+                "id": "31b5beba-a4cf-41d8-9789-448075e5b3bb",
+                "name": "query",
+                "value": "={{ $('lead').first().json.type }}",
+                "type": "string"
+              },
+              {
+                "id": "b9dd4408-55db-41c7-a938-6f51526e1972",
+                "name": "output_payload",
+                "value": "={{ $json.resumoDoCliente }}",
+                "type": "object"
+              },
+              {
+                "id": "e4273d25-c601-493d-b9e9-00c5cf04897a",
+                "name": "input_payload",
+                "value": "={{ {} }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "01413d79-d920-4813-938a-2fab06ec4633",
+        "name": "save_cv_QueryBMP_type",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1220,
+          60
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "78403caf-d089-48ef-bdc3-f371f9205d73",
+                "name": "api",
+                "value": "BMP",
+                "type": "string"
+              },
+              {
+                "id": "7ac37d72-6cd0-4dde-b380-900648d0b54c",
+                "name": "func",
+                "value": "={{ $('lead').first().json.type }}",
+                "type": "string"
+              },
+              {
+                "id": "b194be5c-c81e-4da4-ba04-d7c8482516e9",
+                "name": "={{$('save_cv_QueryBMP_type').first().json.bureau + \"_\" + $('save_cv_QueryBMP_type').first().json.query}}",
+                "value": "={{ $('save_cv_QueryBMP_type').first().json.output_payload }}",
+                "type": "object"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "ff6187b2-f589-4c04-8ee9-c64aa3a4f5c2",
+        "name": "set_bmp",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1660,
+          60
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": "W7TZJTMfuBtih4l1",
+          "options": {}
+        },
+        "id": "fbe87768-27dd-44ea-86de-dd21ce66f699",
+        "name": "Utils_BMP",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1,
+        "position": [
+          1880,
+          60
+        ]
+      },
+      {
+        "parameters": {
+          "useJson": true,
+          "claimsJson": "={\n  \"jti\": \"{{ $json.jti }}\",\n  \"sub\": \"bmp.digital.api.blips_scr\",\n  \"iat\": {{Math.floor(new Date().getTime() / 1000)}},\n  \"nbf\": {{Math.floor(new Date().getTime() / 1000)}},\n  \"exp\": {{Math.floor(new Date().getTime() / 1000) + 60}},\n  \"iss\": \"bmp.digital.api.blips_scr\",\n  \"aud\": \"https://auth.moneyp.com.br/connect/token\"\n}\n",
+          "options": {}
+        },
+        "id": "c369373c-87a4-4a1d-b584-0e313385251b",
+        "name": "JWT",
+        "type": "n8n-nodes-base.jwt",
+        "typeVersion": 1,
+        "position": [
+          400,
+          60
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "credentials": {
+          "jwtAuth": {
+            "id": "d6sUUqRSrK0RAX4z",
+            "name": "JWT Auth account - New Motor"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://auth.moneyp.com.br/connect/token",
+          "sendHeaders": true,
+          "specifyHeaders": "json",
+          "jsonHeaders": "{\n  \"Content-Type\": \"application/x-www-form-urlencoded\"\n}\n",
+          "sendBody": true,
+          "contentType": "multipart-form-data",
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "grant_type",
+                "value": "client_credentials"
+              },
+              {
+                "name": "client_id",
+                "value": "=bmp.digital.api.blips_scr"
+              },
+              {
+                "name": "scope",
+                "value": "bmp.digital.api.full.access"
+              },
+              {
+                "name": "client_assertion",
+                "value": "={{ $json.token }}"
+              },
+              {
+                "name": "client_assertion_type",
+                "value": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
+              }
+            ]
+          },
+          "options": {
+            "allowUnauthorizedCerts": false,
+            "timeout": 60000
+          }
+        },
+        "id": "359c6830-62b3-40df-a7f6-70fb9ab30c15",
+        "name": "HTTP get_access_token",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          600,
+          60
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.bmpdigital.moneyp.com.br/Bureau/ConsultarSCR",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "IdempotencyKey",
+                "value": "={{ $json.IdempotencyKey }}"
+              },
+              {
+                "name": "Authorization",
+                "value": "={{ \"Bearer \" + $json[\"access_token\"] }}"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Private-Key",
+                "value": "={     \"TOKEN_URL\": \"https://auth.moneyp.com.br/connect/token\",     \"API_URL\": \"https://api.bmpdigital.moneyp.com.br/Bureau/ConsultarSCR\",     \"PRIVATE_PEM\": \"-----BEGIN RSA PRIVATE KEY-----\\nMIIEpAIBAAKCAQEAtrEEAtlz/dbrS18IK4gWODPwn348qxPAveEqUWcFmEZfIu/U\\ngI2NBL29NGBwnxFAqL0ivL9Z5Aw3D6ldBS/j/rWaUt1cDciiQjrT3m5d1zaNvwHa\\n+9+u21oyoix+6FMysp4innx4yOjdftUUlOjcSUqBFreNefoA9n7+KZaPBXlH3JIg\\nNZw4z0vFrjnyUjHCMlisG+C6ah+KYvR8oeznOG/ETaTjYR2kRdgBE2VO7OPgVp++\\nMwivCcK/A8ZBHmqYvp7r9nQMuU+UD4lzqgrTjm4NQWJ0/V0WtJ573ET9QbYRLXsG\\nRiDCRzbjysa83rtLfnwqhSfN6Yo7DI8GG7WR7QIDAQABAoIBAFSXB/1txGhPgCko\\n+nZ1j5w8aHjhEaRBBCinPlnsssl8JAbgN2vCnv4IALhkwyDT8zVuRcxRaYTPJxuI\\nVvrU3uOMIMWnmz0Cnia+aGWAgtDogJ9lc4jWXHdSf0laAvT9uOa9k9gAWEjmkdBt\\nRxdf7se8yKLFIKvO121LBdIp1VU5t39Of4Q1wrx5QIl3g68SZTn/dZw/TSgVPaNW\\nBbya+GXqjKPMFJFkcYBvmTgfVYF2pkj2hpxlBJIUPjbnVcH4VKX/zNWmd3gCm7tC\\nsuc7VAytYkLrRiDSapv4t6PX9HTkb1ZZPCj3tdYo9gpPMv7XbLhpqr8Y3dkdiByf\\nRdQz0uECgYEA3FYdQp0rUBUB2rzRflND7Rd57NFiTck48arGAH78d9NVBoKqtB13\\n6naVr45K3Kw7UZQgcrTTwTAYZ2zw3w2UtZlyFoVbW3OOPTWJ5Ro06HdBSC2KRTXZ\\nyl8FiZahQJB7fDKkjplMgGCYz2hpZ7EzMcfZs0aqG20gioWk1Cq/KNkCgYEA1EMK\\nvP3X3cin6Boyee4W6AY4fNUJJ/h1O1DusFobU0k9YE6g25sSo7lu92FYdNPNp31n\\nyVaTeaXKxNRuTXYydCmmqfuGgcnznzPXZg0fE1+3ER6yj23yx8vsJgp80VzQ481a\\nTlGOxw+NXZehJCma7xpbZ8Yd0aZfM4iDtPhY5TUCgYEApoRqPqK7Th1iNmaGyLqy\\n1ibs3T3s1i6h23odg9h0gzZyxqXPzqmKq+aM/41BJH8BoYiZ8TaZ5iGr/9YEP/5q\\nicf6wexs+7NcJwQkP8HLhHhEHQFVwzKMcvXXIIF3Qm0u9dDsLlzKxSa7tdwJ9PSl\\nZRTNgUCBZJLXifiwdiwMJhkCgYEAxTETRMg+RtgmxMWxpvy9YwiEadQwEWYM4vIp\\nDMRpJlKgJlxlrB7AjkGzCTbySnaKU9N5G97GWvjfC0SexG/OJ4SaRMhbCTBol7o9\\nnZ0LBaCiHdF66Syno12bISwVERs9JKSeBKxYDC4ykoRPO507Rm4iBKJVCXOadfGZ\\nCgK98xECgYB3nwlxYi/1BUzTnS9LaEz+gVi41mwKUVng3QInmx72n2hm0MMbxnrP\\n7I0vtHZGx8t9F1Sv/mVXumVIZfvw2NAGOl0ayN3k/DrxF6Nk0InnzDHYK1v5wQN4\\nqob5mdRSIi4KagfACteyPjpgbe37Fn8phyfro6xxaJjhrOygb5nOCw==\\n-----END RSA PRIVATE KEY-----\" }"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n            \"consulta\": {\n                \"documento\": \"{{$('lead').item.json.documento}}\",\n                \"dataBaseMes\": \"6\",\n                \"dataBaseAno\": \"2024\",\n                \"dtAceiteCliente\": \"{{ $json.date_scr }}\"\n            }\n        }",
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "b80560ef-5ffa-4e59-9e0e-24625f895734",
+        "name": "HTTP dataset_raw",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1000,
+          60
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "operation": "insert",
+          "projectId": {
+            "__rl": true,
+            "value": "blips-prod-v2",
+            "mode": "list",
+            "cachedResultName": "blips-prod-v2",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-prod-v2"
+          },
+          "datasetId": {
+            "__rl": true,
+            "value": "analise_de_credito",
+            "mode": "list",
+            "cachedResultName": "analise_de_credito"
+          },
+          "tableId": {
+            "__rl": true,
+            "value": "catalogo_variaveis",
+            "mode": "list",
+            "cachedResultName": "catalogo_variaveis"
+          },
+          "options": {}
+        },
+        "id": "455e7230-a580-418b-aeca-51619f89a1c9",
+        "name": "Save CV BMP",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2.1,
+        "position": [
+          1440,
+          60
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 2000,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        },
+        "disabled": true,
+        "onError": "continueRegularOutput"
+      }
+    ],
+    "connections": {
+      "format_JWT": {
+        "main": [
+          [
+            {
+              "node": "JWT",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "UUID": {
+        "main": [
+          [
+            {
+              "node": "format_JWT",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "format_date": {
+        "main": [
+          [
+            {
+              "node": "HTTP dataset_raw",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "lead": {
+        "main": [
+          [
+            {
+              "node": "UUID",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "save_cv_QueryBMP_type": {
+        "main": [
+          [
+            {
+              "node": "Save CV BMP",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set_bmp": {
+        "main": [
+          [
+            {
+              "node": "Utils_BMP",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "JWT": {
+        "main": [
+          [
+            {
+              "node": "HTTP get_access_token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP get_access_token": {
+        "main": [
+          [
+            {
+              "node": "format_date",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP dataset_raw": {
+        "main": [
+          [
+            {
+              "node": "save_cv_QueryBMP_type",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Save CV BMP": {
+        "main": [
+          [
+            {
+              "node": "set_bmp",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "lead": [
+        {
+          "json": {
+            "documento": "41275709000187",
+            "type": "2"
+          }
+        }
+      ]
+    },
+    "versionId": "67cc758d-651f-48de-96fd-c751982f1f95",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-07-31T16:22:41.803Z",
+        "updatedAt": "2024-07-31T16:22:41.803Z",
+        "id": "mmaXbyiWhptUXaTd",
+        "name": "New Motor"
+      }
+    ]
+  }
+}
