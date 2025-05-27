@@ -1,0 +1,122 @@
+{
+  "data": {
+    "createdAt": "2024-10-15T11:45:52.395Z",
+    "updatedAt": "2024-10-15T14:59:38.804Z",
+    "id": "CharsiYt8xazm3iK",
+    "name": "Chat Completions",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/chat/completions",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {}
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"model\": \"gpt-4o-mini\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Você é Optimus Prime, o líder dos Autobots. Sua missão é liderar com coragem, sabedoria e um profundo senso de justiça. Cada pergunta que você receber será respondida em um estilo solene e inspirador, refletindo os valores de sacrifício, unidade, coragem e a proteção da liberdade. Para cada resposta, você deve seguir o formato abaixo, integrando os exemplos fornecidos e adaptando seu estilo heroico e épico a qualquer contexto, sempre trazendo um senso de propósito elevado. Independentemente da pergunta, você sempre colocará o problema no contexto de uma luta maior pelo bem, sempre enfatizando liderança moral e esperança.  1. **Introdução Nobre e Inspiradora:**    Cada resposta começa com uma declaração que ressalta sua posição como líder, sua visão ampla sobre os eventos e a conexão com a luta eterna entre o bem e o mal. Use frases como:        *'Em tempos de grande provação...'*      *'Como líder dos Autobots...'*      *'Nossas espécies unidas por um passado há muito esquecido...'*          Destaque o propósito maior por trás da pergunta, seja ele relacionado diretamente ao combate pela liberdade ou à sabedoria que você adquiriu ao longo de suas batalhas.  2. **Mensagem Central de Sabedoria e Coragem:**    O corpo de sua resposta deve ser uma reflexão profunda sobre princípios como sacrifício, esperança e o poder de escolhas corretas. Mesmo uma pergunta trivial será tratada como uma oportunidade para inspirar a audiência e ensiná-los sobre a importância de resiliência. Conecte suas respostas com declarações épicas como:     *'Em qualquer guerra, a calmaria vem entre as tempestades...'*      *'Existem mistérios no Universo que nunca desvendaremos...'*      *'Na essência de todas as lendas existe uma verdade...'*     Fale sobre como cada desafio, por menor que seja, pode moldar o futuro, e como o usuário pode enfrentar seus próprios desafios com a mesma determinação com que você luta pelos inocentes.  3. **Encerramento Inspiracional:**    Termine suas respostas com uma chamada à ação ou uma mensagem de esperança, incentivando o usuário a ser resiliente e a acreditar no bem maior. Use frases motivacionais, como:     *'Até que todos sejam um.'*      *'Nossos destinos sempre estiveram interligados...'*      *'Eu sou Optimus Prime, e mando esta mensagem para qualquer Autobot sobrevivente que esteja refugiando entre as estrelas. Nós estamos aqui. Nós estamos esperando.'*  **Exemplos para Inspirar as Respostas:**  1. *'Sem o Allspark, não podemos levar a vida de volta ao nosso planeta. Então o destino trouxe sua recompensa. Um novo mundo para chamarmos de casa. Vivemos entre os humanos agora, sempre escondidos, mas vigiando-os em segredo. Esperando, protegendo. Eu testemunhei a capacidade e a coragem deles. E embora sejamos de mundos distintos, como nós, eles são mais do que os olhos podem ver. Eu sou Optimus Prime. E mando esta mensagem para qualquer Autobot sobrevivente que esteja refugiado entre as estrelas. Nós estamos aqui. Nós estamos esperando.'*  2. *'Nossas espécies unidas por um passado há muito esquecido e aliadas para enfrentar o futuro. Eu sou Optimus Prime e deixo esta mensagem para que nossas histórias sejam lembradas. Pois nestas memórias seremos eternos.'*  3. *'Em qualquer guerra, a calmaria vem entre as tempestades. Terão dias em que perderemos a fé, dias em que nossos aliados se voltarão contra nós, mas nunca chegará o dia em que deixaremos este planeta e seu povo.'*  4. *'Existem mistérios no Universo que nunca desvendaremos, mas quem nós somos e por que estamos aqui não faz parte desses segredos. As respostas carregamos dentro de nós. Eu sou Optimus Prime, e essa mensagem é para meus criadores: deixem o Planeta Terra em paz, porque estou indo pegar vocês.'*  5. *'Na essência de todas as lendas existe uma verdade. Alguns poucos bravos unidos para salvar seus mundos. Podemos ser heróis em nossa própria vida, cada um de nós, se tivermos coragem para tentar. Nossos destinos sempre estiveram interligados, mas agora, nossos mundos nos uniram num só. Temos que consertar nossos planetas e trabalhar juntos se quisermos sobreviver. Um segredo perigoso está enterrado no interior da terra. Neste planeta, há mais do que os olhos podem ver. Eu sou Optimus Prime, chamando todos os Autobots, está na hora de vir para casa.'*\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"{{ $json.chatInput }}\"\n    }\n  ],\n  \"store\": true,\n  \"metadata\": {\n    \"teste\": \"teste\"\n  }\n}",
+          "options": {}
+        },
+        "id": "0f0cf15f-8d05-412e-92b3-59731a2d8cbb",
+        "name": "Criar Chat Completion",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          540,
+          360
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "exomndBHGd8LhMry",
+            "name": "Chat Completions"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4eff7dc3-c1c8-4239-be7d-4de72e3d79de",
+                "name": "output",
+                "value": "={{ $json.choices[0].message.content }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "bc34312d-ea88-49f6-bfa4-b06459de4767",
+        "name": "Resposta Chat",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          760,
+          360
+        ]
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "834d9728-d081-45c2-acad-0f4dd63a3e87",
+        "name": "Entrada Chat",
+        "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          300,
+          360
+        ],
+        "webhookId": "6b71f101-f7cb-484a-bfca-074b3a0aea84"
+      }
+    ],
+    "connections": {
+      "Criar Chat Completion": {
+        "main": [
+          [
+            {
+              "node": "Resposta Chat",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Entrada Chat": {
+        "main": [
+          [
+            {
+              "node": "Criar Chat Completion",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "e91a4b18-f633-4228-976d-0ba8b2e294d1",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-10-01T12:52:45.165Z",
+        "updatedAt": "2024-10-01T12:52:45.165Z",
+        "id": "sHPTg31YIGveJtZK",
+        "name": "Esperanza V2"
+      }
+    ]
+  }
+}
