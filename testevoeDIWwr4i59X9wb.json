@@ -1,0 +1,222 @@
+{
+  "data": {
+    "createdAt": "2024-05-08T03:36:15.298Z",
+    "updatedAt": "2025-05-08T14:13:39.753Z",
+    "id": "voeDIWwr4i59X9wb",
+    "name": "Suporte Neurônio - func - buscar_contrato",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "response",
+          "options": {}
+        },
+        "id": "1d0422a4-c172-4d2e-871d-a2737c6ef913",
+        "name": "Aggregate",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          780,
+          140
+        ]
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "SELECT\n  cnpj,\n  id AS id_neuronio,\n  equipamento AS nome_equipamento,\n  nome_cliente,\n  a_vista\nFROM\n  `blips-bigdata.IOT.ClientesModuloNeuronio`\nWHERE\n  1 = 1\n{{ $json.cnpj ? \"and cnpj = '\" + $json.cnpj + \"'\" : \"\" }}\n{{ $json.contrato ? \"and 1 = 0\" : '' }}\n{{ $json.numero_serie \n    ? \"and( id = '\" + $json.numero_serie + \n      \"' or id = 'blips_\" + $json.numero_serie + \"' )\" \n    : \"\" \n}}",
+          "options": {}
+        },
+        "id": "5aa0ef58-ee40-4890-822d-c062114eb29c",
+        "name": "Google BigQuery1",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2,
+        "position": [
+          0,
+          280
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "id": "d4dd2304-d3ef-4688-b8f3-393225591c41",
+        "name": "Merge",
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 2.1,
+        "position": [
+          520,
+          140
+        ]
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "WITH\n  cancelamento AS (\n  SELECT\n    ne.contract_number,\n    (\n    SELECT\n      AS STRUCT cancelamentos.status AS status_pedido_cancelamento,\n      FORMAT_TIMESTAMP('%d/%m/%Y', TIMESTAMP(cancelamentos.created_at)) AS data_pedido_cancelamento,\n      cancelamentos.reason AS motivo_pedido_cancelamento,\n      cancelamentos.additional_information AS descricao_pedido_cancelamento\n    FROM\n      UNNEST(ne.cancellation_requests) AS cancelamentos\n    ORDER BY\n      cancelamentos.created_at ASC\n    LIMIT\n      1 ) AS cancelamento\n  FROM\n    `PLATAFORMA.negotiation` ne )\nSELECT\n  ne.contract_number AS numero_contrato,\n  ne.contractor.name AS nome_contratante,\n  ne.contractor.document AS cnpj_contratante,\n  ne.contractor.business_data.address AS endereco,\n  JSON_EXTRACT_SCALAR(ne.business_rule.string_value, '$.selected_commercial_definition.number_of_installments') AS quantidade_parcelas,\n  JSON_EXTRACT_SCALAR(ne.business_rule.string_value, '$.selected_commercial_definition.installment_value') AS valor_parcela,\n  JSON_EXTRACT_SCALAR(ne.business_rule.string_value, '$.selected_commercial_definition.bonification') = 'true' AS fica_com_a_maquina_no_final_do_contrato,\n  ne.created_at AS data_contrato,\n  STRUCT( cancelamento.cancelamento.status_pedido_cancelamento,\n    cancelamento.cancelamento.data_pedido_cancelamento,\n    cancelamento.cancelamento.motivo_pedido_cancelamento,\n    cancelamento.cancelamento.descricao_pedido_cancelamento ) AS cancelamento,\n  ne.installation.customer_confirmation.installation_date AS data_instalacao,\n  ne.phase.name AS fase_contrato,\n  ne.phase.status AS status_contrato,\n  CASE\n    WHEN linked_asset.serie_number IS NOT NULL AND LENGTH(linked_asset.serie_number) = 6 THEN 'blips_' || linked_asset.serie_number\n    WHEN linked_asset.serie_number IS NOT NULL THEN linked_asset.serie_number\n    WHEN assets_historical.serie_number IS NOT NULL AND LENGTH(assets_historical.serie_number) = 6 THEN 'blips_' || assets_historical.serie_number\n    WHEN assets_historical.serie_number IS NOT NULL THEN assets_historical.serie_number\n    ELSE 'Sem neurônio associado ao contrato'\nEND\n  AS numero_serie,\n  linked_asset.without_neuron AS contrato_sem_neuronio,\n  ne.model_selected.name AS item_contrato,\n  STRUCT( CONCAT('https://status.ondeestameupedido.com/tracking/67316/', ne.shipping.shipping_order_id[SAFE_OFFSET(0)]) AS link_rastreio,\n    ne.shipping.status AS status_de_entrega_equipamento,\n    FORMAT_DATE('%d/%m/%Y', DATE(ne.shipping.shipping_assets.estimated_arrival_date)) AS data_de_entrega_prevista_equipamento,\n    ne.shipping.shipping_assets.carrier_name AS transportadora,\n    ne.shipping.tracking_number AS codigo_rastreio_transportadora,\n    FORMAT_DATE('%d/%m/%Y', DATE(ne.shipping.status_updated_at)) AS data_atualizacao ) AS dados_envio_equipamento,\n  STRUCT( ne.payments.shipping.status AS status_pagamento,\n    ne.payments.shipping.value AS valor_frete ) AS frete,\n  ARRAY(\n  SELECT\n    AS STRUCT JSON_EXTRACT_SCALAR(phase, '$.identifier') AS identifier, JSON_EXTRACT_SCALAR(phase, '$.name') AS name\n  FROM\n    UNNEST(JSON_EXTRACT_ARRAY(ne.business_rule.string_value, '$.selected_commercial_definition.sequence_of_phases')) AS phase ) AS lista_de_fases\nFROM\n  `PLATAFORMA.negotiation` ne\nLEFT JOIN\n  cancelamento\nON\n  cancelamento.contract_number = ne.contract_number\nLEFT JOIN\n  UNNEST(ne.assets.linked_assets) AS linked_asset\nLEFT JOIN\n  UNNEST(ne.assets.assets_historical) AS assets_historical\nLEFT JOIN\n  UNNEST(ne.cancellation_requests) AS cancellation_request\nWHERE\n  1 = 1\n{{ $json.cnpj ? \"and ne.contractor.document = '\" + $json.cnpj + \"'\" : \"\" }}\n{{ $json.contrato ? \"and ne.contract_number = '\" + $json.contrato + \"'\" : \"\" }}\n{{ $json.numero_serie ? \"and linked_asset.serie_number = '\" + $json.numero_serie.replaceAll('blips_','') + \"'\" : \"\" }}",
+          "options": {}
+        },
+        "id": "738db15e-4133-4c33-91a1-fb9a447190ca",
+        "name": "Google BigQuery",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2,
+        "position": [
+          0,
+          0
+        ],
+        "alwaysOutputData": false,
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const { frete, dados_envio_equipamento, cancelamento, lista_de_fases, ...resto } = $json\n\nconst original_fase = resto.fase_contrato\n\nresto.fase_contrato = lista_de_fases.find(item => item.identifier === original_fase).name\n\nif ( $json?.frete[0]?.status_pagamento && $json?.frete[0]?.status_pagamento !== 'COMPLETED'){\n  resto.frete = frete\n}\n\nif (resto.status_contrato === 'CANCELLED'){\n  resto.status_contrato = 'Cancelado'\n  resto.cancelamento = cancelamento\n}\nelse if(resto.status_contrato === 'CANCELLATION_REQUESTED'){\n  resto.status_contrato = 'Em processo de Cancelamento'\n  resto.cancelamento = cancelamento\n}\n\nif (original_fase === 'SHIPPING_STATUS' && dados_envio_equipamento) {\n  resto.dados_envio_equipamento = dados_envio_equipamento\n} \n\nreturn resto"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          220,
+          0
+        ],
+        "id": "cc1d520e-5583-4b43-80b9-8ac4f10c250d",
+        "name": "Seleciona Campos"
+      },
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "cnpj"
+              },
+              {
+                "name": "contrato"
+              },
+              {
+                "name": "numero_serie"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -320,
+          140
+        ],
+        "id": "4ed0cc71-17a5-4fbd-b1f7-ebbeb82f6f88",
+        "name": "Execute"
+      }
+    ],
+    "connections": {
+      "Google BigQuery1": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          [
+            {
+              "node": "Aggregate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google BigQuery": {
+        "main": [
+          [
+            {
+              "node": "Seleciona Campos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Seleciona Campos": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute": {
+        "main": [
+          [
+            {
+              "node": "Google BigQuery",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Google BigQuery1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Execute": [
+        {
+          "json": {
+            "contrato": "",
+            "cnpj": "53597821000113",
+            "numero_serie": ""
+          }
+        }
+      ]
+    },
+    "versionId": "a9f81971-a9fa-4e1f-b62b-f5a075ce0070",
+    "triggerCount": 1,
+    "tags": [
+      {
+        "createdAt": "2024-05-08T01:53:37.021Z",
+        "updatedAt": "2024-05-08T01:53:37.021Z",
+        "id": "HJrJfNUAaBoLOV2q",
+        "name": "Suporte Neuronio"
+      }
+    ]
+  }
+}
