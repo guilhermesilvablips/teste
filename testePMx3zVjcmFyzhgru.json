@@ -1,0 +1,99 @@
+{
+  "data": {
+    "createdAt": "2024-09-23T01:23:54.436Z",
+    "updatedAt": "2025-01-07T11:47:31.589Z",
+    "id": "PMx3zVjcmFyzhgru",
+    "name": "Teste Orseni 2",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "path": "kpmg",
+          "formTitle": "Portal de Denuncias",
+          "formDescription": "Preencha seu telefone que entraremos em contato",
+          "formFields": {
+            "values": [
+              {
+                "fieldLabel": "Qual seu telefone? (com DDD)"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "f51f295d-23b4-443f-bc23-2c200296c345",
+        "name": "n8n Form Trigger",
+        "type": "n8n-nodes-base.formTrigger",
+        "typeVersion": 2.1,
+        "position": [
+          460,
+          340
+        ],
+        "webhookId": "1cab4571-965d-4390-89ee-80fa8d5e1eb0"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://core-saas.voicegenie.ai/api/v1/pushCallToCampaign",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "token",
+                "value": "327fa3d91f59910bd9b00b9e9ce00c9a"
+              },
+              {
+                "name": "workspaceId",
+                "value": "66e00ee1f467955bc903c22d"
+              },
+              {
+                "name": "campaignId",
+                "value": "99a2baa3-66f5-462b-84f3-30190434a886"
+              },
+              {
+                "name": "customerNumber",
+                "value": "=+55{{ $json[\"Qual seu telefone? (com DDD)\"] }}"
+              }
+            ]
+          },
+          "options": {
+            "redirect": {
+              "redirect": {}
+            }
+          }
+        },
+        "id": "27bfc5f4-f6b2-4bdb-ba2f-c277cfc97d3c",
+        "name": "HTTP Request",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          680,
+          340
+        ]
+      }
+    ],
+    "connections": {
+      "n8n Form Trigger": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "81191f29-7c01-4a60-9288-079e6a1f60cf",
+    "triggerCount": 2,
+    "tags": []
+  }
+}
