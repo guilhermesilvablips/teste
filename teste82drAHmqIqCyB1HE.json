@@ -1,0 +1,124 @@
+{
+  "data": {
+    "createdAt": "2024-05-16T08:51:22.616Z",
+    "updatedAt": "2024-07-29T15:22:55.905Z",
+    "id": "82drAHmqIqCyB1HE",
+    "name": "Suporte Neurônio - func - buscar_cliente_modulo",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "2e9a8921-4793-4c1b-af77-cd012690a999",
+        "name": "Execute Workflow Trigger",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          240,
+          -320
+        ]
+      },
+      {
+        "parameters": {
+          "projectId": {
+            "__rl": true,
+            "value": "blips-bigdata",
+            "mode": "list",
+            "cachedResultName": "Blips BigData",
+            "cachedResultUrl": "https://console.cloud.google.com/bigquery?project=blips-bigdata"
+          },
+          "sqlQuery": "select distinct cmn.*, cb.*,\nfrom `IOT.ClientesModuloNeuronio` cmn\njoin `SANKHYA.ClientesBlips` cb on cb.CGC_CPF = cmn.cnpj\nwhere 1 = 1\n{{ $json.properties.function.arguments.parseJson().hasOwnProperty('cnpj') ? \"and cmn.cnpj = '\" + $json.properties.function.arguments.parseJson()['cnpj'] + \"'\" : \"\" }}\n{{ $json.properties.function.arguments.parseJson().hasOwnProperty('id') ? \"and cmn.id = '\" + $json.properties.function.arguments.parseJson()['id'] + \"'\" : \"\" }}",
+          "options": {}
+        },
+        "id": "06c713bb-92e8-44e3-8784-0db63545a1b4",
+        "name": "Google BigQuery",
+        "type": "n8n-nodes-base.googleBigQuery",
+        "typeVersion": 2,
+        "position": [
+          460,
+          -320
+        ],
+        "credentials": {
+          "googleBigQueryOAuth2Api": {
+            "id": "jdsaj0ytx87qNBLE",
+            "name": "Google BigQuery - Joao Lucas"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "response",
+          "options": {}
+        },
+        "id": "504b909c-8bcd-4f88-ad0e-4ce4164cac2b",
+        "name": "Aggregate",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          680,
+          -320
+        ]
+      }
+    ],
+    "connections": {
+      "Execute Workflow Trigger": {
+        "main": [
+          [
+            {
+              "node": "Google BigQuery",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google BigQuery": {
+        "main": [
+          [
+            {
+              "node": "Aggregate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Execute Workflow Trigger": [
+        {
+          "json": {
+            "properties": {
+              "id": "call_3ZPPS15JMk3fXzxyTWz5j7Ub",
+              "type": "function",
+              "function": {
+                "name": "buscar_contrato",
+                "arguments": "{\"cnpj\":\"39791713000156\"}"
+              }
+            },
+            "arguments": {
+              "cnpj": "39791713000156"
+            }
+          }
+        }
+      ]
+    },
+    "versionId": "e3635f62-552f-4859-8ef4-543463012db6",
+    "triggerCount": 0,
+    "tags": [
+      {
+        "createdAt": "2024-05-08T01:53:37.021Z",
+        "updatedAt": "2024-05-08T01:53:37.021Z",
+        "id": "HJrJfNUAaBoLOV2q",
+        "name": "Suporte Neuronio"
+      }
+    ]
+  }
+}
